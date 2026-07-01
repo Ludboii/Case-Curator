@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6dc7f6e2a2e414439983b99f38819a9, type: 3}
+  m_Name: Shattered Web Agents
+  m_EditorClassIdentifier: Assembly-CSharp::CollectionData
+  collectionName: Shattered Web Agents
+  apiId: collection-set-op9-characters
+  type: 0
+  icon: {fileID: 21300000, guid: fd7b6168c2fc3a740bd7c843486a71da, type: 3}

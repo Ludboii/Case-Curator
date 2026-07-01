@@ -1,0 +1,115 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: Sealed Dead Hand Terminal
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-5181
+  caseName: Sealed Dead Hand Terminal
+  icon: {fileID: 21300000, guid: 5ce82da5c6e2d7c419306c31aae4859b, type: 3}
+  priceInGold: 1.53
+  isPremium: 0
+  quality: 1
+  requiredRank: 0
+  xpRewardOnOpen: 10
+  shopCategory: 0
+  isCustomCase: 0
+  shouldHaveRareSpecial: 1
+  rarityChances:
+  - rarity: 2
+    chance: 79.92
+  - rarity: 3
+    chance: 15.98
+  - rarity: 4
+    chance: 3.2
+  - rarity: 5
+    chance: 0.64
+  - rarity: 6
+    chance: 0.26
+  dropPool:
+  - skin: {fileID: 11400000, guid: 029f7e8fce54bf345ab00ad3c50d6dd1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a6eb52c116c3fb143aad8753481085a9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5cf5d9656f72f85448a2d4a08e05314b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fe603ce3ab129054ea34f2d85f8232b8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f0ec42cc35405934dbe4c35b5327e861, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b9538e05deeea45448f7320154d89a06, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9b71c8d90dc64ab4fae314929d75d649, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8fe9a76ffa832ab45a728a4e46b604d4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4bd03e77e20daa04d9bb1d38e78fc7a8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2dec2cfc54cb46c47bedc07becd586cf, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7c1f40366b73d5244a923e49071e2d36, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 855f5253a235fdc4297286b8f589c97c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e035ea20a96a5944b81111404419d5a9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 839bd020a7fc19444b6c0c851d4c5963, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f17eb541b90d78143853b4abd5288361, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1cf06057392a6544681512aaf9ec3e33, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f27cdd1c3f8a5e3498408e87c0199d71, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 365da07c1adf05546bdf1bee3e9feff0, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bf9f2731ae367ca4ca37944d23df4291, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2d0cec1da04370948b963dff73197dfc, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8d20eead35f6c40468d265e58792cc90, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 41b20b47160ab754d9a7046f93b9a9a2, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e298a5e787dded642a5d9851d31abddd, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2ff81c992c318bd4ea4676c214c82361, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4e3c9ae23dde29145a75fd71a28cc240, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 571e8cf49f3dd5948b416541d474b0a6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 277edab75fd33674f92c717e9ce9735b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 76b48934750faf24fab995965002db07, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6e161f81b44678346b632a112555dc9a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5a824ef32fb1b5549905148e5e816eef, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7a46c2010c989794bbc2c618261ae16a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 45901af0fce3ac541ae1e13e8333f157, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3c9a4a89447c6bc499d1d703a993fba1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bf55840cc8492e1419ff46ba52a93f1c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 68d8a339a803ed24e9a4f8a6462bce79, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b5aaca6971142554a89858cd5e055b32, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f3932c81b2bf76747a6783d0d6dabef6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5c5a22713f942514fbe01c121f762f53, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1e78ea6f41bee9a4898fa5e0aba8deda, type: 2}
+    weight: 1

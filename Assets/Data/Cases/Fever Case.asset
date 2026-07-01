@@ -1,0 +1,127 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: Fever Case
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-7007
+  caseName: Fever Case
+  icon: {fileID: 21300000, guid: 4d67387279f6cad4984d08b986c1c11f, type: 3}
+  priceInGold: 0.78
+  isPremium: 0
+  quality: 1
+  requiredRank: 0
+  xpRewardOnOpen: 10
+  shopCategory: 0
+  isCustomCase: 0
+  shouldHaveRareSpecial: 1
+  rarityChances:
+  - rarity: 2
+    chance: 79.92
+  - rarity: 3
+    chance: 15.98
+  - rarity: 4
+    chance: 3.2
+  - rarity: 5
+    chance: 0.64
+  - rarity: 6
+    chance: 0.26
+  dropPool:
+  - skin: {fileID: 11400000, guid: cc144747272e498498b9627680b4f2e3, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: dee9c82f8025cd14d9b698045a08d3d5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 00d429241d6d087478aacfdff77e7308, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9b95fd941bc102049b3d782d100c59dd, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 482d97a437085944bb660b5c2368d292, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e01fecb82739d464e94f3a803649adbd, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: dfa5ee1537796444d8f00ab7a426e002, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 00bc4b2adac684c4eb3d1a8a97753c9f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 60a7ced98364be346a04771d02eebc03, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: dcdc386e9c5f15f44b02a90944f9041a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 52388dfc45e54ca418caeca9c7aa3a99, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f0898b432a9a8924591b3669271701a4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d199d1ffea00e7249b243c80f64e7178, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6aefc712fa9548f4195bacb01cb5ee5f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f69e483cc4b8bd34ab2ba8f95c1c4589, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 75e45124c67def147b953a36bb03f188, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3ddf38b1bc1898647a02aaf738847165, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1f86cb82c290f7347ba9a4bdceff4bc5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a424542d124812544a5e0fb4aad74598, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: aa459cd94dfad14419ac0964423bee56, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f52edd86eb314444890c3aee9e6ef4de, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4972054cbdb74dc439a031a1fdaac84c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4295f5cdce0e85d4a9f442ec15a331ce, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a6770dceca4c96547a5164e31a1a99ee, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 95dec2add7317584cac91780ecd4ccfd, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f96c75110de8b21459eee08d8279ab7b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 46636b7e7ff78b84aa6482b950cf6b18, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8ec2272b5a62ba94f9fdb1299babce28, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: dd386ddd70ff651468b2c0f6f2de903b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: cfb0b0c4c9dcafb4cbdba598c6f746c6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b624dfdf8e1eedc4a8b875be127568eb, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 0aa46d0906688344e8b3bd1e6305a775, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 52a7392d29e3be9478c578708262e06d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 47bf15068afae414295e0cb0a929aac6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 347b4011cb4a2094699aa0994f2d77d8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 63457e2550de3614ab1f2d6296e3ab50, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f500b7d807d81f04d8fcea8b7988a661, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1bb64d485942e6d468d24385370d1363, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 73824821aa3b31a4ba0c4ae9923bc898, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 269c701228521f546b573e4dc013f690, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8afbf396ae455e1468354a232337d82e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a20d82d96a1e7b349a43d6381b54bb98, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d8d6ebdc55ef16f498aad0bc346fca86, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 22ce14caa3c4ed147b6d35e68482f80b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ddf1dc89bdc5e9e4aa4054fe7698fe1f, type: 2}
+    weight: 1

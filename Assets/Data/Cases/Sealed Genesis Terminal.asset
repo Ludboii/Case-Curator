@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: Sealed Genesis Terminal
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-5176
+  caseName: Sealed Genesis Terminal
+  icon: {fileID: 21300000, guid: 3488bb3b83b133f40a98a2630574f3ec, type: 3}
+  priceInGold: 0.14
+  isPremium: 0
+  quality: 1
+  requiredRank: 0
+  xpRewardOnOpen: 10
+  shopCategory: 0
+  isCustomCase: 0
+  shouldHaveRareSpecial: 1
+  rarityChances:
+  - rarity: 2
+    chance: 79.92
+  - rarity: 3
+    chance: 15.98
+  - rarity: 4
+    chance: 3.2
+  - rarity: 5
+    chance: 0.64
+  - rarity: 6
+    chance: 0.26
+  dropPool:
+  - skin: {fileID: 11400000, guid: 41fc94ff6b8d5a04db27e7724a4d6b2e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6cef94de76f0b4844bcad8e9c790af28, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9c1f232f9aa10f242a05f817245ffb31, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3726551e913785d40a6440a231f2ae31, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2141eaa44dbbbf4408cd64a56419aee8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5104a157f0f6ffe45bf14d85b8200735, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2fc262c7bd946044193be5db58042e8a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: aed1ecd595eba2545a5184e3cce88278, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 0859b59444c6b5a49b1149e7524e241c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 191eb6e681dce944cbd5a8e71234139d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d64c0499d2a89c84487c598eae420f18, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9538e3207d4837b478b951b79f888e94, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 82d10f581ace2854eaa27c99ad83312c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 00c235c31e5711743a206f34d06dcce2, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1dc07749018b51d4c94e1da8b21074c3, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 296ec40ee9eb6094bb14e55f8cf3d31f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: baa103aef715abf4f9cbf1e965c83902, type: 2}
+    weight: 1

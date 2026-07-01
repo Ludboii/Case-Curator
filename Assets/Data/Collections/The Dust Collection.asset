@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6dc7f6e2a2e414439983b99f38819a9, type: 3}
+  m_Name: The Dust Collection
+  m_EditorClassIdentifier: Assembly-CSharp::CollectionData
+  collectionName: The Dust Collection
+  apiId: collection-set-dust
+  type: 1
+  icon: {fileID: 21300000, guid: a84bbf7d7836d6c4ab0f1662c507362e, type: 3}

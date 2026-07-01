@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a84d27ee17784ce44ad44669149ea917, type: 3}
+  m_Name: MP7_Full_Stop
+  m_EditorClassIdentifier: Assembly-CSharp::SkinData
+  skinName: Full Stop
+  weaponName: MP7
+  collection: The Chop Shop Collection
+  apiId: skin-7eec94171de3
+  paintIndex: 250
+  collectionData: {fileID: 11400000, guid: f032b2bdf51d4f0428bba4c7e4e1d5e1, type: 2}
+  rarity: 2
+  minFloat: 0
+  maxFloat: 0.6
+  icon: {fileID: 21300000, guid: 51b7090658c1dc04e8eb9b0864458b90, type: 3}
+  canBeStatTrak: 0
+  canBeSouvenir: 0
+  patternType: 0
+  fadeBonusCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 80
+      value: 1.1
+      inSlope: 0
+      outSlope: 0.025
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 100
+      value: 1.6
+      inSlope: 0.025
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  patternTierGroups: []
+  uniquePatterns: []
+  fadeRangeStart: 0
+  fadeRangeEnd: 100
+  reverseFadePattern: 0
+  fadeOverrides: []
+  exteriorPrices:
+    factoryNew: 0
+    minimalWear: 0
+    fieldTested: 0
+    wellWorn: 0
+    battleScarred: 0
+  statTrakExteriorPrices:
+    factoryNew: 0
+    minimalWear: 0
+    fieldTested: 0
+    wellWorn: 0
+    battleScarred: 0
+  souvenirExteriorPrices:
+    factoryNew: 0
+    minimalWear: 0
+    fieldTested: 0
+    wellWorn: 0
+    battleScarred: 0
+  isVanilla: 0
+  vanillaPrice: 0
+  vanillaStatTrakPrice: 0
