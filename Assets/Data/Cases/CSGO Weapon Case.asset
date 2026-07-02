@@ -17,9 +17,9 @@ MonoBehaviour:
   icon: {fileID: 0}
   priceInGold: 167.04
   isPremium: 0
-  quality: 0
-  requiredRank: 0
-  xpRewardOnOpen: 10
+  quality: 6
+  requiredRank: 8
+  xpRewardOnOpen: 65
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

@@ -15,7 +15,7 @@ MonoBehaviour:
   apiId: crate-4620
   caseName: Shattered Web Case
   icon: {fileID: 21300000, guid: e6aa4cdd7e19d49449793f0ee16e58d6, type: 3}
-  priceInGold: 7.17
+  priceInGold: 7.53
   isPremium: 0
   quality: 1
   requiredRank: 0

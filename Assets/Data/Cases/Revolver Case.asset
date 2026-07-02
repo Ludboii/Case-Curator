@@ -15,10 +15,12 @@ MonoBehaviour:
   apiId: crate-4186
   caseName: Revolver Case
   icon: {fileID: 21300000, guid: 5541ac4ffbdcdb04e8b3a2aa9eafc47d, type: 3}
-  priceInGold: 0
+  priceInGold: 3.75
   isPremium: 0
-  quality: 1
+  quality: 0
   requiredRank: 0
+  xpRewardOnOpen: 6
+  shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1
   rarityChances:

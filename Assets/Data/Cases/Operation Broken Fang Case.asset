@@ -15,10 +15,12 @@ MonoBehaviour:
   apiId: crate-4717
   caseName: Operation Broken Fang Case
   icon: {fileID: 21300000, guid: 9ce272599eace204381df5f1e5b9ae1d, type: 3}
-  priceInGold: 0
+  priceInGold: 8.39
   isPremium: 0
-  quality: 1
+  quality: 0
   requiredRank: 0
+  xpRewardOnOpen: 7
+  shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1
   rarityChances:

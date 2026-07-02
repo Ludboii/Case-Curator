@@ -10,6 +10,19 @@ public class CaseData : ScriptableObject
     public string apiId;
     public string caseName;
     public Sprite icon;
+    
+    [Header("Container Type")]
+public CaseContainerType containerType = CaseContainerType.WeaponCase;
+
+[Header("Container Rules")]
+public bool allowRareSpecialItem = true;
+public bool allowStatTrak = true;
+public bool forceSouvenirDrops = false;
+
+[Header("Souvenir Info")]
+public string eventName;
+public int eventYear;
+public string mapName;
 
 [Header("Shop")]
 public float priceInGold;

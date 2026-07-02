@@ -15,10 +15,12 @@ MonoBehaviour:
   apiId: crate-4471
   caseName: Clutch Case
   icon: {fileID: 21300000, guid: a797efb11f9904144bcc0940557ef373, type: 3}
-  priceInGold: 0
+  priceInGold: 0.8
   isPremium: 0
-  quality: 1
+  quality: 0
   requiredRank: 0
+  xpRewardOnOpen: 3
+  shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1
   rarityChances:

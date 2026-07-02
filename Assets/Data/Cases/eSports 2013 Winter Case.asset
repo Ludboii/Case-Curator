@@ -15,10 +15,12 @@ MonoBehaviour:
   apiId: crate-4005
   caseName: eSports 2013 Winter Case
   icon: {fileID: 21300000, guid: 3e1fb2880ab59114685c59b7762a6043, type: 3}
-  priceInGold: 0
+  priceInGold: 24
   isPremium: 0
   quality: 1
   requiredRank: 0
+  xpRewardOnOpen: 10
+  shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1
   rarityChances:

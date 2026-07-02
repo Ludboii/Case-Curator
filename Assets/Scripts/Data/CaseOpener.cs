@@ -10,8 +10,17 @@ public static class CaseOpener
         SkinData selectedSkin = GetRandomSkin(caseData);
         item.skin = selectedSkin;
 
-        item.statTrak = selectedSkin.canBeStatTrak && Random.value < 0.10f;
-        item.souvenir = false;
+        bool forceSouvenir =
+    caseData.forceSouvenirDrops ||
+    caseData.containerType == CaseContainerType.SouvenirPackage;
+
+item.souvenir = forceSouvenir;
+
+item.statTrak =
+    !forceSouvenir &&
+    caseData.allowStatTrak &&
+    selectedSkin.canBeStatTrak &&
+    Random.value < 0.10f;
 
         if (selectedSkin.isVanilla)
         {

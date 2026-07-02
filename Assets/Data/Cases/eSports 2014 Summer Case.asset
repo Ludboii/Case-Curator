@@ -15,7 +15,7 @@ MonoBehaviour:
   apiId: crate-4019
   caseName: eSports 2014 Summer Case
   icon: {fileID: 21300000, guid: c52af9757860fbd4698b0c7e30dbac67, type: 3}
-  priceInGold: 0
+  priceInGold: 18
   isPremium: 0
   quality: 1
   requiredRank: 0

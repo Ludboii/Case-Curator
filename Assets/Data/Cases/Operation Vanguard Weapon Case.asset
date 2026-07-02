@@ -15,10 +15,12 @@ MonoBehaviour:
   apiId: crate-4029
   caseName: Operation Vanguard Weapon Case
   icon: {fileID: 21300000, guid: 28f423abf78e34f4da1af8e6ba590694, type: 3}
-  priceInGold: 0
+  priceInGold: 7.65
   isPremium: 0
-  quality: 1
+  quality: 0
   requiredRank: 0
+  xpRewardOnOpen: 7
+  shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1
   rarityChances:

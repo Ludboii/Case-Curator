@@ -17,7 +17,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: d5023b63519ef204c976b6e8311b67b4, type: 3}
   priceInGold: 10.46
   isPremium: 0
-  quality: 1
+  quality: 0
   requiredRank: 0
   xpRewardOnOpen: 10
   shopCategory: 0

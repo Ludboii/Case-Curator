@@ -15,10 +15,12 @@ MonoBehaviour:
   apiId: crate-4236
   caseName: Gamma Case
   icon: {fileID: 21300000, guid: a974fefb73e11d7428e1a7d45e02222d, type: 3}
-  priceInGold: 0
+  priceInGold: 3.8
   isPremium: 0
-  quality: 1
+  quality: 0
   requiredRank: 0
+  xpRewardOnOpen: 3
+  shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1
   rarityChances:

@@ -15,10 +15,12 @@ MonoBehaviour:
   apiId: crate-4698
   caseName: Fracture Case
   icon: {fileID: 21300000, guid: 96a7341a8170f7f4faf0f790c1f457c4, type: 3}
-  priceInGold: 0
+  priceInGold: 0.68
   isPremium: 0
-  quality: 1
+  quality: 0
   requiredRank: 0
+  xpRewardOnOpen: 3
+  shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1
   rarityChances:
