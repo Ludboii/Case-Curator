@@ -23,7 +23,7 @@ MonoBehaviour:
   maxFloat: 0.6
   icon: {fileID: 21300000, guid: 149752008763a7a4b8b04d7779055a42, type: 3}
   canBeStatTrak: 0
-  canBeSouvenir: 1
+  canBeSouvenir: 0
   patternType: 0
   fadeBonusCurve:
     serializedVersion: 2
@@ -56,11 +56,11 @@ MonoBehaviour:
   reverseFadePattern: 0
   fadeOverrides: []
   exteriorPrices:
-    factoryNew: 0
-    minimalWear: 0
-    fieldTested: 0
-    wellWorn: 0
-    battleScarred: 0
+    factoryNew: 3.78
+    minimalWear: 0.59
+    fieldTested: 0.23
+    wellWorn: 1.92
+    battleScarred: 0.55
   statTrakExteriorPrices:
     factoryNew: 0
     minimalWear: 0

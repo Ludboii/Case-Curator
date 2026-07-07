@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-4091
   caseName: Falchion Case
   icon: {fileID: 21300000, guid: 40c9df1565c415d45b3e0569bcfc8522, type: 3}
-  priceInGold: 2
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 9.2
   isPremium: 0
-  quality: 1
-  requiredRank: 0
-  xpRewardOnOpen: 10
+  quality: 0
+  requiredRank: 2
+  xpRewardOnOpen: 7
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

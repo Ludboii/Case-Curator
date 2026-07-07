@@ -15,7 +15,11 @@ MonoBehaviour:
   apiId: crate-4904
   caseName: Kilowatt Case
   icon: {fileID: 21300000, guid: 073f206daa3bdd54489c389e21c137d1, type: 3}
-  priceInGold: 0.23
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 1.65
   isPremium: 0
   quality: 0
   requiredRank: 0

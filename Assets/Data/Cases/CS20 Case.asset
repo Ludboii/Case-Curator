@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-4669
   caseName: CS20 Case
   icon: {fileID: 21300000, guid: 58dcbf22ec5e304409de4599f41928e1, type: 3}
-  priceInGold: 1.41
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 5.6
   isPremium: 0
   quality: 0
-  requiredRank: 0
-  xpRewardOnOpen: 3
+  requiredRank: 2
+  xpRewardOnOpen: 5
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

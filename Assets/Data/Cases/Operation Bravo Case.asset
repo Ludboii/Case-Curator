@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-4003
   caseName: Operation Bravo Case
   icon: {fileID: 21300000, guid: 3e0c274476df16d4a9100afba1da7974, type: 3}
-  priceInGold: 92.41
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 125.7
   isPremium: 0
-  quality: 1
-  requiredRank: 0
-  xpRewardOnOpen: 40
+  quality: 4
+  requiredRank: 12
+  xpRewardOnOpen: 62
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

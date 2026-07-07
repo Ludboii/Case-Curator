@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-4138
   caseName: Shadow Case
   icon: {fileID: 21300000, guid: 2cd9c8d8feabac04d8f7e4bf006e1fc1, type: 3}
-  priceInGold: 2.2
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 6.3
   isPremium: 0
-  quality: 1
-  requiredRank: 0
-  xpRewardOnOpen: 10
+  quality: 0
+  requiredRank: 2
+  xpRewardOnOpen: 5
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

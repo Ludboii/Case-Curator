@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: the_norse_collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_the_norse_collection
+  caseName: The Norse Collection
+  icon: {fileID: 0}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 1900
+  isPremium: 0
+  quality: 6
+  requiredRank: 17
+  xpRewardOnOpen: 258
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 79.92
+  - rarity: 1
+    chance: 15.98
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.64
+  - rarity: 4
+    chance: 0.128
+  - rarity: 5
+    chance: 0.0256
+  dropPool:
+  - skin: {fileID: 11400000, guid: 516795a39bdb8eb459c14259d5c13a55, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 642d17aaa954626439b1f345a5ba3415, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b8e58a83807eaad42b0f000e436b7615, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 74ab23870519fcc49a9ccb042d5a0059, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: cb1891815cd741343b25c9d9e09aa3bd, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2b40724fdd2ec784f8c1c6059883666d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f5aa3a1d1de539e4dbbae3725c859b3b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ac26182a862a96f4ca6b65f3e1d0d70b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a8729580ee5776a46a702630be6484a9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 454980945a6a3dd40b914445292ec4b1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e5eda98a2865e7644a30aac7756643e0, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7c795b37613a7b046bf1a4287baa428a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 824ee173cfe18d74fb8c9fd04e31f016, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d087ba826e2633f4b8638a8dcc28fed0, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 387c60221c4147345b88522cd027b13c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d36b2dbf4de838e4983647eb784dfaa7, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2dcae16955be0ba469b688185ea9ad5c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9e4dda095a376494c8f63e342effb43d, type: 2}
+    weight: 1

@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: The Lake Collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_the_lake_collection
+  caseName: The Lake Collection
+  icon: {fileID: 21300000, guid: ca76429b21f24a943b8e59001034c8bb, type: 3}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 5
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 3
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.8
+  dropPool:
+  - skin: {fileID: 11400000, guid: ecd8371c5311d9745b2ac27cdf548f1a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e7197580427e9f7478ecb0d3492807d3, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fd1bc3666d3402548ad1531f971c1df8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 694f87043fc923b41954d06da743c686, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 938739973f087e54d94f325ae7c4b77f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5ef0a668e16baaa42aff7109b630ed72, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e48ece91d57eade42832910a5df10c85, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3716b3bd0e4d3134facb637c0ea9ec97, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e92c690f29877c943bd25f89c07188c1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 956e4e07b56a0da4389d2b3cc4ade646, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 91b095e60037fd84b9d737d4247a7075, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3d506f688c64a674eb98ff697521eb73, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7af28d96cb7e7cb4f8caf029d463aea0, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2dabc302ab6e526448aca629e4fb2f33, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d5f3106ff9765924884de7307f1c26e1, type: 2}
+    weight: 1

@@ -15,3 +15,4 @@ MonoBehaviour:
   collectionName: The Sport & Field Collection
   apiId: collection-set-realism-camo
   type: 0
+  icon: {fileID: 21300000, guid: 3702a59b795a1ee49bfafe82276be9d7, type: 3}

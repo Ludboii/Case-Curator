@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: the_sport_field_collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_the_sport_field_collection
+  caseName: The Sport & Field Collection
+  icon: {fileID: 0}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 220
+  isPremium: 0
+  quality: 4
+  requiredRank: 8
+  xpRewardOnOpen: 70
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 79.92
+  - rarity: 1
+    chance: 15.98
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.64
+  - rarity: 4
+    chance: 0.128
+  - rarity: 5
+    chance: 0.0256
+  dropPool:
+  - skin: {fileID: 11400000, guid: de9648bcc872cbb4f8eb38964c90ddd9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b5451d1d404c49647b043984cba0c918, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4c454fd569897a74189cc93d230c019f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9ed2bcd51b8021346833937ac2e0b214, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 92db2eaf2d9ba374aa3827817080950b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1e13539a1901c6643905d9ffd7334f44, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1c3dd86f7c5faa04f8edac3289d76a9c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 39b891bd6c52f6840a5e6a40f5814ac0, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: eed140f033c30cb4ab68ff103e96a367, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8a563b728513e254fb05933acdd8fa66, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3b238fdfb98456e428a84c85ac05b69d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 83808d51adf2f5249a7953bbc52187f8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: cb0644a326bb6ec4c99e44d7cbbecfb7, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ac733f5219c7cfb4491d01c8f9830a0f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: cccfd2ea80977d94f8891af49966e916, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 30f3b5ed7bd224e45b9ebdfe2dd6fd2c, type: 2}
+    weight: 1

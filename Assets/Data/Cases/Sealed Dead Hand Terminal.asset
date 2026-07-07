@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-5181
   caseName: Sealed Dead Hand Terminal
   icon: {fileID: 21300000, guid: 5ce82da5c6e2d7c419306c31aae4859b, type: 3}
-  priceInGold: 1.53
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 10.5
   isPremium: 0
-  quality: 0
-  requiredRank: 0
-  xpRewardOnOpen: 10
+  quality: 1
+  requiredRank: 3
+  xpRewardOnOpen: 8
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

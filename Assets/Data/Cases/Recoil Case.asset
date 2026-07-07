@@ -15,10 +15,14 @@ MonoBehaviour:
   apiId: crate-4846
   caseName: Recoil Case
   icon: {fileID: 21300000, guid: 5d69af9918a5693408bb928d19cc786d, type: 3}
-  priceInGold: 0.45
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 2.15
   isPremium: 0
   quality: 0
-  requiredRank: 0
+  requiredRank: 1
   xpRewardOnOpen: 3
   shopCategory: 0
   isCustomCase: 0

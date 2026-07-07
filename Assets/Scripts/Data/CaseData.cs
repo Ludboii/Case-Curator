@@ -10,27 +10,22 @@ public class CaseData : ScriptableObject
     public string apiId;
     public string caseName;
     public Sprite icon;
-    
+
     [Header("Container Type")]
-public CaseContainerType containerType = CaseContainerType.WeaponCase;
+    public CaseContainerType containerType = CaseContainerType.WeaponCase;
 
-[Header("Container Rules")]
-public bool allowRareSpecialItem = true;
-public bool allowStatTrak = true;
-public bool forceSouvenirDrops = false;
+    [Header("Container Rules")]
+    public bool allowRareSpecialItem = true;
+    public bool allowStatTrak = true;
+    public bool forceSouvenirDrops = false;
 
-[Header("Souvenir Info")]
-public string eventName;
-public int eventYear;
-public string mapName;
-
-[Header("Shop")]
-public float priceInGold;
-public bool isPremium;
-public CaseQuality quality;
-public PlayerRank requiredRank;
-public int xpRewardOnOpen = 10; // will later be price-based or quality-based
-public CaseShopCategory shopCategory = CaseShopCategory.Cases;
+    [Header("Shop")]
+    public float priceInGold;
+    public bool isPremium;
+    public CaseQuality quality;
+    public PlayerRank requiredRank;
+    public int xpRewardOnOpen = 10;
+    public CaseShopCategory shopCategory = CaseShopCategory.Cases;
 
     [Header("Custom Case Settings")]
     public bool isCustomCase;

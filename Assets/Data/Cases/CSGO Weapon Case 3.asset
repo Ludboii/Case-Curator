@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-4010
   caseName: CS:GO Weapon Case 3
   icon: {fileID: 21300000, guid: b4e3a1ff8ee759d418b6df4e97d19aa2, type: 3}
-  priceInGold: 17
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 30.85
   isPremium: 0
-  quality: 1
-  requiredRank: 0
-  xpRewardOnOpen: 9
+  quality: 2
+  requiredRank: 7
+  xpRewardOnOpen: 27
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

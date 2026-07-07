@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-4089
   caseName: Chroma 2 Case
   icon: {fileID: 21300000, guid: e7916e657d3b3db4ebfa3c7839520951, type: 3}
-  priceInGold: 4.5
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 22.2
   isPremium: 0
-  quality: 0
-  requiredRank: 0
-  xpRewardOnOpen: 5
+  quality: 2
+  requiredRank: 5
+  xpRewardOnOpen: 20
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

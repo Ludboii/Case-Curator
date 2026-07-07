@@ -15,7 +15,11 @@ MonoBehaviour:
   apiId: crate-4880
   caseName: Revolution Case
   icon: {fileID: 21300000, guid: 4419b5a0785aae94981f55612a6594e7, type: 3}
-  priceInGold: 0.3
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 1.9
   isPremium: 0
   quality: 0
   requiredRank: 0

@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-4548
   caseName: Danger Zone Case
   icon: {fileID: 21300000, guid: bb6ce0801cbaf644ebf5dcc56c101b54, type: 3}
-  priceInGold: 1.74
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 14.2
   isPremium: 0
-  quality: 0
-  requiredRank: 0
-  xpRewardOnOpen: 4
+  quality: 1
+  requiredRank: 3
+  xpRewardOnOpen: 11
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

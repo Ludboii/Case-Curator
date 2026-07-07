@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: the_chop_shop_collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_the_chop_shop_collection
+  caseName: The Chop Shop Collection
+  icon: {fileID: 0}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 650
+  isPremium: 0
+  quality: 5
+  requiredRank: 12
+  xpRewardOnOpen: 141
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 79.92
+  - rarity: 1
+    chance: 15.98
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.64
+  - rarity: 4
+    chance: 0.128
+  - rarity: 5
+    chance: 0.0256
+  dropPool:
+  - skin: {fileID: 11400000, guid: 83e9ff9f7ea83ed41a56a7611172eed9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 17b1c76fc097ecb44b599aa70bcaec5f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f6359878c9cdac843bf4f8baf6b8bdcb, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 60904170e9a52524e9c1a62b27a93ac6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8caf8de3a95d44440927dddacac17386, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ebaff6d078725164da9609e8914fc5f8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2f48df83ef380ad4b83350335c3d1acf, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 840df2979783bf84f89cf797f27b27ab, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 22d5a2448ccacd2478f50e0c1110faca, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ada69e38012a42748b84f06608111a91, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9e6eed38076ff6540b18f33b93797969, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2e5634b019bb72742969494886cd9116, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 91b6ca8c36831c94c82457b14f42ee6e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4026ba580d59bcd419e87cee3da18f2d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8e3a2b37f73995e46b71ab9aee574a8a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a9f8ebeb420534147982edc2da30415d, type: 2}
+    weight: 1

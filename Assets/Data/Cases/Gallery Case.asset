@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-7003
   caseName: Gallery Case
   icon: {fileID: 21300000, guid: 77c1723fab4323e418a8d94db90e5a69, type: 3}
-  priceInGold: 1.11
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 7.2
   isPremium: 0
   quality: 0
-  requiredRank: 0
-  xpRewardOnOpen: 3
+  requiredRank: 2
+  xpRewardOnOpen: 6
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

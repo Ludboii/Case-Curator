@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-4790
   caseName: Operation Riptide Case
   icon: {fileID: 21300000, guid: 5b03463d94734944980b078e3ff165af, type: 3}
-  priceInGold: 13.95
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 28.65
   isPremium: 0
-  quality: 1
-  requiredRank: 0
-  xpRewardOnOpen: 10
+  quality: 2
+  requiredRank: 6
+  xpRewardOnOpen: 25
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

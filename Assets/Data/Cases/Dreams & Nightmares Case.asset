@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-4818
   caseName: Dreams & Nightmares Case
   icon: {fileID: 21300000, guid: ce585a299367c5c489103cfc26b7ca29, type: 3}
-  priceInGold: 1.48
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 12.3
   isPremium: 0
-  quality: 0
-  requiredRank: 0
-  xpRewardOnOpen: 3
+  quality: 1
+  requiredRank: 3
+  xpRewardOnOpen: 9
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

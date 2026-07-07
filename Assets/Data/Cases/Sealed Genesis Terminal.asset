@@ -15,7 +15,11 @@ MonoBehaviour:
   apiId: crate-5176
   caseName: Sealed Genesis Terminal
   icon: {fileID: 21300000, guid: 3488bb3b83b133f40a98a2630574f3ec, type: 3}
-  priceInGold: 0.15
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 0.75
   isPremium: 0
   quality: 0
   requiredRank: 0

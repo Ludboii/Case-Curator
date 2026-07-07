@@ -1,0 +1,108 @@
+Container,Price,XP,UnlockLevel,HasSouvenirs,HasStattrak,HasRareSpecial,Type,CaseRarity
+Sealed Genesis Terminal,0.75,1,Silver I,NO,YES,YES,Weapon cases,Consumer
+Kilowatt Case,1.65,2,Silver I,NO,YES,YES,Weapon cases,Consumer
+Revolution Case,1.90,2,Silver I,NO,YES,YES,Weapon cases,Consumer
+Recoil Case,2.15,3,Silver II,NO,YES,YES,Weapon cases,Consumer
+Fracture Case,3.10,4,Silver II,NO,YES,YES,Weapon cases,Consumer
+Snakebite Case,3.20,4,Silver II,NO,YES,YES,Weapon cases,Consumer
+The Lake Collection,5.00,3,Silver I,NO,NO,NO,Standard collections,Consumer
+Clutch Case,5.30,5,Silver III,NO,YES,YES,Weapon cases,Consumer
+CS20 Case,5.60,5,Silver III,NO,YES,YES,Weapon cases,Consumer
+Fever Case,6.15,5,Silver III,NO,YES,YES,Weapon cases,Consumer
+Shadow Case,6.30,5,Silver III,NO,YES,YES,Weapon cases,Consumer
+The Train Collection,7.00,5,Silver I,NO,NO,NO,Standard collections,Consumer
+Gallery Case,7.20,6,Silver III,NO,YES,YES,Weapon cases,Consumer
+Falchion Case,9.20,7,Silver III,NO,YES,YES,Weapon cases,Consumer
+The Italy Collection,10.00,7,Silver II,NO,NO,NO,Standard collections,Industrial
+Sealed Dead Hand Terminal,10.50,8,Silver Elite,NO,YES,YES,Weapon cases,Industrial
+Prisma 2 Case,11.50,8,Silver Elite,NO,YES,YES,Weapon cases,Industrial
+Dreams & Nightmares Case,12.30,9,Silver Elite,NO,YES,YES,Weapon cases,Industrial
+Huntsman Weapon Case,12.95,9,Silver Elite,NO,YES,YES,Weapon cases,Industrial
+The Dust 2 Collection,13.00,8,Silver II,NO,NO,NO,Standard collections,Industrial
+Prisma Case,13.00,9,Silver Elite,NO,YES,YES,Weapon cases,Industrial
+Spectrum Case,13.40,10,Silver Elite,NO,YES,YES,Weapon cases,Industrial
+Danger Zone Case,14.20,11,Silver Elite,NO,YES,YES,Weapon cases,Industrial
+The Bank Collection,15.00,9,Silver II,NO,NO,NO,Standard collections,Industrial
+Gamma Case,15.20,12,Silver Elite Master,NO,YES,YES,Weapon cases,Industrial
+Horizon Case,15.30,12,Silver Elite Master,NO,YES,YES,Weapon cases,Industrial
+Operation Wildfire Case,16.30,13,Silver Elite Master,NO,YES,YES,Weapon cases,Industrial
+Operation Phoenix Weapon Case,16.70,13,Silver Elite Master,NO,YES,YES,Weapon cases,Industrial
+Revolver Case,18.30,15,Silver Elite Master,NO,YES,YES,Weapon cases,Industrial
+Chroma 3 Case,18.40,15,Silver Elite Master,NO,YES,YES,Weapon cases,Industrial
+Operation Vanguard Weapon Case,19.25,17,Silver Elite Master,NO,YES,YES,Weapon cases,Industrial
+Gamma 2 Case,19.30,17,Silver Elite Master,NO,YES,YES,Weapon cases,Industrial
+Chroma Case,20.65,18,Gold Nova I,NO,YES,YES,Weapon cases,Mil-Spec
+Chroma 2 Case,22.20,20,Gold Nova I,NO,YES,YES,Weapon cases,Mil-Spec
+Operation Broken Fang Case,22.30,20,Gold Nova I,NO,YES,YES,Weapon cases,Mil-Spec
+The Aztec Collection,25.00,13,Silver III,NO,NO,NO,Standard collections,Mil-Spec
+Spectrum 2 Case,25.20,22,Gold Nova II,NO,YES,YES,Weapon cases,Mil-Spec
+Winter Offensive Weapon Case,25.20,22,Gold Nova II,NO,YES,YES,Weapon cases,Mil-Spec
+Shattered Web Case,25.30,22,Gold Nova II,NO,YES,YES,Weapon cases,Mil-Spec
+Operation Riptide Case,28.65,25,Gold Nova II,NO,YES,YES,Weapon cases,Mil-Spec
+Operation Breakout Weapon Case,29.30,26,Gold Nova II,NO,YES,YES,Weapon cases,Mil-Spec
+CS:GO Weapon Case 3,30.85,27,Gold Nova III,NO,YES,YES,Weapon cases,Mil-Spec
+The Cache Collection,35.00,17,Silver III,NO,NO,NO,Standard collections,Mil-Spec
+The Safehouse Collection,35.00,17,Silver III,NO,NO,NO,Standard collections,Mil-Spec
+eSports 2014 Summer Case,37.10,31,Gold Nova III,NO,YES,YES,Weapon cases,Mil-Spec
+The Vertigo Collection,40.00,21,Silver III,NO,NO,NO,Standard collections,Mil-Spec
+The 2018 Inferno Collection,43.00,23,Silver Elite,NO,NO,NO,Standard collections,Restricted
+Glove Case,44.30,34,Gold Nova Master,NO,YES,YES,Weapon cases,Restricted
+The Train Collection,45.00,22,Silver Elite Master,YES,NO,NO,Souvenir collections,Restricted
+The Inferno Collection,45.00,24,Silver Elite,NO,NO,NO,Standard collections,Restricted
+eSports 2013 Winter Case,51.50,40,Gold Nova Master,NO,YES,YES,Weapon cases,Restricted
+CS:GO Weapon Case 2,55.20,43,Master Guardian I,NO,YES,YES,Weapon cases,Restricted
+The 2018 Nuke Collection,60.00,32,Silver Elite,NO,NO,NO,Standard collections,Restricted
+The Harlequin Collection,70.00,34,Silver Elite Master,NO,NO,NO,Standard collections,Restricted
+eSports 2013 Case,79.40,49,Master Guardian I,NO,YES,YES,Weapon cases,Restricted
+Operation Hydra Case,80.20,52,Master Guardian Elite,NO,YES,YES,Weapon cases,Restricted
+The Achroma Collection,85.00,39,Silver Elite Master,NO,NO,NO,Standard collections,Restricted
+The Office Collection,95.00,42,Gold Nova I,NO,NO,NO,Standard collections,Restricted
+The Dust 2 Collection,105.00,35,Gold Nova II,YES,NO,NO,Souvenir collections,Classified
+The Ascent Collection,120.00,50,Gold Nova I,NO,NO,NO,Standard collections,Classified
+Operation Bravo Case,125.70,62,Distinguished Master Guardian,NO,YES,YES,Weapon cases,Classified
+The Cache Collection,130.00,43,Gold Nova Master,YES,NO,NO,Souvenir collections,Classified
+The Mirage Collection,135.00,52,Gold Nova II,NO,NO,NO,Standard collections,Classified
+The Boreal Collection,150.00,56,Gold Nova II,NO,NO,NO,Standard collections,Classified
+The Alpha Collection,170.00,62,Gold Nova II,NO,NO,NO,Standard collections,Classified
+The Radiant Collection,170.00,62,Gold Nova II,NO,NO,NO,Standard collections,Classified
+The Inferno Collection,190.00,51,Master Guardian II,YES,NO,NO,Souvenir collections,Classified
+CS:GO Weapon Case,195.30,83,Legendary Eagle Master,NO,YES,YES,Weapon cases,Classified
+The Overpass Collection,210.00,70,Gold Nova Master,NO,NO,NO,Standard collections,Classified
+The Sport & Field Collection,220.00,70,Gold Nova Master,NO,NO,NO,Standard collections,Classified
+The Dust Collection,250.00,82,Gold Nova Master,NO,NO,NO,Standard collections,Classified
+The Overpass 2024 Collection,270.00,85,Master Guardian I,NO,NO,NO,Standard collections,Classified
+The Train 2025 Collection,270.00,85,Master Guardian I,NO,NO,NO,Standard collections,Classified
+The Militia Collection,280.00,87,Master Guardian I,NO,NO,NO,Standard collections,Classified
+The Vertigo Collection,300.00,66,Master Guardian II,YES,NO,NO,Souvenir collections,Classified
+The Graphic Design Collection,330.00,91,Master Guardian I,NO,NO,NO,Standard collections,Covert
+The 2018 Nuke Collection,370.00,78,Distinguished Master Guardian,YES,NO,NO,Souvenir collections,Covert
+The 2018 Inferno Collection,400.00,84,Distinguished Master Guardian,YES,NO,NO,Souvenir collections,Covert
+The Control Collection,400.00,100,Master Guardian Elite,NO,NO,NO,Standard collections,Covert
+The Baggage Collection,430.00,105,Master Guardian Elite,NO,NO,NO,Standard collections,Covert
+The 2021 Train Collection,460.00,112,Master Guardian Elite,NO,NO,NO,Standard collections,Covert
+The Ancient Collection,500.00,118,Master Guardian Elite,NO,NO,NO,Standard collections,Covert
+The Anubis Collection,500.00,118,Master Guardian Elite,NO,NO,NO,Standard collections,Covert
+The 2021 Dust 2 Collection,540.00,125,Distinguished Master Guardian,NO,NO,NO,Standard collections,Covert
+The Mirage Collection,555.00,97,Legendary Eagle Master,YES,NO,NO,Souvenir collections,Covert
+The Assault Collection,650.00,141,Distinguished Master Guardian,NO,NO,NO,Standard collections,Covert
+The Chop Shop Collection,650.00,141,Distinguished Master Guardian,NO,NO,NO,Standard collections,Covert
+The Havoc Collection,745.00,160,Legendary Eagle,NO,NO,NO,Standard collections,Covert
+The 2021 Mirage Collection,750.00,162,Legendary Eagle,NO,NO,NO,Standard collections,Covert
+The Nuke Collection,800.00,169,Legendary Eagle,NO,NO,NO,Standard collections,Covert
+The 2021 Vertigo Collection,900.00,177,Legendary Eagle,NO,NO,NO,Standard collections,Covert
+The Overpass Collection,910.00,165,Supreme Master First Class,YES,NO,NO,Souvenir collections,Covert
+The Overpass 2024 Collection,940.00,172,Supreme Master First Class,YES,NO,NO,Souvenir collections,Covert
+The Train 2025 Collection,970.00,179,Supreme Master First Class,YES,NO,NO,Souvenir collections,Covert
+The Anubis Collection,1200.00,190,Global Elite,YES,NO,NO,Souvenir collections,Gold
+The Rising Sun Collection,1200.00,192,Legendary Eagle Master,NO,NO,NO,Standard collections,Gold
+The Ancient Collection,1250.00,198,Global Elite,YES,NO,NO,Souvenir collections,Gold
+The Canals Collection,1500.00,223,Supreme Master First Class,NO,NO,NO,Standard collections,Gold
+The Nuke Collection,1650.00,223,Global Elite II,YES,NO,NO,Souvenir collections,Gold
+The St. Marc Collection,1650.00,240,Global Elite,NO,NO,NO,Standard collections,Gold
+The Gods and Monsters Collection,1700.00,245,Global Elite,NO,NO,NO,Standard collections,Gold
+The Norse Collection,1900.00,258,Global Elite II,NO,NO,NO,Standard collections,Gold
+The 2021 Dust 2 Collection,2100.00,245,Global Elite IV,YES,NO,NO,Souvenir collections,Gold
+The Cobblestone Collection,2450.00,305,Global Elite V,NO,NO,NO,Standard collections,Gold
+The 2021 Mirage Collection,2600.00,286,Global Elite VII,YES,NO,NO,Souvenir collections,Mythic
+The 2021 Vertigo Collection,2950.00,309,Global Elite IX,YES,NO,NO,Souvenir collections,Mythic
+The Cobblestone Collection,7350.00,555,The Global Elite,YES,NO,NO,Souvenir collections,Mythic

@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-4017
   caseName: Huntsman Weapon Case
   icon: {fileID: 21300000, guid: d5023b63519ef204c976b6e8311b67b4, type: 3}
-  priceInGold: 10.46
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 12.95
   isPremium: 0
-  quality: 0
-  requiredRank: 0
-  xpRewardOnOpen: 10
+  quality: 1
+  requiredRank: 3
+  xpRewardOnOpen: 9
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

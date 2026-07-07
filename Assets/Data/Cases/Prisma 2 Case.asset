@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-4695
   caseName: Prisma 2 Case
   icon: {fileID: 21300000, guid: dcc0adf396e627a44b55c7d662be5bac, type: 3}
-  priceInGold: 1.75
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 11.5
   isPremium: 0
-  quality: 0
-  requiredRank: 0
-  xpRewardOnOpen: 4
+  quality: 1
+  requiredRank: 3
+  xpRewardOnOpen: 8
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

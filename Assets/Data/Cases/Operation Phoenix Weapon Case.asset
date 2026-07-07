@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-4011
   caseName: Operation Phoenix Weapon Case
   icon: {fileID: 21300000, guid: 1a3a904161ec46944bc8f5bda2daa3cc, type: 3}
-  priceInGold: 5.35
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 16.7
   isPremium: 0
-  quality: 0
-  requiredRank: 0
-  xpRewardOnOpen: 6
+  quality: 1
+  requiredRank: 4
+  xpRewardOnOpen: 13
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

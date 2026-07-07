@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-4482
   caseName: Horizon Case
   icon: {fileID: 21300000, guid: fd3638180379aff47b0f6c14411d388f, type: 3}
-  priceInGold: 2.25
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 15.3
   isPremium: 0
-  quality: 0
-  requiredRank: 0
-  xpRewardOnOpen: 3
+  quality: 1
+  requiredRank: 4
+  xpRewardOnOpen: 12
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-4018
   caseName: Operation Breakout Weapon Case
   icon: {fileID: 21300000, guid: a49d51230d13afb4495a25c447b34390, type: 3}
-  priceInGold: 11
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 29.3
   isPremium: 0
-  quality: 0
-  requiredRank: 0
-  xpRewardOnOpen: 8
+  quality: 2
+  requiredRank: 6
+  xpRewardOnOpen: 26
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

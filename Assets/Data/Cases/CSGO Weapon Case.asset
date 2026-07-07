@@ -14,12 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CaseData
   apiId: crate-4001
   caseName: CS:GO Weapon Case
-  icon: {fileID: 0}
-  priceInGold: 167.04
+  icon: {fileID: 21300000, guid: 4a32e09884bcc674483b2c1a4d742031, type: 3}
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 195.3
   isPremium: 0
-  quality: 6
-  requiredRank: 8
-  xpRewardOnOpen: 65
+  quality: 4
+  requiredRank: 14
+  xpRewardOnOpen: 83
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

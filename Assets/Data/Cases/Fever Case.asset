@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-7007
   caseName: Fever Case
   icon: {fileID: 21300000, guid: 4d67387279f6cad4984d08b986c1c11f, type: 3}
-  priceInGold: 0.78
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 6.15
   isPremium: 0
-  quality: 1
-  requiredRank: 0
-  xpRewardOnOpen: 10
+  quality: 0
+  requiredRank: 2
+  xpRewardOnOpen: 5
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1

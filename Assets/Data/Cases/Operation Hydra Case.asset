@@ -15,11 +15,15 @@ MonoBehaviour:
   apiId: crate-4352
   caseName: Operation Hydra Case
   icon: {fileID: 21300000, guid: 1365f91f983d7d44cb55f0fee487df8f, type: 3}
-  priceInGold: 41.55
+  containerType: 0
+  allowRareSpecialItem: 1
+  allowStatTrak: 1
+  forceSouvenirDrops: 0
+  priceInGold: 80.2
   isPremium: 0
-  quality: 2
-  requiredRank: 0
-  xpRewardOnOpen: 17
+  quality: 3
+  requiredRank: 11
+  xpRewardOnOpen: 52
   shopCategory: 0
   isCustomCase: 0
   shouldHaveRareSpecial: 1
