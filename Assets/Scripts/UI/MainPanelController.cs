@@ -14,6 +14,7 @@ public class MainPanelController : MonoBehaviour
     public GameObject minigamesPanel;
     public GameObject statsPanel;
     public GameObject settingsPanel;
+    public GameObject debugPanel;
 
     [Header("Startup")]
     public GameObject startupPanel;
@@ -34,7 +35,7 @@ public class MainPanelController : MonoBehaviour
     public void ShowMinigames() => ShowOnly(minigamesPanel);
     public void ShowStats() => ShowOnly(statsPanel);
     public void ShowSettings() => ShowOnly(settingsPanel);
-
+    public void ShowDebug() => ShowOnly(debugPanel);
     private void ShowOnly(GameObject panelToShow)
     {
         SetPanel(caseShopPanel, panelToShow);
@@ -48,6 +49,7 @@ public class MainPanelController : MonoBehaviour
         SetPanel(minigamesPanel, panelToShow);
         SetPanel(statsPanel, panelToShow);
         SetPanel(settingsPanel, panelToShow);
+        SetPanel(debugPanel, panelToShow);
     }
 
     private void SetPanel(GameObject panel, GameObject panelToShow)
