@@ -271,13 +271,8 @@ private void ConfirmSellCurrentItem()
     float sellValue = GetSellValue(currentItem);
     string soldName = SkinDisplayUtility.GetDisplayName(currentItem.skin);
 
-    bool removed;
-
-    if (!string.IsNullOrWhiteSpace(currentItem.instanceId))
-        removed = InventoryManager.Instance.RemoveItemByInstanceId(currentItem.instanceId);
-    else
-        removed = InventoryManager.Instance.RemoveItem(currentItem);
-
+    bool removed = InventoryManager.Instance.RemoveItem(currentItem);
+    
     if (!removed)
     {
         Debug.LogWarning($"SkinInspectUI: Failed to remove sold item: {soldName}");

@@ -92,15 +92,21 @@ public class InventoryManager : MonoBehaviour
         return removed;
     }
 
-    public bool RemoveItemByInstanceId(string instanceId)
-    {
-        InventoryItem item = GetItemByInstanceId(instanceId);
+public int RemoveItemsByInstanceIds(HashSet<string> instanceIds)
+{
+    if (instanceIds == null || instanceIds.Count == 0)
+        return 0;
 
-        if (item == null)
-            return false;
+    int removedCount = items.RemoveAll(item =>
+        item != null &&
+        !string.IsNullOrWhiteSpace(item.instanceId) &&
+        instanceIds.Contains(item.instanceId));
 
-        return RemoveItem(item);
-    }
+    if (removedCount > 0)
+        OnInventoryChanged?.Invoke();
+
+    return removedCount;
+}
 
     public InventoryItem GetItemByInstanceId(string instanceId)
     {

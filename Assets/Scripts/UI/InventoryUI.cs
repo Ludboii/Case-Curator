@@ -879,23 +879,14 @@ private void ExecuteSellSelectedItems()
     if (selectedCards.Count == 0)
         return;
 
-    if (InventoryManager.Instance == null)
-    {
-        Debug.LogWarning("InventoryUI: Cannot sell selected items because InventoryManager is missing.");
+    if (InventoryManager.Instance == null || SaveManager.Instance == null)
         return;
-    }
-
-    if (SaveManager.Instance == null)
-    {
-        Debug.LogWarning("InventoryUI: Cannot sell selected items because SaveManager is missing.");
-        return;
-    }
 
     List<InventoryItem> itemsToSell = GetSelectedItemsCopy();
 
-    int soldCount = 0;
-    int skippedFavoriteCount = 0;
+    HashSet<string> instanceIdsToSell = new HashSet<string>();
     float totalGoldEarned = 0f;
+    int skippedFavoriteCount = 0;
 
     foreach (InventoryItem item in itemsToSell)
     {
@@ -908,26 +899,23 @@ private void ExecuteSellSelectedItems()
             continue;
         }
 
-        float sellValue = GetItemValue(item) * bulkSellMultiplier;
-
-        bool removed;
-
-        if (!string.IsNullOrWhiteSpace(item.instanceId))
-            removed = InventoryManager.Instance.RemoveItemByInstanceId(item.instanceId);
-        else
-            removed = InventoryManager.Instance.RemoveItem(item);
-
-        if (!removed)
+        if (string.IsNullOrWhiteSpace(item.instanceId))
             continue;
 
-        totalGoldEarned += sellValue;
-        soldCount++;
+        instanceIdsToSell.Add(item.instanceId);
+        totalGoldEarned += GetItemValue(item) * bulkSellMultiplier;
     }
 
+    if (instanceIdsToSell.Count == 0)
+        return;
+
+    int soldCount = InventoryManager.Instance.RemoveItemsByInstanceIds(instanceIdsToSell);
+
+    if (soldCount <= 0)
+        return;
+
     if (totalGoldEarned > 0f)
-    {
         SaveManager.Instance.AddGold(totalGoldEarned);
-    }
 
     SaveManager.Instance.SaveGame();
 
