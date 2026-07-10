@@ -16,6 +16,20 @@ public class InventoryItemCardUI : MonoBehaviour
     public TMP_Text skinNameText;
     public TMP_Text priceText;
 
+    [Header("Pattern Badge")]
+    public GameObject patternBadgeRoot;
+    public TMP_Text patternBadgeText;
+    public Image patternBadgeIcon;
+    public Sprite tier1BlueGemIcon;
+    public Sprite tier2BlueGemIcon;
+    public Sprite tier3BlueGemIcon;
+    public Sprite rubyIcon;
+    public Sprite sapphireIcon;
+    public Sprite emeraldIcon;
+    public Sprite blackPearlIcon;
+    public Sprite fadeIcon;
+    public Sprite defaultPatternIcon;
+
     [Header("Favorite")]
     public GameObject favoriteIcon;
     public TMP_Text favoriteText;
@@ -106,6 +120,8 @@ public class InventoryItemCardUI : MonoBehaviour
             }
         }
 
+        UpdatePatternBadge(item);
+
         if (weaponNameText != null)
         {
             weaponNameText.text = skin.weaponName.ToUpperInvariant();
@@ -132,6 +148,138 @@ public class InventoryItemCardUI : MonoBehaviour
         UpdateFavoriteVisual();
     }
 
+    private void UpdatePatternBadge(InventoryItem item)
+    {
+        string badge = GetPatternBadgeText(item);
+        bool showBadge = !string.IsNullOrEmpty(badge);
+        Color badgeColor = GetPatternBadgeColor(item, badge);
+        Sprite badgeSprite = GetPatternBadgeSprite(item, badge);
+
+        if (patternBadgeRoot != null)
+            patternBadgeRoot.SetActive(showBadge);
+
+        if (patternBadgeText != null)
+        {
+            patternBadgeText.text = badge;
+            patternBadgeText.color = badgeColor;
+            patternBadgeText.gameObject.SetActive(showBadge);
+            patternBadgeText.raycastTarget = false;
+        }
+
+        if (patternBadgeIcon != null)
+        {
+            patternBadgeIcon.sprite = badgeSprite;
+            patternBadgeIcon.color = badgeColor;
+            patternBadgeIcon.enabled = showBadge && badgeSprite != null;
+            patternBadgeIcon.gameObject.SetActive(showBadge);
+            patternBadgeIcon.raycastTarget = false;
+        }
+    }
+
+    private string GetPatternBadgeText(InventoryItem item)
+    {
+        if (item == null || item.skin == null || item.isVanilla)
+            return "";
+
+        SkinData skin = item.skin;
+        string skinName = skin.skinName != null ? skin.skinName.ToLowerInvariant() : "";
+
+        if (skinName.Contains("black pearl"))
+            return "BLACK PEARL";
+
+        if (skinName.Contains("sapphire"))
+            return "SAPPHIRE";
+
+        if (skinName.Contains("emerald"))
+            return "EMERALD";
+
+        if (skinName.Contains("ruby"))
+            return "RUBY";
+
+        if (skin.patternType == PatternType.CaseHardened && item.patternTier != PatternTier.None)
+            return $"T{GetPatternTierNumber(item.patternTier)} BLUE GEM";
+
+        if (skin.patternType == PatternType.Fade && item.patternTier != PatternTier.None)
+            return $"T{GetPatternTierNumber(item.patternTier)} FADE";
+
+        if (item.patternTier != PatternTier.None)
+            return $"T{GetPatternTierNumber(item.patternTier)}";
+
+        return "";
+    }
+
+    private int GetPatternTierNumber(PatternTier tier)
+    {
+        switch (tier)
+        {
+            case PatternTier.Tier1:
+                return 1;
+            case PatternTier.Tier2:
+                return 2;
+            case PatternTier.Tier3:
+                return 3;
+            default:
+                return 0;
+        }
+    }
+
+    private Color GetPatternBadgeColor(InventoryItem item, string badge)
+    {
+        if (badge == "RUBY")
+            return new Color(1f, 0.1f, 0.18f);
+
+        if (badge == "EMERALD")
+            return new Color(0.1f, 1f, 0.45f);
+
+        if (badge == "SAPPHIRE" || badge == "BLACK PEARL")
+            return new Color(0.25f, 0.65f, 1f);
+
+        if (badge.Contains("BLUE GEM"))
+            return new Color(0.25f, 0.75f, 1f);
+
+        if (badge.Contains("FADE"))
+            return new Color(1f, 0.75f, 0.25f);
+
+        return new Color(1f, 0.85f, 0.25f);
+    }
+
+    private Sprite GetPatternBadgeSprite(InventoryItem item, string badge)
+    {
+        if (badge == "RUBY")
+            return rubyIcon != null ? rubyIcon : defaultPatternIcon;
+
+        if (badge == "EMERALD")
+            return emeraldIcon != null ? emeraldIcon : defaultPatternIcon;
+
+        if (badge == "SAPPHIRE")
+            return sapphireIcon != null ? sapphireIcon : defaultPatternIcon;
+
+        if (badge == "BLACK PEARL")
+            return blackPearlIcon != null ? blackPearlIcon : defaultPatternIcon;
+
+        if (badge.Contains("BLUE GEM"))
+        {
+            if (item != null)
+            {
+                switch (item.patternTier)
+                {
+                    case PatternTier.Tier1:
+                        return tier1BlueGemIcon != null ? tier1BlueGemIcon : defaultPatternIcon;
+                    case PatternTier.Tier2:
+                        return tier2BlueGemIcon != null ? tier2BlueGemIcon : defaultPatternIcon;
+                    case PatternTier.Tier3:
+                        return tier3BlueGemIcon != null ? tier3BlueGemIcon : defaultPatternIcon;
+                }
+            }
+
+            return defaultPatternIcon;
+        }
+
+        if (badge.Contains("FADE"))
+            return fadeIcon != null ? fadeIcon : defaultPatternIcon;
+
+        return defaultPatternIcon;
+    }
 
     private void OnCardClicked()
     {
@@ -194,33 +342,34 @@ public class InventoryItemCardUI : MonoBehaviour
     {
         SetSelected(!isSelected);
     }
+
     public void UpdateFavoriteVisual()
-{
-    bool isFavorite =
-        currentItem != null &&
-        currentItem.favorite;
-
-    if (favoriteIcon != null)
-        favoriteIcon.SetActive(isFavorite);
-
-    if (favoriteText != null)
     {
-        favoriteText.text = isFavorite ? "FAV" : "";
-        favoriteText.gameObject.SetActive(isFavorite);
-        favoriteText.raycastTarget = false;
-    }
+        bool isFavorite =
+            currentItem != null &&
+            currentItem.favorite;
 
-    if (favoriteIcon != null)
-    {
-        Graphic[] graphics =
-            favoriteIcon.GetComponentsInChildren<Graphic>(true);
+        if (favoriteIcon != null)
+            favoriteIcon.SetActive(isFavorite);
 
-        foreach (Graphic graphic in graphics)
+        if (favoriteText != null)
         {
-            graphic.raycastTarget = false;
+            favoriteText.text = isFavorite ? "FAV" : "";
+            favoriteText.gameObject.SetActive(isFavorite);
+            favoriteText.raycastTarget = false;
+        }
+
+        if (favoriteIcon != null)
+        {
+            Graphic[] graphics =
+                favoriteIcon.GetComponentsInChildren<Graphic>(true);
+
+            foreach (Graphic graphic in graphics)
+            {
+                graphic.raycastTarget = false;
+            }
         }
     }
-}
 
     public InventoryItem GetItem()
     {
