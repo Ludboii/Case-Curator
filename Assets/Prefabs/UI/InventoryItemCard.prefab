@@ -302,6 +302,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6624881092270023065}
   - {fileID: 9152237165362988115}
   - {fileID: 5152893522071469774}
   - {fileID: 670956502214989599}
@@ -600,8 +601,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5133794188502572466}
   - {fileID: 4149332813881494619}
+  - {fileID: 5133794188502572466}
   - {fileID: 9143860125170654161}
   - {fileID: 6850708501118112614}
   - {fileID: 4571830569355553143}
@@ -672,6 +673,18 @@ MonoBehaviour:
   weaponNameText: {fileID: 3999066357359441513}
   skinNameText: {fileID: 265678228832903420}
   priceText: {fileID: 8205137944312350919}
+  patternBadgeRoot: {fileID: 7764500261893849678}
+  patternBadgeText: {fileID: 0}
+  patternBadgeIcon: {fileID: 3395678208272046853}
+  tier1BlueGemIcon: {fileID: 1659525563356061256, guid: 2ed7799670eccad4f888a5322632e2df, type: 3}
+  tier2BlueGemIcon: {fileID: 4608886336181479947, guid: 2e09bbf4f05f2874799e1dedb9973758, type: 3}
+  tier3BlueGemIcon: {fileID: 1311557858807988495, guid: bf7ca05f070270a4fa68a8e758788b18, type: 3}
+  rubyIcon: {fileID: -80585941536430520, guid: ca695fe978b6a314d8f248584eb79823, type: 3}
+  sapphireIcon: {fileID: -7968835137900380602, guid: 6d2b1e5fdc5bc724585788b2ac1d9f52, type: 3}
+  emeraldIcon: {fileID: -8501066910911633372, guid: f08ab6098896fb84f8e33efeaa3958c4, type: 3}
+  blackPearlIcon: {fileID: 3511867856320412866, guid: c6af14fdb42d46b43833238925dea7ff, type: 3}
+  fadeIcon: {fileID: 0}
+  defaultPatternIcon: {fileID: 0}
   favoriteIcon: {fileID: 0}
   favoriteText: {fileID: 3672390643568970008}
   button: {fileID: 5572224666862943864}
@@ -1023,8 +1036,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
-  m_EffectColor: {r: 0, g: 0.93155813, b: 1, a: 0.5}
-  m_EffectDistance: {x: 5, y: 5}
+  m_EffectColor: {r: 1, g: 0, b: 0.9094448, a: 0}
+  m_EffectDistance: {x: 10, y: 5}
   m_UseGraphicAlpha: 0
 --- !u!114 &3566350219907561393
 MonoBehaviour:
@@ -1039,7 +1052,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.92892253, b: 0, a: 0}
+  m_Color: {r: 0, g: 0.5377358, b: 0, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1335,6 +1348,81 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 0}
   m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!1 &7764500261893849678
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6624881092270023065}
+  - component: {fileID: 3749430849238732160}
+  - component: {fileID: 3395678208272046853}
+  m_Layer: 5
+  m_Name: PatternBadge
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6624881092270023065
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7764500261893849678}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6850708501118112614}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 105, y: -60.325}
+  m_SizeDelta: {x: 50, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &3749430849238732160
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7764500261893849678}
+  m_CullTransparentMesh: 1
+--- !u!114 &3395678208272046853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7764500261893849678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
