@@ -61,21 +61,12 @@ public class CaseShopCardUI : MonoBehaviour
         }
 
         if (caseNameText != null)
-        {
             caseNameText.text = caseData.caseName;
-        }
-
-        if (collectionText != null)
-        {
-            collectionText.text = $"Found: 0 / {GetCompletionTargetCount(caseData)}";
-        }
 
         ApplyCaseQualityVisuals();
 
         if (lockText != null)
-        {
             lockText.gameObject.SetActive(false);
-        }
 
         if (inspectButton != null)
         {
@@ -107,29 +98,40 @@ public class CaseShopCardUI : MonoBehaviour
             buyButton.interactable = canBuy;
 
         ApplyBuyButtonColor(canBuy, failReason);
+        RefreshProgressText();
 
-if (buyButtonText != null)
-{
-    if (buyAmount <= 0)
-    {
-        buyButtonText.text = "BUY\n0.00 G";
-    }
-    else
-    {
-        if (shopUI.IsMaxQuantitySelected)
+        if (buyButtonText != null)
         {
-            buyButtonText.text = $"BUY MAX x{buyAmount}\n{totalCost:0.00} G";
+            if (buyAmount <= 0)
+            {
+                buyButtonText.text = "BUY\n0.00 G";
+            }
+            else if (shopUI.IsMaxQuantitySelected)
+            {
+                buyButtonText.text = $"BUY MAX x{buyAmount}\n{totalCost:0.00} G";
+            }
+            else
+            {
+                buyButtonText.text = $"BUY x{buyAmount}\n{totalCost:0.00} G";
+            }
+
+            buyButtonText.color = Color.white;
         }
-        else
+    }
+
+    private void RefreshProgressText()
+    {
+        if (collectionText == null)
+            return;
+
+        if (ContainerProgressManager.Instance != null)
         {
-            buyButtonText.text = $"BUY x{buyAmount}\n{totalCost:0.00} G";
+            collectionText.text = ContainerProgressManager.Instance.GetCompletionDisplayText(caseData);
+            return;
         }
-    }
 
-    buyButtonText.color = Color.white;
-}
+        collectionText.text = $"Found 0 / {GetCompletionTargetCount(caseData)}";
     }
-
 
     private void ApplyCaseQualityVisuals()
     {
@@ -207,42 +209,42 @@ if (buyButtonText != null)
         shopUI.TryBuyCase(caseData);
     }
 
-private int GetCompletionTargetCount(CaseData data)
-{
-    if (data == null || data.dropPool == null)
-        return 0;
-
-    HashSet<string> uniqueNormalSkins = new HashSet<string>();
-    bool hasRareSpecialItem = false;
-
-    foreach (WeightedDrop drop in data.dropPool)
+    private int GetCompletionTargetCount(CaseData data)
     {
-        if (drop == null || drop.skin == null)
-            continue;
+        if (data == null || data.dropPool == null)
+            return 0;
 
-        SkinData skin = drop.skin;
+        HashSet<string> uniqueNormalSkins = new HashSet<string>();
+        bool hasRareSpecialItem = false;
 
-        if (skin.rarity == Rarity.RareSpecial)
+        foreach (WeightedDrop drop in data.dropPool)
         {
-            hasRareSpecialItem = true;
-            continue;
+            if (drop == null || drop.skin == null)
+                continue;
+
+            SkinData skin = drop.skin;
+
+            if (skin.rarity == Rarity.RareSpecial)
+            {
+                hasRareSpecialItem = true;
+                continue;
+            }
+
+            string id = skin.apiId;
+
+            if (string.IsNullOrWhiteSpace(id))
+                id = skin.weaponName + "|" + skin.skinName;
+
+            uniqueNormalSkins.Add(id);
         }
 
-        string id = skin.apiId;
+        int targetCount = uniqueNormalSkins.Count;
 
-        if (string.IsNullOrWhiteSpace(id))
-            id = skin.weaponName + "|" + skin.skinName;
+        if (hasRareSpecialItem)
+            targetCount += 1;
 
-        uniqueNormalSkins.Add(id);
+        return targetCount;
     }
-
-    int targetCount = uniqueNormalSkins.Count;
-
-    if (hasRareSpecialItem)
-        targetCount += 1;
-
-    return targetCount;
-}
 
     private void DisableTextRaycasts()
     {
