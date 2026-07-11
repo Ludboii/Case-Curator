@@ -13,6 +13,13 @@ public class CaseShopUI : MonoBehaviour
     public CaseShopCardUI caseCardPrefab;
     public CaseShopRankDividerUI rankDividerPrefab;
 
+    [Header("Rank Divider Layout")]
+    public int fallbackCardsPerRow = 3;
+    public Vector2 fallbackCardCellSize = new Vector2(500f, 160f);
+    public Vector2 fallbackCardSpacing = new Vector2(10f, 10f);
+    public float rankDividerHeight = 80f;
+    public float rankSectionSpacing = 10f;
+
     [Header("Category UI")]
     public TMP_Text categoryText;
     public Button previousCategoryButton;
@@ -35,6 +42,11 @@ public class CaseShopUI : MonoBehaviour
     private int selectedBuyAmount = 1;
     private bool maxQuantitySelected;
     private CaseShopCategory currentCategory = CaseShopCategory.Cases;
+
+    private Vector2 cardCellSize;
+    private Vector2 cardSpacing;
+    private RectOffset cardGridPadding;
+    private int cardsPerRow;
 
     public bool IsMaxQuantitySelected => maxQuantitySelected;
 
@@ -142,7 +154,7 @@ public class CaseShopUI : MonoBehaviour
     public void RefreshShop()
     {
         ClearSpawnedObjects();
-        EnsureGridLayoutForScrollView();
+        SetupFullWidthRankSectionLayout();
         SpawnCurrentCategory();
         RefreshCards();
         RefreshQuantityButtons();
@@ -150,20 +162,61 @@ public class CaseShopUI : MonoBehaviour
         RebuildShopLayout();
     }
 
-    private void EnsureGridLayoutForScrollView()
+    private void SetupFullWidthRankSectionLayout()
     {
         if (caseGridContent == null)
             return;
 
-        VerticalLayoutGroup verticalLayout = caseGridContent.GetComponent<VerticalLayoutGroup>();
-        if (verticalLayout != null)
-            verticalLayout.enabled = false;
+        RectTransform contentRect = caseGridContent as RectTransform;
 
-        GridLayoutGroup gridLayout = caseGridContent.GetComponent<GridLayoutGroup>();
-        if (gridLayout != null)
-            gridLayout.enabled = true;
+        if (contentRect != null)
+        {
+            contentRect.anchorMin = new Vector2(0f, 1f);
+            contentRect.anchorMax = new Vector2(1f, 1f);
+            contentRect.pivot = new Vector2(0.5f, 1f);
+            contentRect.offsetMin = new Vector2(0f, contentRect.offsetMin.y);
+            contentRect.offsetMax = new Vector2(0f, contentRect.offsetMax.y);
+        }
+
+        cardCellSize = fallbackCardCellSize;
+        cardSpacing = fallbackCardSpacing;
+        cardGridPadding = new RectOffset(30, 30, 30, 30);
+        cardsPerRow = Mathf.Max(1, fallbackCardsPerRow);
+
+        GridLayoutGroup oldGridLayout = caseGridContent.GetComponent<GridLayoutGroup>();
+
+        if (oldGridLayout != null)
+        {
+            cardCellSize = oldGridLayout.cellSize;
+            cardSpacing = oldGridLayout.spacing;
+            cardGridPadding = new RectOffset(
+                oldGridLayout.padding.left,
+                oldGridLayout.padding.right,
+                oldGridLayout.padding.top,
+                oldGridLayout.padding.bottom);
+
+            if (oldGridLayout.constraint == GridLayoutGroup.Constraint.FixedColumnCount)
+                cardsPerRow = Mathf.Max(1, oldGridLayout.constraintCount);
+
+            oldGridLayout.enabled = false;
+        }
+
+        VerticalLayoutGroup verticalLayout = caseGridContent.GetComponent<VerticalLayoutGroup>();
+
+        if (verticalLayout == null)
+            verticalLayout = caseGridContent.gameObject.AddComponent<VerticalLayoutGroup>();
+
+        verticalLayout.enabled = true;
+        verticalLayout.childAlignment = TextAnchor.UpperLeft;
+        verticalLayout.childControlWidth = true;
+        verticalLayout.childControlHeight = true;
+        verticalLayout.childForceExpandWidth = true;
+        verticalLayout.childForceExpandHeight = false;
+        verticalLayout.spacing = rankSectionSpacing;
+        verticalLayout.padding = new RectOffset(0, 0, 0, 0);
 
         ContentSizeFitter fitter = caseGridContent.GetComponent<ContentSizeFitter>();
+
         if (fitter == null)
             fitter = caseGridContent.gameObject.AddComponent<ContentSizeFitter>();
 
@@ -206,19 +259,35 @@ public class CaseShopUI : MonoBehaviour
 
         List<CaseData> casesToShow = GetSortedCasesForCurrentCategory();
         PlayerRank lastRank = (PlayerRank)(-1);
+        Transform currentCardsGrid = null;
+        int cardsInCurrentSection = 0;
+        LayoutElement currentGridLayoutElement = null;
+        LayoutElement currentSectionLayoutElement = null;
 
         foreach (CaseData caseData in casesToShow)
         {
             if (caseData == null)
                 continue;
 
-            if (caseData.requiredRank != lastRank)
+            if (caseData.requiredRank != lastRank || currentCardsGrid == null)
             {
-                SpawnRankDivider(caseData.requiredRank);
+                CreateRankSection(
+                    caseData.requiredRank,
+                    out currentCardsGrid,
+                    out currentGridLayoutElement,
+                    out currentSectionLayoutElement);
+
                 lastRank = caseData.requiredRank;
+                cardsInCurrentSection = 0;
             }
 
-            SpawnCaseCard(caseData);
+            SpawnCaseCard(caseData, currentCardsGrid);
+            cardsInCurrentSection++;
+
+            UpdateSectionHeight(
+                cardsInCurrentSection,
+                currentGridLayoutElement,
+                currentSectionLayoutElement);
         }
     }
 
@@ -255,27 +324,136 @@ public class CaseShopUI : MonoBehaviour
         return cases;
     }
 
-    private void SpawnRankDivider(PlayerRank requiredRank)
+    private void CreateRankSection(
+        PlayerRank requiredRank,
+        out Transform cardsGridTransform,
+        out LayoutElement gridLayoutElement,
+        out LayoutElement sectionLayoutElement)
     {
-        if (rankDividerPrefab == null)
-            return;
+        GameObject sectionObject = new GameObject($"Rank Section - {requiredRank}", typeof(RectTransform));
+        sectionObject.transform.SetParent(caseGridContent, false);
 
-        CaseShopRankDividerUI divider = Instantiate(rankDividerPrefab, caseGridContent);
-        divider.gameObject.SetActive(true);
-        divider.Setup(requiredRank);
+        RectTransform sectionRect = sectionObject.GetComponent<RectTransform>();
+        StretchFullWidth(sectionRect);
 
-        spawnedObjects.Add(divider.gameObject);
+        VerticalLayoutGroup sectionLayout = sectionObject.AddComponent<VerticalLayoutGroup>();
+        sectionLayout.childAlignment = TextAnchor.UpperLeft;
+        sectionLayout.childControlWidth = true;
+        sectionLayout.childControlHeight = true;
+        sectionLayout.childForceExpandWidth = true;
+        sectionLayout.childForceExpandHeight = false;
+        sectionLayout.spacing = 0f;
+        sectionLayout.padding = new RectOffset(0, 0, 0, 0);
+
+        sectionLayoutElement = sectionObject.AddComponent<LayoutElement>();
+        sectionLayoutElement.flexibleWidth = 1f;
+
+        spawnedObjects.Add(sectionObject);
+
+        if (rankDividerPrefab != null)
+        {
+            CaseShopRankDividerUI divider = Instantiate(rankDividerPrefab, sectionObject.transform);
+            divider.gameObject.SetActive(true);
+            divider.Setup(requiredRank);
+
+            RectTransform dividerRect = divider.transform as RectTransform;
+            StretchFullWidth(dividerRect);
+
+            LayoutElement dividerLayout = divider.gameObject.GetComponent<LayoutElement>();
+
+            if (dividerLayout == null)
+                dividerLayout = divider.gameObject.AddComponent<LayoutElement>();
+
+            dividerLayout.preferredHeight = rankDividerHeight;
+            dividerLayout.minHeight = rankDividerHeight;
+            dividerLayout.flexibleWidth = 1f;
+        }
+
+        GameObject gridObject = new GameObject("Cards Grid", typeof(RectTransform));
+        gridObject.transform.SetParent(sectionObject.transform, false);
+
+        RectTransform gridRect = gridObject.GetComponent<RectTransform>();
+        StretchFullWidth(gridRect);
+
+        GridLayoutGroup gridLayout = gridObject.AddComponent<GridLayoutGroup>();
+        gridLayout.cellSize = cardCellSize;
+        gridLayout.spacing = cardSpacing;
+        gridLayout.padding = new RectOffset(
+            cardGridPadding.left,
+            cardGridPadding.right,
+            cardGridPadding.top,
+            cardGridPadding.bottom);
+        gridLayout.startCorner = GridLayoutGroup.Corner.UpperLeft;
+        gridLayout.startAxis = GridLayoutGroup.Axis.Horizontal;
+        gridLayout.childAlignment = TextAnchor.UpperLeft;
+        gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        gridLayout.constraintCount = Mathf.Max(1, cardsPerRow);
+
+        gridLayoutElement = gridObject.AddComponent<LayoutElement>();
+        gridLayoutElement.flexibleWidth = 1f;
+        gridLayoutElement.preferredHeight = GetGridHeight(0);
+
+        cardsGridTransform = gridObject.transform;
+
+        UpdateSectionHeight(0, gridLayoutElement, sectionLayoutElement);
     }
 
-    private void SpawnCaseCard(CaseData caseData)
+    private void SpawnCaseCard(CaseData caseData, Transform parent)
     {
-        CaseShopCardUI card = Instantiate(caseCardPrefab, caseGridContent);
+        if (parent == null)
+            parent = caseGridContent;
+
+        CaseShopCardUI card = Instantiate(caseCardPrefab, parent);
 
         card.gameObject.SetActive(true);
         card.Setup(caseData, this);
 
         spawnedCards.Add(card);
-        spawnedObjects.Add(card.gameObject);
+    }
+
+    private void UpdateSectionHeight(
+        int cardCount,
+        LayoutElement gridLayoutElement,
+        LayoutElement sectionLayoutElement)
+    {
+        float gridHeight = GetGridHeight(cardCount);
+
+        if (gridLayoutElement != null)
+            gridLayoutElement.preferredHeight = gridHeight;
+
+        if (sectionLayoutElement != null)
+        {
+            float dividerHeight = rankDividerPrefab != null ? rankDividerHeight : 0f;
+            sectionLayoutElement.preferredHeight = dividerHeight + gridHeight;
+            sectionLayoutElement.minHeight = sectionLayoutElement.preferredHeight;
+        }
+    }
+
+    private float GetGridHeight(int cardCount)
+    {
+        if (cardCount <= 0)
+            return cardGridPadding.top + cardGridPadding.bottom;
+
+        int columns = Mathf.Max(1, cardsPerRow);
+        int rows = Mathf.CeilToInt(cardCount / (float)columns);
+
+        return
+            cardGridPadding.top +
+            cardGridPadding.bottom +
+            rows * cardCellSize.y +
+            Mathf.Max(0, rows - 1) * cardSpacing.y;
+    }
+
+    private void StretchFullWidth(RectTransform rectTransform)
+    {
+        if (rectTransform == null)
+            return;
+
+        rectTransform.anchorMin = new Vector2(0f, 1f);
+        rectTransform.anchorMax = new Vector2(1f, 1f);
+        rectTransform.pivot = new Vector2(0.5f, 1f);
+        rectTransform.offsetMin = new Vector2(0f, rectTransform.offsetMin.y);
+        rectTransform.offsetMax = new Vector2(0f, rectTransform.offsetMax.y);
     }
 
     private void ClearSpawnedObjects()
