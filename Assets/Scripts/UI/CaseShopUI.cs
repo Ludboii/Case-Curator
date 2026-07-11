@@ -13,6 +13,13 @@ public class CaseShopUI : MonoBehaviour
     public CaseShopCardUI caseCardPrefab;
     public CaseShopRankDividerUI rankDividerPrefab;
 
+    [Header("Rank Section Layout")]
+    public int cardsPerRow = 3;
+    public Vector2 fallbackCardCellSize = new Vector2(300f, 90f);
+    public Vector2 fallbackCardSpacing = new Vector2(8f, 8f);
+    public float rankDividerHeight = 26f;
+    public float rankSectionSpacing = 6f;
+
     [Header("Category UI")]
     public TMP_Text categoryText;
     public Button previousCategoryButton;
@@ -39,6 +46,14 @@ public class CaseShopUI : MonoBehaviour
     private bool maxQuantitySelected;
 
     private CaseShopCategory currentCategory = CaseShopCategory.Cases;
+
+    private Vector2 resolvedCardCellSize;
+    private Vector2 resolvedCardSpacing;
+
+    private Transform activeCardGrid;
+    private LayoutElement activeSectionLayoutElement;
+    private LayoutElement activeGridLayoutElement;
+    private int activeSectionCardCount;
 
     public bool IsMaxQuantitySelected => maxQuantitySelected;
 
@@ -174,23 +189,70 @@ public class CaseShopUI : MonoBehaviour
             return;
         }
 
+        SetupRankSectionContentLayout();
+
         List<CaseData> casesToShow = GetSortedCasesForCurrentCategory();
 
         PlayerRank lastRank = (PlayerRank)(-1);
+
+        activeCardGrid = null;
+        activeSectionLayoutElement = null;
+        activeGridLayoutElement = null;
+        activeSectionCardCount = 0;
 
         foreach (CaseData caseData in casesToShow)
         {
             if (caseData == null)
                 continue;
 
-            if (caseData.requiredRank != lastRank)
+            if (caseData.requiredRank != lastRank || activeCardGrid == null)
             {
-                SpawnRankDivider(caseData.requiredRank);
+                CreateRankSection(caseData.requiredRank);
                 lastRank = caseData.requiredRank;
             }
 
-            SpawnCaseCard(caseData);
+            SpawnCaseCard(caseData, activeCardGrid);
         }
+    }
+
+    private void SetupRankSectionContentLayout()
+    {
+        resolvedCardCellSize = fallbackCardCellSize;
+        resolvedCardSpacing = fallbackCardSpacing;
+
+        GridLayoutGroup oldGridLayout = caseGridContent.GetComponent<GridLayoutGroup>();
+
+        if (oldGridLayout != null)
+        {
+            resolvedCardCellSize = oldGridLayout.cellSize;
+            resolvedCardSpacing = oldGridLayout.spacing;
+
+            if (oldGridLayout.constraint == GridLayoutGroup.Constraint.FixedColumnCount)
+                cardsPerRow = Mathf.Max(1, oldGridLayout.constraintCount);
+
+            oldGridLayout.enabled = false;
+        }
+
+        VerticalLayoutGroup verticalLayout = caseGridContent.GetComponent<VerticalLayoutGroup>();
+
+        if (verticalLayout == null)
+            verticalLayout = caseGridContent.gameObject.AddComponent<VerticalLayoutGroup>();
+
+        verticalLayout.childAlignment = TextAnchor.UpperLeft;
+        verticalLayout.childControlWidth = true;
+        verticalLayout.childControlHeight = false;
+        verticalLayout.childForceExpandWidth = true;
+        verticalLayout.childForceExpandHeight = false;
+        verticalLayout.spacing = rankSectionSpacing;
+        verticalLayout.padding = new RectOffset(0, 0, 0, 0);
+
+        ContentSizeFitter fitter = caseGridContent.GetComponent<ContentSizeFitter>();
+
+        if (fitter == null)
+            fitter = caseGridContent.gameObject.AddComponent<ContentSizeFitter>();
+
+        fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+        fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
     }
 
     private List<CaseData> GetSortedCasesForCurrentCategory()
@@ -226,30 +288,120 @@ public class CaseShopUI : MonoBehaviour
         return cases;
     }
 
-    private void SpawnRankDivider(PlayerRank requiredRank)
+    private void CreateRankSection(PlayerRank requiredRank)
     {
-        if (rankDividerPrefab == null)
-            return;
+        GameObject sectionObject = new GameObject($"Rank Section - {requiredRank}", typeof(RectTransform));
+        sectionObject.transform.SetParent(caseGridContent, false);
 
-        CaseShopRankDividerUI divider =
-            Instantiate(rankDividerPrefab, caseGridContent);
+        RectTransform sectionRect = sectionObject.GetComponent<RectTransform>();
+        StretchRectTransform(sectionRect);
 
-        divider.gameObject.SetActive(true);
-        divider.Setup(requiredRank);
+        VerticalLayoutGroup sectionLayout = sectionObject.AddComponent<VerticalLayoutGroup>();
+        sectionLayout.childAlignment = TextAnchor.UpperLeft;
+        sectionLayout.childControlWidth = true;
+        sectionLayout.childControlHeight = false;
+        sectionLayout.childForceExpandWidth = true;
+        sectionLayout.childForceExpandHeight = false;
+        sectionLayout.spacing = 0f;
+        sectionLayout.padding = new RectOffset(0, 0, 0, 0);
 
-        spawnedObjects.Add(divider.gameObject);
+        activeSectionLayoutElement = sectionObject.AddComponent<LayoutElement>();
+        activeSectionLayoutElement.flexibleWidth = 1f;
+
+        spawnedObjects.Add(sectionObject);
+
+        if (rankDividerPrefab != null)
+        {
+            CaseShopRankDividerUI divider = Instantiate(rankDividerPrefab, sectionObject.transform);
+            divider.gameObject.SetActive(true);
+            divider.Setup(requiredRank);
+
+            RectTransform dividerRect = divider.transform as RectTransform;
+            StretchRectTransform(dividerRect);
+
+            LayoutElement dividerLayout = divider.gameObject.GetComponent<LayoutElement>();
+
+            if (dividerLayout == null)
+                dividerLayout = divider.gameObject.AddComponent<LayoutElement>();
+
+            dividerLayout.preferredHeight = rankDividerHeight;
+            dividerLayout.flexibleWidth = 1f;
+        }
+
+        GameObject gridObject = new GameObject("Cards Grid", typeof(RectTransform));
+        gridObject.transform.SetParent(sectionObject.transform, false);
+
+        RectTransform gridRect = gridObject.GetComponent<RectTransform>();
+        StretchRectTransform(gridRect);
+
+        GridLayoutGroup gridLayout = gridObject.AddComponent<GridLayoutGroup>();
+        gridLayout.cellSize = resolvedCardCellSize;
+        gridLayout.spacing = resolvedCardSpacing;
+        gridLayout.startCorner = GridLayoutGroup.Corner.UpperLeft;
+        gridLayout.startAxis = GridLayoutGroup.Axis.Horizontal;
+        gridLayout.childAlignment = TextAnchor.UpperLeft;
+        gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        gridLayout.constraintCount = Mathf.Max(1, cardsPerRow);
+        gridLayout.padding = new RectOffset(0, 0, 0, 0);
+
+        activeGridLayoutElement = gridObject.AddComponent<LayoutElement>();
+        activeGridLayoutElement.flexibleWidth = 1f;
+
+        activeCardGrid = gridObject.transform;
+        activeSectionCardCount = 0;
+
+        UpdateActiveSectionHeight();
     }
 
-    private void SpawnCaseCard(CaseData caseData)
+    private void SpawnCaseCard(CaseData caseData, Transform parent)
     {
-        CaseShopCardUI card =
-            Instantiate(caseCardPrefab, caseGridContent);
+        if (parent == null)
+            parent = caseGridContent;
+
+        CaseShopCardUI card = Instantiate(caseCardPrefab, parent);
 
         card.gameObject.SetActive(true);
         card.Setup(caseData, this);
 
         spawnedCards.Add(card);
-        spawnedObjects.Add(card.gameObject);
+
+        if (parent == activeCardGrid)
+        {
+            activeSectionCardCount++;
+            UpdateActiveSectionHeight();
+        }
+    }
+
+    private void UpdateActiveSectionHeight()
+    {
+        int columns = Mathf.Max(1, cardsPerRow);
+        int rows = Mathf.CeilToInt(activeSectionCardCount / (float)columns);
+
+        float gridHeight = 0f;
+
+        if (rows > 0)
+            gridHeight = rows * resolvedCardCellSize.y + Mathf.Max(0, rows - 1) * resolvedCardSpacing.y;
+
+        if (activeGridLayoutElement != null)
+            activeGridLayoutElement.preferredHeight = gridHeight;
+
+        if (activeSectionLayoutElement != null)
+        {
+            float dividerHeight = rankDividerPrefab != null ? rankDividerHeight : 0f;
+            activeSectionLayoutElement.preferredHeight = dividerHeight + gridHeight;
+        }
+    }
+
+    private void StretchRectTransform(RectTransform rectTransform)
+    {
+        if (rectTransform == null)
+            return;
+
+        rectTransform.anchorMin = new Vector2(0f, 1f);
+        rectTransform.anchorMax = new Vector2(1f, 1f);
+        rectTransform.pivot = new Vector2(0.5f, 1f);
+        rectTransform.offsetMin = new Vector2(0f, rectTransform.offsetMin.y);
+        rectTransform.offsetMax = new Vector2(0f, rectTransform.offsetMax.y);
     }
 
     private void ClearSpawnedObjects()
@@ -262,6 +414,11 @@ public class CaseShopUI : MonoBehaviour
 
         spawnedObjects.Clear();
         spawnedCards.Clear();
+
+        activeCardGrid = null;
+        activeSectionLayoutElement = null;
+        activeGridLayoutElement = null;
+        activeSectionCardCount = 0;
     }
 
     public void RefreshCards()
@@ -320,128 +477,126 @@ public class CaseShopUI : MonoBehaviour
     }
 
     public int GetMaxAffordableAmount(CaseData caseData)
-{
-    if (caseData == null)
-        return 0;
-
-    if (SaveManager.Instance == null)
-        return 0;
-
-    if (caseData.priceInGold <= 0f)
     {
-        // Prevent infinite MAX buying for free/unpriced cases.
-        return 0;
+        if (caseData == null)
+            return 0;
+
+        if (SaveManager.Instance == null)
+            return 0;
+
+        if (caseData.priceInGold <= 0f)
+            return 0;
+
+        int maxByGold =
+            Mathf.FloorToInt(SaveManager.Instance.Gold / caseData.priceInGold);
+
+        return Mathf.Max(0, maxByGold);
     }
 
-    int maxByGold =
-        Mathf.FloorToInt(SaveManager.Instance.Gold / caseData.priceInGold);
-
-    return Mathf.Max(0, maxByGold);
-}
     public bool CanBuyCase(CaseData caseData, out string failReason)
-{
-    failReason = "";
-
-    if (caseData == null)
     {
-        failReason = "Missing case";
-        return false;
+        failReason = "";
+
+        if (caseData == null)
+        {
+            failReason = "Missing case";
+            return false;
+        }
+
+        if (SaveManager.Instance == null)
+        {
+            failReason = "No save";
+            return false;
+        }
+
+        if (CaseInventoryManager.Instance == null)
+        {
+            failReason = "No case inventory";
+            return false;
+        }
+
+        PlayerRank playerRank = SaveManager.Instance.CurrentRank;
+
+        if (playerRank < caseData.requiredRank)
+        {
+            failReason =
+                $"Rank: {PlayerProgressUtility.GetRankDisplayName(caseData.requiredRank)}";
+
+            return false;
+        }
+
+        int amount = GetRequestedBuyAmount(caseData);
+
+        if (amount <= 0)
+        {
+            failReason = "Amount 0";
+            return false;
+        }
+
+        float totalCost = caseData.priceInGold * amount;
+
+        if (SaveManager.Instance.Gold < totalCost)
+        {
+            failReason = "Not enough gold";
+            return false;
+        }
+
+        return true;
     }
-
-    if (SaveManager.Instance == null)
-    {
-        failReason = "No save";
-        return false;
-    }
-
-    if (CaseInventoryManager.Instance == null)
-    {
-        failReason = "No case inventory";
-        return false;
-    }
-
-    PlayerRank playerRank = SaveManager.Instance.CurrentRank;
-
-    if (playerRank < caseData.requiredRank)
-    {
-        failReason =
-            $"Rank: {PlayerProgressUtility.GetRankDisplayName(caseData.requiredRank)}";
-
-        return false;
-    }
-
-    int amount = GetRequestedBuyAmount(caseData);
-
-    if (amount <= 0)
-    {
-        failReason = "Amount 0";
-        return false;
-    }
-
-    float totalCost = caseData.priceInGold * amount;
-
-    if (SaveManager.Instance.Gold < totalCost)
-    {
-        failReason = "Not enough gold";
-        return false;
-    }
-
-    return true;
-}
 
     public void TryBuyCase(CaseData caseData)
-{
-    string failReason;
-
-    if (!CanBuyCase(caseData, out failReason))
     {
-        Debug.Log($"CaseShopUI: Cannot buy case. Reason: {failReason}");
-        RefreshCards();
-        return;
-    }
+        string failReason;
 
-    int amount = GetRequestedBuyAmount(caseData);
-
-    if (amount <= 0)
-        return;
-
-    float totalCost = caseData.priceInGold * amount;
-
-    if (totalCost > 0f)
-    {
-        bool spent = SaveManager.Instance.SpendGold(totalCost);
-
-        if (!spent)
+        if (!CanBuyCase(caseData, out failReason))
         {
-            Debug.LogWarning("CaseShopUI: Failed to spend gold.");
+            Debug.Log($"CaseShopUI: Cannot buy case. Reason: {failReason}");
             RefreshCards();
             return;
         }
+
+        int amount = GetRequestedBuyAmount(caseData);
+
+        if (amount <= 0)
+            return;
+
+        float totalCost = caseData.priceInGold * amount;
+
+        if (totalCost > 0f)
+        {
+            bool spent = SaveManager.Instance.SpendGold(totalCost);
+
+            if (!spent)
+            {
+                Debug.LogWarning("CaseShopUI: Failed to spend gold.");
+                RefreshCards();
+                return;
+            }
+        }
+
+        CaseInventoryManager.Instance.AddCases(caseData, amount);
+
+        SaveManager.Instance.SaveGame();
+
+        Debug.Log(
+            $"Bought {amount}x {caseData.caseName} for {totalCost:0.00} gold.");
+
+        RefreshCards();
     }
 
-    CaseInventoryManager.Instance.AddCases(caseData, amount);
-
-    SaveManager.Instance.SaveGame();
-
-    Debug.Log(
-        $"Bought {amount}x {caseData.caseName} for {totalCost:0.00} gold.");
-
-    RefreshCards();
-}
-
-public void OpenCaseInspect(CaseData caseData)
-{
-    if (caseData == null)
-        return;
-
-    if (CaseInspectUI.Instance == null)
+    public void OpenCaseInspect(CaseData caseData)
     {
-        Debug.LogWarning("CaseShopUI: No CaseInspectUI found in scene.");
-        return;
-    }
+        if (caseData == null)
+            return;
 
-    CaseInspectUI.Instance.Open(caseData);
-}
+        if (CaseInspectUI.Instance == null)
+        {
+            Debug.LogWarning("CaseShopUI: No CaseInspectUI found in scene.");
+            return;
+        }
+
+        CaseInspectUI.Instance.Open(caseData);
+    }
 
     public void SetBuyAmount1()
     {
