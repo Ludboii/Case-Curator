@@ -37,7 +37,7 @@ MonoBehaviour:
   - rarity: 5
     chance: 0.64
   - rarity: 6
-    chance: 150
+    chance: 0.26
   dropPool:
   - skin: {fileID: 11400000, guid: 26548a53ae95491408c1dedc3c837955, type: 2}
     weight: 1
@@ -84,7 +84,7 @@ MonoBehaviour:
   - skin: {fileID: 11400000, guid: 5ac731443515adc45b754ee553f1b385, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 62d87fd12724d3046b7d3c79abcaac3d, type: 2}
-    weight: 50
+    weight: 1
   - skin: {fileID: 11400000, guid: 0649d897ce1a4564ab848724f447f216, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: c35a700b91dd79d47bf5cf6c68c4955d, type: 2}
