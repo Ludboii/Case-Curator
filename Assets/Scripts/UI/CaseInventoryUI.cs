@@ -277,20 +277,20 @@ public class CaseInventoryUI : MonoBehaviour
 
         CaseData caseData = entry.caseData;
 
-        int openedCount = 0;
+        bool removedCases = CaseInventoryManager.Instance.RemoveCases(caseData, amount);
+
+        if (!removedCases)
+        {
+            Debug.LogWarning($"CaseInventoryUI: Failed to remove {amount}x {caseData.caseName} before opening.");
+            RefreshCards();
+            return;
+        }
+
+        List<InventoryItem> openedItems = new List<InventoryItem>();
         int totalXPGained = 0;
 
         for (int i = 0; i < amount; i++)
         {
-            if (!InventoryManager.Instance.HasSpace())
-                break;
-
-            bool removed =
-                CaseInventoryManager.Instance.RemoveCases(caseData, 1);
-
-            if (!removed)
-                break;
-
             InventoryItem item = CaseOpener.OpenCase(caseData);
 
             if (item == null)
@@ -299,7 +299,14 @@ public class CaseInventoryUI : MonoBehaviour
                 continue;
             }
 
-            InventoryManager.Instance.AddItem(item);
+            openedItems.Add(item);
+        }
+
+        int addedCount = InventoryManager.Instance.AddItems(openedItems);
+
+        for (int i = 0; i < addedCount; i++)
+        {
+            InventoryItem item = openedItems[i];
 
             if (ContainerProgressManager.Instance != null)
             {
@@ -316,14 +323,12 @@ public class CaseInventoryUI : MonoBehaviour
                 SaveManager.Instance.AddXP(caseData.xpRewardOnOpen);
                 totalXPGained += caseData.xpRewardOnOpen;
             }
-
-            openedCount++;
         }
 
         SaveManager.Instance.SaveGame();
 
         Debug.Log(
-            $"Opened {openedCount}x {caseData.caseName}. " +
+            $"Opened {addedCount}x {caseData.caseName}. " +
             $"Gained {totalXPGained} XP.");
 
         Refresh();
