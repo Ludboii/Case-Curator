@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainPanelController : MonoBehaviour
 {
@@ -16,12 +17,29 @@ public class MainPanelController : MonoBehaviour
     public GameObject settingsPanel;
     public GameObject debugPanel;
 
+    [Header("Debug Button")]
+    public Button debugButton;
+
     [Header("Startup")]
     public GameObject startupPanel;
+
+    private void Awake()
+    {
+        SetupDebugButton();
+    }
 
     private void Start()
     {
         ShowOnly(startupPanel != null ? startupPanel : caseShopPanel);
+    }
+
+    private void SetupDebugButton()
+    {
+        if (debugButton == null)
+            return;
+
+        debugButton.onClick.RemoveAllListeners();
+        debugButton.onClick.AddListener(ShowDebug);
     }
 
     public void ShowCaseShop() => ShowOnly(caseShopPanel);
@@ -36,6 +54,7 @@ public class MainPanelController : MonoBehaviour
     public void ShowStats() => ShowOnly(statsPanel);
     public void ShowSettings() => ShowOnly(settingsPanel);
     public void ShowDebug() => ShowOnly(debugPanel);
+
     private void ShowOnly(GameObject panelToShow)
     {
         SetPanel(caseShopPanel, panelToShow);
