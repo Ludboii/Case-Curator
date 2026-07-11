@@ -299,25 +299,25 @@ public class CaseInventoryUI : MonoBehaviour
                 continue;
             }
 
-InventoryManager.Instance.AddItem(item);
+            InventoryManager.Instance.AddItem(item);
 
-if (ContainerProgressManager.Instance != null)
-{
-    ContainerProgressManager.Instance.RecordContainerOpened(
-        caseData,
-        item.skin,
-        caseData.priceInGold,
-        item.marketValue
-    );
-}
+            if (ContainerProgressManager.Instance != null)
+            {
+                ContainerProgressManager.Instance.RecordContainerOpened(
+                    caseData,
+                    item.skin,
+                    caseData.priceInGold,
+                    item.marketValue
+                );
+            }
 
-if (caseData.xpRewardOnOpen > 0)
-{
-    SaveManager.Instance.AddXP(caseData.xpRewardOnOpen);
-    totalXPGained += caseData.xpRewardOnOpen;
-}
+            if (caseData.xpRewardOnOpen > 0)
+            {
+                SaveManager.Instance.AddXP(caseData.xpRewardOnOpen);
+                totalXPGained += caseData.xpRewardOnOpen;
+            }
 
-openedCount++;
+            openedCount++;
         }
 
         SaveManager.Instance.SaveGame();
@@ -334,10 +334,13 @@ openedCount++;
         if (caseData == null)
             return;
 
-        Debug.Log($"Open case inspect later: {caseData.caseName}");
+        if (CaseInspectUI.Instance == null)
+        {
+            Debug.LogWarning("CaseInventoryUI: No CaseInspectUI found in scene.");
+            return;
+        }
 
-        // Later:
-        // CaseInspectUI.Instance.Open(caseData);
+        CaseInspectUI.Instance.Open(caseData);
     }
 
     private void RefreshAmountButtons()
