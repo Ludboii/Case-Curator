@@ -101,36 +101,13 @@ public class ContainerProgressManager : MonoBehaviour
         if (progress == null)
             return 0;
 
-        int found = progress.foundSkinKeys.Count;
+        int found = progress.foundSkinKeys != null ? progress.foundSkinKeys.Count : 0;
 
         if (progress.foundRareSpecial)
             found++;
 
         return found;
     }
-
-    public bool HasFoundSkin(CaseData caseData, SkinData skin)
-{
-    if (caseData == null || skin == null)
-        return false;
-
-    ContainerProgressData progress = GetProgress(caseData);
-
-    if (progress == null || progress.foundSkinKeys == null)
-        return false;
-
-    return progress.foundSkinKeys.Contains(GetSkinKey(skin));
-}
-
-public bool HasFoundRareSpecial(CaseData caseData)
-{
-    ContainerProgressData progress = GetProgress(caseData);
-
-    if (progress == null)
-        return false;
-
-    return progress.foundRareSpecial;
-}
 
     public int GetTargetCount(CaseData caseData)
     {
@@ -162,9 +139,54 @@ public bool HasFoundRareSpecial(CaseData caseData)
         return target;
     }
 
+    public string GetCompletionDisplayText(CaseData caseData)
+    {
+        int found = GetFoundCount(caseData);
+        int target = GetTargetCount(caseData);
+
+        if (target > 0 && found >= target)
+            return "Normal Completion";
+
+        return $"Found {found} / {target}";
+    }
+
     public string GetFoundDisplayText(CaseData caseData)
     {
-        return $"Found {GetFoundCount(caseData)} / {GetTargetCount(caseData)}";
+        return GetCompletionDisplayText(caseData);
+    }
+
+    public bool HasFoundSkin(CaseData caseData, SkinData skin)
+    {
+        if (caseData == null || skin == null)
+            return false;
+
+        ContainerProgressData progress = GetProgress(caseData);
+
+        if (progress == null || progress.foundSkinKeys == null)
+            return false;
+
+        return progress.foundSkinKeys.Contains(GetSkinKey(skin));
+    }
+
+    public bool HasFoundRareSpecial(CaseData caseData)
+    {
+        ContainerProgressData progress = GetProgress(caseData);
+
+        if (progress == null)
+            return false;
+
+        return progress.foundRareSpecial;
+    }
+
+    public void ResetAllProgressForTesting()
+    {
+        saveData = new ContainerProgressSaveData();
+        progressByContainer.Clear();
+
+        PlayerPrefs.DeleteKey(SaveKey);
+        PlayerPrefs.Save();
+
+        Debug.Log("ContainerProgressManager: Reset all container progress.");
     }
 
     private static void AddUnique(List<string> list, string value)
@@ -228,6 +250,9 @@ public bool HasFoundRareSpecial(CaseData caseData)
             {
                 if (progress == null || string.IsNullOrWhiteSpace(progress.containerId))
                     continue;
+
+                if (progress.foundSkinKeys == null)
+                    progress.foundSkinKeys = new List<string>();
 
                 if (!progressByContainer.ContainsKey(progress.containerId))
                     progressByContainer.Add(progress.containerId, progress);

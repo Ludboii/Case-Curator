@@ -62,21 +62,51 @@ public class InventoryManager : MonoBehaviour
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(item.instanceId))
-        {
-            item.instanceId = Guid.NewGuid().ToString();
-        }
-
-        item.marketValue = PriceCalculator.GetPrice(item);
-
+        PrepareItemForInventory(item);
         items.Add(item);
-
         OnInventoryChanged?.Invoke();
 
         Debug.Log(
             $"Added item to inventory: " +
             $"{SkinDisplayUtility.GetDisplayName(item.skin)}. " +
             $"Inventory count: {items.Count}/{TotalCapacity}");
+    }
+
+    public int AddItems(List<InventoryItem> itemsToAdd)
+    {
+        if (itemsToAdd == null || itemsToAdd.Count == 0)
+            return 0;
+
+        int addedCount = 0;
+
+        foreach (InventoryItem item in itemsToAdd)
+        {
+            if (item == null)
+                continue;
+
+            if (!HasSpace())
+                break;
+
+            PrepareItemForInventory(item);
+            items.Add(item);
+            addedCount++;
+        }
+
+        if (addedCount > 0)
+            OnInventoryChanged?.Invoke();
+
+        return addedCount;
+    }
+
+    private void PrepareItemForInventory(InventoryItem item)
+    {
+        if (item == null)
+            return;
+
+        if (string.IsNullOrWhiteSpace(item.instanceId))
+            item.instanceId = Guid.NewGuid().ToString();
+
+        item.marketValue = PriceCalculator.GetPrice(item);
     }
 
     public bool RemoveItem(InventoryItem item)
@@ -92,21 +122,21 @@ public class InventoryManager : MonoBehaviour
         return removed;
     }
 
-public int RemoveItemsByInstanceIds(HashSet<string> instanceIds)
-{
-    if (instanceIds == null || instanceIds.Count == 0)
-        return 0;
+    public int RemoveItemsByInstanceIds(HashSet<string> instanceIds)
+    {
+        if (instanceIds == null || instanceIds.Count == 0)
+            return 0;
 
-    int removedCount = items.RemoveAll(item =>
-        item != null &&
-        !string.IsNullOrWhiteSpace(item.instanceId) &&
-        instanceIds.Contains(item.instanceId));
+        int removedCount = items.RemoveAll(item =>
+            item != null &&
+            !string.IsNullOrWhiteSpace(item.instanceId) &&
+            instanceIds.Contains(item.instanceId));
 
-    if (removedCount > 0)
-        OnInventoryChanged?.Invoke();
+        if (removedCount > 0)
+            OnInventoryChanged?.Invoke();
 
-    return removedCount;
-}
+        return removedCount;
+    }
 
     public InventoryItem GetItemByInstanceId(string instanceId)
     {
@@ -144,37 +174,63 @@ public int RemoveItemsByInstanceIds(HashSet<string> instanceIds)
 
         return pageItems;
     }
+
     public bool SetFavorite(InventoryItem item, bool favorite)
-{
-    if (item == null)
-        return false;
+    {
+        if (item == null)
+            return false;
 
-    item.favorite = favorite;
-    OnInventoryChanged?.Invoke();
+        item.favorite = favorite;
+        OnInventoryChanged?.Invoke();
 
-    return true;
-}
+        return true;
+    }
 
-public bool ToggleFavorite(InventoryItem item)
-{
-    if (item == null)
-        return false;
+    public int SetFavoriteBatch(List<InventoryItem> itemsToUpdate, bool favorite)
+    {
+        if (itemsToUpdate == null || itemsToUpdate.Count == 0)
+            return 0;
 
-    item.favorite = !item.favorite;
-    OnInventoryChanged?.Invoke();
+        int changedCount = 0;
 
-    return true;
-}
+        foreach (InventoryItem item in itemsToUpdate)
+        {
+            if (item == null)
+                continue;
 
-public bool SetFavoriteByInstanceId(string instanceId, bool favorite)
-{
-    InventoryItem item = GetItemByInstanceId(instanceId);
+            if (item.favorite == favorite)
+                continue;
 
-    if (item == null)
-        return false;
+            item.favorite = favorite;
+            changedCount++;
+        }
 
-    return SetFavorite(item, favorite);
-}
+        if (changedCount > 0)
+            OnInventoryChanged?.Invoke();
+
+        return changedCount;
+    }
+
+    public bool ToggleFavorite(InventoryItem item)
+    {
+        if (item == null)
+            return false;
+
+        item.favorite = !item.favorite;
+        OnInventoryChanged?.Invoke();
+
+        return true;
+    }
+
+    public bool SetFavoriteByInstanceId(string instanceId, bool favorite)
+    {
+        InventoryItem item = GetItemByInstanceId(instanceId);
+
+        if (item == null)
+            return false;
+
+        return SetFavorite(item, favorite);
+    }
 
     public void ClearInventory()
     {

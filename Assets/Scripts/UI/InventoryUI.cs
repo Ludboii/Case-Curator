@@ -44,12 +44,15 @@ public class InventoryUI : MonoBehaviour
     [Header("Selection Text")]
     public TMP_Text selectionCountText;
     public TMP_Text selectedValueText;
+    public TMP_Text selectAllButtonText;
+    
 
     [Header("Storage Buttons")]
     public Button storageButton1;
     public Button storageButton2;
     public Button storageButton3;
     public Button addStorageButton;
+    
 
     public TMP_Text storageButton1Text;
     public TMP_Text storageButton2Text;
@@ -61,6 +64,7 @@ public class InventoryUI : MonoBehaviour
     public Button favoriteSelectedButton;
     public Button unfavoriteSelectedButton;
     public Button cancelSelectionButton;
+    public Button selectAllButton;
 
     [Header("Selection Button Text")]
     public TMP_Text selectButtonText;
@@ -103,7 +107,11 @@ private readonly List<Rarity> hiddenRarityFilters = new List<Rarity>();
         Instance = this;
 
         SetupButtonListeners();
-
+if (selectAllButton != null)
+{
+    selectAllButton.onClick.RemoveAllListeners();
+    selectAllButton.onClick.AddListener(SelectAllVisibleItems);
+}
         if (sortFilterPanel != null)
             sortFilterPanel.SetActive(false);
 
@@ -682,6 +690,15 @@ else
         if (cancelSelectionButtonText != null)
             cancelSelectionButtonText.text = "Cancel";
 
+        if (selectAllButton != null)
+            selectAllButton.gameObject.SetActive(SelectionModeActive);
+
+if (selectAllButton != null)
+    selectAllButton.interactable = SelectionModeActive && spawnedCards.Count > 0;
+
+if (selectAllButtonText != null)
+    selectAllButtonText.text = "Select All";
+
         if (selectionCountText != null)
         {
             selectionCountText.gameObject.SetActive(SelectionModeActive);
@@ -1020,6 +1037,31 @@ public void ClearRarityFilter()
 
     currentPage = 0;
     Refresh();
+}
+public void SelectAllVisibleItems()
+{
+    if (!SelectionModeActive)
+        SetSelectionMode(true);
+
+    selectedCards.Clear();
+
+    foreach (InventoryItemCardUI card in spawnedCards)
+    {
+        if (card == null)
+            continue;
+
+        InventoryItem item = card.GetItem();
+
+        if (item == null || item.skin == null)
+            continue;
+
+        if (!selectedCards.Contains(card))
+            selectedCards.Add(card);
+
+        card.SetSelected(true);
+    }
+
+    UpdateSelectionUI();
 }
 
  private void UpdateActiveSortFilterText()
