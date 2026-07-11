@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,27 +10,37 @@ public class CaseInspectUI : MonoBehaviour
     [Header("Root")]
     public GameObject root;
 
-    [Header("Images")]
+    [Header("Main Window")]
     public Image caseImage;
-    public Image qualityBar;
-
-    [Header("Text")]
     public TMP_Text caseNameText;
-    public TMP_Text typeText;
-    public TMP_Text priceText;
-    public TMP_Text rankText;
-    public TMP_Text xpText;
-    public TMP_Text dropCountText;
-    public TMP_Text rarityChanceText;
-    public TMP_Text dropPreviewText;
-    public TMP_Text buyButtonText;
-
-    [Header("Buttons")]
-    public Button buyButton;
+    public TMP_Text completionText;
+    public Button completionButton;
     public Button closeButton;
 
+    [Header("Main Drop List")]
+    public Transform dropContent;
+    public CaseInspectDropCardUI dropCardPrefab;
+
+    [Header("Rare Special Placeholder")]
+    public Sprite rareSpecialPlaceholderSprite;
+
+    [Header("Rare Special List Panel")]
+    public GameObject rareSpecialListPanel;
+    public Transform rareSpecialContent;
+    public TMP_Text rareSpecialListTitleText;
+    public Button rareSpecialBackButton;
+
+    [Header("Popups")]
+    public CaseInspectSkinInfoPopupUI skinInfoPopup;
+    public CaseInspectCompletionPopupUI completionPopup;
+
+    private readonly List<GameObject> spawnedMainCards = new List<GameObject>();
+    private readonly List<GameObject> spawnedRareSpecialCards = new List<GameObject>();
+
+    private readonly List<SkinData> normalSkins = new List<SkinData>();
+    private readonly List<SkinData> rareSpecialSkins = new List<SkinData>();
+
     private CaseData currentCase;
-    private CaseShopUI currentShop;
 
     private void Awake()
     {
@@ -46,10 +55,16 @@ public class CaseInspectUI : MonoBehaviour
             closeButton.onClick.AddListener(Close);
         }
 
-        if (buyButton != null)
+        if (completionButton != null)
         {
-            buyButton.onClick.RemoveAllListeners();
-            buyButton.onClick.AddListener(BuyCurrentCase);
+            completionButton.onClick.RemoveAllListeners();
+            completionButton.onClick.AddListener(OpenCompletionInfo);
+        }
+
+        if (rareSpecialBackButton != null)
+        {
+            rareSpecialBackButton.onClick.RemoveAllListeners();
+            rareSpecialBackButton.onClick.AddListener(CloseRareSpecialList);
         }
 
         Close();
@@ -61,10 +76,9 @@ public class CaseInspectUI : MonoBehaviour
             Instance = null;
     }
 
-    public void Open(CaseData caseData, CaseShopUI shopUI)
+    public void Open(CaseData caseData)
     {
         currentCase = caseData;
-        currentShop = shopUI;
 
         if (currentCase == null)
         {
@@ -75,19 +89,101 @@ public class CaseInspectUI : MonoBehaviour
         if (root != null)
             root.SetActive(true);
 
-        Refresh();
+        if (rareSpecialListPanel != null)
+            rareSpecialListPanel.SetActive(false);
+
+        BuildSkinLists();
+        RefreshHeader();
+        SpawnMainCards();
     }
 
     public void Close()
     {
         currentCase = null;
-        currentShop = null;
+
+        ClearMainCards();
+        ClearRareSpecialCards();
+
+        if (rareSpecialListPanel != null)
+            rareSpecialListPanel.SetActive(false);
+
+        if (skinInfoPopup != null)
+            skinInfoPopup.Close();
+
+        if (completionPopup != null)
+            completionPopup.Close();
 
         if (root != null)
             root.SetActive(false);
     }
 
-    private void Refresh()
+    private void BuildSkinLists()
+    {
+        normalSkins.Clear();
+        rareSpecialSkins.Clear();
+
+        if (currentCase == null || currentCase.dropPool == null)
+            return;
+
+        HashSet<string> normalIds = new HashSet<string>();
+        HashSet<string> rareIds = new HashSet<string>();
+
+        foreach (WeightedDrop drop in currentCase.dropPool)
+        {
+            if (drop == null || drop.skin == null)
+                continue;
+
+            SkinData skin = drop.skin;
+            string id = GetSkinId(skin);
+
+            if (skin.rarity == Rarity.RareSpecial)
+            {
+                if (rareIds.Add(id))
+                    rareSpecialSkins.Add(skin);
+            }
+            else
+            {
+                if (normalIds.Add(id))
+                    normalSkins.Add(skin);
+            }
+        }
+
+        normalSkins.Sort(CompareSkinsForInspect);
+        rareSpecialSkins.Sort(CompareSkinsForInspect);
+    }
+
+    private int CompareSkinsForInspect(SkinData a, SkinData b)
+    {
+        if (a == null && b == null)
+            return 0;
+        if (a == null)
+            return 1;
+        if (b == null)
+            return -1;
+
+        int rarityCompare = b.rarity.CompareTo(a.rarity);
+        if (rarityCompare != 0)
+            return rarityCompare;
+
+        int weaponCompare = string.Compare(a.weaponName, b.weaponName);
+        if (weaponCompare != 0)
+            return weaponCompare;
+
+        return string.Compare(a.skinName, b.skinName);
+    }
+
+    private string GetSkinId(SkinData skin)
+    {
+        if (skin == null)
+            return "";
+
+        if (!string.IsNullOrWhiteSpace(skin.apiId))
+            return skin.apiId;
+
+        return $"{skin.weaponName}|{skin.skinName}|{skin.rarity}";
+    }
+
+    private void RefreshHeader()
     {
         if (currentCase == null)
             return;
@@ -99,149 +195,119 @@ public class CaseInspectUI : MonoBehaviour
             caseImage.preserveAspect = true;
         }
 
-        if (qualityBar != null)
-        {
-            qualityBar.color = CaseQualityUtility.GetColor(currentCase.quality);
-        }
-
         if (caseNameText != null)
             caseNameText.text = currentCase.caseName;
 
-        if (typeText != null)
-            typeText.text = $"Type: {currentCase.containerType}";
-
-        if (priceText != null)
-            priceText.text = $"Price: {currentCase.priceInGold:0.00} G";
-
-        if (rankText != null)
-            rankText.text = $"Required Rank: {PlayerProgressUtility.GetRankDisplayName(currentCase.requiredRank)}";
-
-        if (xpText != null)
-            xpText.text = $"XP on open: {currentCase.xpRewardOnOpen}";
-
-        if (dropCountText != null)
-            dropCountText.text = $"Possible drops: {GetUniqueDropCount(currentCase)}";
-
-        if (rarityChanceText != null)
-            rarityChanceText.text = BuildRarityChanceText(currentCase);
-
-        if (dropPreviewText != null)
-            dropPreviewText.text = BuildDropPreviewText(currentCase);
-
-        RefreshBuyButton();
+        if (completionText != null)
+            completionText.text = $"Found 0 / {GetCompletionTargetCount()}";
     }
 
-    private void RefreshBuyButton()
+    private int GetCompletionTargetCount()
     {
-        if (currentCase == null || currentShop == null)
+        int count = normalSkins.Count;
+
+        if (rareSpecialSkins.Count > 0)
+            count += 1;
+
+        return count;
+    }
+
+    private void SpawnMainCards()
+    {
+        ClearMainCards();
+
+        if (dropContent == null || dropCardPrefab == null)
             return;
 
-        string failReason;
-        bool canBuy = currentShop.CanBuyCase(currentCase, out failReason);
-
-        int amount = currentShop.GetRequestedBuyAmount(currentCase);
-        float totalCost = currentCase.priceInGold * amount;
-
-        if (buyButton != null)
-            buyButton.interactable = canBuy;
-
-        if (buyButtonText != null)
+        // Rare Special always first = top-left
+        if (rareSpecialSkins.Count > 0)
         {
-            if (canBuy)
-                buyButtonText.text = $"BUY x{amount}\n{totalCost:0.00} G";
-            else
-                buyButtonText.text = string.IsNullOrWhiteSpace(failReason)
-                    ? "LOCKED"
-                    : failReason;
+            CaseInspectDropCardUI rareCard = Instantiate(dropCardPrefab, dropContent);
+            rareCard.SetupRareSpecialEntry(this, rareSpecialSkins.Count, rareSpecialPlaceholderSprite);
+            spawnedMainCards.Add(rareCard.gameObject);
+        }
+
+        // Then the normal skins (Covert first, then Classified, etc.)
+        foreach (SkinData skin in normalSkins)
+        {
+            CaseInspectDropCardUI card = Instantiate(dropCardPrefab, dropContent);
+            card.Setup(skin, this);
+            spawnedMainCards.Add(card.gameObject);
         }
     }
 
-    private void BuyCurrentCase()
+    public void OpenRareSpecialList()
     {
-        if (currentCase == null || currentShop == null)
+        if (rareSpecialSkins.Count == 0)
             return;
 
-        currentShop.TryBuyCase(currentCase);
-        RefreshBuyButton();
+        if (rareSpecialListPanel != null)
+            rareSpecialListPanel.SetActive(true);
+
+        if (rareSpecialListTitleText != null)
+            rareSpecialListTitleText.text = "Rare Special Items";
+
+        SpawnRareSpecialCards();
     }
 
-    private int GetUniqueDropCount(CaseData caseData)
+    private void CloseRareSpecialList()
     {
-        if (caseData == null || caseData.dropPool == null)
-            return 0;
+        ClearRareSpecialCards();
 
-        HashSet<string> uniqueIds = new HashSet<string>();
-
-        foreach (WeightedDrop drop in caseData.dropPool)
-        {
-            if (drop == null || drop.skin == null)
-                continue;
-
-            string id = drop.skin.apiId;
-
-            if (string.IsNullOrWhiteSpace(id))
-                id = $"{drop.skin.weaponName}|{drop.skin.skinName}";
-
-            uniqueIds.Add(id);
-        }
-
-        return uniqueIds.Count;
+        if (rareSpecialListPanel != null)
+            rareSpecialListPanel.SetActive(false);
     }
 
-    private string BuildRarityChanceText(CaseData caseData)
+    private void SpawnRareSpecialCards()
     {
-        if (caseData == null || caseData.rarityChances == null || caseData.rarityChances.Count == 0)
-            return "Rarity chances: not set";
+        ClearRareSpecialCards();
 
-        StringBuilder builder = new StringBuilder();
-        builder.AppendLine("Rarity chances:");
+        if (rareSpecialContent == null || dropCardPrefab == null)
+            return;
 
-        foreach (RarityChance chance in caseData.rarityChances)
+        foreach (SkinData skin in rareSpecialSkins)
         {
-            if (chance == null)
-                continue;
-
-            builder.AppendLine($"{chance.rarity}: {chance.chance:0.###}%");
+            CaseInspectDropCardUI card = Instantiate(dropCardPrefab, rareSpecialContent);
+            card.Setup(skin, this);
+            spawnedRareSpecialCards.Add(card.gameObject);
         }
-
-        return builder.ToString();
     }
 
-    private string BuildDropPreviewText(CaseData caseData)
+    public void OpenSkinInfo(SkinData skin)
     {
-        if (caseData == null || caseData.dropPool == null || caseData.dropPool.Count == 0)
-            return "No drops assigned.";
+        if (skinInfoPopup == null || skin == null)
+            return;
 
-        StringBuilder builder = new StringBuilder();
-        builder.AppendLine("Drop preview:");
+        skinInfoPopup.Open(skin, currentCase);
+    }
 
-        int shown = 0;
-        int maxShown = 20;
+    private void OpenCompletionInfo()
+    {
+        if (completionPopup == null)
+            return;
 
-        foreach (WeightedDrop drop in caseData.dropPool)
+        completionPopup.Open(currentCase);
+    }
+
+    private void ClearMainCards()
+    {
+        foreach (GameObject obj in spawnedMainCards)
         {
-            if (drop == null || drop.skin == null)
-                continue;
-
-            SkinData skin = drop.skin;
-
-            string skinName = skin.isVanilla
-                ? "Vanilla"
-                : skin.skinName;
-
-            builder.AppendLine($"{skin.rarity} - {skin.weaponName} | {skinName}");
-
-            shown++;
-
-            if (shown >= maxShown)
-                break;
+            if (obj != null)
+                Destroy(obj);
         }
 
-        int remaining = caseData.dropPool.Count - shown;
+        spawnedMainCards.Clear();
+    }
 
-        if (remaining > 0)
-            builder.AppendLine($"+ {remaining} more...");
+    private void ClearRareSpecialCards()
+    {
+        foreach (GameObject obj in spawnedRareSpecialCards)
+        {
+            if (obj != null)
+                Destroy(obj);
+        }
 
-        return builder.ToString();
+        spawnedRareSpecialCards.Clear();
     }
 }
