@@ -15,6 +15,8 @@ public class InventoryManager : MonoBehaviour
     [SerializeField]
     private List<InventoryItem> items = new List<InventoryItem>();
 
+    private float cachedTotalMarketValue;
+
     public IReadOnlyList<InventoryItem> Items => items;
 
     public int Count => items.Count;
@@ -23,6 +25,7 @@ public class InventoryManager : MonoBehaviour
     public int ItemsPerStoragePage => itemsPerStoragePage;
 
     public int TotalCapacity => unlockedStoragePages * itemsPerStoragePage;
+    public float TotalMarketValue => cachedTotalMarketValue;
 
     private void Awake()
     {
@@ -34,6 +37,7 @@ public class InventoryManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        RecalculateCachedTotalMarketValue();
     }
 
     private void OnDestroy()
@@ -57,13 +61,13 @@ public class InventoryManager : MonoBehaviour
 
         if (!HasSpace())
         {
-            Debug.LogWarning(
-                $"Inventory is full. Items: {items.Count}/{TotalCapacity}");
+            Debug.LogWarning($"Inventory is full. Items: {items.Count}/{TotalCapacity}");
             return;
         }
 
         PrepareItemForInventory(item);
         items.Add(item);
+        cachedTotalMarketValue += item.marketValue;
         OnInventoryChanged?.Invoke();
 
         Debug.Log(
@@ -78,6 +82,7 @@ public class InventoryManager : MonoBehaviour
             return 0;
 
         int addedCount = 0;
+        float addedValue = 0f;
 
         foreach (InventoryItem item in itemsToAdd)
         {
@@ -89,11 +94,15 @@ public class InventoryManager : MonoBehaviour
 
             PrepareItemForInventory(item);
             items.Add(item);
+            addedValue += item.marketValue;
             addedCount++;
         }
 
         if (addedCount > 0)
+        {
+            cachedTotalMarketValue += addedValue;
             OnInventoryChanged?.Invoke();
+        }
 
         return addedCount;
     }
@@ -117,7 +126,13 @@ public class InventoryManager : MonoBehaviour
         bool removed = items.Remove(item);
 
         if (removed)
+        {
+            cachedTotalMarketValue -= Mathf.Max(0f, item.marketValue);
+            if (cachedTotalMarketValue < 0f)
+                cachedTotalMarketValue = 0f;
+
             OnInventoryChanged?.Invoke();
+        }
 
         return removed;
     }
@@ -127,13 +142,29 @@ public class InventoryManager : MonoBehaviour
         if (instanceIds == null || instanceIds.Count == 0)
             return 0;
 
+        float removedValue = 0f;
+
         int removedCount = items.RemoveAll(item =>
-            item != null &&
-            !string.IsNullOrWhiteSpace(item.instanceId) &&
-            instanceIds.Contains(item.instanceId));
+        {
+            bool remove =
+                item != null &&
+                !string.IsNullOrWhiteSpace(item.instanceId) &&
+                instanceIds.Contains(item.instanceId);
+
+            if (remove)
+                removedValue += Mathf.Max(0f, item.marketValue);
+
+            return remove;
+        });
 
         if (removedCount > 0)
+        {
+            cachedTotalMarketValue -= removedValue;
+            if (cachedTotalMarketValue < 0f)
+                cachedTotalMarketValue = 0f;
+
             OnInventoryChanged?.Invoke();
+        }
 
         return removedCount;
     }
@@ -235,6 +266,7 @@ public class InventoryManager : MonoBehaviour
     public void ClearInventory()
     {
         items.Clear();
+        cachedTotalMarketValue = 0f;
         OnInventoryChanged?.Invoke();
     }
 
@@ -243,10 +275,9 @@ public class InventoryManager : MonoBehaviour
         items.Clear();
 
         if (loadedItems != null)
-        {
             items.AddRange(loadedItems);
-        }
 
+        RecalculateCachedTotalMarketValue();
         OnInventoryChanged?.Invoke();
 
         Debug.Log($"Inventory loaded. Item count: {items.Count}/{TotalCapacity}");
@@ -279,5 +310,21 @@ public class InventoryManager : MonoBehaviour
         OnInventoryChanged?.Invoke();
 
         Debug.Log($"Storage page size increased to {itemsPerStoragePage}. Total capacity: {TotalCapacity}");
+    }
+
+    public void RecalculateCachedTotalMarketValue()
+    {
+        cachedTotalMarketValue = 0f;
+
+        foreach (InventoryItem item in items)
+        {
+            if (item == null || item.skin == null)
+                continue;
+
+            if (item.marketValue <= 0f)
+                item.marketValue = PriceCalculator.GetPrice(item);
+
+            cachedTotalMarketValue += item.marketValue;
+        }
     }
 }
