@@ -109,35 +109,48 @@ private string BuildPriceText(SkinData skin)
     if (skin == null)
         return "";
 
+    if (skin.isVanilla)
+        return BuildVanillaPriceText(skin);
+
     string leftTitle = "Normal";
     WearPrices leftPrices = skin.exteriorPrices;
 
-    string rightTitle = "";
-
-    // For normal cases, show StatTrak on the right.
     if (skin.canBeStatTrak)
     {
-        rightTitle = "StatTrak";
         return BuildTwoColumnPriceText(
             leftTitle,
             leftPrices,
-            rightTitle,
+            "StatTrak",
             skin.statTrakExteriorPrices);
     }
 
-    // For souvenir packages, show Souvenir on the right.
     if (skin.canBeSouvenir)
     {
-        rightTitle = "Souvenir";
         return BuildTwoColumnPriceText(
             leftTitle,
             leftPrices,
-            rightTitle,
+            "Souvenir",
             skin.souvenirExteriorPrices);
     }
 
-    // If the skin has no variant, only show the normal 5 rows.
     return BuildSingleColumnPriceText(leftTitle, leftPrices);
+}
+
+private string BuildVanillaPriceText(SkinData skin)
+{
+    string normalPrice = FormatPrice(skin.vanillaPrice);
+    string statTrakPrice = FormatPrice(skin.vanillaStatTrakPrice);
+
+    if (skin.canBeStatTrak && skin.vanillaStatTrakPrice > 0f)
+    {
+        return
+            $"Vanilla        Vanilla StatTrak\n" +
+            $"{normalPrice,-14}{statTrakPrice}";
+    }
+
+    return
+        $"Vanilla\n" +
+        $"{normalPrice}";
 }
 
 private string BuildTwoColumnPriceText(

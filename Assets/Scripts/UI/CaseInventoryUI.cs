@@ -299,21 +299,25 @@ public class CaseInventoryUI : MonoBehaviour
                 continue;
             }
 
-            InventoryManager.Instance.AddItem(item);
+InventoryManager.Instance.AddItem(item);
 
-            if (caseData.xpRewardOnOpen > 0)
-            {
-                SaveManager.Instance.AddXP(caseData.xpRewardOnOpen);
-                totalXPGained += caseData.xpRewardOnOpen;
-                ContainerProgressManager.Instance.RecordContainerOpened(
-                    caseData,
-                    AddItem.skin,
-                    caseData.priceInGold,
-                    AddItem.marketValue
-                );
-            }
+if (ContainerProgressManager.Instance != null)
+{
+    ContainerProgressManager.Instance.RecordContainerOpened(
+        caseData,
+        item.skin,
+        caseData.priceInGold,
+        item.marketValue
+    );
+}
 
-            openedCount++;
+if (caseData.xpRewardOnOpen > 0)
+{
+    SaveManager.Instance.AddXP(caseData.xpRewardOnOpen);
+    totalXPGained += caseData.xpRewardOnOpen;
+}
+
+openedCount++;
         }
 
         SaveManager.Instance.SaveGame();
