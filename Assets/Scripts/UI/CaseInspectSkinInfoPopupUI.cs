@@ -104,29 +104,67 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
             topBarImage.color = topBarColor;
     }
 
-    private string BuildPriceText(SkinData skin)
+private string BuildPriceText(SkinData skin)
+{
+    if (skin == null)
+        return "";
+
+    string leftTitle = "Normal";
+    WearPrices leftPrices = skin.exteriorPrices;
+
+    string rightTitle = "";
+
+    // For normal cases, show StatTrak on the right.
+    if (skin.canBeStatTrak)
     {
-        StringBuilder builder = new StringBuilder();
-
-        builder.AppendLine("Normal");
-        AppendWearPrices(builder, skin.exteriorPrices);
-
-        if (skin.canBeStatTrak)
-        {
-            builder.AppendLine();
-            builder.AppendLine("StatTrak");
-            AppendWearPrices(builder, skin.statTrakExteriorPrices);
-        }
-
-        if (skin.canBeSouvenir)
-        {
-            builder.AppendLine();
-            builder.AppendLine("Souvenir");
-            AppendWearPrices(builder, skin.souvenirExteriorPrices);
-        }
-
-        return builder.ToString();
+        rightTitle = "StatTrak";
+        return BuildTwoColumnPriceText(
+            leftTitle,
+            leftPrices,
+            rightTitle,
+            skin.statTrakExteriorPrices);
     }
+
+    // For souvenir packages, show Souvenir on the right.
+    if (skin.canBeSouvenir)
+    {
+        rightTitle = "Souvenir";
+        return BuildTwoColumnPriceText(
+            leftTitle,
+            leftPrices,
+            rightTitle,
+            skin.souvenirExteriorPrices);
+    }
+
+    // If the skin has no variant, only show the normal 5 rows.
+    return BuildSingleColumnPriceText(leftTitle, leftPrices);
+}
+
+private string BuildTwoColumnPriceText(
+    string leftTitle,
+    WearPrices leftPrices,
+    string rightTitle,
+    WearPrices rightPrices)
+{
+    return
+        $"{leftTitle,-18}{rightTitle}\n" +
+        $"FN  {FormatPrice(leftPrices.factoryNew),-14}FN  {FormatPrice(rightPrices.factoryNew)}\n" +
+        $"MW  {FormatPrice(leftPrices.minimalWear),-14}MW  {FormatPrice(rightPrices.minimalWear)}\n" +
+        $"FT  {FormatPrice(leftPrices.fieldTested),-14}FT  {FormatPrice(rightPrices.fieldTested)}\n" +
+        $"WW  {FormatPrice(leftPrices.wellWorn),-14}WW  {FormatPrice(rightPrices.wellWorn)}\n" +
+        $"BS  {FormatPrice(leftPrices.battleScarred),-14}BS  {FormatPrice(rightPrices.battleScarred)}";
+}
+
+private string BuildSingleColumnPriceText(string title, WearPrices prices)
+{
+    return
+        $"{title}\n" +
+        $"FN  {FormatPrice(prices.factoryNew)}\n" +
+        $"MW  {FormatPrice(prices.minimalWear)}\n" +
+        $"FT  {FormatPrice(prices.fieldTested)}\n" +
+        $"WW  {FormatPrice(prices.wellWorn)}\n" +
+        $"BS  {FormatPrice(prices.battleScarred)}";
+}
 
     private void AppendWearPrices(StringBuilder builder, WearPrices prices)
     {

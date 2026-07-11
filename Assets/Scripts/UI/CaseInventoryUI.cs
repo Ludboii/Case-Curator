@@ -305,6 +305,12 @@ public class CaseInventoryUI : MonoBehaviour
             {
                 SaveManager.Instance.AddXP(caseData.xpRewardOnOpen);
                 totalXPGained += caseData.xpRewardOnOpen;
+                ContainerProgressManager.Instance.RecordContainerOpened(
+                    caseData,
+                    AddItem.skin,
+                    caseData.priceInGold,
+                    AddItem.marketValue
+                );
             }
 
             openedCount++;

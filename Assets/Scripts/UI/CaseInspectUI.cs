@@ -33,6 +33,10 @@ public class CaseInspectUI : MonoBehaviour
     [Header("Popups")]
     public CaseInspectSkinInfoPopupUI skinInfoPopup;
     public CaseInspectCompletionPopupUI completionPopup;
+    
+    [Header("Stats Text")]
+    public TMP_Text openedAmountText;
+    public TMP_Text profitText;
 
     private readonly List<GameObject> spawnedMainCards = new List<GameObject>();
     private readonly List<GameObject> spawnedRareSpecialCards = new List<GameObject>();
@@ -183,24 +187,59 @@ public class CaseInspectUI : MonoBehaviour
         return $"{skin.weaponName}|{skin.skinName}|{skin.rarity}";
     }
 
-    private void RefreshHeader()
+private void RefreshHeader()
+{
+    if (currentCase == null)
+        return;
+
+    if (caseImage != null)
     {
-        if (currentCase == null)
-            return;
+        caseImage.sprite = currentCase.icon;
+        caseImage.enabled = currentCase.icon != null;
+        caseImage.preserveAspect = true;
+    }
 
-        if (caseImage != null)
-        {
-            caseImage.sprite = currentCase.icon;
-            caseImage.enabled = currentCase.icon != null;
-            caseImage.preserveAspect = true;
-        }
+    if (caseNameText != null)
+        caseNameText.text = currentCase.caseName;
 
-        if (caseNameText != null)
-            caseNameText.text = currentCase.caseName;
+    if (ContainerProgressManager.Instance != null)
+    {
+        int openedCount = ContainerProgressManager.Instance.GetOpenedCount(currentCase);
+        float profit = ContainerProgressManager.Instance.GetProfit(currentCase);
 
         if (completionText != null)
-            completionText.text = $"Found 0 / {GetCompletionTargetCount()}";
+            completionText.text = ContainerProgressManager.Instance.GetFoundDisplayText(currentCase);
+
+        if (openedAmountText != null)
+            openedAmountText.text = $"{openedCount}x Opened";
+
+        if (profitText != null)
+        {
+            profitText.text = $"Profit : {profit:+0.00;-0.00;0.00}G";
+
+            if (profit > 0f)
+                profitText.color = Color.green;
+            else if (profit < 0f)
+                profitText.color = Color.red;
+            else
+                profitText.color = Color.white;
+        }
     }
+    else
+    {
+        if (completionText != null)
+            completionText.text = $"Found 0 / {GetCompletionTargetCount()}";
+
+        if (openedAmountText != null)
+            openedAmountText.text = "0x Opened";
+
+        if (profitText != null)
+        {
+            profitText.text = "Profit : 0.00G";
+            profitText.color = Color.white;
+        }
+    }
+}
 
     private int GetCompletionTargetCount()
     {

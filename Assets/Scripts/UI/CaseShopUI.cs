@@ -429,16 +429,19 @@ public class CaseShopUI : MonoBehaviour
     RefreshCards();
 }
 
-    public void OpenCaseInspect(CaseData caseData)
+public void OpenCaseInspect(CaseData caseData)
+{
+    if (caseData == null)
+        return;
+
+    if (CaseInspectUI.Instance == null)
     {
-        if (caseData == null)
-            return;
-
-        Debug.Log($"Open case inspect later: {caseData.caseName}");
-
-        // Later:
-        // CaseInspectUI.Instance.Open(caseData);
+        Debug.LogWarning("CaseShopUI: No CaseInspectUI found in scene.");
+        return;
     }
+
+    CaseInspectUI.Instance.Open(caseData);
+}
 
     public void SetBuyAmount1()
     {
