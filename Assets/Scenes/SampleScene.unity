@@ -9612,7 +9612,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.00744542, g: 0, b: 0.21698111, a: 0}
+  m_Color: {r: 0.02538591, g: 0, b: 0.6981132, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -10004,8 +10004,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -865, y: 24.540009}
-  m_SizeDelta: {x: 1730, y: 49.08}
+  m_AnchoredPosition: {x: -865, y: 426.45972}
+  m_SizeDelta: {x: 1730, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &665411316
 MonoBehaviour:
@@ -23633,6 +23633,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1284440829}
   - {fileID: 1803186734}
   - {fileID: 1591167650}
   - {fileID: 1324948705}
@@ -23641,7 +23642,6 @@ RectTransform:
   - {fileID: 461382956}
   - {fileID: 170621330}
   - {fileID: 1373448676}
-  - {fileID: 1284440829}
   m_Father: {fileID: 223036165}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -26116,7 +26116,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1591167650
 RectTransform:
   m_ObjectHideFlags: 0
@@ -26152,7 +26152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.8862745}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -26192,7 +26192,7 @@ MonoBehaviour:
   database: {fileID: 11400000, guid: a747b17ff7a9ebe4b9f62da027e93493, type: 2}
   caseGridContent: {fileID: 665411315}
   caseCardPrefab: {fileID: 5818618314600828005, guid: 7f4c1cd14c306a5499563f70df4a70a3, type: 3}
-  rankDividerPrefab: {fileID: 0}
+  rankDividerPrefab: {fileID: 7296356321816817262, guid: 3352cfdd9a0325046aa7465e80890b6c, type: 3}
   categoryText: {fileID: 1438882381}
   previousCategoryButton: {fileID: 1879208501}
   nextCategoryButton: {fileID: 644294911}
