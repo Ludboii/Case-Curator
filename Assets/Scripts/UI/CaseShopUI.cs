@@ -29,15 +29,11 @@ public class CaseShopUI : MonoBehaviour
     public Color selectedQuantityColor = new Color(0.2f, 0.85f, 0.35f, 1f);
     public Color normalQuantityColor = new Color(0.35f, 0.35f, 0.35f, 1f);
 
-    private readonly List<GameObject> spawnedObjects =
-        new List<GameObject>();
-
-    private readonly List<CaseShopCardUI> spawnedCards =
-        new List<CaseShopCardUI>();
+    private readonly List<GameObject> spawnedObjects = new List<GameObject>();
+    private readonly List<CaseShopCardUI> spawnedCards = new List<CaseShopCardUI>();
 
     private int selectedBuyAmount = 1;
     private bool maxQuantitySelected;
-
     private CaseShopCategory currentCategory = CaseShopCategory.Cases;
 
     public bool IsMaxQuantitySelected => maxQuantitySelected;
@@ -146,14 +142,15 @@ public class CaseShopUI : MonoBehaviour
     public void RefreshShop()
     {
         ClearSpawnedObjects();
-        EnsureGridLayoutEnabled();
+        EnsureGridLayoutForScrollView();
         SpawnCurrentCategory();
         RefreshCards();
         RefreshQuantityButtons();
         RefreshCategoryText();
+        RebuildShopLayout();
     }
 
-    private void EnsureGridLayoutEnabled()
+    private void EnsureGridLayoutForScrollView()
     {
         if (caseGridContent == null)
             return;
@@ -162,13 +159,29 @@ public class CaseShopUI : MonoBehaviour
         if (verticalLayout != null)
             verticalLayout.enabled = false;
 
-        ContentSizeFitter fitter = caseGridContent.GetComponent<ContentSizeFitter>();
-        if (fitter != null)
-            fitter.enabled = false;
-
         GridLayoutGroup gridLayout = caseGridContent.GetComponent<GridLayoutGroup>();
         if (gridLayout != null)
             gridLayout.enabled = true;
+
+        ContentSizeFitter fitter = caseGridContent.GetComponent<ContentSizeFitter>();
+        if (fitter == null)
+            fitter = caseGridContent.gameObject.AddComponent<ContentSizeFitter>();
+
+        fitter.enabled = true;
+        fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+        fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+    }
+
+    private void RebuildShopLayout()
+    {
+        if (caseGridContent == null)
+            return;
+
+        Canvas.ForceUpdateCanvases();
+
+        RectTransform rectTransform = caseGridContent as RectTransform;
+        if (rectTransform != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
     }
 
     private void SpawnCurrentCategory()
@@ -192,7 +205,6 @@ public class CaseShopUI : MonoBehaviour
         }
 
         List<CaseData> casesToShow = GetSortedCasesForCurrentCategory();
-
         PlayerRank lastRank = (PlayerRank)(-1);
 
         foreach (CaseData caseData in casesToShow)
@@ -248,9 +260,7 @@ public class CaseShopUI : MonoBehaviour
         if (rankDividerPrefab == null)
             return;
 
-        CaseShopRankDividerUI divider =
-            Instantiate(rankDividerPrefab, caseGridContent);
-
+        CaseShopRankDividerUI divider = Instantiate(rankDividerPrefab, caseGridContent);
         divider.gameObject.SetActive(true);
         divider.Setup(requiredRank);
 
@@ -259,8 +269,7 @@ public class CaseShopUI : MonoBehaviour
 
     private void SpawnCaseCard(CaseData caseData)
     {
-        CaseShopCardUI card =
-            Instantiate(caseCardPrefab, caseGridContent);
+        CaseShopCardUI card = Instantiate(caseCardPrefab, caseGridContent);
 
         card.gameObject.SetActive(true);
         card.Setup(caseData, this);
@@ -347,9 +356,7 @@ public class CaseShopUI : MonoBehaviour
         if (caseData.priceInGold <= 0f)
             return 0;
 
-        int maxByGold =
-            Mathf.FloorToInt(SaveManager.Instance.Gold / caseData.priceInGold);
-
+        int maxByGold = Mathf.FloorToInt(SaveManager.Instance.Gold / caseData.priceInGold);
         return Mathf.Max(0, maxByGold);
     }
 
@@ -379,9 +386,7 @@ public class CaseShopUI : MonoBehaviour
 
         if (playerRank < caseData.requiredRank)
         {
-            failReason =
-                $"Rank: {PlayerProgressUtility.GetRankDisplayName(caseData.requiredRank)}";
-
+            failReason = $"Rank: {PlayerProgressUtility.GetRankDisplayName(caseData.requiredRank)}";
             return false;
         }
 
@@ -435,11 +440,9 @@ public class CaseShopUI : MonoBehaviour
         }
 
         CaseInventoryManager.Instance.AddCases(caseData, amount);
-
         SaveManager.Instance.SaveGame();
 
-        Debug.Log(
-            $"Bought {amount}x {caseData.caseName} for {totalCost:0.00} gold.");
+        Debug.Log($"Bought {amount}x {caseData.caseName} for {totalCost:0.00} gold.");
 
         RefreshCards();
     }
@@ -499,9 +502,7 @@ public class CaseShopUI : MonoBehaviour
 
     public void PreviousCategory()
     {
-        int categoryCount =
-            System.Enum.GetValues(typeof(CaseShopCategory)).Length;
-
+        int categoryCount = System.Enum.GetValues(typeof(CaseShopCategory)).Length;
         int currentIndex = (int)currentCategory;
         currentIndex--;
 
@@ -514,9 +515,7 @@ public class CaseShopUI : MonoBehaviour
 
     public void NextCategory()
     {
-        int categoryCount =
-            System.Enum.GetValues(typeof(CaseShopCategory)).Length;
-
+        int categoryCount = System.Enum.GetValues(typeof(CaseShopCategory)).Length;
         int currentIndex = (int)currentCategory;
         currentIndex++;
 
@@ -537,19 +536,15 @@ public class CaseShopUI : MonoBehaviour
             case CaseShopCategory.Cases:
                 categoryText.text = "Cases";
                 break;
-
             case CaseShopCategory.Collections:
                 categoryText.text = "Collections";
                 break;
-
             case CaseShopCategory.SouvenirCollections:
                 categoryText.text = "Souvenir";
                 break;
-
             case CaseShopCategory.CustomCases:
                 categoryText.text = "Custom";
                 break;
-
             default:
                 categoryText.text = currentCategory.ToString();
                 break;
