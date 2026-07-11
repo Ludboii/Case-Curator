@@ -13,6 +13,7 @@ public class CaseInspectDropCardUI : MonoBehaviour
     public TMP_Text weaponNameText;
     public TMP_Text skinNameText;
     public TMP_Text rarityText;
+    public TMP_Text foundStateText;
 
     [Header("Button")]
     public Button button;
@@ -77,6 +78,7 @@ public class CaseInspectDropCardUI : MonoBehaviour
             rarityText.color = rarityColor;
             rarityText.raycastTarget = false;
         }
+        UpdateFoundStateText();
 
         if (button != null)
         {
@@ -141,6 +143,23 @@ public class CaseInspectDropCardUI : MonoBehaviour
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(OnClicked);
         }
+        if (foundStateText != null)
+{
+    foundStateText.raycastTarget = false;
+
+    if (ContainerProgressManager.Instance != null && owner != null)
+    {
+        bool foundRare = ContainerProgressManager.Instance.HasFoundRareSpecial(owner.CurrentCase);
+
+        foundStateText.text = foundRare ? "Found" : "Not Found";
+        foundStateText.color = foundRare ? Color.green : Color.gray;
+    }
+    else
+    {
+        foundStateText.text = "Not Found";
+        foundStateText.color = Color.gray;
+    }
+}
     }
 
     private void OnClicked()
@@ -158,6 +177,39 @@ public class CaseInspectDropCardUI : MonoBehaviour
             owner.OpenSkinInfo(skin);
     }
 
+private void UpdateFoundStateText()
+{
+    if (foundStateText == null)
+        return;
+
+    foundStateText.raycastTarget = false;
+
+    if (skin == null)
+    {
+        foundStateText.text = "";
+        return;
+    }
+
+    if (ContainerProgressManager.Instance == null)
+    {
+        foundStateText.text = "Not Found";
+        foundStateText.color = Color.gray;
+        return;
+    }
+
+    bool found = ContainerProgressManager.Instance.HasFoundSkin(owner.CurrentCase, skin);
+
+    if (found)
+    {
+        foundStateText.text = "Found";
+        foundStateText.color = Color.green;
+    }
+    else
+    {
+        foundStateText.text = "Not Found";
+        foundStateText.color = Color.gray;
+    }
+}
     private string GetRarityDisplayName(Rarity rarity)
     {
         switch (rarity)

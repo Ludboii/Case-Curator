@@ -109,6 +109,29 @@ public class ContainerProgressManager : MonoBehaviour
         return found;
     }
 
+    public bool HasFoundSkin(CaseData caseData, SkinData skin)
+{
+    if (caseData == null || skin == null)
+        return false;
+
+    ContainerProgressData progress = GetProgress(caseData);
+
+    if (progress == null || progress.foundSkinKeys == null)
+        return false;
+
+    return progress.foundSkinKeys.Contains(GetSkinKey(skin));
+}
+
+public bool HasFoundRareSpecial(CaseData caseData)
+{
+    ContainerProgressData progress = GetProgress(caseData);
+
+    if (progress == null)
+        return false;
+
+    return progress.foundRareSpecial;
+}
+
     public int GetTargetCount(CaseData caseData)
     {
         if (caseData == null || caseData.dropPool == null)

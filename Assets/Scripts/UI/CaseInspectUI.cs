@@ -45,6 +45,7 @@ public class CaseInspectUI : MonoBehaviour
     private readonly List<SkinData> rareSpecialSkins = new List<SkinData>();
 
     private CaseData currentCase;
+    public CaseData CurrentCase => currentCase;
 
     private void Awake()
     {

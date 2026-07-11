@@ -101,6 +101,7 @@ MonoBehaviour:
   weaponNameText: {fileID: 8040425095711873414}
   skinNameText: {fileID: 3499038518693112985}
   rarityText: {fileID: 4860305562099508071}
+  foundStateText: {fileID: 1171081676949632043}
   button: {fileID: 5196529332132844230}
 --- !u!1 &2762551177337669922
 GameObject:
@@ -408,10 +409,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3926800147576746806}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -4.7, y: -162.7}
-  m_SizeDelta: {x: 149.6429, y: 21.0913}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 16.950012}
+  m_SizeDelta: {x: 0, y: 33.9}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5376660434462943828
 CanvasRenderer:
@@ -450,8 +451,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4281008126
+  m_fontColor: {r: 0.99692684, g: 1, b: 0.16509432, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -468,8 +469,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
