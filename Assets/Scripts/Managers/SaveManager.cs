@@ -22,11 +22,18 @@ public class SaveManager : MonoBehaviour
     [SerializeField] private MuseumStateSaveData museum =
         new MuseumStateSaveData();
 
+    [SerializeField] private TradeupStateSaveData tradeups =
+        new TradeupStateSaveData();
+
     [SerializeField] private SaveMetadataSaveData metadata =
         new SaveMetadataSaveData();
 
     [SerializeField] private ContainerProgressSaveData containerProgressState =
         new ContainerProgressSaveData();
+
+    [Header("Tradeup History")]
+    [Tooltip("Maximum completed tradeups retained in SaveData 2.0 history.")]
+    [SerializeField, Min(0)] private int maximumTradeupHistoryEntries = 100;
 
     [Header("Save Scheduling")]
     [Tooltip("Dirty game state is written at most once per interval.")]
@@ -37,6 +44,7 @@ public class SaveManager : MonoBehaviour
 
     public event Action OnCurrencyChanged;
     public event Action OnProgressChanged;
+    public event Action OnTradeupStateChanged;
 
     public float Gold => gold;
     public int Diamonds => diamonds;
@@ -44,6 +52,7 @@ public class SaveManager : MonoBehaviour
     public int SaveVersion => SaveData.CurrentVersion;
     public UpgradeStateSaveData Upgrades => upgrades;
     public MuseumStateSaveData Museum => museum;
+    public TradeupStateSaveData Tradeups => tradeups;
     public bool IsDirty => saveDirty;
 
     public int OwnedOpeningSlots => Mathf.Clamp(
@@ -110,17 +119,16 @@ public class SaveManager : MonoBehaviour
 
     public void MarkDirty()
     {
-        if (!saveDirty)
-        {
-            saveDirty = true;
-            ScheduleNextAutosave();
-        }
+        if (saveDirty)
+            return;
+
+        saveDirty = true;
+        ScheduleNextAutosave();
     }
 
     /// <summary>
-    /// Compatibility entry point used throughout the current project. It no
-    /// longer writes to disk immediately; it marks the unified SaveData 2.0
-    /// state dirty so rapid gameplay actions are coalesced into one autosave.
+    /// Compatibility entry point used throughout the project. It marks the
+    /// unified SaveData 2.0 state dirty instead of writing immediately.
     /// </summary>
     public void SaveGame()
     {
@@ -128,8 +136,8 @@ public class SaveManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Writes immediately. Use this for an explicit manual Save Data button,
-    /// application pause/quit, migrations, and recovery—not ordinary actions.
+    /// Writes immediately. Intended for explicit manual saves, application
+    /// pause/quit, migrations and backup recovery.
     /// </summary>
     public bool SaveNow()
     {
@@ -231,6 +239,89 @@ public class SaveManager : MonoBehaviour
         return true;
     }
 
+    public bool SetTradeupFloatTuningLevel(int level)
+    {
+        EnsureRuntimeState();
+
+        int value = Mathf.Max(0, level);
+
+        if (tradeups.floatTuningLevel == value)
+            return false;
+
+        tradeups.floatTuningLevel = value;
+        MarkDirty();
+        OnTradeupStateChanged?.Invoke();
+        return true;
+    }
+
+    /// <summary>
+    /// Records one completed tradeup after the inventory transaction succeeds.
+    /// The resolver should populate the exact inputs and output on the record.
+    /// </summary>
+    public void RecordCompletedTradeup(TradeupHistorySaveData record)
+    {
+        if (record == null)
+        {
+            Debug.LogWarning(
+                "SaveManager: Cannot record a null tradeup history entry.");
+            return;
+        }
+
+        EnsureRuntimeState();
+        NormalizeTradeupHistoryRecord(record);
+
+        tradeups.completedTradeups++;
+        tradeups.totalInputsConsumed += Mathf.Max(0, record.inputCount);
+        tradeups.totalInputMarketValue +=
+            Mathf.Max(0f, record.totalInputMarketValue);
+        tradeups.totalOutputMarketValue +=
+            Mathf.Max(0f, record.outputMarketValue);
+
+        if (record.covertToRareSpecial)
+            tradeups.completedCovertTradeups++;
+        else
+            tradeups.completedStandardTradeups++;
+
+        if (record.outputMarketValue > tradeups.bestOutputMarketValue)
+        {
+            tradeups.bestOutputMarketValue = record.outputMarketValue;
+            tradeups.bestOutputSkinApiId = record.outputSkinApiId;
+        }
+
+        bool hasValidFloat = record.outputFloat >= 0d;
+        bool isNewLowest =
+            hasValidFloat &&
+            (tradeups.lowestOutputFloat < 0d ||
+             record.outputFloat < tradeups.lowestOutputFloat);
+
+        if (isNewLowest)
+        {
+            tradeups.lowestOutputFloat = record.outputFloat;
+            tradeups.lowestFloatOutputSkinApiId = record.outputSkinApiId;
+        }
+
+        if (maximumTradeupHistoryEntries > 0)
+        {
+            tradeups.recentHistory.Add(Clone(record));
+            TrimTradeupHistory(tradeups, maximumTradeupHistoryEntries);
+        }
+        else
+        {
+            tradeups.recentHistory.Clear();
+        }
+
+        MarkDirty();
+        OnTradeupStateChanged?.Invoke();
+    }
+
+    public void ResetTradeupStateForTesting()
+    {
+        tradeups = new TradeupStateSaveData();
+        EnsureTradeupState(tradeups);
+        MarkDirty();
+        OnTradeupStateChanged?.Invoke();
+    }
+
     public void LoadGame()
     {
         if (database == null)
@@ -275,7 +366,8 @@ public class SaveManager : MonoBehaviour
         Debug.Log(
             $"Game loaded. SaveData {data.saveVersion}. " +
             $"Items: {InventoryManager.Instance.Count}. " +
-            $"Cases: {(CaseInventoryManager.Instance != null ? CaseInventoryManager.Instance.TotalCaseCount : 0)}.");
+            $"Cases: {(CaseInventoryManager.Instance != null ? CaseInventoryManager.Instance.TotalCaseCount : 0)}. " +
+            $"Tradeups: {tradeups.completedTradeups}.");
 
         if (migrated || loadedFromBackup)
         {
@@ -378,6 +470,7 @@ public class SaveManager : MonoBehaviour
             inventories = BuildInventoryState(),
             upgrades = Clone(upgrades),
             museum = Clone(museum),
+            tradeups = Clone(tradeups),
             containerProgress = ContainerProgressManager.Instance != null
                 ? ContainerProgressManager.Instance.ExportSaveData()
                 : Clone(containerProgressState)
@@ -566,6 +659,7 @@ public class SaveManager : MonoBehaviour
                 openingSlotsOwned = 1
             },
             museum = new MuseumStateSaveData(),
+            tradeups = new TradeupStateSaveData(),
             containerProgress = ContainerProgressManager.Instance != null
                 ? ContainerProgressManager.Instance.ExportSaveData()
                 : ContainerProgressManager.ReadLegacySaveForMigration()
@@ -582,6 +676,7 @@ public class SaveManager : MonoBehaviour
         metadata = Clone(data.metadata);
         upgrades = Clone(data.upgrades);
         museum = Clone(data.museum);
+        tradeups = Clone(data.tradeups);
         containerProgressState = Clone(data.containerProgress);
 
         gold = Mathf.Max(0f, data.player.gold);
@@ -620,6 +715,7 @@ public class SaveManager : MonoBehaviour
 
         OnCurrencyChanged?.Invoke();
         OnProgressChanged?.Invoke();
+        OnTradeupStateChanged?.Invoke();
     }
 
     private List<InventoryItem> BuildLoadedSkinInventory(
@@ -669,7 +765,6 @@ public class SaveManager : MonoBehaviour
                 item.patternTier = PatternTier.None;
             }
 
-            // Market value is a cache and must follow current balance formulas.
             item.marketValue = PriceCalculator.GetPrice(item);
             loaded.Add(item);
         }
@@ -721,15 +816,17 @@ public class SaveManager : MonoBehaviour
             3);
 
         if (upgrades.upgradeLevels == null)
-        {
-            upgrades.upgradeLevels =
-                new List<UpgradeLevelSaveData>();
-        }
+            upgrades.upgradeLevels = new List<UpgradeLevelSaveData>();
 
         if (museum == null)
             museum = new MuseumStateSaveData();
 
         EnsureMuseumState(museum);
+
+        if (tradeups == null)
+            tradeups = new TradeupStateSaveData();
+
+        EnsureTradeupState(tradeups);
 
         if (metadata == null)
             metadata = new SaveMetadataSaveData();
@@ -780,16 +877,10 @@ public class SaveManager : MonoBehaviour
             data.inventories.itemsPerStoragePage);
 
         if (data.inventories.skinInventory == null)
-        {
-            data.inventories.skinInventory =
-                new List<InventoryItemSaveData>();
-        }
+            data.inventories.skinInventory = new List<InventoryItemSaveData>();
 
         if (data.inventories.caseInventory == null)
-        {
-            data.inventories.caseInventory =
-                new List<CaseInventoryEntrySaveData>();
-        }
+            data.inventories.caseInventory = new List<CaseInventoryEntrySaveData>();
 
         if (data.upgrades == null)
             data.upgrades = new UpgradeStateSaveData();
@@ -800,15 +891,17 @@ public class SaveManager : MonoBehaviour
             3);
 
         if (data.upgrades.upgradeLevels == null)
-        {
-            data.upgrades.upgradeLevels =
-                new List<UpgradeLevelSaveData>();
-        }
+            data.upgrades.upgradeLevels = new List<UpgradeLevelSaveData>();
 
         if (data.museum == null)
             data.museum = new MuseumStateSaveData();
 
         EnsureMuseumState(data.museum);
+
+        if (data.tradeups == null)
+            data.tradeups = new TradeupStateSaveData();
+
+        EnsureTradeupState(data.tradeups);
 
         if (data.containerProgress == null)
             data.containerProgress = new ContainerProgressSaveData();
@@ -823,10 +916,7 @@ public class SaveManager : MonoBehaviour
     private static void EnsureMuseumState(MuseumStateSaveData state)
     {
         if (state.donations == null)
-        {
-            state.donations =
-                new List<MuseumDonationRecordSaveData>();
-        }
+            state.donations = new List<MuseumDonationRecordSaveData>();
 
         if (state.claimedMilestoneIds == null)
             state.claimedMilestoneIds = new List<string>();
@@ -854,6 +944,77 @@ public class SaveManager : MonoBehaviour
             state.trophyRoom.displayedItems =
                 new List<TrophyDisplaySlotSaveData>();
         }
+    }
+
+    private static void EnsureTradeupState(TradeupStateSaveData state)
+    {
+        state.completedTradeups = Mathf.Max(0, state.completedTradeups);
+        state.completedStandardTradeups =
+            Mathf.Max(0, state.completedStandardTradeups);
+        state.completedCovertTradeups =
+            Mathf.Max(0, state.completedCovertTradeups);
+        state.totalInputsConsumed = Mathf.Max(0, state.totalInputsConsumed);
+
+        state.totalInputMarketValue =
+            Mathf.Max(0f, state.totalInputMarketValue);
+        state.totalOutputMarketValue =
+            Mathf.Max(0f, state.totalOutputMarketValue);
+        state.bestOutputMarketValue =
+            Mathf.Max(0f, state.bestOutputMarketValue);
+        state.floatTuningLevel = Mathf.Max(0, state.floatTuningLevel);
+
+        if (state.lowestOutputFloat < 0d)
+            state.lowestOutputFloat = -1d;
+
+        if (state.recentHistory == null)
+            state.recentHistory = new List<TradeupHistorySaveData>();
+
+        for (int i = state.recentHistory.Count - 1; i >= 0; i--)
+        {
+            TradeupHistorySaveData record = state.recentHistory[i];
+
+            if (record == null)
+            {
+                state.recentHistory.RemoveAt(i);
+                continue;
+            }
+
+            NormalizeTradeupHistoryRecord(record);
+        }
+    }
+
+    private static void NormalizeTradeupHistoryRecord(
+        TradeupHistorySaveData record)
+    {
+        if (string.IsNullOrWhiteSpace(record.tradeupId))
+            record.tradeupId = Guid.NewGuid().ToString();
+
+        if (record.completedUtcTicks <= 0)
+            record.completedUtcTicks = DateTime.UtcNow.Ticks;
+
+        record.inputCount = Mathf.Max(0, record.inputCount);
+        record.totalInputMarketValue =
+            Mathf.Max(0f, record.totalInputMarketValue);
+        record.outputMarketValue = Mathf.Max(0f, record.outputMarketValue);
+
+        if (record.inputInstanceIds == null)
+            record.inputInstanceIds = new List<string>();
+
+        if (record.inputSkinApiIds == null)
+            record.inputSkinApiIds = new List<string>();
+
+        if (record.inputSourceApiIds == null)
+            record.inputSourceApiIds = new List<string>();
+    }
+
+    private static void TrimTradeupHistory(
+        TradeupStateSaveData state,
+        int maximumEntries)
+    {
+        int limit = Mathf.Max(0, maximumEntries);
+
+        while (state.recentHistory.Count > limit)
+            state.recentHistory.RemoveAt(0);
     }
 
     private static T Clone<T>(T source) where T : class, new()
