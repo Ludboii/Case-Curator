@@ -11,6 +11,15 @@ public class CaseShopCardUI : MonoBehaviour
     public Image qualityBar;
     public Image buyButtonImage;
 
+    [Header("Completion Border")]
+    [Tooltip("Assign the Image on the child named ContainerProgressPanel.")]
+    public Image containerProgressPanel;
+    public Color noCompletionColor = Color.black;
+    public Color bronzeCompletionColor = new Color(0.72f, 0.38f, 0.12f, 1f);
+    public Color silverCompletionColor = new Color(0.78f, 0.84f, 0.88f, 1f);
+    public Color goldCompletionColor = new Color(1f, 0.72f, 0.08f, 1f);
+    public Color diamondCompletionColor = new Color(0.25f, 0.9f, 1f, 1f);
+
     [Header("Text")]
     public TMP_Text caseNameText;
     public TMP_Text collectionText;
@@ -35,6 +44,7 @@ public class CaseShopCardUI : MonoBehaviour
 
     private void Awake()
     {
+        CacheCompletionPanel();
         DisableTextRaycasts();
     }
 
@@ -50,6 +60,7 @@ public class CaseShopCardUI : MonoBehaviour
         }
 
         gameObject.SetActive(true);
+        CacheCompletionPanel();
         DisableTextRaycasts();
 
         if (caseImage != null)
@@ -99,6 +110,7 @@ public class CaseShopCardUI : MonoBehaviour
 
         ApplyBuyButtonColor(canBuy, failReason);
         RefreshProgressText();
+        ApplyCompletionBorder();
 
         if (buyButtonText != null)
         {
@@ -131,6 +143,70 @@ public class CaseShopCardUI : MonoBehaviour
         }
 
         collectionText.text = $"Found 0 / {GetCompletionTargetCount(caseData)}";
+    }
+
+    private void ApplyCompletionBorder()
+    {
+        CacheCompletionPanel();
+
+        if (containerProgressPanel == null)
+            return;
+
+        ContainerCompletionTier tier = ContainerCompletionTier.None;
+
+        if (ContainerProgressManager.Instance != null)
+            tier = ContainerProgressManager.Instance.GetCompletionTier(caseData);
+
+        switch (tier)
+        {
+            case ContainerCompletionTier.Bronze:
+                containerProgressPanel.color = bronzeCompletionColor;
+                break;
+            case ContainerCompletionTier.Silver:
+                containerProgressPanel.color = silverCompletionColor;
+                break;
+            case ContainerCompletionTier.Gold:
+                containerProgressPanel.color = goldCompletionColor;
+                break;
+            case ContainerCompletionTier.Diamond:
+                containerProgressPanel.color = diamondCompletionColor;
+                break;
+            default:
+                containerProgressPanel.color = noCompletionColor;
+                break;
+        }
+
+        containerProgressPanel.raycastTarget = false;
+    }
+
+    private void CacheCompletionPanel()
+    {
+        if (containerProgressPanel != null)
+            return;
+
+        Transform panelTransform = FindChildRecursive(transform, "ContainerProgressPanel");
+
+        if (panelTransform != null)
+            containerProgressPanel = panelTransform.GetComponent<Image>();
+    }
+
+    private Transform FindChildRecursive(Transform parent, string childName)
+    {
+        if (parent == null)
+            return null;
+
+        foreach (Transform child in parent)
+        {
+            if (child.name == childName)
+                return child;
+
+            Transform nested = FindChildRecursive(child, childName);
+
+            if (nested != null)
+                return nested;
+        }
+
+        return null;
     }
 
     private void ApplyCaseQualityVisuals()
