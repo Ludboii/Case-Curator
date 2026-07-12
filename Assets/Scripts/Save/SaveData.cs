@@ -12,6 +12,7 @@ public class SaveData
     public InventoryStateSaveData inventories = new InventoryStateSaveData();
     public UpgradeStateSaveData upgrades = new UpgradeStateSaveData();
     public MuseumStateSaveData museum = new MuseumStateSaveData();
+    public TradeupStateSaveData tradeups = new TradeupStateSaveData();
     public ContainerProgressSaveData containerProgress = new ContainerProgressSaveData();
 }
 
@@ -162,4 +163,66 @@ public class TrophyDisplaySlotSaveData
 {
     public int slotIndex;
     public string inventoryItemInstanceId;
+}
+
+/// <summary>
+/// Persistent lifetime state for the tradeup system. This is additive to
+/// SaveData 2.0, so existing v2 saves deserialize with safe defaults.
+/// </summary>
+[Serializable]
+public class TradeupStateSaveData
+{
+    public int completedTradeups;
+    public int completedStandardTradeups;
+    public int completedCovertTradeups;
+    public int totalInputsConsumed;
+
+    public float totalInputMarketValue;
+    public float totalOutputMarketValue;
+    public float bestOutputMarketValue;
+    public string bestOutputSkinApiId;
+
+    // -1 means no non-vanilla tradeup output has been recorded yet.
+    public double lowestOutputFloat = -1d;
+    public string lowestFloatOutputSkinApiId;
+
+    // Kept here so the future upgrade system can affect the resolver without
+    // another save-schema change.
+    public int floatTuningLevel;
+
+    // Bounded by SaveManager when records are added.
+    public List<TradeupHistorySaveData> recentHistory =
+        new List<TradeupHistorySaveData>();
+}
+
+/// <summary>
+/// One completed tradeup record. The history contains enough information for
+/// a future stats screen, result recap, debugging and save verification.
+/// </summary>
+[Serializable]
+public class TradeupHistorySaveData
+{
+    public string tradeupId;
+    public long completedUtcTicks;
+
+    public Rarity inputRarity;
+    public Rarity outputRarity;
+    public int inputCount;
+    public bool statTrak;
+    public bool covertToRareSpecial;
+
+    public double averageInputFloat;
+    public float totalInputMarketValue;
+
+    public string outputSkinApiId;
+    public string outputInstanceId;
+    public double outputFloat = -1d;
+    public int outputPatternId = -1;
+    public PatternTier outputPatternTier = PatternTier.None;
+    public float outputMarketValue;
+
+    // These preserve the exact consumed inputs and their source weighting.
+    public List<string> inputInstanceIds = new List<string>();
+    public List<string> inputSkinApiIds = new List<string>();
+    public List<string> inputSourceApiIds = new List<string>();
 }
