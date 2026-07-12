@@ -57,19 +57,25 @@ public class SkinInspectUI : MonoBehaviour
 
     private InventoryItem currentItem;
 
-private void Awake()
-{
-    if (closeButton != null)
-        closeButton.onClick.AddListener(Close);
+    private void Awake()
+    {
+        SetupButton(closeButton, Close);
+        SetupButton(sellButton, SellCurrentItem);
+        SetupButton(moveButton, MoveCurrentItem);
+        SetupButton(favoriteButton, ToggleFavoriteCurrentItem);
+        Close();
+    }
 
-    if (sellButton != null)
-        sellButton.onClick.AddListener(SellCurrentItem);
+    private void SetupButton(
+        Button button,
+        UnityEngine.Events.UnityAction action)
+    {
+        if (button == null)
+            return;
 
-    if (favoriteButton != null)
-        favoriteButton.onClick.AddListener(ToggleFavoriteCurrentItem);
-
-    Close();
-}
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(action);
+    }
 
     public void OpenOwnedItem(InventoryItem item)
     {
@@ -77,7 +83,8 @@ private void Awake()
 
         if (item == null || item.skin == null)
         {
-            Debug.LogWarning("SkinInspectUI: tried to inspect a null item.");
+            Debug.LogWarning(
+                "SkinInspectUI: tried to inspect a null item.");
             return;
         }
 
@@ -95,210 +102,267 @@ private void Awake()
         UpdateGemIcon(item, skin);
         UpdateSellButton();
         UpdateFavoriteButton();
+        UpdateMoveButton();
     }
+
     private void UpdateSellButton()
-{
-    if (sellButton == null)
-        return;
-
-    bool canSell =
-    currentItem != null &&
-    currentItem.skin != null &&
-    !currentItem.favorite &&
-    InventoryManager.Instance != null &&
-    SaveManager.Instance != null;
-
-    sellButton.interactable = canSell;
-
-    TMP_Text targetText = sellButtonText;
-
-    if (targetText == null)
-        targetText = sellButton.GetComponentInChildren<TMP_Text>();
-{
-    if (currentItem != null && currentItem.favorite)
     {
-        targetText.text = "Favorited";
-    }
-    else
-    {
-        float value = GetSellValue(currentItem);
-        targetText.text = $"Sell\n{value:0.##}";
-    }
-}
+        if (sellButton == null)
+            return;
 
-    if (targetText != null)
-    {
-        float value = GetSellValue(currentItem);
-        targetText.text = $"Sell\n{value:0.##}";
-    }
-}
+        bool hasItem =
+            currentItem != null &&
+            currentItem.skin != null;
 
-private void ToggleFavoriteCurrentItem()
-{
-    if (currentItem == null)
-    {
-        Debug.LogWarning("SkinInspectUI: No current item to favorite.");
-        return;
-    }
+        bool canSell =
+            hasItem &&
+            !currentItem.favorite &&
+            InventoryManager.Instance != null &&
+            SaveManager.Instance != null;
 
-    if (InventoryManager.Instance != null)
-    {
-        InventoryManager.Instance.ToggleFavorite(currentItem);
-    }
-    else
-    {
-        currentItem.favorite = !currentItem.favorite;
-    }
+        sellButton.interactable = canSell;
 
-    if (SaveManager.Instance != null)
-    {
-        SaveManager.Instance.SaveGame();
-    }
+        TMP_Text targetText = sellButtonText;
 
-    UpdateFavoriteButton();
-    UpdateSellButton();
-}
+        if (targetText == null)
+            targetText = sellButton.GetComponentInChildren<TMP_Text>(true);
 
-private void UpdateFavoriteButton()
-{
-    if (favoriteButton == null)
-        return;
+        if (targetText == null)
+            return;
 
-    bool hasItem =
-        currentItem != null &&
-        currentItem.skin != null;
-
-    favoriteButton.interactable = hasItem;
-
-    TMP_Text targetText = favoriteButtonText;
-
-    if (targetText == null)
-        targetText = favoriteButton.GetComponentInChildren<TMP_Text>();
-
-    if (targetText != null)
-    {
         if (!hasItem)
         {
-            targetText.text = "Favorite";
+            targetText.text = "Sell";
+        }
+        else if (currentItem.favorite)
+        {
+            targetText.text = "Favorited";
         }
         else
         {
-            targetText.text =
-                currentItem.favorite ? favoriteOnText : favoriteOffText;
+            targetText.text = $"Sell\n{GetSellValue(currentItem):0.##}";
         }
     }
-}
 
-private float GetSellValue(InventoryItem item)
-{
-    if (item == null || item.skin == null)
-        return 0f;
-
-    float value = item.marketValue;
-
-    if (value <= 0f)
+    private void ToggleFavoriteCurrentItem()
     {
-        value = PriceCalculator.GetPrice(item);
-        item.marketValue = value;
+        if (currentItem == null)
+        {
+            Debug.LogWarning(
+                "SkinInspectUI: No current item to favorite.");
+            return;
+        }
+
+        if (InventoryManager.Instance != null)
+            InventoryManager.Instance.ToggleFavorite(currentItem);
+        else
+            currentItem.favorite = !currentItem.favorite;
+
+        UpdateFavoriteButton();
+        UpdateSellButton();
     }
 
-    return value * sellMultiplier;
-}
-
-private void SellCurrentItem()
-{
-    if (currentItem == null || currentItem.skin == null)
+    private void UpdateFavoriteButton()
     {
-        Debug.LogWarning("SkinInspectUI: No item selected to sell.");
-        return;
+        if (favoriteButton == null)
+            return;
+
+        bool hasItem =
+            currentItem != null &&
+            currentItem.skin != null;
+
+        favoriteButton.interactable = hasItem;
+
+        TMP_Text targetText = favoriteButtonText;
+
+        if (targetText == null)
+        {
+            targetText =
+                favoriteButton.GetComponentInChildren<TMP_Text>(true);
+        }
+
+        if (targetText == null)
+            return;
+
+        targetText.text = hasItem && currentItem.favorite
+            ? favoriteOnText
+            : favoriteOffText;
     }
 
-    if (currentItem.favorite)
+    private void UpdateMoveButton()
     {
-        Debug.LogWarning("SkinInspectUI: Cannot sell a favorited item. Unfavorite it first.");
-        return;
+        if (moveButton == null)
+            return;
+
+        TMP_Text targetText =
+            moveButton.GetComponentInChildren<TMP_Text>(true);
+
+        InventoryManager manager = InventoryManager.Instance;
+
+        if (currentItem == null ||
+            manager == null ||
+            manager.UnlockedStoragePages <= 1)
+        {
+            moveButton.interactable = false;
+
+            if (targetText != null)
+                targetText.text = "MOVE";
+
+            return;
+        }
+
+        int destination =
+            manager.FindNextStorageWithSpace(currentItem.storageIndex);
+
+        bool canMove = destination >= 0;
+        moveButton.interactable = canMove;
+
+        if (targetText != null)
+        {
+            targetText.text = canMove
+                ? $"MOVE\nTO {destination + 1}"
+                : "STORAGE\nFULL";
+        }
     }
 
-    float sellValue = GetSellValue(currentItem);
-
-    bool shouldConfirm =
-        confirmSingleSell &&
-        sellValue >= singleSellConfirmationThreshold;
-
-    if (shouldConfirm && SellConfirmationPopupUI.Instance != null)
+    private void MoveCurrentItem()
     {
-        string itemName = SkinDisplayUtility.GetDisplayName(currentItem.skin);
+        if (currentItem == null || InventoryManager.Instance == null)
+            return;
 
-        SellConfirmationPopupUI.Instance.Show(
-            "Confirm Sell",
-            $"Sell {itemName} for {sellValue:0.##} gold?",
-            "Sell",
-            "Cancel",
-            ConfirmSellCurrentItem);
+        int destination =
+            InventoryManager.Instance.MoveItemToNextStorage(currentItem);
 
-        return;
+        if (destination < 0)
+        {
+            UpdateMoveButton();
+            return;
+        }
+
+        Debug.Log(
+            $"Moved inspected item to Storage {destination + 1}.");
+
+        Close();
     }
 
-    ConfirmSellCurrentItem();
-}
-
-private void ConfirmSellCurrentItem()
-{
-    if (currentItem == null || currentItem.skin == null)
+    private float GetSellValue(InventoryItem item)
     {
-        Debug.LogWarning("SkinInspectUI: No item selected to sell.");
-        return;
+        if (item == null || item.skin == null)
+            return 0f;
+
+        float value = item.marketValue;
+
+        if (value <= 0f)
+        {
+            value = PriceCalculator.GetPrice(item);
+            item.marketValue = value;
+        }
+
+        return value * sellMultiplier;
     }
 
-    if (currentItem.favorite)
+    private void SellCurrentItem()
     {
-        Debug.LogWarning("SkinInspectUI: Cannot sell a favorited item. Unfavorite it first.");
-        return;
+        if (currentItem == null || currentItem.skin == null)
+        {
+            Debug.LogWarning(
+                "SkinInspectUI: No item selected to sell.");
+            return;
+        }
+
+        if (currentItem.favorite)
+        {
+            Debug.LogWarning(
+                "SkinInspectUI: Cannot sell a favorited item. " +
+                "Unfavorite it first.");
+            return;
+        }
+
+        float sellValue = GetSellValue(currentItem);
+
+        bool shouldConfirm =
+            confirmSingleSell &&
+            sellValue >= singleSellConfirmationThreshold;
+
+        if (shouldConfirm && SellConfirmationPopupUI.Instance != null)
+        {
+            string itemName =
+                SkinDisplayUtility.GetDisplayName(currentItem.skin);
+
+            SellConfirmationPopupUI.Instance.Show(
+                "Confirm Sell",
+                $"Sell {itemName} for {sellValue:0.##} gold?",
+                "Sell",
+                "Cancel",
+                ConfirmSellCurrentItem);
+            return;
+        }
+
+        ConfirmSellCurrentItem();
     }
 
-    if (InventoryManager.Instance == null)
+    private void ConfirmSellCurrentItem()
     {
-        Debug.LogWarning("SkinInspectUI: Cannot sell because InventoryManager is missing.");
-        return;
+        if (currentItem == null || currentItem.skin == null)
+            return;
+
+        if (currentItem.favorite)
+        {
+            Debug.LogWarning(
+                "SkinInspectUI: Cannot sell a favorited item. " +
+                "Unfavorite it first.");
+            return;
+        }
+
+        if (InventoryManager.Instance == null)
+        {
+            Debug.LogWarning(
+                "SkinInspectUI: Cannot sell because InventoryManager is missing.");
+            return;
+        }
+
+        if (SaveManager.Instance == null)
+        {
+            Debug.LogWarning(
+                "SkinInspectUI: Cannot sell because SaveManager is missing.");
+            return;
+        }
+
+        float sellValue = GetSellValue(currentItem);
+        string soldName =
+            SkinDisplayUtility.GetDisplayName(currentItem.skin);
+
+        bool removed =
+            InventoryManager.Instance.RemoveItem(currentItem);
+
+        if (!removed)
+        {
+            Debug.LogWarning(
+                $"SkinInspectUI: Failed to remove sold item: {soldName}");
+            return;
+        }
+
+        SaveManager.Instance.AddGold(sellValue);
+
+        Debug.Log(
+            $"Sold {soldName} for {sellValue:0.##} gold.");
+
+        currentItem = null;
+        Close();
     }
-
-    if (SaveManager.Instance == null)
-    {
-        Debug.LogWarning("SkinInspectUI: Cannot sell because SaveManager is missing.");
-        return;
-    }
-
-    float sellValue = GetSellValue(currentItem);
-    string soldName = SkinDisplayUtility.GetDisplayName(currentItem.skin);
-
-    bool removed = InventoryManager.Instance.RemoveItem(currentItem);
-    
-    if (!removed)
-    {
-        Debug.LogWarning($"SkinInspectUI: Failed to remove sold item: {soldName}");
-        return;
-    }
-
-    SaveManager.Instance.AddGold(sellValue);
-    SaveManager.Instance.SaveGame();
-
-    Debug.Log($"Sold {soldName} for {sellValue:0.##} gold.");
-
-    currentItem = null;
-    Close();
-}
 
     private void UpdateBackground(SkinData skin)
     {
         if (rarityBackground == null)
             return;
 
-        Color rarityColor = RarityColorUtility.GetColor(skin.rarity);
+        Color rarityColor =
+            RarityColorUtility.GetColor(skin.rarity);
 
-        // Darken the rarity color so the background is not too bright.
-        Color backgroundColor = Color.Lerp(Color.black, rarityColor, 0.55f);
+        Color backgroundColor =
+            Color.Lerp(Color.black, rarityColor, 0.55f);
+
         backgroundColor.a = 1f;
-
         rarityBackground.color = backgroundColor;
     }
 
@@ -318,7 +382,10 @@ private void ConfirmSellCurrentItem()
             weaponNameText.text = skin.weaponName.ToUpperInvariant();
 
         if (skinNameText != null)
-            skinNameText.text = skin.isVanilla ? "Vanilla" : skin.skinName;
+        {
+            skinNameText.text =
+                skin.isVanilla ? "Vanilla" : skin.skinName;
+        }
 
         if (rarityText != null)
             rarityText.text = skin.rarity.ToString();
@@ -338,26 +405,24 @@ private void ConfirmSellCurrentItem()
 
         if (floatText != null)
         {
-            if (item.isVanilla)
-                floatText.text = "Float: Vanilla";
-            else
-                floatText.text = $"Float: {SkinDisplayUtility.GetInspectFloatDisplay(item)}";
+            floatText.text = item.isVanilla
+                ? "Float: Vanilla"
+                : $"Float: {SkinDisplayUtility.GetInspectFloatDisplay(item)}";
         }
 
         if (patternText != null)
         {
-            if (item.isVanilla)
-                patternText.text = "Pattern: None";
-            else
-                patternText.text = $"Pattern: {item.patternId}";
+            patternText.text = item.isVanilla
+                ? "Pattern: None"
+                : $"Pattern: {item.patternId}";
         }
 
         if (patternTierText != null)
         {
             string tierText = GetPatternTierText(item, skin);
-
             patternTierText.text = tierText;
-            patternTierText.gameObject.SetActive(!string.IsNullOrWhiteSpace(tierText));
+            patternTierText.gameObject.SetActive(
+                !string.IsNullOrWhiteSpace(tierText));
         }
     }
 
@@ -382,12 +447,13 @@ private void ConfirmSellCurrentItem()
             return;
 
         Sprite icon = GetGemSprite(item, skin);
-
         gemTierIcon.sprite = icon;
         gemTierIcon.gameObject.SetActive(icon != null);
     }
 
-    private string GetPatternTierText(InventoryItem item, SkinData skin)
+    private string GetPatternTierText(
+        InventoryItem item,
+        SkinData skin)
     {
         if (item == null || skin == null || item.isVanilla)
             return "";
@@ -403,49 +469,44 @@ private void ConfirmSellCurrentItem()
 
     private string FormatPatternTier(PatternTier tier)
     {
-        string raw = tier.ToString();
-
-        if (raw == "Tier1")
-            return "Tier 1";
-
-        if (raw == "Tier2")
-            return "Tier 2";
-
-        if (raw == "Tier3")
-            return "Tier 3";
-
-        return raw;
+        switch (tier)
+        {
+            case PatternTier.Tier1: return "Tier 1";
+            case PatternTier.Tier2: return "Tier 2";
+            case PatternTier.Tier3: return "Tier 3";
+            default: return tier.ToString();
+        }
     }
 
-    private Sprite GetGemSprite(InventoryItem item, SkinData skin)
+    private Sprite GetGemSprite(
+        InventoryItem item,
+        SkinData skin)
     {
         if (item == null || skin == null || item.isVanilla)
             return null;
 
-        string tier = item.patternTier.ToString().ToLowerInvariant();
-        string patternType = skin.patternType.ToString().ToLowerInvariant();
+        switch (item.patternTier)
+        {
+            case PatternTier.Tier1: return t1Gem;
+            case PatternTier.Tier2: return t2Gem;
+            case PatternTier.Tier3: return t3Gem;
+        }
 
-        // Blue gem tiers.
-        if (tier.Contains("tier1"))
-            return t1Gem;
+        string skinName =
+            skin.skinName != null
+                ? skin.skinName.ToLowerInvariant()
+                : "";
 
-        if (tier.Contains("tier2"))
-            return t2Gem;
-
-        if (tier.Contains("tier3"))
-            return t3Gem;
-
-        // Doppler-style special gems.
-        if (patternType.Contains("ruby"))
+        if (skinName.Contains("ruby"))
             return rubyGem;
 
-        if (patternType.Contains("sapphire"))
+        if (skinName.Contains("sapphire"))
             return sapphireGem;
 
-        if (patternType.Contains("emerald"))
+        if (skinName.Contains("emerald"))
             return emeraldGem;
 
-        if (patternType.Contains("blackpearl") || patternType.Contains("black pearl"))
+        if (skinName.Contains("black pearl"))
             return blackPearlGem;
 
         return null;
