@@ -21,10 +21,8 @@ public class CaseInventoryManager : MonoBehaviour
 
             foreach (CaseInventoryEntry entry in cases)
             {
-                if (entry == null)
-                    continue;
-
-                total += entry.amount;
+                if (entry != null)
+                    total += entry.amount;
             }
 
             return total;
@@ -52,11 +50,7 @@ public class CaseInventoryManager : MonoBehaviour
     public int GetAmount(CaseData caseData)
     {
         CaseInventoryEntry entry = GetEntry(caseData);
-
-        if (entry == null)
-            return 0;
-
-        return entry.amount;
+        return entry != null ? entry.amount : 0;
     }
 
     public bool HasCases(CaseData caseData, int amount)
@@ -74,7 +68,8 @@ public class CaseInventoryManager : MonoBehaviour
     {
         if (caseData == null)
         {
-            Debug.LogWarning("CaseInventoryManager: Tried to add null case.");
+            Debug.LogWarning(
+                "CaseInventoryManager: Tried to add null case.");
             return;
         }
 
@@ -95,10 +90,10 @@ public class CaseInventoryManager : MonoBehaviour
         }
 
         entry.amount += amount;
+        NotifyChanged(true);
 
-        OnCaseInventoryChanged?.Invoke();
-
-        Debug.Log($"Added {amount}x {caseData.caseName}. Owned: {entry.amount}");
+        Debug.Log(
+            $"Added {amount}x {caseData.caseName}. Owned: {entry.amount}");
     }
 
     public bool RemoveCases(CaseData caseData, int amount)
@@ -111,10 +106,7 @@ public class CaseInventoryManager : MonoBehaviour
 
         CaseInventoryEntry entry = GetEntry(caseData);
 
-        if (entry == null)
-            return false;
-
-        if (entry.amount < amount)
+        if (entry == null || entry.amount < amount)
             return false;
 
         entry.amount -= amount;
@@ -122,8 +114,7 @@ public class CaseInventoryManager : MonoBehaviour
         if (entry.amount <= 0)
             cases.Remove(entry);
 
-        OnCaseInventoryChanged?.Invoke();
-
+        NotifyChanged(true);
         return true;
     }
 
@@ -142,13 +133,16 @@ public class CaseInventoryManager : MonoBehaviour
 
             if (!string.IsNullOrWhiteSpace(caseData.apiId) &&
                 entry.caseData.apiId == caseData.apiId)
+            {
                 return entry;
+            }
         }
 
         return null;
     }
 
-    public void ReplaceCaseInventory(List<CaseInventoryEntry> loadedCases)
+    public void ReplaceCaseInventory(
+        List<CaseInventoryEntry> loadedCases)
     {
         cases.Clear();
 
@@ -156,24 +150,37 @@ public class CaseInventoryManager : MonoBehaviour
         {
             foreach (CaseInventoryEntry entry in loadedCases)
             {
-                if (entry == null || entry.caseData == null)
+                if (entry == null ||
+                    entry.caseData == null ||
+                    entry.amount <= 0)
+                {
                     continue;
-
-                if (entry.amount <= 0)
-                    continue;
+                }
 
                 cases.Add(entry);
             }
         }
 
-        OnCaseInventoryChanged?.Invoke();
+        NotifyChanged(false);
 
-        Debug.Log($"Case inventory loaded. Total cases: {TotalCaseCount}");
+        Debug.Log(
+            $"Case inventory loaded. Total cases: {TotalCaseCount}");
     }
 
     public void ClearCaseInventory()
     {
+        if (cases.Count == 0)
+            return;
+
         cases.Clear();
+        NotifyChanged(true);
+    }
+
+    private void NotifyChanged(bool markSaveDirty)
+    {
+        if (markSaveDirty && SaveManager.Instance != null)
+            SaveManager.Instance.MarkDirty();
+
         OnCaseInventoryChanged?.Invoke();
     }
 }
