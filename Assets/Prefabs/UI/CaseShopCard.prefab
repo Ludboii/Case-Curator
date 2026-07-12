@@ -706,6 +706,12 @@ MonoBehaviour:
   backgroundImage: {fileID: 8023122626961311229}
   qualityBar: {fileID: 2778816825768345156}
   buyButtonImage: {fileID: 0}
+  containerProgressPanel: {fileID: 8847409603194969796}
+  noCompletionColor: {r: 0, g: 0, b: 0, a: 0}
+  bronzeCompletionColor: {r: 0.72, g: 0.38, b: 0.12, a: 1}
+  silverCompletionColor: {r: 0.78, g: 0.84, b: 0.88, a: 1}
+  goldCompletionColor: {r: 1, g: 0.72, b: 0.08, a: 1}
+  diamondCompletionColor: {r: 0.25, g: 0.9, b: 1, a: 1}
   caseNameText: {fileID: 282917385528886816}
   collectionText: {fileID: 4655526673069610970}
   buyButtonText: {fileID: 5668583646517665037}
