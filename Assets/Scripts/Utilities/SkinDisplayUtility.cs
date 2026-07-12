@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 
 public static class SkinDisplayUtility
@@ -39,7 +40,7 @@ public static class SkinDisplayUtility
             return "Vanilla";
 
         int decimals = GetCardDecimalCount(item.floatValue);
-        string rawValue = item.floatValue.ToString($"F{decimals}", CultureInfo.InvariantCulture);
+        string rawValue = FormatFloat(item.floatValue, decimals);
 
         return ApplyFloatTierStyle(item.floatValue, rawValue);
     }
@@ -49,12 +50,21 @@ public static class SkinDisplayUtility
         if (item == null || item.isVanilla)
             return "Vanilla";
 
-        string rawValue = item.floatValue.ToString("F10", CultureInfo.InvariantCulture);
+        string rawValue = FormatFloat(item.floatValue, 10);
         return ApplyFloatTierStyle(item.floatValue, rawValue);
     }
 
     private static int GetCardDecimalCount(double floatValue)
     {
+        if (floatValue > 0.999d)
+            return 10;
+
+        if (floatValue > 0.99d)
+            return 8;
+
+        if (floatValue > 0.95d)
+            return 6;
+
         if (floatValue < 0.00001d)
             return 8;
 
@@ -67,10 +77,31 @@ public static class SkinDisplayUtility
         return 5;
     }
 
-    private static string ApplyFloatTierStyle(double floatValue, string rawValue)
+    private static string FormatFloat(double floatValue, int decimals)
     {
-        // Check the most extreme thresholds first because they also satisfy
-        // the broader thresholds below them.
+        string format = $"F{decimals}";
+        string formatted =
+            floatValue.ToString(format, CultureInfo.InvariantCulture);
+
+        // Do not visually turn a legitimate sub-1.0 float into exactly 1.0
+        // because of rounding at the selected display precision.
+        if (floatValue < 1d &&
+            formatted.StartsWith("1.", StringComparison.Ordinal))
+        {
+            double scale = Math.Pow(10d, decimals);
+            double truncated = Math.Floor(floatValue * scale) / scale;
+            formatted = truncated.ToString(
+                format,
+                CultureInfo.InvariantCulture);
+        }
+
+        return formatted;
+    }
+
+    private static string ApplyFloatTierStyle(
+        double floatValue,
+        string rawValue)
+    {
         if (floatValue < 0.00001d)
             return Colorize(LowDiamond, $"✦ {rawValue} ✦");
 
