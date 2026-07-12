@@ -33,6 +33,7 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
     public Color lockedColor = new Color(0.30f, 0.30f, 0.30f, 1f);
     public Color claimedColor = new Color(0.15f, 0.55f, 0.25f, 1f);
     public Color comingLaterColor = new Color(0.35f, 0.35f, 0.45f, 1f);
+    public Color unavailableColor = new Color(0.18f, 0.18f, 0.18f, 1f);
 
     private CaseData currentCase;
 
@@ -50,6 +51,16 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
         Close();
     }
 
+    private void OnEnable()
+    {
+        SubscribeToProgress();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeFromProgress();
+    }
+
     public void Open(CaseData caseData)
     {
         currentCase = caseData;
@@ -63,11 +74,13 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
         if (root != null)
             root.SetActive(true);
 
+        SubscribeToProgress();
         Refresh();
     }
 
     public void Close()
     {
+        UnsubscribeFromProgress();
         currentCase = null;
 
         if (root != null)
@@ -80,75 +93,108 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
             return;
 
         ContainerProgressManager progressManager = ContainerProgressManager.Instance;
-        string variantName = progressManager != null
-            ? progressManager.GetVariantDisplayName(currentCase)
-            : "StatTrak / Souvenir";
+
+        if (progressManager == null)
+        {
+            SetMissingManagerState();
+            return;
+        }
+
+        string variantName = progressManager.GetVariantDisplayName(currentCase);
+        bool variantsAvailable =
+            progressManager.GetVariantRequirement(currentCase) != ContainerVariantRequirement.None;
+
+        int foundCount = progressManager.GetFoundCount(currentCase);
+        int foundTarget = progressManager.GetTargetCount(currentCase);
+        int normalTarget = progressManager.GetNormalSkinTargetCount(currentCase);
+        int bestWearCount = progressManager.GetBestWearCount(currentCase);
+        int variantCount = progressManager.GetVariantCount(currentCase);
+        int bestWearVariantCount = progressManager.GetBestWearVariantCount(currentCase);
+
+        string containerName = string.IsNullOrWhiteSpace(currentCase.caseName)
+            ? "this container"
+            : currentCase.caseName;
+
+        bool hasRareSpecial = foundTarget > normalTarget;
+        string bronzeRequirement = hasRareSpecial
+            ? "Open every normal skin and at least one knife/glove from the Rare Special pool."
+            : "Open every normal skin in this container.";
 
         if (bronzeExplanationText != null)
         {
             bronzeExplanationText.text =
-                "BRONZE COMPLETION\n" +
-                "Open every normal skin and one Rare Special item if the container has knives or gloves.\n" +
-                "Reward: 10x this container.";
+                "<color=#CD7F32>BRONZE COMPLETION</color>\n" +
+                bronzeRequirement + "\n" +
+                $"Progress: {foundCount} / {foundTarget}\n" +
+                $"Reward: 10x {containerName}.";
         }
 
         if (silverExplanationText != null)
         {
             silverExplanationText.text =
-                "SILVER COMPLETION\n" +
-                "Open every normal skin in its best possible wear. Rare Special items are not required.\n" +
-                "Reward: 20x this container.";
+                "<color=#D6DEE5>SILVER COMPLETION</color>\n" +
+                "Open every normal skin in its best possible wear. " +
+                "Rare Special items are not required.\n" +
+                $"Progress: {bestWearCount} / {normalTarget}\n" +
+                $"Reward: 20x {containerName}.";
         }
 
         if (goldExplanationText != null)
         {
-            string requirement = variantName == "Unavailable"
-                ? "This container has no StatTrak or Souvenir completion tier."
-                : $"Open every normal skin as {variantName}. Any wear is accepted. Rare Special items are not required.";
-
-            goldExplanationText.text =
-                "GOLD COMPLETION\n" +
-                requirement + "\n" +
-                "Reward: present shards and a container discount. Added later.";
+            goldExplanationText.text = variantsAvailable
+                ? "<color=#FFD12A>GOLD COMPLETION</color>\n" +
+                  $"Open every normal skin as {variantName}. Any wear is accepted. " +
+                  "Rare Special items are not required.\n" +
+                  $"Progress: {variantCount} / {normalTarget}\n" +
+                  "Reward: 20-40 Present Shards from the current Museum band + " +
+                  "25% discount on this container."
+                : "<color=#FFD12A>GOLD COMPLETION</color>\n" +
+                  "Unavailable: this container cannot generate StatTrak or Souvenir variants.";
         }
 
         if (diamondExplanationText != null)
         {
-            string requirement = variantName == "Unavailable"
-                ? "This container has no StatTrak or Souvenir completion tier."
-                : $"Open every normal skin as {variantName} in its best possible wear. Rare Special items are not required.";
-
-            diamondExplanationText.text =
-                "DIAMOND COMPLETION\n" +
-                requirement + "\n" +
-                "Reward: additive Museum Points and idle Gold bonuses. Added later.";
+            diamondExplanationText.text = variantsAvailable
+                ? "<color=#67E8FF>DIAMOND COMPLETION</color>\n" +
+                  $"Open every normal skin as {variantName} in its best possible wear. " +
+                  "Rare Special items are not required.\n" +
+                  $"Progress: {bestWearVariantCount} / {normalTarget}\n" +
+                  "Reward: +0.05% Museum Points when donating + " +
+                  "+0.025% Museum idle Gold income."
+                : "<color=#67E8FF>DIAMOND COMPLETION</color>\n" +
+                  "Unavailable: this container cannot generate StatTrak or Souvenir variants.";
         }
 
         RefreshClaimButton(
             bronzeClaimButton,
             bronzeClaimButtonText,
-            ContainerCompletionTier.Bronze);
+            ContainerCompletionTier.Bronze,
+            true);
 
         RefreshClaimButton(
             silverClaimButton,
             silverClaimButtonText,
-            ContainerCompletionTier.Silver);
+            ContainerCompletionTier.Silver,
+            true);
 
         RefreshClaimButton(
             goldClaimButton,
             goldClaimButtonText,
-            ContainerCompletionTier.Gold);
+            ContainerCompletionTier.Gold,
+            variantsAvailable);
 
         RefreshClaimButton(
             diamondClaimButton,
             diamondClaimButtonText,
-            ContainerCompletionTier.Diamond);
+            ContainerCompletionTier.Diamond,
+            variantsAvailable);
     }
 
     private void RefreshClaimButton(
         Button button,
         TMP_Text buttonText,
-        ContainerCompletionTier tier)
+        ContainerCompletionTier tier,
+        bool tierAvailable)
     {
         if (button == null)
             return;
@@ -161,15 +207,15 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
             return;
         }
 
-        bool implemented = progressManager.IsRewardImplemented(tier);
-        bool complete = progressManager.IsTierComplete(currentCase, tier);
-        bool claimed = progressManager.IsRewardClaimed(currentCase, tier);
-
-        if (!implemented)
+        if (!tierAvailable)
         {
-            SetButtonState(button, buttonText, false, "REWARD LATER", comingLaterColor);
+            SetButtonState(button, buttonText, false, "UNAVAILABLE", unavailableColor);
             return;
         }
+
+        bool complete = progressManager.IsTierComplete(currentCase, tier);
+        bool claimed = progressManager.IsRewardClaimed(currentCase, tier);
+        bool implemented = progressManager.IsRewardImplemented(tier);
 
         if (claimed)
         {
@@ -177,13 +223,19 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
             return;
         }
 
-        if (complete)
+        if (!complete)
         {
-            SetButtonState(button, buttonText, true, "CLAIM REWARD", claimableColor);
+            SetButtonState(button, buttonText, false, "LOCKED", lockedColor);
             return;
         }
 
-        SetButtonState(button, buttonText, false, "LOCKED", lockedColor);
+        if (!implemented)
+        {
+            SetButtonState(button, buttonText, false, "REWARD NEXT", comingLaterColor);
+            return;
+        }
+
+        SetButtonState(button, buttonText, true, "CLAIM REWARD", claimableColor);
     }
 
     private void SetButtonState(
@@ -202,7 +254,7 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
 
         ColorBlock colors = button.colors;
         colors.normalColor = color;
-        colors.highlightedColor = color;
+        colors.highlightedColor = color * 1.08f;
         colors.pressedColor = color * 0.9f;
         colors.selectedColor = color;
         colors.disabledColor = color;
@@ -220,6 +272,26 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
             targetText.color = Color.white;
             targetText.raycastTarget = false;
         }
+    }
+
+    private void SetMissingManagerState()
+    {
+        if (bronzeExplanationText != null)
+            bronzeExplanationText.text = "ContainerProgressManager is missing.";
+
+        if (silverExplanationText != null)
+            silverExplanationText.text = "";
+
+        if (goldExplanationText != null)
+            goldExplanationText.text = "";
+
+        if (diamondExplanationText != null)
+            diamondExplanationText.text = "";
+
+        SetButtonState(bronzeClaimButton, bronzeClaimButtonText, false, "UNAVAILABLE", unavailableColor);
+        SetButtonState(silverClaimButton, silverClaimButtonText, false, "UNAVAILABLE", unavailableColor);
+        SetButtonState(goldClaimButton, goldClaimButtonText, false, "UNAVAILABLE", unavailableColor);
+        SetButtonState(diamondClaimButton, diamondClaimButtonText, false, "UNAVAILABLE", unavailableColor);
     }
 
     private void ClaimBronzeReward()
@@ -247,11 +319,7 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
         if (currentCase == null || ContainerProgressManager.Instance == null)
             return;
 
-        bool claimed = ContainerProgressManager.Instance.ClaimReward(currentCase, tier);
-
-        if (!claimed)
-            return;
-
+        ContainerProgressManager.Instance.ClaimReward(currentCase, tier);
         Refresh();
     }
 
@@ -262,5 +330,20 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
 
         button.onClick.RemoveAllListeners();
         button.onClick.AddListener(action);
+    }
+
+    private void SubscribeToProgress()
+    {
+        if (ContainerProgressManager.Instance == null)
+            return;
+
+        ContainerProgressManager.Instance.OnContainerProgressChanged -= Refresh;
+        ContainerProgressManager.Instance.OnContainerProgressChanged += Refresh;
+    }
+
+    private void UnsubscribeFromProgress()
+    {
+        if (ContainerProgressManager.Instance != null)
+            ContainerProgressManager.Instance.OnContainerProgressChanged -= Refresh;
     }
 }
