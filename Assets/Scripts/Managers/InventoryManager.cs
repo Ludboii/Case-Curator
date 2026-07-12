@@ -7,10 +7,12 @@ public class InventoryManager : MonoBehaviour
     public static InventoryManager Instance { get; private set; }
 
     public event Action OnInventoryChanged;
+    public event Action<int> OnActiveStorageChanged;
 
     [Header("Storage Settings")]
     [SerializeField] private int unlockedStoragePages = 1;
     [SerializeField] private int itemsPerStoragePage = 50;
+    [SerializeField] private int activeStorageIndex;
 
     [SerializeField]
     private List<InventoryItem> items = new List<InventoryItem>();
@@ -18,12 +20,10 @@ public class InventoryManager : MonoBehaviour
     private float cachedTotalMarketValue;
 
     public IReadOnlyList<InventoryItem> Items => items;
-
     public int Count => items.Count;
-
     public int UnlockedStoragePages => unlockedStoragePages;
     public int ItemsPerStoragePage => itemsPerStoragePage;
-
+    public int ActiveStorageIndex => activeStorageIndex;
     public int TotalCapacity => unlockedStoragePages * itemsPerStoragePage;
     public float TotalMarketValue => cachedTotalMarketValue;
 
@@ -37,6 +37,15 @@ public class InventoryManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        unlockedStoragePages = Mathf.Max(1, unlockedStoragePages);
+        itemsPerStoragePage = Mathf.Max(1, itemsPerStoragePage);
+        activeStorageIndex = Mathf.Clamp(
+            activeStorageIndex,
+            0,
+            unlockedStoragePages - 1);
+
+        NormalizeStorageAssignments();
         RecalculateCachedTotalMarketValue();
     }
 
@@ -48,7 +57,75 @@ public class InventoryManager : MonoBehaviour
 
     public bool HasSpace()
     {
-        return items.Count < TotalCapacity;
+        return GetFirstStorageWithSpace() >= 0;
+    }
+
+    public bool HasSpaceInStorage(int storageIndex, int additionalItems = 1)
+    {
+        if (!IsStorageUnlocked(storageIndex))
+            return false;
+
+        if (additionalItems <= 0)
+            return true;
+
+        return GetStorageItemCount(storageIndex) + additionalItems <=
+               itemsPerStoragePage;
+    }
+
+    public bool IsStorageUnlocked(int storageIndex)
+    {
+        return storageIndex >= 0 && storageIndex < unlockedStoragePages;
+    }
+
+    public int GetStorageItemCount(int storageIndex)
+    {
+        if (!IsStorageUnlocked(storageIndex))
+            return 0;
+
+        int count = 0;
+
+        foreach (InventoryItem item in items)
+        {
+            if (item != null && item.storageIndex == storageIndex)
+                count++;
+        }
+
+        return count;
+    }
+
+    public int GetFirstStorageWithSpace(int preferredStorageIndex = -1)
+    {
+        if (IsStorageUnlocked(preferredStorageIndex) &&
+            HasSpaceInStorage(preferredStorageIndex))
+        {
+            return preferredStorageIndex;
+        }
+
+        for (int i = 0; i < unlockedStoragePages; i++)
+        {
+            if (HasSpaceInStorage(i))
+                return i;
+        }
+
+        return -1;
+    }
+
+    public int FindNextStorageWithSpace(int fromStorageIndex)
+    {
+        if (unlockedStoragePages <= 1)
+            return -1;
+
+        int start = Mathf.Clamp(fromStorageIndex, 0, unlockedStoragePages - 1);
+
+        for (int offset = 1; offset < unlockedStoragePages; offset++)
+        {
+            int index = (start + offset) % unlockedStoragePages;
+
+            if (HasSpaceInStorage(index))
+                return index;
+        }
+
+        return -1;
     }
 
     public void AddItem(InventoryItem item)
@@ -59,19 +136,24 @@ public class InventoryManager : MonoBehaviour
             return;
         }
 
-        if (!HasSpace())
+        int destination = GetFirstStorageWithSpace(item.storageIndex);
+
+        if (destination < 0)
         {
-            Debug.LogWarning($"Inventory is full. Items: {items.Count}/{TotalCapacity}");
+            Debug.LogWarning(
+                $"Inventory is full. Items: {items.Count}/{TotalCapacity}");
             return;
         }
 
         PrepareItemForInventory(item);
+        item.storageIndex = destination;
         items.Add(item);
         cachedTotalMarketValue += item.marketValue;
-        OnInventoryChanged?.Invoke();
+
+        NotifyInventoryChanged(true);
 
         Debug.Log(
-            $"Added item to inventory: " +
+            $"Added item to Storage {destination + 1}: " +
             $"{SkinDisplayUtility.GetDisplayName(item.skin)}. " +
             $"Inventory count: {items.Count}/{TotalCapacity}");
     }
@@ -89,10 +171,13 @@ public class InventoryManager : MonoBehaviour
             if (item == null)
                 continue;
 
-            if (!HasSpace())
+            int destination = GetFirstStorageWithSpace(item.storageIndex);
+
+            if (destination < 0)
                 break;
 
             PrepareItemForInventory(item);
+            item.storageIndex = destination;
             items.Add(item);
             addedValue += item.marketValue;
             addedCount++;
@@ -101,7 +186,7 @@ public class InventoryManager : MonoBehaviour
         if (addedCount > 0)
         {
             cachedTotalMarketValue += addedValue;
-            OnInventoryChanged?.Invoke();
+            NotifyInventoryChanged(true);
         }
 
         return addedCount;
@@ -125,16 +210,16 @@ public class InventoryManager : MonoBehaviour
 
         bool removed = items.Remove(item);
 
-        if (removed)
-        {
-            cachedTotalMarketValue -= Mathf.Max(0f, item.marketValue);
-            if (cachedTotalMarketValue < 0f)
-                cachedTotalMarketValue = 0f;
+        if (!removed)
+            return false;
 
-            OnInventoryChanged?.Invoke();
-        }
+        cachedTotalMarketValue -= Mathf.Max(0f, item.marketValue);
 
-        return removed;
+        if (cachedTotalMarketValue < 0f)
+            cachedTotalMarketValue = 0f;
+
+        NotifyInventoryChanged(true);
+        return true;
     }
 
     public int RemoveItemsByInstanceIds(HashSet<string> instanceIds)
@@ -157,23 +242,26 @@ public class InventoryManager : MonoBehaviour
             return remove;
         });
 
-        if (removedCount > 0)
-        {
-            cachedTotalMarketValue -= removedValue;
-            if (cachedTotalMarketValue < 0f)
-                cachedTotalMarketValue = 0f;
+        if (removedCount <= 0)
+            return 0;
 
-            OnInventoryChanged?.Invoke();
-        }
+        cachedTotalMarketValue -= removedValue;
 
+        if (cachedTotalMarketValue < 0f)
+            cachedTotalMarketValue = 0f;
+
+        NotifyInventoryChanged(true);
         return removedCount;
     }
 
     public InventoryItem GetItemByInstanceId(string instanceId)
     {
+        if (string.IsNullOrWhiteSpace(instanceId))
+            return null;
+
         foreach (InventoryItem item in items)
         {
-            if (item.instanceId == instanceId)
+            if (item != null && item.instanceId == instanceId)
                 return item;
         }
 
@@ -185,39 +273,96 @@ public class InventoryManager : MonoBehaviour
         return new List<InventoryItem>(items);
     }
 
-    public List<InventoryItem> GetItemsOnStoragePage(int pageIndex)
+    public List<InventoryItem> GetItemsInStorageCopy(int storageIndex)
     {
-        List<InventoryItem> pageItems = new List<InventoryItem>();
+        List<InventoryItem> storageItems = new List<InventoryItem>();
 
-        if (pageIndex < 0)
-            return pageItems;
+        if (!IsStorageUnlocked(storageIndex))
+            return storageItems;
 
-        if (pageIndex >= unlockedStoragePages)
-            return pageItems;
-
-        int startIndex = pageIndex * itemsPerStoragePage;
-        int endIndex = Mathf.Min(startIndex + itemsPerStoragePage, items.Count);
-
-        for (int i = startIndex; i < endIndex; i++)
+        foreach (InventoryItem item in items)
         {
-            pageItems.Add(items[i]);
+            if (item != null && item.storageIndex == storageIndex)
+                storageItems.Add(item);
         }
 
-        return pageItems;
+        return storageItems;
     }
 
-    public bool SetFavorite(InventoryItem item, bool favorite)
+    // Compatibility method retained for existing callers. Storage containers
+    // are now explicit ownership tabs rather than slices of one global list.
+    public List<InventoryItem> GetItemsOnStoragePage(int pageIndex)
     {
-        if (item == null)
+        return GetItemsInStorageCopy(pageIndex);
+    }
+
+    public bool SetActiveStorage(int storageIndex)
+    {
+        if (!IsStorageUnlocked(storageIndex))
             return false;
 
-        item.favorite = favorite;
-        OnInventoryChanged?.Invoke();
+        if (activeStorageIndex == storageIndex)
+            return true;
+
+        activeStorageIndex = storageIndex;
+        OnActiveStorageChanged?.Invoke(activeStorageIndex);
+        return true;
+    }
+
+    public bool MoveItemToStorage(InventoryItem item, int destinationStorageIndex)
+    {
+        if (item == null || !items.Contains(item))
+            return false;
+
+        if (!IsStorageUnlocked(destinationStorageIndex))
+            return false;
+
+        if (item.storageIndex == destinationStorageIndex)
+            return true;
+
+        if (!HasSpaceInStorage(destinationStorageIndex))
+            return false;
+
+        int previousStorage = item.storageIndex;
+        item.storageIndex = destinationStorageIndex;
+
+        NotifyInventoryChanged(true);
+
+        Debug.Log(
+            $"Moved {SkinDisplayUtility.GetDisplayName(item.skin)} from " +
+            $"Storage {previousStorage + 1} to Storage {destinationStorageIndex + 1}.");
 
         return true;
     }
 
-    public int SetFavoriteBatch(List<InventoryItem> itemsToUpdate, bool favorite)
+    public int MoveItemToNextStorage(InventoryItem item)
+    {
+        if (item == null)
+            return -1;
+
+        int destination = FindNextStorageWithSpace(item.storageIndex);
+
+        if (destination < 0)
+            return -1;
+
+        return MoveItemToStorage(item, destination)
+            ? destination
+            : -1;
+    }
+
+    public bool SetFavorite(InventoryItem item, bool favorite)
+    {
+        if (item == null || item.favorite == favorite)
+            return false;
+
+        item.favorite = favorite;
+        NotifyInventoryChanged(true);
+        return true;
+    }
+
+    public int SetFavoriteBatch(
+        List<InventoryItem> itemsToUpdate,
+        bool favorite)
     {
         if (itemsToUpdate == null || itemsToUpdate.Count == 0)
             return 0;
@@ -226,10 +371,7 @@ public class InventoryManager : MonoBehaviour
 
         foreach (InventoryItem item in itemsToUpdate)
         {
-            if (item == null)
-                continue;
-
-            if (item.favorite == favorite)
+            if (item == null || item.favorite == favorite)
                 continue;
 
             item.favorite = favorite;
@@ -237,7 +379,7 @@ public class InventoryManager : MonoBehaviour
         }
 
         if (changedCount > 0)
-            OnInventoryChanged?.Invoke();
+            NotifyInventoryChanged(true);
 
         return changedCount;
     }
@@ -248,26 +390,21 @@ public class InventoryManager : MonoBehaviour
             return false;
 
         item.favorite = !item.favorite;
-        OnInventoryChanged?.Invoke();
-
+        NotifyInventoryChanged(true);
         return true;
     }
 
     public bool SetFavoriteByInstanceId(string instanceId, bool favorite)
     {
         InventoryItem item = GetItemByInstanceId(instanceId);
-
-        if (item == null)
-            return false;
-
-        return SetFavorite(item, favorite);
+        return item != null && SetFavorite(item, favorite);
     }
 
     public void ClearInventory()
     {
         items.Clear();
         cachedTotalMarketValue = 0f;
-        OnInventoryChanged?.Invoke();
+        NotifyInventoryChanged(true);
     }
 
     public void ReplaceInventory(List<InventoryItem> loadedItems)
@@ -275,29 +412,43 @@ public class InventoryManager : MonoBehaviour
         items.Clear();
 
         if (loadedItems != null)
-            items.AddRange(loadedItems);
+        {
+            foreach (InventoryItem item in loadedItems)
+            {
+                if (item != null && item.skin != null)
+                    items.Add(item);
+            }
+        }
 
+        NormalizeStorageAssignments();
         RecalculateCachedTotalMarketValue();
-        OnInventoryChanged?.Invoke();
+        NotifyInventoryChanged(false);
 
-        Debug.Log($"Inventory loaded. Item count: {items.Count}/{TotalCapacity}");
+        Debug.Log(
+            $"Inventory loaded. Item count: {items.Count}/{TotalCapacity}");
     }
 
     public void SetStorageData(int loadedPages, int loadedItemsPerPage)
     {
         unlockedStoragePages = Mathf.Max(1, loadedPages);
         itemsPerStoragePage = Mathf.Max(1, loadedItemsPerPage);
+        activeStorageIndex = Mathf.Clamp(
+            activeStorageIndex,
+            0,
+            unlockedStoragePages - 1);
 
-        OnInventoryChanged?.Invoke();
+        NormalizeStorageAssignments();
+        NotifyInventoryChanged(false);
     }
 
     public void UnlockStoragePage()
     {
         unlockedStoragePages++;
+        NotifyInventoryChanged(true);
 
-        OnInventoryChanged?.Invoke();
-
-        Debug.Log($"Unlocked storage page {unlockedStoragePages}. Total capacity: {TotalCapacity}");
+        Debug.Log(
+            $"Unlocked Storage {unlockedStoragePages}. " +
+            $"Total capacity: {TotalCapacity}");
     }
 
     public void IncreaseStoragePageSize(int amount)
@@ -306,10 +457,12 @@ public class InventoryManager : MonoBehaviour
             return;
 
         itemsPerStoragePage += amount;
+        NormalizeStorageAssignments();
+        NotifyInventoryChanged(true);
 
-        OnInventoryChanged?.Invoke();
-
-        Debug.Log($"Storage page size increased to {itemsPerStoragePage}. Total capacity: {TotalCapacity}");
+        Debug.Log(
+            $"Storage container size increased to {itemsPerStoragePage}. " +
+            $"Total capacity: {TotalCapacity}");
     }
 
     public void RecalculateCachedTotalMarketValue()
@@ -326,5 +479,71 @@ public class InventoryManager : MonoBehaviour
 
             cachedTotalMarketValue += item.marketValue;
         }
+    }
+
+    private void NormalizeStorageAssignments()
+    {
+        unlockedStoragePages = Mathf.Max(1, unlockedStoragePages);
+        itemsPerStoragePage = Mathf.Max(1, itemsPerStoragePage);
+
+        int[] counts = new int[unlockedStoragePages];
+        int overflowCount = 0;
+
+        foreach (InventoryItem item in items)
+        {
+            if (item == null)
+                continue;
+
+            int desired = Mathf.Clamp(
+                item.storageIndex,
+                0,
+                unlockedStoragePages - 1);
+
+            if (counts[desired] < itemsPerStoragePage)
+            {
+                item.storageIndex = desired;
+                counts[desired]++;
+                continue;
+            }
+
+            int fallback = -1;
+
+            for (int i = 0; i < unlockedStoragePages; i++)
+            {
+                if (counts[i] < itemsPerStoragePage)
+                {
+                    fallback = i;
+                    break;
+                }
+            }
+
+            if (fallback >= 0)
+            {
+                item.storageIndex = fallback;
+                counts[fallback]++;
+            }
+            else
+            {
+                // Never delete an item from an over-capacity legacy/debug save.
+                item.storageIndex = desired;
+                counts[desired]++;
+                overflowCount++;
+            }
+        }
+
+        if (overflowCount > 0)
+        {
+            Debug.LogWarning(
+                $"Inventory contains {overflowCount} item(s) above the current " +
+                "storage capacity. No items were deleted.");
+        }
+    }
+
+    private void NotifyInventoryChanged(bool markSaveDirty)
+    {
+        if (markSaveDirty && SaveManager.Instance != null)
+            SaveManager.Instance.MarkDirty();
+
+        OnInventoryChanged?.Invoke();
     }
 }
