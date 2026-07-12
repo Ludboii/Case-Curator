@@ -94,7 +94,11 @@ public static class PriceCalculator
 
     private static float GetFloatMultiplier(float floatValue)
     {
-        // GDD / balance workbook low-float multipliers.
+        // Evaluate the rarest thresholds first because they also satisfy every
+        // broader low-float threshold below them.
+        if (floatValue < 0.000001f)
+            return 10.00f;
+
         if (floatValue < 0.00001f)
             return 4.50f;
 
