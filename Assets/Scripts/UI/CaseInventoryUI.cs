@@ -303,6 +303,7 @@ public class CaseInventoryUI : MonoBehaviour
         }
 
         int addedCount = InventoryManager.Instance.AddItems(openedItems);
+        bool progressChanged = false;
 
         for (int i = 0; i < addedCount; i++)
         {
@@ -312,10 +313,11 @@ public class CaseInventoryUI : MonoBehaviour
             {
                 ContainerProgressManager.Instance.RecordContainerOpened(
                     caseData,
-                    item.skin,
+                    item,
                     caseData.priceInGold,
-                    item.marketValue
-                );
+                    false);
+
+                progressChanged = true;
             }
 
             if (caseData.xpRewardOnOpen > 0)
@@ -324,6 +326,9 @@ public class CaseInventoryUI : MonoBehaviour
                 totalXPGained += caseData.xpRewardOnOpen;
             }
         }
+
+        if (progressChanged)
+            ContainerProgressManager.Instance.SaveProgress();
 
         SaveManager.Instance.SaveGame();
 
