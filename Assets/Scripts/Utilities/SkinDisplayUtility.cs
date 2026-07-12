@@ -102,8 +102,10 @@ public static class SkinDisplayUtility
         double floatValue,
         string rawValue)
     {
+        // Use ASCII text rather than sparkle/diamond Unicode characters.
+        // The current TMP font asset does not contain those glyphs.
         if (floatValue < 0.00001d)
-            return Colorize(LowDiamond, $"✦ {rawValue} ✦");
+            return Colorize(LowDiamond, $"DIAMOND {rawValue}");
 
         if (floatValue < 0.0001d)
             return Colorize(LowGold, rawValue);
