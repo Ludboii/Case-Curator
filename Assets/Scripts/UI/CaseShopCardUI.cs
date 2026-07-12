@@ -48,6 +48,21 @@ public class CaseShopCardUI : MonoBehaviour
         DisableTextRaycasts();
     }
 
+    private void OnEnable()
+    {
+        SubscribeToProgress();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeFromProgress();
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribeFromProgress();
+    }
+
     public void Setup(CaseData data, CaseShopUI owner)
     {
         caseData = data;
@@ -61,6 +76,7 @@ public class CaseShopCardUI : MonoBehaviour
 
         gameObject.SetActive(true);
         CacheCompletionPanel();
+        SubscribeToProgress();
         DisableTextRaycasts();
 
         if (caseImage != null)
@@ -187,7 +203,12 @@ public class CaseShopCardUI : MonoBehaviour
         Transform panelTransform = FindChildRecursive(transform, "ContainerProgressPanel");
 
         if (panelTransform != null)
+        {
             containerProgressPanel = panelTransform.GetComponent<Image>();
+
+            if (containerProgressPanel != null)
+                containerProgressPanel.raycastTarget = false;
+        }
     }
 
     private Transform FindChildRecursive(Transform parent, string childName)
@@ -207,6 +228,21 @@ public class CaseShopCardUI : MonoBehaviour
         }
 
         return null;
+    }
+
+    private void SubscribeToProgress()
+    {
+        if (ContainerProgressManager.Instance == null)
+            return;
+
+        ContainerProgressManager.Instance.OnContainerProgressChanged -= RefreshState;
+        ContainerProgressManager.Instance.OnContainerProgressChanged += RefreshState;
+    }
+
+    private void UnsubscribeFromProgress()
+    {
+        if (ContainerProgressManager.Instance != null)
+            ContainerProgressManager.Instance.OnContainerProgressChanged -= RefreshState;
     }
 
     private void ApplyCaseQualityVisuals()
