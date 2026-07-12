@@ -7,6 +7,7 @@ public static class SkinDisplayUtility
     private const string LowSilver = "#D7E2EA";
     private const string LowGold = "#FFD84A";
     private const string LowDiamond = "#69E8FF";
+    private const string PristineWhite = "#FFFFFF";
 
     private const string HighPink = "#FF7FA8";
     private const string HighRed = "#FF3B3B";
@@ -65,6 +66,9 @@ public static class SkinDisplayUtility
         if (floatValue > 0.95d)
             return 6;
 
+        if (floatValue < 0.000001d)
+            return 10;
+
         if (floatValue < 0.00001d)
             return 8;
 
@@ -102,10 +106,16 @@ public static class SkinDisplayUtility
         double floatValue,
         string rawValue)
     {
-        // Use ASCII text rather than sparkle/diamond Unicode characters.
-        // The current TMP font asset does not contain those glyphs.
+        // Pristine is the ultimate low-float tier from the balance workbook.
+        // Rich-text bold and pure white are TMP-safe with the current font.
+        // A true outer glow can be added later with a TMP material preset.
+        if (floatValue < 0.000001d)
+            return $"<b><color={PristineWhite}>PRISTINE {rawValue}</color></b>";
+
+        // The previous Diamond label has been removed. This tier keeps its
+        // distinctive cyan value without adding extra text before the number.
         if (floatValue < 0.00001d)
-            return Colorize(LowDiamond, $"DIAMOND {rawValue}");
+            return Colorize(LowDiamond, rawValue);
 
         if (floatValue < 0.0001d)
             return Colorize(LowGold, rawValue);
