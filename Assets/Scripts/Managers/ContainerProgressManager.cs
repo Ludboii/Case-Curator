@@ -41,7 +41,6 @@ public class ContainerProgressManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-
         Load();
     }
 
@@ -92,16 +91,17 @@ public class ContainerProgressManager : MonoBehaviour
         progress.totalValuePulled += Mathf.Max(0f, pulledItem.marketValue);
 
         SkinData pulledSkin = pulledItem.skin;
+        string skinKey = GetSkinKey(pulledSkin);
 
         if (pulledSkin.rarity == Rarity.RareSpecial)
         {
-            // Rare Special is one Bronze checklist slot, regardless of which
-            // knife/glove was opened. It is not required for later tiers.
+            // Bronze only needs any one Rare Special item, while the inspect list
+            // tracks each specific knife/glove separately.
             progress.foundRareSpecial = true;
+            AddUnique(progress.foundRareSpecialSkinKeys, skinKey);
         }
         else
         {
-            string skinKey = GetSkinKey(pulledSkin);
             AddUnique(progress.foundSkinKeys, skinKey);
 
             bool bestWear = IsBestPossibleWear(pulledItem);
@@ -122,8 +122,8 @@ public class ContainerProgressManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Compatibility overload for older callers. It can track Bronze progress,
-    /// but advanced tiers require the InventoryItem overload above.
+    /// Compatibility overload for older callers. It tracks discovery, but the
+    /// InventoryItem overload is required for wear and variant completion tiers.
     /// </summary>
     public void RecordContainerOpened(
         CaseData caseData,
@@ -145,10 +145,17 @@ public class ContainerProgressManager : MonoBehaviour
         progress.totalSpent += Mathf.Max(0f, costPaid);
         progress.totalValuePulled += Mathf.Max(0f, pulledValue);
 
+        string skinKey = GetSkinKey(pulledSkin);
+
         if (pulledSkin.rarity == Rarity.RareSpecial)
+        {
             progress.foundRareSpecial = true;
+            AddUnique(progress.foundRareSpecialSkinKeys, skinKey);
+        }
         else
-            AddUnique(progress.foundSkinKeys, GetSkinKey(pulledSkin));
+        {
+            AddUnique(progress.foundSkinKeys, skinKey);
+        }
 
         SaveProgress();
     }
@@ -168,11 +175,7 @@ public class ContainerProgressManager : MonoBehaviour
     public float GetProfit(CaseData caseData)
     {
         ContainerProgressData progress = GetProgress(caseData);
-
-        if (progress == null)
-            return 0f;
-
-        return progress.totalValuePulled - progress.totalSpent;
+        return progress != null ? progress.totalValuePulled - progress.totalSpent : 0f;
     }
 
     public int GetFoundCount(CaseData caseData)
@@ -281,11 +284,7 @@ public class ContainerProgressManager : MonoBehaviour
     public bool IsSilverComplete(CaseData caseData)
     {
         int target = GetNormalSkinTargetCount(caseData);
-
-        if (target <= 0)
-            return false;
-
-        return GetBestWearCount(caseData) >= target;
+        return target > 0 && GetBestWearCount(caseData) >= target;
     }
 
     public bool IsGoldComplete(CaseData caseData)
@@ -294,11 +293,7 @@ public class ContainerProgressManager : MonoBehaviour
             return false;
 
         int target = GetNormalSkinTargetCount(caseData);
-
-        if (target <= 0)
-            return false;
-
-        return GetVariantCount(caseData) >= target;
+        return target > 0 && GetVariantCount(caseData) >= target;
     }
 
     public bool IsDiamondComplete(CaseData caseData)
@@ -307,18 +302,12 @@ public class ContainerProgressManager : MonoBehaviour
             return false;
 
         int target = GetNormalSkinTargetCount(caseData);
-
-        if (target <= 0)
-            return false;
-
-        return GetBestWearVariantCount(caseData) >= target;
+        return target > 0 && GetBestWearVariantCount(caseData) >= target;
     }
 
     public string GetCompletionDisplayText(CaseData caseData)
     {
-        ContainerCompletionTier tier = GetCompletionTier(caseData);
-
-        switch (tier)
+        switch (GetCompletionTier(caseData))
         {
             case ContainerCompletionTier.Diamond:
                 return "Diamond Completion";
@@ -372,10 +361,16 @@ public class ContainerProgressManager : MonoBehaviour
 
         ContainerProgressData progress = GetProgress(caseData);
 
-        if (progress == null || progress.foundSkinKeys == null)
+        if (progress == null)
             return false;
 
-        return progress.foundSkinKeys.Contains(GetSkinKey(skin));
+        EnsureProgressLists(progress);
+        string skinKey = GetSkinKey(skin);
+
+        if (skin.rarity == Rarity.RareSpecial)
+            return progress.foundRareSpecialSkinKeys.Contains(skinKey);
+
+        return progress.foundSkinKeys.Contains(skinKey);
     }
 
     public bool HasFoundRareSpecial(CaseData caseData)
@@ -443,12 +438,10 @@ public class ContainerProgressManager : MonoBehaviour
                 containerReward = 10;
                 progress.bronzeRewardClaimed = true;
                 break;
-
             case ContainerCompletionTier.Silver:
                 containerReward = 20;
                 progress.silverRewardClaimed = true;
                 break;
-
             default:
                 return false;
         }
@@ -501,7 +494,6 @@ public class ContainerProgressManager : MonoBehaviour
 
         int bestPossibleWear = WearUtility.GetWearIndex(item.skin.minFloat);
         int openedWear = WearUtility.GetWearIndex((float)item.floatValue);
-
         return openedWear == bestPossibleWear;
     }
 
@@ -531,10 +523,7 @@ public class ContainerProgressManager : MonoBehaviour
 
         foreach (WeightedDrop drop in caseData.dropPool)
         {
-            if (drop == null || drop.skin == null)
-                continue;
-
-            if (drop.skin.rarity == Rarity.RareSpecial)
+            if (drop == null || drop.skin == null || drop.skin.rarity == Rarity.RareSpecial)
                 continue;
 
             keys.Add(GetSkinKey(drop.skin));
@@ -599,6 +588,9 @@ public class ContainerProgressManager : MonoBehaviour
 
         if (progress.foundSkinKeys == null)
             progress.foundSkinKeys = new List<string>();
+
+        if (progress.foundRareSpecialSkinKeys == null)
+            progress.foundRareSpecialSkinKeys = new List<string>();
 
         if (progress.bestWearSkinKeys == null)
             progress.bestWearSkinKeys = new List<string>();
@@ -677,6 +669,7 @@ public class ContainerProgressData
 
     public bool foundRareSpecial;
     public List<string> foundSkinKeys = new List<string>();
+    public List<string> foundRareSpecialSkinKeys = new List<string>();
     public List<string> bestWearSkinKeys = new List<string>();
     public List<string> variantSkinKeys = new List<string>();
     public List<string> bestWearVariantSkinKeys = new List<string>();
