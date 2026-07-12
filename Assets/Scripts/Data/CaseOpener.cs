@@ -40,8 +40,13 @@ public static class CaseOpener
             forceSouvenir &&
             selectedSkin.canBeSouvenir;
 
+        bool containerAllowsStatTrak =
+            caseData.containerType == CaseContainerType.WeaponCase ||
+            caseData.containerType == CaseContainerType.CustomCase;
+
         item.statTrak =
             !item.souvenir &&
+            containerAllowsStatTrak &&
             caseData.allowStatTrak &&
             selectedSkin.canBeStatTrak &&
             Random.value < StatTrakChance;
