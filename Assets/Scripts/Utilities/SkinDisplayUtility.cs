@@ -2,6 +2,15 @@ using System.Globalization;
 
 public static class SkinDisplayUtility
 {
+    private const string LowGreen = "#55FF88";
+    private const string LowSilver = "#D7E2EA";
+    private const string LowGold = "#FFD84A";
+    private const string LowDiamond = "#69E8FF";
+
+    private const string HighPink = "#FF7FA8";
+    private const string HighRed = "#FF3B3B";
+    private const string HighDarkRed = "#9E1111";
+
     public static string GetDisplayName(SkinData skin)
     {
         if (skin == null)
@@ -29,7 +38,10 @@ public static class SkinDisplayUtility
         if (item == null || item.isVanilla)
             return "Vanilla";
 
-        return item.floatValue.ToString("F5", CultureInfo.InvariantCulture);
+        int decimals = GetCardDecimalCount(item.floatValue);
+        string rawValue = item.floatValue.ToString($"F{decimals}", CultureInfo.InvariantCulture);
+
+        return ApplyFloatTierStyle(item.floatValue, rawValue);
     }
 
     public static string GetInspectFloatDisplay(InventoryItem item)
@@ -37,7 +49,55 @@ public static class SkinDisplayUtility
         if (item == null || item.isVanilla)
             return "Vanilla";
 
-        return item.floatValue.ToString("F10", CultureInfo.InvariantCulture);
+        string rawValue = item.floatValue.ToString("F10", CultureInfo.InvariantCulture);
+        return ApplyFloatTierStyle(item.floatValue, rawValue);
+    }
+
+    private static int GetCardDecimalCount(double floatValue)
+    {
+        if (floatValue < 0.00001d)
+            return 8;
+
+        if (floatValue < 0.0001d)
+            return 7;
+
+        if (floatValue < 0.001d)
+            return 6;
+
+        return 5;
+    }
+
+    private static string ApplyFloatTierStyle(double floatValue, string rawValue)
+    {
+        // Check the most extreme thresholds first because they also satisfy
+        // the broader thresholds below them.
+        if (floatValue < 0.00001d)
+            return Colorize(LowDiamond, $"✦ {rawValue} ✦");
+
+        if (floatValue < 0.0001d)
+            return Colorize(LowGold, rawValue);
+
+        if (floatValue < 0.001d)
+            return Colorize(LowSilver, rawValue);
+
+        if (floatValue < 0.01d)
+            return Colorize(LowGreen, rawValue);
+
+        if (floatValue > 0.999d)
+            return Colorize(HighDarkRed, rawValue);
+
+        if (floatValue > 0.99d)
+            return Colorize(HighRed, rawValue);
+
+        if (floatValue > 0.95d)
+            return Colorize(HighPink, rawValue);
+
+        return rawValue;
+    }
+
+    private static string Colorize(string hexColor, string text)
+    {
+        return $"<color={hexColor}>{text}</color>";
     }
 
     public static string GetWearDisplay(InventoryItem item)
