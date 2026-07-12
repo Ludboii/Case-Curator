@@ -16,10 +16,24 @@ public class SaveManager : MonoBehaviour
     public int xp;
 
     [Header("SaveData 2.0 State")]
-    [SerializeField] private UpgradeStateSaveData upgrades = new UpgradeStateSaveData();
-    [SerializeField] private MuseumStateSaveData museum = new MuseumStateSaveData();
-    [SerializeField] private SaveMetadataSaveData metadata = new SaveMetadataSaveData();
-    [SerializeField] private ContainerProgressSaveData containerProgressState = new ContainerProgressSaveData();
+    [SerializeField] private UpgradeStateSaveData upgrades =
+        new UpgradeStateSaveData();
+
+    [SerializeField] private MuseumStateSaveData museum =
+        new MuseumStateSaveData();
+
+    [SerializeField] private SaveMetadataSaveData metadata =
+        new SaveMetadataSaveData();
+
+    [SerializeField] private ContainerProgressSaveData containerProgressState =
+        new ContainerProgressSaveData();
+
+    [Header("Save Scheduling")]
+    [Tooltip("Dirty game state is written at most once per interval.")]
+    [SerializeField, Min(5f)] private float autosaveIntervalSeconds = 30f;
+
+    [SerializeField] private bool saveWhenApplicationPauses = true;
+    [SerializeField] private bool saveWhenApplicationQuits = true;
 
     public event Action OnCurrencyChanged;
     public event Action OnProgressChanged;
@@ -30,18 +44,31 @@ public class SaveManager : MonoBehaviour
     public int SaveVersion => SaveData.CurrentVersion;
     public UpgradeStateSaveData Upgrades => upgrades;
     public MuseumStateSaveData Museum => museum;
-    public int OwnedOpeningSlots => Mathf.Clamp(upgrades != null ? upgrades.openingSlotsOwned : 1, 1, 3);
+    public bool IsDirty => saveDirty;
+
+    public int OwnedOpeningSlots => Mathf.Clamp(
+        upgrades != null ? upgrades.openingSlotsOwned : 1,
+        1,
+        3);
+
     public PlayerRank CurrentRank => PlayerProgressUtility.GetRankFromXP(xp);
 
-    private string SavePath => Path.Combine(Application.persistentDataPath, "casecatcher_save.json");
+    private string SavePath =>
+        Path.Combine(Application.persistentDataPath, "casecatcher_save.json");
+
     private string BackupPath => SavePath + ".bak";
     private string TempPath => SavePath + ".tmp";
+
+    private bool saveDirty;
+    private bool isWritingSave;
+    private float nextAutosaveTime;
 
     private void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            Debug.LogWarning("Duplicate SaveManager found, destroying: " + gameObject.name);
+            Debug.LogWarning(
+                "Duplicate SaveManager found, destroying: " + gameObject.name);
             Destroy(gameObject);
             return;
         }
@@ -49,6 +76,30 @@ public class SaveManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
         EnsureRuntimeState();
+        ScheduleNextAutosave();
+    }
+
+    private void Update()
+    {
+        if (!saveDirty || isWritingSave)
+            return;
+
+        if (Time.unscaledTime < nextAutosaveTime)
+            return;
+
+        SaveNow();
+    }
+
+    private void OnApplicationPause(bool paused)
+    {
+        if (paused && saveWhenApplicationPauses && saveDirty)
+            SaveNow();
+    }
+
+    private void OnApplicationQuit()
+    {
+        if (saveWhenApplicationQuits && saveDirty)
+            SaveNow();
     }
 
     private void OnDestroy()
@@ -57,45 +108,92 @@ public class SaveManager : MonoBehaviour
             Instance = null;
     }
 
+    public void MarkDirty()
+    {
+        if (!saveDirty)
+        {
+            saveDirty = true;
+            ScheduleNextAutosave();
+        }
+    }
+
+    /// <summary>
+    /// Compatibility entry point used throughout the current project. It no
+    /// longer writes to disk immediately; it marks the unified SaveData 2.0
+    /// state dirty so rapid gameplay actions are coalesced into one autosave.
+    /// </summary>
+    public void SaveGame()
+    {
+        MarkDirty();
+    }
+
+    /// <summary>
+    /// Writes immediately. Use this for an explicit manual Save Data button,
+    /// application pause/quit, migrations, and recovery—not ordinary actions.
+    /// </summary>
+    public bool SaveNow()
+    {
+        return TryWriteCurrentState();
+    }
+
     public void AddGold(float amount)
     {
-        if (amount <= 0f) return;
+        if (amount <= 0f)
+            return;
+
         gold += amount;
+        MarkDirty();
         OnCurrencyChanged?.Invoke();
     }
 
     public bool SpendGold(float amount)
     {
-        if (amount <= 0f) return true;
-        if (gold < amount) return false;
+        if (amount <= 0f)
+            return true;
+
+        if (gold < amount)
+            return false;
+
         gold -= amount;
+        MarkDirty();
         OnCurrencyChanged?.Invoke();
         return true;
     }
 
     public void AddDiamonds(int amount)
     {
-        if (amount <= 0) return;
+        if (amount <= 0)
+            return;
+
         diamonds += amount;
+        MarkDirty();
         OnCurrencyChanged?.Invoke();
     }
 
     public bool SpendDiamonds(int amount)
     {
-        if (amount <= 0) return true;
-        if (diamonds < amount) return false;
+        if (amount <= 0)
+            return true;
+
+        if (diamonds < amount)
+            return false;
+
         diamonds -= amount;
+        MarkDirty();
         OnCurrencyChanged?.Invoke();
         return true;
     }
 
     public void AddXP(int amount)
     {
-        if (amount <= 0) return;
+        if (amount <= 0)
+            return;
 
         PlayerRank oldRank = CurrentRank;
         xp += amount;
         PlayerRank newRank = CurrentRank;
+
+        MarkDirty();
         OnProgressChanged?.Invoke();
 
         if (newRank != oldRank)
@@ -108,52 +206,37 @@ public class SaveManager : MonoBehaviour
 
     public void SetXP(int amount)
     {
-        xp = Mathf.Max(0, amount);
+        int newValue = Mathf.Max(0, amount);
+
+        if (xp == newValue)
+            return;
+
+        xp = newValue;
+        MarkDirty();
         OnProgressChanged?.Invoke();
     }
 
     public bool SetOwnedOpeningSlots(int amount)
     {
         EnsureRuntimeState();
+
         int value = Mathf.Clamp(amount, 1, 3);
-        if (upgrades.openingSlotsOwned == value) return false;
+
+        if (upgrades.openingSlotsOwned == value)
+            return false;
 
         upgrades.openingSlotsOwned = value;
+        MarkDirty();
         OnProgressChanged?.Invoke();
         return true;
-    }
-
-    public void SaveGame()
-    {
-        if (InventoryManager.Instance == null)
-        {
-            Debug.LogError("Cannot save: no InventoryManager found.");
-            return;
-        }
-
-        try
-        {
-            SaveData data = BuildSaveData();
-            WriteSaveAtomically(JsonUtility.ToJson(data, true));
-
-            if (ContainerProgressManager.Instance != null)
-                ContainerProgressManager.Instance.DeleteLegacySaveAfterMigration();
-            else
-                ContainerProgressManager.DeleteLegacySaveFile();
-
-            Debug.Log($"Game saved as SaveData {SaveData.CurrentVersion}: {SavePath}");
-        }
-        catch (Exception exception)
-        {
-            Debug.LogError($"SaveManager: Failed to save game. {exception}");
-        }
     }
 
     public void LoadGame()
     {
         if (database == null)
         {
-            Debug.LogError("Cannot load: GameDatabase is not assigned on SaveManager.");
+            Debug.LogError(
+                "Cannot load: GameDatabase is not assigned on SaveManager.");
             return;
         }
 
@@ -163,33 +246,44 @@ public class SaveManager : MonoBehaviour
             return;
         }
 
-        bool fromBackup = false;
+        bool loadedFromBackup = false;
 
-        if (!TryLoadSaveData(SavePath, out SaveData data, out bool migrated))
+        if (!TryLoadSaveData(
+                SavePath,
+                out SaveData data,
+                out bool migrated))
         {
-            if (!TryLoadSaveData(BackupPath, out data, out migrated))
+            if (!TryLoadSaveData(
+                    BackupPath,
+                    out data,
+                    out migrated))
             {
-                Debug.LogWarning($"No readable save found at {SavePath} or {BackupPath}.");
+                Debug.LogWarning(
+                    $"No readable save found at {SavePath} or {BackupPath}.");
                 return;
             }
 
-            fromBackup = true;
-            Debug.LogWarning("SaveManager: Loaded backup because the main save was unreadable.");
+            loadedFromBackup = true;
+            Debug.LogWarning(
+                "SaveManager: Loaded backup because the main save was unreadable.");
         }
 
         ApplySaveData(data);
+        saveDirty = false;
+        ScheduleNextAutosave();
 
         Debug.Log(
             $"Game loaded. SaveData {data.saveVersion}. " +
             $"Items: {InventoryManager.Instance.Count}. " +
             $"Cases: {(CaseInventoryManager.Instance != null ? CaseInventoryManager.Instance.TotalCaseCount : 0)}.");
 
-        if (migrated || fromBackup)
+        if (migrated || loadedFromBackup)
         {
-            if (fromBackup && File.Exists(SavePath))
+            if (loadedFromBackup && File.Exists(SavePath))
                 File.Delete(SavePath);
 
-            SaveGame();
+            MarkDirty();
+            SaveNow();
         }
     }
 
@@ -204,7 +298,57 @@ public class SaveManager : MonoBehaviour
         else
             ContainerProgressManager.DeleteLegacySaveFile();
 
-        Debug.Log(deleted ? "Save files deleted." : "No save files exist to delete.");
+        saveDirty = false;
+        ScheduleNextAutosave();
+
+        Debug.Log(
+            deleted
+                ? "Save files deleted."
+                : "No save files exist to delete.");
+    }
+
+    private bool TryWriteCurrentState()
+    {
+        if (isWritingSave)
+            return false;
+
+        if (InventoryManager.Instance == null)
+        {
+            Debug.LogError("Cannot save: no InventoryManager found.");
+            return false;
+        }
+
+        isWritingSave = true;
+
+        try
+        {
+            SaveData data = BuildSaveData();
+            WriteSaveAtomically(JsonUtility.ToJson(data, true));
+
+            saveDirty = false;
+            ScheduleNextAutosave();
+
+            if (ContainerProgressManager.Instance != null)
+                ContainerProgressManager.Instance.DeleteLegacySaveAfterMigration();
+            else
+                ContainerProgressManager.DeleteLegacySaveFile();
+
+            Debug.Log(
+                $"Game saved as SaveData {SaveData.CurrentVersion}: {SavePath}");
+
+            return true;
+        }
+        catch (Exception exception)
+        {
+            saveDirty = true;
+            ScheduleNextAutosave();
+            Debug.LogError($"SaveManager: Failed to save game. {exception}");
+            return false;
+        }
+        finally
+        {
+            isWritingSave = false;
+        }
     }
 
     private SaveData BuildSaveData()
@@ -212,17 +356,25 @@ public class SaveManager : MonoBehaviour
         EnsureRuntimeState();
 
         long now = DateTime.UtcNow.Ticks;
+
         if (string.IsNullOrWhiteSpace(metadata.saveId))
             metadata.saveId = Guid.NewGuid().ToString();
+
         if (metadata.createdUtcTicks <= 0)
             metadata.createdUtcTicks = now;
+
         metadata.lastSavedUtcTicks = now;
 
         SaveData data = new SaveData
         {
             saveVersion = SaveData.CurrentVersion,
             metadata = Clone(metadata),
-            player = new PlayerProfileSaveData { gold = gold, diamonds = diamonds, xp = xp },
+            player = new PlayerProfileSaveData
+            {
+                gold = gold,
+                diamonds = diamonds,
+                xp = xp
+            },
             inventories = BuildInventoryState(),
             upgrades = Clone(upgrades),
             museum = Clone(museum),
@@ -246,20 +398,28 @@ public class SaveManager : MonoBehaviour
         foreach (InventoryItem item in InventoryManager.Instance.Items)
         {
             InventoryItemSaveData saved = CreateItemSave(item);
+
             if (saved != null)
                 state.skinInventory.Add(saved);
         }
 
         if (CaseInventoryManager.Instance != null)
         {
-            foreach (CaseInventoryEntry entry in CaseInventoryManager.Instance.Cases)
+            foreach (CaseInventoryEntry entry
+                     in CaseInventoryManager.Instance.Cases)
             {
-                if (entry == null || entry.caseData == null || entry.amount <= 0)
+                if (entry == null ||
+                    entry.caseData == null ||
+                    entry.amount <= 0)
+                {
                     continue;
+                }
 
                 if (string.IsNullOrWhiteSpace(entry.caseData.apiId))
                 {
-                    Debug.LogWarning($"Skipping case with missing apiId: {entry.caseData.caseName}");
+                    Debug.LogWarning(
+                        $"Skipping case with missing apiId: " +
+                        $"{entry.caseData.caseName}");
                     continue;
                 }
 
@@ -281,7 +441,9 @@ public class SaveManager : MonoBehaviour
 
         if (string.IsNullOrWhiteSpace(item.skin.apiId))
         {
-            Debug.LogWarning($"Skipping item with missing apiId: {SkinDisplayUtility.GetDisplayName(item.skin)}");
+            Debug.LogWarning(
+                $"Skipping item with missing apiId: " +
+                $"{SkinDisplayUtility.GetDisplayName(item.skin)}");
             return null;
         }
 
@@ -296,33 +458,50 @@ public class SaveManager : MonoBehaviour
             souvenir = item.souvenir,
             isVanilla = item.isVanilla,
             marketValue = item.marketValue,
-            favorite = item.favorite
+            favorite = item.favorite,
+            storageIndex = item.storageIndex
         };
     }
 
-    private bool TryLoadSaveData(string path, out SaveData data, out bool migrated)
+    private bool TryLoadSaveData(
+        string path,
+        out SaveData data,
+        out bool migrated)
     {
         data = null;
         migrated = false;
-        if (!File.Exists(path)) return false;
+
+        if (!File.Exists(path))
+            return false;
 
         try
         {
             string json = File.ReadAllText(path);
-            if (string.IsNullOrWhiteSpace(json) || !json.Contains("\"saveVersion\""))
-                return false;
 
-            SaveVersionHeader header = JsonUtility.FromJson<SaveVersionHeader>(json);
+            if (string.IsNullOrWhiteSpace(json) ||
+                !json.Contains("\"saveVersion\""))
+            {
+                return false;
+            }
+
+            SaveVersionHeader header =
+                JsonUtility.FromJson<SaveVersionHeader>(json);
+
             int version = header != null ? header.saveVersion : 0;
 
             if (version <= 1)
             {
                 SaveDataV1 legacy = JsonUtility.FromJson<SaveDataV1>(json);
-                if (legacy == null) return false;
+
+                if (legacy == null)
+                    return false;
 
                 data = MigrateV1ToV2(legacy);
                 migrated = true;
-                Debug.Log("SaveManager: Migrated SaveData 1.0 to SaveData 2.0.");
+
+                Debug.Log(
+                    "SaveManager: Migrated SaveData 1.0 to SaveData 2.0.");
+
                 return true;
             }
 
@@ -335,13 +514,17 @@ public class SaveManager : MonoBehaviour
             }
 
             data = JsonUtility.FromJson<SaveData>(json);
-            if (data == null) return false;
+
+            if (data == null)
+                return false;
+
             EnsureSaveData(data);
             return true;
         }
         catch (Exception exception)
         {
-            Debug.LogWarning($"SaveManager: Failed to read {path}. {exception.Message}");
+            Debug.LogWarning(
+                $"SaveManager: Failed to read {path}. {exception.Message}");
             return false;
         }
     }
@@ -367,12 +550,21 @@ public class SaveManager : MonoBehaviour
             },
             inventories = new InventoryStateSaveData
             {
-                unlockedStoragePages = Mathf.Max(1, legacy.unlockedStoragePages),
-                itemsPerStoragePage = Mathf.Max(1, legacy.itemsPerStoragePage),
-                skinInventory = legacy.inventory ?? new List<InventoryItemSaveData>(),
-                caseInventory = legacy.caseInventory ?? new List<CaseInventoryEntrySaveData>()
+                unlockedStoragePages = Mathf.Max(
+                    1,
+                    legacy.unlockedStoragePages),
+                itemsPerStoragePage = Mathf.Max(
+                    1,
+                    legacy.itemsPerStoragePage),
+                skinInventory = legacy.inventory ??
+                    new List<InventoryItemSaveData>(),
+                caseInventory = legacy.caseInventory ??
+                    new List<CaseInventoryEntrySaveData>()
             },
-            upgrades = new UpgradeStateSaveData { openingSlotsOwned = 1 },
+            upgrades = new UpgradeStateSaveData
+            {
+                openingSlotsOwned = 1
+            },
             museum = new MuseumStateSaveData(),
             containerProgress = ContainerProgressManager.Instance != null
                 ? ContainerProgressManager.Instance.ExportSaveData()
@@ -392,8 +584,8 @@ public class SaveManager : MonoBehaviour
         museum = Clone(data.museum);
         containerProgressState = Clone(data.containerProgress);
 
-        gold = data.player.gold;
-        diamonds = data.player.diamonds;
+        gold = Mathf.Max(0f, data.player.gold);
+        diamonds = Mathf.Max(0, data.player.diamonds);
         xp = Mathf.Max(0, data.player.xp);
 
         InventoryManager.Instance.SetStorageData(
@@ -410,31 +602,45 @@ public class SaveManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("SaveManager: No CaseInventoryManager found while loading.");
+            Debug.LogWarning(
+                "SaveManager: No CaseInventoryManager found while loading.");
         }
 
         if (ContainerProgressManager.Instance != null)
-            ContainerProgressManager.Instance.ReplaceProgress(containerProgressState);
+        {
+            ContainerProgressManager.Instance.ReplaceProgress(
+                containerProgressState);
+        }
         else if (containerProgressState.progressEntries.Count > 0)
-            Debug.LogWarning("SaveManager: Saved container progress could not be applied because its manager is missing.");
+        {
+            Debug.LogWarning(
+                "SaveManager: Saved container progress could not be applied " +
+                "because its manager is missing.");
+        }
 
         OnCurrencyChanged?.Invoke();
         OnProgressChanged?.Invoke();
     }
 
-    private List<InventoryItem> BuildLoadedSkinInventory(List<InventoryItemSaveData> savedItems)
+    private List<InventoryItem> BuildLoadedSkinInventory(
+        List<InventoryItemSaveData> savedItems)
     {
         List<InventoryItem> loaded = new List<InventoryItem>();
-        if (savedItems == null) return loaded;
+
+        if (savedItems == null)
+            return loaded;
 
         foreach (InventoryItemSaveData saved in savedItems)
         {
-            if (saved == null) continue;
+            if (saved == null)
+                continue;
 
             SkinData skin = database.GetSkinByApiId(saved.skinApiId);
+
             if (skin == null)
             {
-                Debug.LogWarning($"Could not find skin with apiId: {saved.skinApiId}");
+                Debug.LogWarning(
+                    $"Could not find skin with apiId: {saved.skinApiId}");
                 continue;
             }
 
@@ -452,7 +658,8 @@ public class SaveManager : MonoBehaviour
                 statTrak = !souvenir && saved.statTrak && skin.canBeStatTrak,
                 souvenir = souvenir,
                 isVanilla = saved.isVanilla || skin.isVanilla,
-                favorite = saved.favorite
+                favorite = saved.favorite,
+                storageIndex = Mathf.Max(0, saved.storageIndex)
             };
 
             if (item.isVanilla)
@@ -462,7 +669,7 @@ public class SaveManager : MonoBehaviour
                 item.patternTier = PatternTier.None;
             }
 
-            // marketValue is a cache; recalculate after balance/formula updates.
+            // Market value is a cache and must follow current balance formulas.
             item.marketValue = PriceCalculator.GetPrice(item);
             loaded.Add(item);
         }
@@ -470,23 +677,34 @@ public class SaveManager : MonoBehaviour
         return loaded;
     }
 
-    private List<CaseInventoryEntry> BuildLoadedCaseInventory(List<CaseInventoryEntrySaveData> savedCases)
+    private List<CaseInventoryEntry> BuildLoadedCaseInventory(
+        List<CaseInventoryEntrySaveData> savedCases)
     {
-        List<CaseInventoryEntry> loaded = new List<CaseInventoryEntry>();
-        if (savedCases == null) return loaded;
+        List<CaseInventoryEntry> loaded =
+            new List<CaseInventoryEntry>();
+
+        if (savedCases == null)
+            return loaded;
 
         foreach (CaseInventoryEntrySaveData saved in savedCases)
         {
-            if (saved == null || saved.amount <= 0) continue;
+            if (saved == null || saved.amount <= 0)
+                continue;
 
             CaseData caseData = database.GetCaseByApiId(saved.caseApiId);
+
             if (caseData == null)
             {
-                Debug.LogWarning($"Could not find case with apiId: {saved.caseApiId}");
+                Debug.LogWarning(
+                    $"Could not find case with apiId: {saved.caseApiId}");
                 continue;
             }
 
-            loaded.Add(new CaseInventoryEntry { caseData = caseData, amount = saved.amount });
+            loaded.Add(new CaseInventoryEntry
+            {
+                caseData = caseData,
+                amount = saved.amount
+            });
         }
 
         return loaded;
@@ -494,74 +712,155 @@ public class SaveManager : MonoBehaviour
 
     private void EnsureRuntimeState()
     {
-        if (upgrades == null) upgrades = new UpgradeStateSaveData();
-        upgrades.openingSlotsOwned = Mathf.Clamp(upgrades.openingSlotsOwned, 1, 3);
-        if (upgrades.upgradeLevels == null) upgrades.upgradeLevels = new List<UpgradeLevelSaveData>();
+        if (upgrades == null)
+            upgrades = new UpgradeStateSaveData();
 
-        if (museum == null) museum = new MuseumStateSaveData();
+        upgrades.openingSlotsOwned = Mathf.Clamp(
+            upgrades.openingSlotsOwned,
+            1,
+            3);
+
+        if (upgrades.upgradeLevels == null)
+        {
+            upgrades.upgradeLevels =
+                new List<UpgradeLevelSaveData>();
+        }
+
+        if (museum == null)
+            museum = new MuseumStateSaveData();
+
         EnsureMuseumState(museum);
 
-        if (metadata == null) metadata = new SaveMetadataSaveData();
-        if (containerProgressState == null) containerProgressState = new ContainerProgressSaveData();
+        if (metadata == null)
+            metadata = new SaveMetadataSaveData();
+
+        if (containerProgressState == null)
+            containerProgressState = new ContainerProgressSaveData();
+
         if (containerProgressState.progressEntries == null)
-            containerProgressState.progressEntries = new List<ContainerProgressData>();
+        {
+            containerProgressState.progressEntries =
+                new List<ContainerProgressData>();
+        }
     }
 
     private static void EnsureSaveData(SaveData data)
     {
-        if (data == null) return;
+        if (data == null)
+            return;
 
         data.saveVersion = SaveData.CurrentVersion;
-        if (data.metadata == null) data.metadata = new SaveMetadataSaveData();
+
+        if (data.metadata == null)
+            data.metadata = new SaveMetadataSaveData();
+
         if (string.IsNullOrWhiteSpace(data.metadata.saveId))
             data.metadata.saveId = Guid.NewGuid().ToString();
 
         long now = DateTime.UtcNow.Ticks;
-        if (data.metadata.createdUtcTicks <= 0) data.metadata.createdUtcTicks = now;
-        if (data.metadata.lastSavedUtcTicks <= 0) data.metadata.lastSavedUtcTicks = now;
 
-        if (data.player == null) data.player = new PlayerProfileSaveData();
-        if (data.inventories == null) data.inventories = new InventoryStateSaveData();
-        data.inventories.unlockedStoragePages = Mathf.Max(1, data.inventories.unlockedStoragePages);
-        data.inventories.itemsPerStoragePage = Mathf.Max(1, data.inventories.itemsPerStoragePage);
+        if (data.metadata.createdUtcTicks <= 0)
+            data.metadata.createdUtcTicks = now;
+
+        if (data.metadata.lastSavedUtcTicks <= 0)
+            data.metadata.lastSavedUtcTicks = now;
+
+        if (data.player == null)
+            data.player = new PlayerProfileSaveData();
+
+        if (data.inventories == null)
+            data.inventories = new InventoryStateSaveData();
+
+        data.inventories.unlockedStoragePages = Mathf.Max(
+            1,
+            data.inventories.unlockedStoragePages);
+
+        data.inventories.itemsPerStoragePage = Mathf.Max(
+            1,
+            data.inventories.itemsPerStoragePage);
+
         if (data.inventories.skinInventory == null)
-            data.inventories.skinInventory = new List<InventoryItemSaveData>();
+        {
+            data.inventories.skinInventory =
+                new List<InventoryItemSaveData>();
+        }
+
         if (data.inventories.caseInventory == null)
-            data.inventories.caseInventory = new List<CaseInventoryEntrySaveData>();
+        {
+            data.inventories.caseInventory =
+                new List<CaseInventoryEntrySaveData>();
+        }
 
-        if (data.upgrades == null) data.upgrades = new UpgradeStateSaveData();
-        data.upgrades.openingSlotsOwned = Mathf.Clamp(data.upgrades.openingSlotsOwned, 1, 3);
+        if (data.upgrades == null)
+            data.upgrades = new UpgradeStateSaveData();
+
+        data.upgrades.openingSlotsOwned = Mathf.Clamp(
+            data.upgrades.openingSlotsOwned,
+            1,
+            3);
+
         if (data.upgrades.upgradeLevels == null)
-            data.upgrades.upgradeLevels = new List<UpgradeLevelSaveData>();
+        {
+            data.upgrades.upgradeLevels =
+                new List<UpgradeLevelSaveData>();
+        }
 
-        if (data.museum == null) data.museum = new MuseumStateSaveData();
+        if (data.museum == null)
+            data.museum = new MuseumStateSaveData();
+
         EnsureMuseumState(data.museum);
 
-        if (data.containerProgress == null) data.containerProgress = new ContainerProgressSaveData();
+        if (data.containerProgress == null)
+            data.containerProgress = new ContainerProgressSaveData();
+
         if (data.containerProgress.progressEntries == null)
-            data.containerProgress.progressEntries = new List<ContainerProgressData>();
+        {
+            data.containerProgress.progressEntries =
+                new List<ContainerProgressData>();
+        }
     }
 
     private static void EnsureMuseumState(MuseumStateSaveData state)
     {
-        if (state.donations == null) state.donations = new List<MuseumDonationRecordSaveData>();
-        if (state.claimedMilestoneIds == null) state.claimedMilestoneIds = new List<string>();
-        if (state.unlockedPlaqueIds == null) state.unlockedPlaqueIds = new List<string>();
+        if (state.donations == null)
+        {
+            state.donations =
+                new List<MuseumDonationRecordSaveData>();
+        }
 
-        if (state.giftDesk == null) state.giftDesk = new GiftDeskSaveData();
+        if (state.claimedMilestoneIds == null)
+            state.claimedMilestoneIds = new List<string>();
+
+        if (state.unlockedPlaqueIds == null)
+            state.unlockedPlaqueIds = new List<string>();
+
+        if (state.giftDesk == null)
+            state.giftDesk = new GiftDeskSaveData();
+
         if (state.giftDesk.shardBalances == null)
-            state.giftDesk.shardBalances = new List<GiftShardBalanceSaveData>();
+        {
+            state.giftDesk.shardBalances =
+                new List<GiftShardBalanceSaveData>();
+        }
+
         if (state.giftDesk.claimedGiftIds == null)
             state.giftDesk.claimedGiftIds = new List<string>();
 
-        if (state.trophyRoom == null) state.trophyRoom = new TrophyRoomSaveData();
+        if (state.trophyRoom == null)
+            state.trophyRoom = new TrophyRoomSaveData();
+
         if (state.trophyRoom.displayedItems == null)
-            state.trophyRoom.displayedItems = new List<TrophyDisplaySlotSaveData>();
+        {
+            state.trophyRoom.displayedItems =
+                new List<TrophyDisplaySlotSaveData>();
+        }
     }
 
     private static T Clone<T>(T source) where T : class, new()
     {
-        if (source == null) return new T();
+        if (source == null)
+            return new T();
+
         T copy = JsonUtility.FromJson<T>(JsonUtility.ToJson(source));
         return copy ?? new T();
     }
@@ -569,18 +868,32 @@ public class SaveManager : MonoBehaviour
     private void WriteSaveAtomically(string json)
     {
         string directory = Path.GetDirectoryName(SavePath);
+
         if (!string.IsNullOrWhiteSpace(directory))
             Directory.CreateDirectory(directory);
 
         File.WriteAllText(TempPath, json);
-        if (File.Exists(SavePath)) File.Copy(SavePath, BackupPath, true);
-        if (File.Exists(SavePath)) File.Delete(SavePath);
+
+        if (File.Exists(SavePath))
+            File.Copy(SavePath, BackupPath, true);
+
+        if (File.Exists(SavePath))
+            File.Delete(SavePath);
+
         File.Move(TempPath, SavePath);
+    }
+
+    private void ScheduleNextAutosave()
+    {
+        nextAutosaveTime =
+            Time.unscaledTime + Mathf.Max(5f, autosaveIntervalSeconds);
     }
 
     private static bool DeleteFileIfPresent(string path)
     {
-        if (!File.Exists(path)) return false;
+        if (!File.Exists(path))
+            return false;
+
         File.Delete(path);
         return true;
     }
