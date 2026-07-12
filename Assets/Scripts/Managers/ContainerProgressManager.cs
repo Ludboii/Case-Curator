@@ -22,14 +22,22 @@ public class ContainerProgressManager : MonoBehaviour
 {
     public static ContainerProgressManager Instance { get; private set; }
 
-    private const string SaveKey = "ContainerProgress_Save_v1";
+    private const string LegacySaveKey = "ContainerProgress_Save_v1";
 
     public event Action OnContainerProgressChanged;
 
-    [SerializeField] private ContainerProgressSaveData saveData = new ContainerProgressSaveData();
+    [SerializeField] private ContainerProgressSaveData saveData =
+        new ContainerProgressSaveData();
 
     private readonly Dictionary<string, ContainerProgressData> progressByContainer =
         new Dictionary<string, ContainerProgressData>();
+
+    private bool legacyProgressReadyForDeletion;
+
+    public bool HasAnyProgress =>
+        saveData != null &&
+        saveData.progressEntries != null &&
+        saveData.progressEntries.Count > 0;
 
     private void Awake()
     {
@@ -41,7 +49,13 @@ public class ContainerProgressManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        Load();
+        ReplaceProgress(new ContainerProgressSaveData(), false);
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
     }
 
     public ContainerProgressData GetProgress(CaseData caseData)
@@ -51,7 +65,9 @@ public class ContainerProgressManager : MonoBehaviour
         if (string.IsNullOrWhiteSpace(key))
             return null;
 
-        if (!progressByContainer.TryGetValue(key, out ContainerProgressData progress))
+        if (!progressByContainer.TryGetValue(
+                key,
+                out ContainerProgressData progress))
         {
             progress = new ContainerProgressData
             {
@@ -67,8 +83,9 @@ public class ContainerProgressManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Records one generated inventory item for a container. Pass saveImmediately=false
-    /// when opening several containers, then call SaveProgress once after the loop.
+    /// Records one generated inventory item for a container. Pass
+    /// saveImmediately=false when opening several containers, then save once
+    /// after the batch.
     /// </summary>
     public void RecordContainerOpened(
         CaseData caseData,
@@ -95,13 +112,14 @@ public class ContainerProgressManager : MonoBehaviour
 
         if (pulledSkin.rarity == Rarity.RareSpecial)
         {
-            // Bronze only needs any one Rare Special item, while the inspect list
-            // tracks each specific knife/glove separately.
+            // Bronze needs any one Rare Special item. The inspect list still
+            // records every specific knife or glove that has been discovered.
             progress.foundRareSpecial = true;
             AddUnique(progress.foundRareSpecialSkinKeys, skinKey);
         }
         else
         {
+            // Normal and Souvenir pulls both discover the underlying skin.
             AddUnique(progress.foundSkinKeys, skinKey);
 
             bool bestWear = IsBestPossibleWear(pulledItem);
@@ -118,12 +136,12 @@ public class ContainerProgressManager : MonoBehaviour
         }
 
         if (saveImmediately)
-            SaveProgress();
+            SaveProgress(true);
     }
 
     /// <summary>
     /// Compatibility overload for older callers. It tracks discovery, but the
-    /// InventoryItem overload is required for wear and variant completion tiers.
+    /// InventoryItem overload is required for wear and variant completion.
     /// </summary>
     public void RecordContainerOpened(
         CaseData caseData,
@@ -157,13 +175,141 @@ public class ContainerProgressManager : MonoBehaviour
             AddUnique(progress.foundSkinKeys, skinKey);
         }
 
-        SaveProgress();
+        SaveProgress(true);
     }
 
-    public void SaveProgress()
+    /// <summary>
+    /// Container progress is part of SaveData v2. This method refreshes UI and
+    /// optionally writes the complete game save. Use saveGame=false when the
+    /// caller already performs a single batched SaveGame call.
+    /// </summary>
+    public void SaveProgress(bool saveGame = false)
     {
-        Save();
         OnContainerProgressChanged?.Invoke();
+
+        if (saveGame && SaveManager.Instance != null)
+            SaveManager.Instance.SaveGame();
+    }
+
+    public void NotifyProgressChanged()
+    {
+        OnContainerProgressChanged?.Invoke();
+    }
+
+    public ContainerProgressSaveData CreateSaveDataSnapshot()
+    {
+        ContainerProgressSaveData snapshot = new ContainerProgressSaveData();
+
+        if (saveData == null || saveData.progressEntries == null)
+            return snapshot;
+
+        foreach (ContainerProgressData progress in saveData.progressEntries)
+        {
+            if (progress == null || string.IsNullOrWhiteSpace(progress.containerId))
+                continue;
+
+            snapshot.progressEntries.Add(CloneProgress(progress));
+        }
+
+        return snapshot;
+    }
+
+    public void ReplaceProgress(
+        ContainerProgressSaveData loadedData,
+        bool notify = true)
+    {
+        saveData = loadedData ?? new ContainerProgressSaveData();
+
+        if (saveData.progressEntries == null)
+        {
+            saveData.progressEntries =
+                new List<ContainerProgressData>();
+        }
+
+        progressByContainer.Clear();
+
+        for (int i = saveData.progressEntries.Count - 1; i >= 0; i--)
+        {
+            ContainerProgressData progress = saveData.progressEntries[i];
+
+            if (progress == null || string.IsNullOrWhiteSpace(progress.containerId))
+            {
+                saveData.progressEntries.RemoveAt(i);
+                continue;
+            }
+
+            EnsureProgressLists(progress);
+
+            if (progressByContainer.ContainsKey(progress.containerId))
+            {
+                saveData.progressEntries.RemoveAt(i);
+                continue;
+            }
+
+            progressByContainer.Add(progress.containerId, progress);
+        }
+
+        legacyProgressReadyForDeletion =
+            HasAnyProgress && PlayerPrefs.HasKey(LegacySaveKey);
+
+        if (notify)
+            OnContainerProgressChanged?.Invoke();
+    }
+
+    public bool TryImportLegacyProgress(bool onlyIfCurrentEmpty = true)
+    {
+        if (onlyIfCurrentEmpty && HasAnyProgress)
+            return false;
+
+        if (!PlayerPrefs.HasKey(LegacySaveKey))
+            return false;
+
+        string json = PlayerPrefs.GetString(LegacySaveKey, "");
+
+        if (string.IsNullOrWhiteSpace(json))
+            return false;
+
+        try
+        {
+            ContainerProgressSaveData legacyData =
+                JsonUtility.FromJson<ContainerProgressSaveData>(json);
+
+            if (legacyData == null ||
+                legacyData.progressEntries == null ||
+                legacyData.progressEntries.Count == 0)
+            {
+                return false;
+            }
+
+            ReplaceProgress(legacyData, true);
+            legacyProgressReadyForDeletion = true;
+
+            Debug.Log(
+                "Imported legacy PlayerPrefs container progress into SaveData v2.");
+
+            return true;
+        }
+        catch (Exception exception)
+        {
+            Debug.LogWarning(
+                $"ContainerProgressManager: Failed to import legacy progress. " +
+                $"{exception.Message}");
+            return false;
+        }
+    }
+
+    public void DeleteLegacyProgressAfterMigration(bool force = false)
+    {
+        if (!force && !legacyProgressReadyForDeletion)
+            return;
+
+        if (PlayerPrefs.HasKey(LegacySaveKey))
+        {
+            PlayerPrefs.DeleteKey(LegacySaveKey);
+            PlayerPrefs.Save();
+        }
+
+        legacyProgressReadyForDeletion = false;
     }
 
     public int GetOpenedCount(CaseData caseData)
@@ -175,7 +321,9 @@ public class ContainerProgressManager : MonoBehaviour
     public float GetProfit(CaseData caseData)
     {
         ContainerProgressData progress = GetProgress(caseData);
-        return progress != null ? progress.totalValuePulled - progress.totalSpent : 0f;
+        return progress != null
+            ? progress.totalValuePulled - progress.totalSpent
+            : 0f;
     }
 
     public int GetFoundCount(CaseData caseData)
@@ -185,7 +333,9 @@ public class ContainerProgressManager : MonoBehaviour
         if (progress == null)
             return 0;
 
-        int found = CountMatchingNormalTargets(caseData, progress.foundSkinKeys);
+        int found = CountMatchingNormalTargets(
+            caseData,
+            progress.foundSkinKeys);
 
         if (HasRareSpecialTarget(caseData) && progress.foundRareSpecial)
             found++;
@@ -211,19 +361,34 @@ public class ContainerProgressManager : MonoBehaviour
     public int GetBestWearCount(CaseData caseData)
     {
         ContainerProgressData progress = GetProgress(caseData);
-        return progress == null ? 0 : CountMatchingNormalTargets(caseData, progress.bestWearSkinKeys);
+
+        return progress == null
+            ? 0
+            : CountMatchingNormalTargets(
+                caseData,
+                progress.bestWearSkinKeys);
     }
 
     public int GetVariantCount(CaseData caseData)
     {
         ContainerProgressData progress = GetProgress(caseData);
-        return progress == null ? 0 : CountMatchingNormalTargets(caseData, progress.variantSkinKeys);
+
+        return progress == null
+            ? 0
+            : CountMatchingNormalTargets(
+                caseData,
+                progress.variantSkinKeys);
     }
 
     public int GetBestWearVariantCount(CaseData caseData)
     {
         ContainerProgressData progress = GetProgress(caseData);
-        return progress == null ? 0 : CountMatchingNormalTargets(caseData, progress.bestWearVariantSkinKeys);
+
+        return progress == null
+            ? 0
+            : CountMatchingNormalTargets(
+                caseData,
+                progress.bestWearVariantSkinKeys);
     }
 
     public ContainerCompletionTier GetCompletionTier(CaseData caseData)
@@ -243,7 +408,9 @@ public class ContainerProgressManager : MonoBehaviour
         return ContainerCompletionTier.None;
     }
 
-    public bool IsTierComplete(CaseData caseData, ContainerCompletionTier tier)
+    public bool IsTierComplete(
+        CaseData caseData,
+        ContainerCompletionTier tier)
     {
         switch (tier)
         {
@@ -273,7 +440,9 @@ public class ContainerProgressManager : MonoBehaviour
             return false;
 
         bool allNormalFound =
-            CountMatchingNormalTargets(caseData, progress.foundSkinKeys) >= normalTarget;
+            CountMatchingNormalTargets(
+                caseData,
+                progress.foundSkinKeys) >= normalTarget;
 
         bool rareSpecialComplete =
             !HasRareSpecialTarget(caseData) || progress.foundRareSpecial;
@@ -289,8 +458,11 @@ public class ContainerProgressManager : MonoBehaviour
 
     public bool IsGoldComplete(CaseData caseData)
     {
-        if (GetVariantRequirement(caseData) == ContainerVariantRequirement.None)
+        if (GetVariantRequirement(caseData) ==
+            ContainerVariantRequirement.None)
+        {
             return false;
+        }
 
         int target = GetNormalSkinTargetCount(caseData);
         return target > 0 && GetVariantCount(caseData) >= target;
@@ -298,8 +470,11 @@ public class ContainerProgressManager : MonoBehaviour
 
     public bool IsDiamondComplete(CaseData caseData)
     {
-        if (GetVariantRequirement(caseData) == ContainerVariantRequirement.None)
+        if (GetVariantRequirement(caseData) ==
+            ContainerVariantRequirement.None)
+        {
             return false;
+        }
 
         int target = GetNormalSkinTargetCount(caseData);
         return target > 0 && GetBestWearVariantCount(caseData) >= target;
@@ -332,10 +507,21 @@ public class ContainerProgressManager : MonoBehaviour
         if (caseData == null)
             return ContainerVariantRequirement.None;
 
-        if (caseData.forceSouvenirDrops)
+        if (caseData.forceSouvenirDrops ||
+            caseData.containerType == CaseContainerType.SouvenirPackage)
+        {
             return ContainerVariantRequirement.Souvenir;
+        }
 
-        if (caseData.allowStatTrak)
+        // Normal collection packages cannot generate StatTrak items.
+        if (caseData.containerType == CaseContainerType.CollectionPackage)
+            return ContainerVariantRequirement.None;
+
+        bool statTrakContainer =
+            caseData.containerType == CaseContainerType.WeaponCase ||
+            caseData.containerType == CaseContainerType.CustomCase;
+
+        if (statTrakContainer && caseData.allowStatTrak)
             return ContainerVariantRequirement.StatTrak;
 
         return ContainerVariantRequirement.None;
@@ -379,7 +565,9 @@ public class ContainerProgressManager : MonoBehaviour
         return progress != null && progress.foundRareSpecial;
     }
 
-    public bool IsRewardClaimed(CaseData caseData, ContainerCompletionTier tier)
+    public bool IsRewardClaimed(
+        CaseData caseData,
+        ContainerCompletionTier tier)
     {
         ContainerProgressData progress = GetProgress(caseData);
 
@@ -407,21 +595,27 @@ public class ContainerProgressManager : MonoBehaviour
                tier == ContainerCompletionTier.Silver;
     }
 
-    public bool CanClaimReward(CaseData caseData, ContainerCompletionTier tier)
+    public bool CanClaimReward(
+        CaseData caseData,
+        ContainerCompletionTier tier)
     {
         return IsRewardImplemented(tier) &&
                IsTierComplete(caseData, tier) &&
                !IsRewardClaimed(caseData, tier);
     }
 
-    public bool ClaimReward(CaseData caseData, ContainerCompletionTier tier)
+    public bool ClaimReward(
+        CaseData caseData,
+        ContainerCompletionTier tier)
     {
         if (!CanClaimReward(caseData, tier))
             return false;
 
         if (CaseInventoryManager.Instance == null)
         {
-            Debug.LogWarning("ContainerProgressManager: Cannot claim reward because CaseInventoryManager is missing.");
+            Debug.LogWarning(
+                "ContainerProgressManager: Cannot claim reward because " +
+                "CaseInventoryManager is missing.");
             return false;
         }
 
@@ -447,28 +641,36 @@ public class ContainerProgressManager : MonoBehaviour
         }
 
         CaseInventoryManager.Instance.AddCases(caseData, containerReward);
-        SaveProgress();
+        SaveProgress(false);
 
         if (SaveManager.Instance != null)
             SaveManager.Instance.SaveGame();
 
-        Debug.Log($"Claimed {tier} completion reward: {containerReward}x {caseData.caseName}.");
+        Debug.Log(
+            $"Claimed {tier} completion reward: " +
+            $"{containerReward}x {caseData.caseName}.");
+
         return true;
     }
 
     public void ResetAllProgressForTesting()
     {
-        saveData = new ContainerProgressSaveData();
-        progressByContainer.Clear();
+        ReplaceProgress(new ContainerProgressSaveData(), false);
 
-        PlayerPrefs.DeleteKey(SaveKey);
-        PlayerPrefs.Save();
+        if (PlayerPrefs.HasKey(LegacySaveKey))
+        {
+            PlayerPrefs.DeleteKey(LegacySaveKey);
+            PlayerPrefs.Save();
+        }
 
-        OnContainerProgressChanged?.Invoke();
+        legacyProgressReadyForDeletion = false;
+        SaveProgress(true);
         Debug.Log("ContainerProgressManager: Reset all container progress.");
     }
 
-    private bool HasRequiredVariant(CaseData caseData, InventoryItem item)
+    private bool HasRequiredVariant(
+        CaseData caseData,
+        InventoryItem item)
     {
         if (item == null)
             return false;
@@ -478,7 +680,7 @@ public class ContainerProgressManager : MonoBehaviour
             case ContainerVariantRequirement.Souvenir:
                 return item.souvenir;
             case ContainerVariantRequirement.StatTrak:
-                return item.statTrak;
+                return item.statTrak && !item.souvenir;
             default:
                 return false;
         }
@@ -497,7 +699,9 @@ public class ContainerProgressManager : MonoBehaviour
         return openedWear == bestPossibleWear;
     }
 
-    private int CountMatchingNormalTargets(CaseData caseData, List<string> completedKeys)
+    private int CountMatchingNormalTargets(
+        CaseData caseData,
+        List<string> completedKeys)
     {
         if (completedKeys == null || completedKeys.Count == 0)
             return 0;
@@ -523,8 +727,12 @@ public class ContainerProgressManager : MonoBehaviour
 
         foreach (WeightedDrop drop in caseData.dropPool)
         {
-            if (drop == null || drop.skin == null || drop.skin.rarity == Rarity.RareSpecial)
+            if (drop == null ||
+                drop.skin == null ||
+                drop.skin.rarity == Rarity.RareSpecial)
+            {
                 continue;
+            }
 
             keys.Add(GetSkinKey(drop.skin));
         }
@@ -548,6 +756,32 @@ public class ContainerProgressManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    private static ContainerProgressData CloneProgress(
+        ContainerProgressData source)
+    {
+        EnsureProgressLists(source);
+
+        return new ContainerProgressData
+        {
+            containerId = source.containerId,
+            openedCount = source.openedCount,
+            totalSpent = source.totalSpent,
+            totalValuePulled = source.totalValuePulled,
+            foundRareSpecial = source.foundRareSpecial,
+            foundSkinKeys = new List<string>(source.foundSkinKeys),
+            foundRareSpecialSkinKeys =
+                new List<string>(source.foundRareSpecialSkinKeys),
+            bestWearSkinKeys = new List<string>(source.bestWearSkinKeys),
+            variantSkinKeys = new List<string>(source.variantSkinKeys),
+            bestWearVariantSkinKeys =
+                new List<string>(source.bestWearVariantSkinKeys),
+            bronzeRewardClaimed = source.bronzeRewardClaimed,
+            silverRewardClaimed = source.silverRewardClaimed,
+            goldRewardClaimed = source.goldRewardClaimed,
+            diamondRewardClaimed = source.diamondRewardClaimed
+        };
     }
 
     private static void AddUnique(List<string> list, string value)
@@ -590,7 +824,10 @@ public class ContainerProgressManager : MonoBehaviour
             progress.foundSkinKeys = new List<string>();
 
         if (progress.foundRareSpecialSkinKeys == null)
-            progress.foundRareSpecialSkinKeys = new List<string>();
+        {
+            progress.foundRareSpecialSkinKeys =
+                new List<string>();
+        }
 
         if (progress.bestWearSkinKeys == null)
             progress.bestWearSkinKeys = new List<string>();
@@ -599,63 +836,18 @@ public class ContainerProgressManager : MonoBehaviour
             progress.variantSkinKeys = new List<string>();
 
         if (progress.bestWearVariantSkinKeys == null)
-            progress.bestWearVariantSkinKeys = new List<string>();
-    }
-
-    private void Load()
-    {
-        saveData = new ContainerProgressSaveData();
-        progressByContainer.Clear();
-
-        if (!PlayerPrefs.HasKey(SaveKey))
-            return;
-
-        string json = PlayerPrefs.GetString(SaveKey, "");
-
-        if (string.IsNullOrWhiteSpace(json))
-            return;
-
-        try
         {
-            saveData = JsonUtility.FromJson<ContainerProgressSaveData>(json);
-
-            if (saveData == null)
-                saveData = new ContainerProgressSaveData();
-
-            if (saveData.progressEntries == null)
-                saveData.progressEntries = new List<ContainerProgressData>();
-
-            foreach (ContainerProgressData progress in saveData.progressEntries)
-            {
-                if (progress == null || string.IsNullOrWhiteSpace(progress.containerId))
-                    continue;
-
-                EnsureProgressLists(progress);
-
-                if (!progressByContainer.ContainsKey(progress.containerId))
-                    progressByContainer.Add(progress.containerId, progress);
-            }
+            progress.bestWearVariantSkinKeys =
+                new List<string>();
         }
-        catch (Exception exception)
-        {
-            Debug.LogWarning($"ContainerProgressManager: Failed to load progress. {exception.Message}");
-            saveData = new ContainerProgressSaveData();
-            progressByContainer.Clear();
-        }
-    }
-
-    private void Save()
-    {
-        string json = JsonUtility.ToJson(saveData);
-        PlayerPrefs.SetString(SaveKey, json);
-        PlayerPrefs.Save();
     }
 }
 
 [Serializable]
 public class ContainerProgressSaveData
 {
-    public List<ContainerProgressData> progressEntries = new List<ContainerProgressData>();
+    public List<ContainerProgressData> progressEntries =
+        new List<ContainerProgressData>();
 }
 
 [Serializable]
