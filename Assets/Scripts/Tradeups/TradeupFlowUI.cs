@@ -83,22 +83,51 @@ public class TradeupFlowUI : MonoBehaviour
         }
     }
 
-    public void OpenTradeupSelection()
+public void OpenTradeupSelection()
+{
+    Debug.Log("TradeupFlowUI: OpenTradeupSelection called.");
+
+    if (mainPanelController == null)
     {
-        ClearSelection();
+        Debug.LogError(
+            "TradeupFlowUI: MainPanelController is not assigned.");
 
-        if (mainPanelController != null)
-            mainPanelController.ShowTradeups();
-
-        if (tradeupSelectionView != null)
-            tradeupSelectionView.SetActive(true);
-
-        if (tradeupResultView != null)
-            tradeupResultView.SetActive(false);
-
-        ClearResultCard();
-        RefreshSelectionState();
+        return;
     }
+
+    if (mainPanelController.tradeupsPanel == null)
+    {
+        Debug.LogError(
+            "TradeupFlowUI: Tradeups Panel is not assigned " +
+            "on MainPanelController.");
+
+        return;
+    }
+
+    ClearSelection();
+
+    mainPanelController.ShowTradeups();
+
+    if (tradeupSelectionView != null)
+    {
+        tradeupSelectionView.SetActive(true);
+    }
+    else
+    {
+        Debug.LogError(
+            "TradeupFlowUI: Tradeup Selection View is not assigned.");
+    }
+
+    if (tradeupResultView != null)
+        tradeupResultView.SetActive(false);
+
+    ClearResultCard();
+    RefreshSelectionState();
+
+    Debug.Log(
+        "TradeupFlowUI: Showing panel " +
+        mainPanelController.tradeupsPanel.name);
+}
 
     public bool AddInput(InventoryItem item)
     {
