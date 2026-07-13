@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 public class TradeupContractUI : MonoBehaviour
 {
+    [Header("Flow")]
+    [SerializeField] private TradeupFlowUI tradeupFlow;
+
     [Header("Views")]
     [SerializeField] private GameObject selectionView;
     [SerializeField] private GameObject contractView;
@@ -27,6 +30,9 @@ public class TradeupContractUI : MonoBehaviour
     [SerializeField] private Button backButton;
     [SerializeField] private Button clearSignatureButton;
 
+    [Header("Drawing")]
+    [SerializeField] private ContractDrawingSurface drawingSurface;
+
     [Header("Result Presentation")]
     [SerializeField] private GameObject approvedStamp;
 
@@ -39,6 +45,9 @@ public class TradeupContractUI : MonoBehaviour
 
     [SerializeField, Min(0f)]
     private float delayBeforeOutputName = 0.35f;
+
+    [SerializeField, Min(0f)]
+    private float delayBeforeResultView = 4f;
 
     [SerializeField]
     private bool useUnscaledTime = true;
@@ -53,7 +62,7 @@ public class TradeupContractUI : MonoBehaviour
     private readonly List<InventoryItem> selectedInputs =
         new List<InventoryItem>();
 
-    private Coroutine typewriterCoroutine;
+    private Coroutine sequenceCoroutine;
     private TradeupExecutionResult completedResult;
 
     private bool isSigning;
@@ -79,27 +88,21 @@ public class TradeupContractUI : MonoBehaviour
 
     private void OnDisable()
     {
-        StopTypewriter();
+        StopSequence();
     }
 
     private void SetupButtons()
     {
         if (signContractButton != null)
         {
-            signContractButton.onClick.RemoveListener(
-                SignContract);
-
-            signContractButton.onClick.AddListener(
-                SignContract);
+            signContractButton.onClick.RemoveListener(SignContract);
+            signContractButton.onClick.AddListener(SignContract);
         }
 
         if (backButton != null)
         {
-            backButton.onClick.RemoveListener(
-                BackToSelection);
-
-            backButton.onClick.AddListener(
-                BackToSelection);
+            backButton.onClick.RemoveListener(BackToSelection);
+            backButton.onClick.AddListener(BackToSelection);
         }
 
         if (clearSignatureButton != null)
@@ -112,17 +115,12 @@ public class TradeupContractUI : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Called by the tradeup selection UI after the player has selected
-    /// either 10 standard inputs or 5 Covert inputs.
-    /// </summary>
     public bool OpenContract(List<InventoryItem> inputs)
     {
         if (inputs == null || inputs.Count == 0)
         {
             Debug.LogWarning(
                 "TradeupContractUI: No inputs were supplied.");
-
             return false;
         }
 
@@ -130,7 +128,6 @@ public class TradeupContractUI : MonoBehaviour
         {
             Debug.LogError(
                 "TradeupContractUI: TradeupResolver is missing.");
-
             return false;
         }
 
@@ -142,8 +139,7 @@ public class TradeupContractUI : MonoBehaviour
             !preview.validation.isValid)
         {
             string reason =
-                preview != null &&
-                preview.validation != null
+                preview != null && preview.validation != null
                     ? preview.validation.errorMessage
                     : "Unknown tradeup validation error.";
 
@@ -154,7 +150,7 @@ public class TradeupContractUI : MonoBehaviour
             return false;
         }
 
-        StopTypewriter();
+        StopSequence();
 
         selectedInputs.Clear();
         selectedInputs.AddRange(inputs);
@@ -165,6 +161,12 @@ public class TradeupContractUI : MonoBehaviour
 
         ClearGeneratedText();
         SetStaticContractText(inputs.Count);
+
+        if (drawingSurface != null)
+        {
+            drawingSurface.ClearDrawing();
+            drawingSurface.SetDrawingEnabled(true);
+        }
 
         if (approvedStamp != null)
             approvedStamp.SetActive(false);
@@ -204,10 +206,6 @@ public class TradeupContractUI : MonoBehaviour
             dateText.text = System.DateTime.Now.ToString("dd/MM/yyyy");
     }
 
-    /// <summary>
-    /// Executes the actual tradeup, then types the consumed input names and
-    /// received output name onto the contract.
-    /// </summary>
     public void SignContract()
     {
         if (isSigning || sequenceCompleted)
@@ -227,6 +225,9 @@ public class TradeupContractUI : MonoBehaviour
 
         isSigning = true;
 
+        if (drawingSurface != null)
+            drawingSurface.SetDrawingEnabled(false);
+
         if (signContractButton != null)
             signContractButton.interactable = false;
 
@@ -239,8 +240,6 @@ public class TradeupContractUI : MonoBehaviour
         SetStatus("Processing contract...");
         onTradeupStarted?.Invoke();
 
-        // Copy the list because the resolver removes these items from
-        // InventoryManager after a successful tradeup.
         List<InventoryItem> inputsCopy =
             new List<InventoryItem>(selectedInputs);
 
@@ -259,18 +258,19 @@ public class TradeupContractUI : MonoBehaviour
 
             SetStatus(reason);
             SetControlsBeforeSigning();
+
+            if (drawingSurface != null)
+                drawingSurface.SetDrawingEnabled(true);
+
             return;
         }
 
         completedResult = result;
+        StopSequence();
 
-        StopTypewriter();
-
-        typewriterCoroutine =
+        sequenceCoroutine =
             StartCoroutine(
-                PlayContractSequence(
-                    inputsCopy,
-                    result.outputItem));
+                PlayContractSequence(inputsCopy, result.outputItem));
     }
 
     private IEnumerator PlayContractSequence(
@@ -284,9 +284,7 @@ public class TradeupContractUI : MonoBehaviour
 
         int displayedInputCount = Mathf.Min(
             consumedInputs.Count,
-            inputNameTexts != null
-                ? inputNameTexts.Length
-                : 0);
+            inputNameTexts != null ? inputNameTexts.Length : 0);
 
         for (int i = 0; i < displayedInputCount; i++)
         {
@@ -295,12 +293,9 @@ public class TradeupContractUI : MonoBehaviour
             if (targetText == null)
                 continue;
 
-            string inputName =
-                GetContractItemName(consumedInputs[i]);
-
             yield return TypeText(
                 targetText,
-                inputName);
+                GetContractItemName(consumedInputs[i]));
 
             if (delayBetweenInputNames > 0f)
                 yield return Wait(delayBetweenInputNames);
@@ -311,12 +306,9 @@ public class TradeupContractUI : MonoBehaviour
 
         if (receivedGoodText != null)
         {
-            string outputName =
-                GetContractItemName(outputItem);
-
             yield return TypeText(
                 receivedGoodText,
-                outputName);
+                GetContractItemName(outputItem));
         }
 
         if (approvedStamp != null)
@@ -324,19 +316,31 @@ public class TradeupContractUI : MonoBehaviour
 
         isSigning = false;
         sequenceCompleted = true;
-        typewriterCoroutine = null;
-
-        if (backButton != null)
-            backButton.interactable = true;
 
         SetStatus("CONTRACT APPROVED");
-
         onTradeupCompleted?.Invoke();
+
+        if (delayBeforeResultView > 0f)
+            yield return Wait(delayBeforeResultView);
+
+        sequenceCoroutine = null;
+
+        if (contractView != null)
+            contractView.SetActive(false);
+
+        if (tradeupFlow != null)
+        {
+            tradeupFlow.ShowResultFromContract();
+        }
+        else
+        {
+            Debug.LogError(
+                "TradeupContractUI: TradeupFlowUI is not assigned, " +
+                "so the result view cannot be opened.");
+        }
     }
 
-    private IEnumerator TypeText(
-        TMP_Text targetText,
-        string fullText)
+    private IEnumerator TypeText(TMP_Text targetText, string fullText)
     {
         if (targetText == null)
             yield break;
@@ -350,10 +354,7 @@ public class TradeupContractUI : MonoBehaviour
              characterIndex < fullText.Length;
              characterIndex++)
         {
-            targetText.text =
-                fullText.Substring(
-                    0,
-                    characterIndex + 1);
+            targetText.text = fullText.Substring(0, characterIndex + 1);
 
             if (characterDelay > 0f)
                 yield return Wait(characterDelay);
@@ -370,8 +371,7 @@ public class TradeupContractUI : MonoBehaviour
             yield return new WaitForSeconds(duration);
     }
 
-    private string GetContractItemName(
-        InventoryItem item)
+    private string GetContractItemName(InventoryItem item)
     {
         if (item == null || item.skin == null)
             return "UNKNOWN ITEM";
@@ -390,13 +390,16 @@ public class TradeupContractUI : MonoBehaviour
         if (isSigning)
             return;
 
-        StopTypewriter();
+        StopSequence();
 
         selectedInputs.Clear();
         completedResult = null;
         sequenceCompleted = false;
 
         ClearGeneratedText();
+
+        if (drawingSurface != null)
+            drawingSurface.ClearDrawing();
 
         if (approvedStamp != null)
             approvedStamp.SetActive(false);
@@ -414,6 +417,9 @@ public class TradeupContractUI : MonoBehaviour
     {
         if (isSigning)
             return;
+
+        if (drawingSurface != null)
+            drawingSurface.ClearDrawing();
 
         onClearSignatureRequested?.Invoke();
     }
@@ -468,12 +474,12 @@ public class TradeupContractUI : MonoBehaviour
             statusText.text = message ?? "";
     }
 
-    private void StopTypewriter()
+    private void StopSequence()
     {
-        if (typewriterCoroutine == null)
+        if (sequenceCoroutine == null)
             return;
 
-        StopCoroutine(typewriterCoroutine);
-        typewriterCoroutine = null;
+        StopCoroutine(sequenceCoroutine);
+        sequenceCoroutine = null;
     }
 }
