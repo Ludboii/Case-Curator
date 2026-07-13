@@ -6,10 +6,12 @@ using UnityEngine.UI;
 
 public class TradeupSelectionUI : MonoBehaviour
 {
-    private enum TradeupFloatSort
+    private enum TradeupSortMode
     {
         LowestFloat,
-        HighestFloat
+        HighestFloat,
+        LowestPrice,
+        HighestPrice
     }
 
     [Header("Tradeup")]
@@ -22,7 +24,10 @@ public class TradeupSelectionUI : MonoBehaviour
 
     [Header("Search and Sorting")]
     [SerializeField] private TMP_InputField searchInput;
-    [SerializeField] private TMP_Dropdown floatSortDropdown;
+    [SerializeField] private TMP_Dropdown sortDropdown;
+
+    [Header("Buttons")]
+    [SerializeField] private Button clearSelectedButton;
 
     [Header("Optional Text")]
     [SerializeField] private TMP_Text eligibleItemCountText;
@@ -31,8 +36,8 @@ public class TradeupSelectionUI : MonoBehaviour
     private readonly List<SpawnedTradeupCard> spawnedCards =
         new List<SpawnedTradeupCard>();
 
-    private TradeupFloatSort currentSort =
-        TradeupFloatSort.LowestFloat;
+    private TradeupSortMode currentSort =
+        TradeupSortMode.LowestFloat;
 
     private bool inventorySubscribed;
     private bool controlsSubscribed;
@@ -46,6 +51,7 @@ public class TradeupSelectionUI : MonoBehaviour
     private void Awake()
     {
         ConfigureSortDropdown();
+        SetupButtons();
     }
 
     private void OnEnable()
@@ -61,31 +67,40 @@ public class TradeupSelectionUI : MonoBehaviour
         UnsubscribeFromControls();
     }
 
-    private void ConfigureSortDropdown()
+    private void SetupButtons()
     {
-        if (floatSortDropdown == null)
+        if (clearSelectedButton == null)
             return;
 
-        floatSortDropdown.ClearOptions();
+        clearSelectedButton.onClick.RemoveListener(
+            ClearTradeupSelection);
 
-        floatSortDropdown.AddOptions(
+        clearSelectedButton.onClick.AddListener(
+            ClearTradeupSelection);
+    }
+
+    private void ConfigureSortDropdown()
+    {
+        if (sortDropdown == null)
+            return;
+
+        sortDropdown.ClearOptions();
+        sortDropdown.AddOptions(
             new List<string>
             {
                 "Lowest Float",
-                "Highest Float"
+                "Highest Float",
+                "Lowest Price",
+                "Highest Price"
             });
 
-        floatSortDropdown.SetValueWithoutNotify(
-            (int)currentSort);
+        sortDropdown.SetValueWithoutNotify((int)currentSort);
     }
 
     private void SubscribeToInventory()
     {
-        if (inventorySubscribed ||
-            InventoryManager.Instance == null)
-        {
+        if (inventorySubscribed || InventoryManager.Instance == null)
             return;
-        }
 
         InventoryManager.Instance.OnInventoryChanged +=
             HandleInventoryChanged;
@@ -95,8 +110,7 @@ public class TradeupSelectionUI : MonoBehaviour
 
     private void UnsubscribeFromInventory()
     {
-        if (!inventorySubscribed ||
-            InventoryManager.Instance == null)
+        if (!inventorySubscribed || InventoryManager.Instance == null)
         {
             inventorySubscribed = false;
             return;
@@ -114,16 +128,10 @@ public class TradeupSelectionUI : MonoBehaviour
             return;
 
         if (searchInput != null)
-        {
-            searchInput.onValueChanged.AddListener(
-                HandleSearchChanged);
-        }
+            searchInput.onValueChanged.AddListener(HandleSearchChanged);
 
-        if (floatSortDropdown != null)
-        {
-            floatSortDropdown.onValueChanged.AddListener(
-                HandleSortChanged);
-        }
+        if (sortDropdown != null)
+            sortDropdown.onValueChanged.AddListener(HandleSortChanged);
 
         controlsSubscribed = true;
     }
@@ -134,16 +142,10 @@ public class TradeupSelectionUI : MonoBehaviour
             return;
 
         if (searchInput != null)
-        {
-            searchInput.onValueChanged.RemoveListener(
-                HandleSearchChanged);
-        }
+            searchInput.onValueChanged.RemoveListener(HandleSearchChanged);
 
-        if (floatSortDropdown != null)
-        {
-            floatSortDropdown.onValueChanged.RemoveListener(
-                HandleSortChanged);
-        }
+        if (sortDropdown != null)
+            sortDropdown.onValueChanged.RemoveListener(HandleSortChanged);
 
         controlsSubscribed = false;
     }
@@ -160,9 +162,10 @@ public class TradeupSelectionUI : MonoBehaviour
 
     private void HandleSortChanged(int value)
     {
-        currentSort = value == 1
-            ? TradeupFloatSort.HighestFloat
-            : TradeupFloatSort.LowestFloat;
+        currentSort = (TradeupSortMode)Mathf.Clamp(
+            value,
+            0,
+            Enum.GetValues(typeof(TradeupSortMode)).Length - 1);
 
         RebuildGrid();
     }
@@ -175,7 +178,6 @@ public class TradeupSelectionUI : MonoBehaviour
         {
             Debug.LogError(
                 "TradeupSelectionUI: TradeupFlowUI is not assigned.");
-
             SetEmptyState(true, "Tradeup Flow is missing.");
             return;
         }
@@ -184,18 +186,14 @@ public class TradeupSelectionUI : MonoBehaviour
         {
             Debug.LogError(
                 "TradeupSelectionUI: InventoryManager is missing.");
-
             SetEmptyState(true, "Inventory is unavailable.");
             return;
         }
 
-        if (gridContent == null ||
-            itemCardPrefab == null)
+        if (gridContent == null || itemCardPrefab == null)
         {
             Debug.LogError(
-                "TradeupSelectionUI: Grid Content or card prefab " +
-                "is not assigned.");
-
+                "TradeupSelectionUI: Grid Content or card prefab is not assigned.");
             SetEmptyState(true, "Tradeup grid is not configured.");
             return;
         }
@@ -217,6 +215,9 @@ public class TradeupSelectionUI : MonoBehaviour
             if (!IsVisibleTradeupItem(item))
                 continue;
 
+            if (!IsCompatibleWithCurrentSelection(item))
+                continue;
+
             if (!MatchesSearch(item, searchTerm))
                 continue;
 
@@ -226,15 +227,11 @@ public class TradeupSelectionUI : MonoBehaviour
         SortItems(eligibleItems);
 
         for (int i = 0; i < eligibleItems.Count; i++)
-        {
             SpawnCard(eligibleItems[i]);
-        }
 
         if (eligibleItemCountText != null)
-        {
             eligibleItemCountText.text =
                 $"{eligibleItems.Count} eligible items";
-        }
 
         SetEmptyState(
             eligibleItems.Count == 0,
@@ -244,23 +241,21 @@ public class TradeupSelectionUI : MonoBehaviour
 
         RefreshCardStates();
 
+        if (clearSelectedButton != null)
+        {
+            clearSelectedButton.interactable =
+                tradeupFlow.SelectedInputs.Count > 0;
+        }
+
         if (scrollRect != null)
             scrollRect.verticalNormalizedPosition = 1f;
     }
 
-    private bool IsVisibleTradeupItem(
-        InventoryItem item)
+    private bool IsVisibleTradeupItem(InventoryItem item)
     {
-        if (item == null || item.skin == null)
-            return false;
-
-        // Uses the same fundamental rules as TradeupFlowUI:
-        // no favorites, Souvenirs, Vanilla, Rare Special, or
-        // items without CollectionData.
-        if (!tradeupFlow.IsBasicTradeupCandidate(item))
-            return false;
-
-        return true;
+        return item != null &&
+               item.skin != null &&
+               tradeupFlow.IsBasicTradeupCandidate(item);
     }
 
     private bool MatchesSearch(
@@ -275,63 +270,60 @@ public class TradeupSelectionUI : MonoBehaviour
 
         SkinData skin = item.skin;
 
-        string displayName = Normalize(
-            SkinDisplayUtility.GetDisplayName(skin));
-
-        string weaponName = Normalize(skin.weaponName);
-        string skinName = Normalize(skin.skinName);
-        string collectionName = Normalize(skin.collection);
+        string searchable =
+            Normalize(SkinDisplayUtility.GetDisplayName(skin)) + " " +
+            Normalize(skin.weaponName) + " " +
+            Normalize(skin.skinName) + " " +
+            Normalize(skin.collection);
 
         if (skin.collectionData != null)
-        {
-            collectionName += " " +
-                Normalize(
-                    skin.collectionData.collectionName);
-        }
+            searchable += " " + Normalize(skin.collectionData.collectionName);
 
-        return displayName.Contains(normalizedSearch) ||
-               weaponName.Contains(normalizedSearch) ||
-               skinName.Contains(normalizedSearch) ||
-               collectionName.Contains(normalizedSearch);
+        return searchable.Contains(normalizedSearch);
     }
 
-    private void SortItems(
-        List<InventoryItem> items)
+    private void SortItems(List<InventoryItem> items)
     {
         items.Sort((first, second) =>
         {
             if (first == null && second == null)
                 return 0;
-
             if (first == null)
                 return 1;
-
             if (second == null)
                 return -1;
 
-            int result = first.floatValue.CompareTo(
-                second.floatValue);
+            int result;
 
-            if (currentSort ==
-                TradeupFloatSort.HighestFloat)
+            switch (currentSort)
             {
-                result = -result;
+                case TradeupSortMode.HighestFloat:
+                    result = second.floatValue.CompareTo(first.floatValue);
+                    break;
+
+                case TradeupSortMode.LowestPrice:
+                    result = GetItemValue(first).CompareTo(GetItemValue(second));
+                    break;
+
+                case TradeupSortMode.HighestPrice:
+                    result = GetItemValue(second).CompareTo(GetItemValue(first));
+                    break;
+
+                default:
+                    result = first.floatValue.CompareTo(second.floatValue);
+                    break;
             }
 
             if (result != 0)
                 return result;
 
-            string firstName =
-                first.skin != null
-                    ? SkinDisplayUtility.GetDisplayName(
-                        first.skin)
-                    : "";
+            string firstName = first.skin != null
+                ? SkinDisplayUtility.GetDisplayName(first.skin)
+                : "";
 
-            string secondName =
-                second.skin != null
-                    ? SkinDisplayUtility.GetDisplayName(
-                        second.skin)
-                    : "";
+            string secondName = second.skin != null
+                ? SkinDisplayUtility.GetDisplayName(second.skin)
+                : "";
 
             return string.Compare(
                 firstName,
@@ -340,8 +332,18 @@ public class TradeupSelectionUI : MonoBehaviour
         });
     }
 
-    private void SpawnCard(
-        InventoryItem item)
+    private float GetItemValue(InventoryItem item)
+    {
+        if (item == null || item.skin == null)
+            return 0f;
+
+        if (item.marketValue <= 0f)
+            item.marketValue = PriceCalculator.GetPrice(item);
+
+        return item.marketValue;
+    }
+
+    private void SpawnCard(InventoryItem item)
     {
         InventoryItemCardUI card =
             Instantiate(itemCardPrefab, gridContent);
@@ -349,22 +351,15 @@ public class TradeupSelectionUI : MonoBehaviour
         card.gameObject.SetActive(true);
         card.Setup(item);
 
-        // InventoryItemCardUI normally opens SkinInspectUI or uses
-        // the normal inventory selection system. Remove that listener
-        // and make the card belong to the Tradeup selection system.
         if (card.button != null)
         {
             card.button.onClick.RemoveAllListeners();
-
             InventoryItem capturedItem = item;
-
             card.button.onClick.AddListener(
-                () => HandleTradeupCardClicked(
-                    capturedItem));
+                () => HandleTradeupCardClicked(capturedItem));
         }
 
-        card.SetSelected(
-            tradeupFlow.IsSelected(item));
+        card.SetSelected(tradeupFlow.IsSelected(item));
 
         spawnedCards.Add(
             new SpawnedTradeupCard
@@ -374,59 +369,33 @@ public class TradeupSelectionUI : MonoBehaviour
             });
     }
 
-    private void HandleTradeupCardClicked(
-        InventoryItem item)
+    private void HandleTradeupCardClicked(InventoryItem item)
     {
         if (item == null)
             return;
 
         tradeupFlow.ToggleInput(item);
-        RefreshCardStates();
+
+        // Rebuild instead of merely disabling cards. After the first input,
+        // incompatible rarities and variants are removed from the grid.
+        RebuildGrid();
     }
 
     private void RefreshCardStates()
     {
-        for (int i = 0;
-             i < spawnedCards.Count;
-             i++)
+        for (int i = 0; i < spawnedCards.Count; i++)
         {
-            SpawnedTradeupCard entry =
-                spawnedCards[i];
+            SpawnedTradeupCard entry = spawnedCards[i];
 
-            if (entry == null ||
-                entry.item == null ||
-                entry.card == null)
-            {
+            if (entry == null || entry.item == null || entry.card == null)
                 continue;
-            }
 
-            bool selected =
-                tradeupFlow.IsSelected(entry.item);
-
-            bool compatible =
-                selected ||
-                IsCompatibleWithCurrentSelection(
-                    entry.item);
-
-            entry.card.SetSelected(selected);
-
-bool shouldShow =
-    selected || compatible;
-
-entry.card.gameObject.SetActive(shouldShow);
-
-if (!shouldShow)
-    continue;
-
-entry.card.SetSelected(selected);
-
-if (entry.card.button != null)
-    entry.card.button.interactable = true;
+            entry.card.SetSelected(
+                tradeupFlow.IsSelected(entry.item));
         }
     }
 
-    private bool IsCompatibleWithCurrentSelection(
-        InventoryItem item)
+    private bool IsCompatibleWithCurrentSelection(InventoryItem item)
     {
         if (!IsVisibleTradeupItem(item))
             return false;
@@ -434,11 +403,11 @@ if (entry.card.button != null)
         IReadOnlyList<InventoryItem> selected =
             tradeupFlow.SelectedInputs;
 
-        if (selected == null ||
-            selected.Count == 0)
-        {
+        if (selected == null || selected.Count == 0)
             return true;
-        }
+
+        if (tradeupFlow.IsSelected(item))
+            return true;
 
         InventoryItem first = selected[0];
 
@@ -451,10 +420,9 @@ if (entry.card.button != null)
         if (item.statTrak != first.statTrak)
             return false;
 
-        int requiredCount =
-            first.skin.rarity == Rarity.Covert
-                ? 5
-                : 10;
+        int requiredCount = first.skin.rarity == Rarity.Covert
+            ? 5
+            : 10;
 
         return selected.Count < requiredCount;
     }
@@ -465,43 +433,32 @@ if (entry.card.button != null)
             return;
 
         tradeupFlow.ClearSelection();
-        RefreshCardStates();
+        RebuildGrid();
     }
 
     private void ClearSpawnedCards()
     {
-        for (int i = 0;
-             i < spawnedCards.Count;
-             i++)
+        for (int i = 0; i < spawnedCards.Count; i++)
         {
-            SpawnedTradeupCard entry =
-                spawnedCards[i];
+            SpawnedTradeupCard entry = spawnedCards[i];
 
-            if (entry != null &&
-                entry.card != null)
-            {
+            if (entry != null && entry.card != null)
                 Destroy(entry.card.gameObject);
-            }
         }
 
         spawnedCards.Clear();
     }
 
-    private void SetEmptyState(
-        bool visible,
-        string message)
+    private void SetEmptyState(bool visible, string message)
     {
         if (emptyInventoryText == null)
             return;
 
         emptyInventoryText.gameObject.SetActive(visible);
-        emptyInventoryText.text = visible
-            ? message
-            : "";
+        emptyInventoryText.text = visible ? message : "";
     }
 
-    private static string Normalize(
-        string value)
+    private static string Normalize(string value)
     {
         return string.IsNullOrWhiteSpace(value)
             ? ""
