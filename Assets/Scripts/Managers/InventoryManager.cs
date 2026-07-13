@@ -18,6 +18,7 @@ public class InventoryManager : MonoBehaviour
     private List<InventoryItem> items = new List<InventoryItem>();
 
     private float cachedTotalMarketValue;
+    private long nextAcquisitionSequence = 1;
 
     public IReadOnlyList<InventoryItem> Items => items;
     public int Count => items.Count;
@@ -46,6 +47,7 @@ public class InventoryManager : MonoBehaviour
             unlockedStoragePages - 1);
 
         NormalizeStorageAssignments();
+        NormalizeAcquisitionSequences();
         RecalculateCachedTotalMarketValue();
     }
 
@@ -192,17 +194,53 @@ public class InventoryManager : MonoBehaviour
         return addedCount;
     }
 
-    private void PrepareItemForInventory(InventoryItem item)
+private void PrepareItemForInventory(InventoryItem item)
+{
+    if (item == null)
+        return;
+
+    if (string.IsNullOrWhiteSpace(item.instanceId))
+        item.instanceId = Guid.NewGuid().ToString();
+
+    if (item.acquisitionSequence <= 0)
     {
-        if (item == null)
-            return;
-
-        if (string.IsNullOrWhiteSpace(item.instanceId))
-            item.instanceId = Guid.NewGuid().ToString();
-
-        item.marketValue = PriceCalculator.GetPrice(item);
+        item.acquisitionSequence = nextAcquisitionSequence;
+        nextAcquisitionSequence++;
+    }
+    else if (item.acquisitionSequence >= nextAcquisitionSequence)
+    {
+        nextAcquisitionSequence =
+            item.acquisitionSequence + 1;
     }
 
+    item.marketValue = PriceCalculator.GetPrice(item);
+}
+
+private void NormalizeAcquisitionSequences()
+{
+    long highestSequence = 0;
+
+    // The stored inventory list is append-based, so its current order is the
+    // safest legacy fallback: earlier entries are treated as older.
+    for (int i = 0; i < items.Count; i++)
+    {
+        InventoryItem item = items[i];
+
+        if (item == null)
+            continue;
+
+        if (item.acquisitionSequence <= 0)
+            item.acquisitionSequence = i + 1;
+
+        if (item.acquisitionSequence > highestSequence)
+            highestSequence = item.acquisitionSequence;
+    }
+
+nextAcquisitionSequence =
+    highestSequence >= 1
+        ? highestSequence + 1
+        : 1;
+}
     public bool RemoveItem(InventoryItem item)
     {
         if (item == null)
@@ -420,9 +458,10 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
-        NormalizeStorageAssignments();
-        RecalculateCachedTotalMarketValue();
-        NotifyInventoryChanged(false);
+NormalizeStorageAssignments();
+NormalizeAcquisitionSequences();
+RecalculateCachedTotalMarketValue();
+NotifyInventoryChanged(false);
 
         Debug.Log(
             $"Inventory loaded. Item count: {items.Count}/{TotalCapacity}");

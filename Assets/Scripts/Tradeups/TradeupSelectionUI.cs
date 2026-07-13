@@ -247,8 +247,6 @@ public class TradeupSelectionUI : MonoBehaviour
                 tradeupFlow.SelectedInputs.Count > 0;
         }
 
-        if (scrollRect != null)
-            scrollRect.verticalNormalizedPosition = 1f;
     }
 
     private bool IsVisibleTradeupItem(InventoryItem item)
@@ -369,31 +367,54 @@ public class TradeupSelectionUI : MonoBehaviour
             });
     }
 
-    private void HandleTradeupCardClicked(InventoryItem item)
+private void HandleTradeupCardClicked(
+    InventoryItem item)
+{
+    if (item == null)
+        return;
+
+    tradeupFlow.ToggleInput(item);
+    RefreshCardStates();
+    UpdateClearButton();
+}
+
+private void RefreshCardStates()
+{
+    for (int i = 0; i < spawnedCards.Count; i++)
     {
-        if (item == null)
-            return;
+        SpawnedTradeupCard entry = spawnedCards[i];
 
-        tradeupFlow.ToggleInput(item);
-
-        // Rebuild instead of merely disabling cards. After the first input,
-        // incompatible rarities and variants are removed from the grid.
-        RebuildGrid();
-    }
-
-    private void RefreshCardStates()
-    {
-        for (int i = 0; i < spawnedCards.Count; i++)
+        if (entry == null ||
+            entry.item == null ||
+            entry.card == null)
         {
-            SpawnedTradeupCard entry = spawnedCards[i];
-
-            if (entry == null || entry.item == null || entry.card == null)
-                continue;
-
-            entry.card.SetSelected(
-                tradeupFlow.IsSelected(entry.item));
+            continue;
         }
+
+        bool selected =
+            tradeupFlow.IsSelected(entry.item);
+
+        bool compatible =
+            selected ||
+            IsCompatibleWithCurrentSelection(entry.item);
+
+        entry.card.gameObject.SetActive(compatible);
+        entry.card.SetSelected(selected);
+
+        if (entry.card.button != null)
+            entry.card.button.interactable = compatible;
     }
+}
+
+private void UpdateClearButton()
+{
+    if (clearSelectedButton != null)
+    {
+        clearSelectedButton.interactable =
+            tradeupFlow != null &&
+            tradeupFlow.SelectedInputs.Count > 0;
+    }
+}
 
     private bool IsCompatibleWithCurrentSelection(InventoryItem item)
     {
@@ -427,14 +448,15 @@ public class TradeupSelectionUI : MonoBehaviour
         return selected.Count < requiredCount;
     }
 
-    public void ClearTradeupSelection()
-    {
-        if (tradeupFlow == null)
-            return;
+public void ClearTradeupSelection()
+{
+    if (tradeupFlow == null)
+        return;
 
-        tradeupFlow.ClearSelection();
-        RebuildGrid();
-    }
+    tradeupFlow.ClearSelection();
+    RefreshCardStates();
+    UpdateClearButton();
+}
 
     private void ClearSpawnedCards()
     {

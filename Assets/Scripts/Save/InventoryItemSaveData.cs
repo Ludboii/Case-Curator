@@ -10,6 +10,7 @@ public class InventoryItemSaveData
     public double floatValue;
     public int patternId;
     public PatternTier patternTier;
+    public long acquisitionSequence;
 
     public bool statTrak;
     public bool souvenir;

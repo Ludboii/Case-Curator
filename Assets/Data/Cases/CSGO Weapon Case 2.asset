@@ -35,7 +35,7 @@ MonoBehaviour:
   - rarity: 4
     chance: 3.2
   - rarity: 5
-    chance: 0.64
+    chance: 20
   - rarity: 6
     chance: 0.26
   dropPool:

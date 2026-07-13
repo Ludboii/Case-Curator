@@ -275,14 +275,16 @@ public class InventoryUI : MonoBehaviour
         switch (currentSortMode)
         {
             case InventorySortMode.Newest:
-                items.Sort((a, b) =>
-                    GetSafeInstanceId(b).CompareTo(GetSafeInstanceId(a)));
-                break;
+    items.Sort((a, b) =>
+        GetAcquisitionSequence(b)
+            .CompareTo(GetAcquisitionSequence(a)));
+    break;
 
-            case InventorySortMode.Oldest:
-                items.Sort((a, b) =>
-                    GetSafeInstanceId(a).CompareTo(GetSafeInstanceId(b)));
-                break;
+case InventorySortMode.Oldest:
+    items.Sort((a, b) =>
+        GetAcquisitionSequence(a)
+            .CompareTo(GetAcquisitionSequence(b)));
+    break;
 
             case InventorySortMode.HighestValue:
                 items.Sort((a, b) =>
@@ -345,14 +347,7 @@ public class InventoryUI : MonoBehaviour
                 break;
         }
     }
-
-    private string GetSafeInstanceId(InventoryItem item)
-    {
-        return item == null || string.IsNullOrWhiteSpace(item.instanceId)
-            ? ""
-            : item.instanceId;
-    }
-
+    
     private float GetSortFloat(InventoryItem item)
     {
         if (item == null || item.skin == null ||
@@ -363,6 +358,13 @@ public class InventoryUI : MonoBehaviour
 
         return (float)item.floatValue;
     }
+    private long GetAcquisitionSequence(
+    InventoryItem item)
+{
+    return item != null
+        ? item.acquisitionSequence
+        : 0;
+}
 
     private int GetRarityRank(InventoryItem item)
     {

@@ -9,6 +9,7 @@ public class InventoryItem
     public double floatValue;
     public int patternId;
     public PatternTier patternTier;
+    public long acquisitionSequence;
     public bool statTrak;
     public bool favorite;
     public bool souvenir;

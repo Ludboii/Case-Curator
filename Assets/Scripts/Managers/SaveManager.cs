@@ -543,6 +543,7 @@ public class SaveManager : MonoBehaviour
         return new InventoryItemSaveData
         {
             instanceId = item.instanceId,
+            acquisitionSequence = item.acquisitionSequence,
             skinApiId = item.skin.apiId,
             floatValue = item.floatValue,
             patternId = item.patternId,
@@ -747,6 +748,9 @@ public class SaveManager : MonoBehaviour
                 instanceId = string.IsNullOrWhiteSpace(saved.instanceId)
                     ? Guid.NewGuid().ToString()
                     : saved.instanceId,
+
+                acquisitionSequence = saved.acquisitionSequence,
+
                 skin = skin,
                 floatValue = saved.floatValue,
                 patternId = saved.patternId,
