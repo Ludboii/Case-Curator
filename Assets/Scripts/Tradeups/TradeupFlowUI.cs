@@ -26,6 +26,12 @@ public class TradeupFlowUI : MonoBehaviour
     [SerializeField] private Transform resultCardParent;
     [SerializeField] private InventoryItemCardUI inventoryItemCardPrefab;
 
+    [Header("Tradeup Contract")]
+    [SerializeField] private TradeupContractUI tradeupContractUI;
+
+    [Header("Exit")]
+    [SerializeField] private Button selectionExitButton;
+
     private readonly List<InventoryItem> selectedInputs =
         new List<InventoryItem>();
 
@@ -72,6 +78,12 @@ public class TradeupFlowUI : MonoBehaviour
             resultContinueButton.onClick.AddListener(
                 ReturnToTradeupSelection);
         }
+
+        if (selectionExitButton != null)
+{
+    selectionExitButton.onClick.RemoveListener(ReturnToInventory);
+    selectionExitButton.onClick.AddListener(ReturnToInventory);
+}
 
         if (resultBackToInventoryButton != null)
         {
@@ -197,63 +209,50 @@ public void OpenTradeupSelection()
         RefreshSelectionState();
     }
 
-    public void ReviewContract()
+public void ReviewContract()
+{
+    if (TradeupResolver.Instance == null)
     {
-        if (TradeupResolver.Instance == null)
-        {
-            SetValidationText(
-                "Tradeup Resolver is missing.");
-
-            return;
-        }
-
-        List<InventoryItem> executionInputs =
-            new List<InventoryItem>(selectedInputs);
-
-        TradeupPreview preview =
-            TradeupResolver.Instance.BuildPreview(
-                executionInputs);
-
-        if (preview == null ||
-            preview.validation == null ||
-            !preview.validation.isValid)
-        {
-            string reason =
-                preview != null &&
-                preview.validation != null
-                    ? preview.validation.errorMessage
-                    : "Invalid tradeup.";
-
-            SetValidationText(reason);
-            RefreshSelectionState();
-            return;
-        }
-
-        if (reviewContractButton != null)
-            reviewContractButton.interactable = false;
-
-        TradeupExecutionResult result =
-            TradeupResolver.Instance.ExecuteTradeup(
-                executionInputs);
-
-        if (result == null || !result.success)
-        {
-            string reason =
-                result != null &&
-                !string.IsNullOrWhiteSpace(
-                    result.errorMessage)
-                    ? result.errorMessage
-                    : "Tradeup failed.";
-
-            SetValidationText(reason);
-            RefreshSelectionState();
-            return;
-        }
-
-        selectedInputs.Clear();
-
-        ShowTradeupResult(result.outputItem);
+        SetValidationText("Tradeup Resolver is missing.");
+        return;
     }
+
+    if (tradeupContractUI == null)
+    {
+        SetValidationText("Tradeup Contract UI is missing.");
+        return;
+    }
+
+    List<InventoryItem> contractInputs =
+        new List<InventoryItem>(selectedInputs);
+
+    TradeupPreview preview =
+        TradeupResolver.Instance.BuildPreview(contractInputs);
+
+    if (preview == null ||
+        preview.validation == null ||
+        !preview.validation.isValid)
+    {
+        string reason =
+            preview != null &&
+            preview.validation != null
+                ? preview.validation.errorMessage
+                : "Invalid tradeup.";
+
+        SetValidationText(reason);
+        RefreshSelectionState();
+        return;
+    }
+
+    bool opened =
+        tradeupContractUI.OpenContract(contractInputs);
+
+    if (!opened)
+    {
+        SetValidationText(
+            "The tradeup contract could not be opened.");
+    }
+}
 
     private void ShowTradeupResult(
         InventoryItem outputItem)
@@ -330,6 +329,24 @@ public void OpenTradeupSelection()
             mainPanelController.ShowSkinInventory();
     }
 
+public void ShowResultFromContract()
+{
+    if (tradeupContractUI == null)
+        return;
+
+    InventoryItem outputItem =
+        tradeupContractUI.OutputItem;
+
+    if (outputItem == null)
+    {
+        SetValidationText(
+            "The contract has no tradeup output.");
+        return;
+    }
+
+    selectedInputs.Clear();
+    ShowTradeupResult(outputItem);
+}
     private void RefreshSelectionState()
     {
         int requiredCount = GetCurrentRequiredCount();
