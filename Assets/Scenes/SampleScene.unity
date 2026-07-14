@@ -6585,6 +6585,7 @@ GameObject:
   - component: {fileID: 327093737}
   - component: {fileID: 327093739}
   - component: {fileID: 327093738}
+  - component: {fileID: 327093740}
   m_Layer: 5
   m_Name: SkinInventoryPanel
   m_TagString: Untagged
@@ -6657,6 +6658,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 327093736}
   m_CullTransparentMesh: 1
+--- !u!114 &327093740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 327093736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63cf30721c4d7bf428cca120443f79fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryStorageButtonLayoutUI
+  inventoryUI: {fileID: 1803186737}
+  storageButton1: {fileID: 752569820}
+  storageButton2: {fileID: 1494643577}
+  storageButton3: {fileID: 1217126417}
+  addStorageButton: {fileID: 758431802}
 --- !u!1 &332696472
 GameObject:
   m_ObjectHideFlags: 0
@@ -33890,6 +33908,7 @@ MonoBehaviour:
   moveSelectedButton: {fileID: 1797388682}
   moveSelectedButtonText: {fileID: 889249652}
   moveButtonLabel: Move
+  selectionPollInterval: 0.05
   popupRoot: {fileID: 1498468198}
   titleText: {fileID: 814950208}
   statusText: {fileID: 2477515}
@@ -35283,7 +35302,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1639999942
 RectTransform:
   m_ObjectHideFlags: 0
