@@ -32,7 +32,19 @@ public class CaseInventoryCardUI : MonoBehaviour
 
     private void Awake()
     {
-        DisableTextRaycasts();
+        DisableNonInteractiveRaycasts();
+
+        if (openButton != null)
+        {
+            openButton.onClick.RemoveAllListeners();
+            openButton.onClick.AddListener(OpenCases);
+        }
+
+        if (inspectButton != null)
+        {
+            inspectButton.onClick.RemoveAllListeners();
+            inspectButton.onClick.AddListener(OpenInspect);
+        }
     }
 
     public void Setup(CaseInventoryEntry entry, CaseInventoryUI owner)
@@ -46,8 +58,8 @@ public class CaseInventoryCardUI : MonoBehaviour
             return;
         }
 
-        gameObject.SetActive(true);
-        DisableTextRaycasts();
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
 
         CaseData caseData = currentEntry.caseData;
 
@@ -56,38 +68,29 @@ public class CaseInventoryCardUI : MonoBehaviour
             caseImage.sprite = caseData.icon;
             caseImage.enabled = caseData.icon != null;
             caseImage.preserveAspect = true;
-            caseImage.raycastTarget = false;
         }
 
         if (caseNameText != null)
             caseNameText.text = caseData.caseName;
 
         ApplyCaseQualityBackground(caseData);
-
-        if (openButton != null)
-        {
-            openButton.onClick.RemoveAllListeners();
-            openButton.onClick.AddListener(OpenCases);
-        }
-
-        if (inspectButton != null)
-        {
-            inspectButton.onClick.RemoveAllListeners();
-            inspectButton.onClick.AddListener(OpenInspect);
-        }
-
         RefreshState();
     }
 
     public void RefreshState()
     {
-        if (currentEntry == null || currentEntry.caseData == null || ownerUI == null)
+        if (currentEntry == null ||
+            currentEntry.caseData == null ||
+            ownerUI == null)
+        {
             return;
+        }
 
         int owned = currentEntry.amount;
         int requestedAmount = ownerUI.GetRequestedOpenAmount(currentEntry);
-
-        bool canOpen = ownerUI.CanOpenCases(currentEntry, out string failReason);
+        bool canOpen = ownerUI.CanOpenCases(
+            currentEntry,
+            out string failReason);
 
         if (ownedAmountText != null)
             ownedAmountText.text = $"Owned: {owned}";
@@ -111,48 +114,52 @@ public class CaseInventoryCardUI : MonoBehaviour
 
         if (warningText != null)
         {
-            bool showWarning = !canOpen && !string.IsNullOrWhiteSpace(failReason);
+            bool showWarning =
+                !canOpen && !string.IsNullOrWhiteSpace(failReason);
 
             warningText.gameObject.SetActive(showWarning);
-            warningText.text = failReason;
+            warningText.text = showWarning ? failReason : "";
         }
     }
 
     private void OpenCases()
     {
-        if (ownerUI == null || currentEntry == null)
-            return;
-
-        ownerUI.TryOpenCases(currentEntry);
+        if (ownerUI != null && currentEntry != null)
+            ownerUI.TryOpenCases(currentEntry);
     }
 
     private void OpenInspect()
     {
-        if (ownerUI == null || currentEntry == null || currentEntry.caseData == null)
+        if (ownerUI == null ||
+            currentEntry == null ||
+            currentEntry.caseData == null)
+        {
             return;
+        }
 
         ownerUI.OpenCaseInspect(currentEntry.caseData);
     }
 
     private void ApplyOpenButtonColor(bool canOpen)
     {
-        Color targetColor = canOpen ? availableOpenColor : unavailableOpenColor;
+        Color targetColor = canOpen
+            ? availableOpenColor
+            : unavailableOpenColor;
 
         if (openButtonImage != null)
             openButtonImage.color = targetColor;
 
-        if (openButton != null)
-        {
-            ColorBlock colors = openButton.colors;
-            colors.normalColor = targetColor;
-            colors.highlightedColor = targetColor;
-            colors.pressedColor = targetColor * 0.9f;
-            colors.selectedColor = targetColor;
-            colors.disabledColor = targetColor;
-            colors.colorMultiplier = 1f;
+        if (openButton == null)
+            return;
 
-            openButton.colors = colors;
-        }
+        ColorBlock colors = openButton.colors;
+        colors.normalColor = targetColor;
+        colors.highlightedColor = targetColor;
+        colors.pressedColor = targetColor * 0.9f;
+        colors.selectedColor = targetColor;
+        colors.disabledColor = targetColor;
+        colors.colorMultiplier = 1f;
+        openButton.colors = colors;
     }
 
     private void ApplyCaseQualityBackground(CaseData caseData)
@@ -161,32 +168,41 @@ public class CaseInventoryCardUI : MonoBehaviour
             return;
 
         Color qualityColor = CaseQualityUtility.GetColor(caseData.quality);
-        Color backgroundColor = DarkenColor(qualityColor, backgroundDarkenAmount);
-        backgroundColor.a = backgroundAlpha;
+        float multiplier = 1f - Mathf.Clamp01(backgroundDarkenAmount);
+
+        Color backgroundColor = new Color(
+            qualityColor.r * multiplier,
+            qualityColor.g * multiplier,
+            qualityColor.b * multiplier,
+            backgroundAlpha);
 
         backgroundImage.color = backgroundColor;
-        backgroundImage.raycastTarget = false;
     }
 
-    private Color DarkenColor(Color color, float amount)
+    private void DisableNonInteractiveRaycasts()
     {
-        amount = Mathf.Clamp01(amount);
+        Graphic openTarget = openButton != null
+            ? openButton.targetGraphic
+            : null;
 
-        return new Color(
-            color.r * (1f - amount),
-            color.g * (1f - amount),
-            color.b * (1f - amount),
-            color.a);
-    }
+        Graphic inspectTarget = inspectButton != null
+            ? inspectButton.targetGraphic
+            : null;
 
-    private void DisableTextRaycasts()
-    {
-        TMP_Text[] texts = GetComponentsInChildren<TMP_Text>(true);
+        Graphic[] graphics = GetComponentsInChildren<Graphic>(true);
 
-        foreach (TMP_Text text in texts)
+        for (int i = 0; i < graphics.Length; i++)
         {
-            if (text != null)
-                text.raycastTarget = false;
+            Graphic graphic = graphics[i];
+
+            if (graphic == null ||
+                graphic == openTarget ||
+                graphic == inspectTarget)
+            {
+                continue;
+            }
+
+            graphic.raycastTarget = false;
         }
     }
 }
