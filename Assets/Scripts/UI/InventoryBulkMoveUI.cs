@@ -18,6 +18,7 @@ public class InventoryBulkMoveUI : MonoBehaviour
     [SerializeField] private Button moveSelectedButton;
     [SerializeField] private TMP_Text moveSelectedButtonText;
     [SerializeField] private string moveButtonLabel = "Move";
+    [SerializeField, Min(0.02f)] private float selectionPollInterval = 0.05f;
 
     [Header("Destination Popup")]
     [SerializeField] private GameObject popupRoot;
@@ -45,6 +46,8 @@ public class InventoryBulkMoveUI : MonoBehaviour
         new HashSet<string>();
 
     private bool lastSelectionModeState;
+    private int lastSelectedCount = -1;
+    private float nextSelectionPollTime;
     private bool initialized;
 
     private void Awake()
@@ -55,14 +58,18 @@ public class InventoryBulkMoveUI : MonoBehaviour
     private void OnEnable()
     {
         Initialize();
-        RefreshMoveButtonVisibility(true);
+        RefreshMoveButtonState(true);
     }
 
     private void Update()
     {
-        // InventoryUI currently has no selection-mode event. This checks one
-        // boolean per frame and only changes the hierarchy when the state flips.
-        RefreshMoveButtonVisibility(false);
+        if (Time.unscaledTime < nextSelectionPollTime)
+            return;
+
+        nextSelectionPollTime =
+            Time.unscaledTime + selectionPollInterval;
+
+        RefreshMoveButtonState(false);
     }
 
     private void OnDisable()
@@ -100,29 +107,75 @@ public class InventoryBulkMoveUI : MonoBehaviour
             popupRoot.SetActive(false);
 
         if (moveSelectedButtonText != null)
-            moveSelectedButtonText.text = moveButtonLabel;
+            moveSelectedButtonText.text = $"{moveButtonLabel} (0)";
 
         initialized = true;
     }
 
-    private void RefreshMoveButtonVisibility(bool force)
+    private void RefreshMoveButtonState(bool force)
     {
         if (inventoryUI == null)
             inventoryUI = InventoryUI.Instance;
 
+        if (inventoryGridContent == null && inventoryUI != null)
+            inventoryGridContent = inventoryUI.gridContent;
+
         bool selectionMode =
             inventoryUI != null && inventoryUI.SelectionModeActive;
 
-        if (!force && selectionMode == lastSelectionModeState)
+        int selectedCount = selectionMode
+            ? CountSelectedCards()
+            : 0;
+
+        if (!force &&
+            selectionMode == lastSelectionModeState &&
+            selectedCount == lastSelectedCount)
+        {
             return;
+        }
 
         lastSelectionModeState = selectionMode;
+        lastSelectedCount = selectedCount;
 
         if (moveSelectedButton != null)
+        {
             moveSelectedButton.gameObject.SetActive(selectionMode);
+            moveSelectedButton.interactable =
+                selectionMode && selectedCount > 0;
+        }
+
+        if (moveSelectedButtonText != null)
+        {
+            moveSelectedButtonText.text =
+                $"{moveButtonLabel} ({selectedCount})";
+        }
 
         if (!selectionMode)
             ClosePopup();
+    }
+
+    private int CountSelectedCards()
+    {
+        if (inventoryGridContent == null)
+            return 0;
+
+        int selectedCount = 0;
+
+        for (int i = 0; i < inventoryGridContent.childCount; i++)
+        {
+            Transform child = inventoryGridContent.GetChild(i);
+
+            if (child == null || !child.gameObject.activeInHierarchy)
+                continue;
+
+            InventoryItemCardUI card =
+                child.GetComponent<InventoryItemCardUI>();
+
+            if (card != null && card.IsSelected)
+                selectedCount++;
+        }
+
+        return selectedCount;
     }
 
     public void OpenDestinationPopup()
@@ -153,9 +206,11 @@ public class InventoryBulkMoveUI : MonoBehaviour
             popupRoot.SetActive(true);
 
         if (titleText != null)
+        {
             titleText.text = string.Format(
                 popupTitleFormat,
                 pendingItems.Count);
+        }
 
         if (statusText != null)
         {
