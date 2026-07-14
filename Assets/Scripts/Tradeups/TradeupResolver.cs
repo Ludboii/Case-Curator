@@ -667,9 +667,13 @@ public class TradeupResolver : MonoBehaviour
 
         if (logCompletedTradeups)
         {
+            string variant = addedOutput.statTrak
+                ? "StatTrak "
+                : "";
+
             Debug.Log(
                 $"Tradeup completed: {inputs.Count}x " +
-                $"{preview.inputRarity} → " +
+                $"{preview.inputRarity} → {variant}" +
                 $"{SkinDisplayUtility.GetDisplayName(addedOutput.skin)}. " +
                 $"Float: {addedOutput.floatValue:0.0000000000}. " +
                 $"Value: {addedOutput.marketValue:0.##}");
@@ -753,9 +757,14 @@ public class TradeupResolver : MonoBehaviour
             skin = outputSkin,
             favorite = false,
             souvenir = false,
+
+            // A StatTrak Covert contract still includes every Rare Special
+            // output. Knives that support StatTrak keep it; gloves and any
+            // other normal-only output are awarded without StatTrak.
             statTrak =
                 preview.isStatTrak &&
                 outputSkin.canBeStatTrak,
+
             storageIndex = storageIndex,
             isVanilla = outputSkin.isVanilla
         };
@@ -897,9 +906,10 @@ public class TradeupResolver : MonoBehaviour
     {
         if (covertTradeup)
         {
-            return GetCovertOutputCandidates(
-                source,
-                statTrak);
+            // Covert contracts always use the complete mapped Rare Special
+            // pool. Output StatTrak eligibility is applied only after a skin
+            // has been rolled, so gloves remain possible results.
+            return GetCovertOutputCandidates(source);
         }
 
         return GetStandardOutputCandidates(
@@ -972,8 +982,7 @@ public class TradeupResolver : MonoBehaviour
 
     private List<WeightedSkinCandidate>
         GetCovertOutputCandidates(
-            CollectionData source,
-            bool statTrak)
+            CollectionData source)
     {
         List<WeightedSkinCandidate> candidates =
             new List<WeightedSkinCandidate>();
@@ -1008,9 +1017,9 @@ public class TradeupResolver : MonoBehaviour
             if (skin.rarity != Rarity.RareSpecial)
                 continue;
 
-            if (statTrak && !skin.canBeStatTrak)
-                continue;
-
+            // Deliberately do not filter by canBeStatTrak here. A StatTrak
+            // Covert contract may roll a glove; that glove is then awarded as
+            // a normal item by CreateOutputItem().
             if (!weightBySkin.ContainsKey(skin))
                 weightBySkin[skin] = 0f;
 
@@ -1111,6 +1120,9 @@ public class TradeupResolver : MonoBehaviour
                 outputRarity = preview.outputRarity,
                 inputCount = inputs.Count,
 
+                // This records the input contract type. The output item itself
+                // remains authoritative for whether the received item actually
+                // has StatTrak (for example, a glove never does).
                 statTrak = preview.isStatTrak,
                 covertToRareSpecial =
                     preview.isCovertTradeup,
