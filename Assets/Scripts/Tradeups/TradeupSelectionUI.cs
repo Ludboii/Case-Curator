@@ -33,20 +33,16 @@ public class TradeupSelectionUI : MonoBehaviour
     [SerializeField] private TMP_Text eligibleItemCountText;
     [SerializeField] private TMP_Text emptyInventoryText;
 
-    private readonly List<SpawnedTradeupCard> spawnedCards =
-        new List<SpawnedTradeupCard>();
+    private readonly List<InventoryItemCardUI> cardPool =
+        new List<InventoryItemCardUI>();
 
-    private TradeupSortMode currentSort =
-        TradeupSortMode.LowestFloat;
+    private readonly List<InventoryItem> eligibleItems =
+        new List<InventoryItem>();
 
+    private TradeupSortMode currentSort = TradeupSortMode.LowestFloat;
+    private int activeCardCount;
     private bool inventorySubscribed;
     private bool controlsSubscribed;
-
-    private sealed class SpawnedTradeupCard
-    {
-        public InventoryItem item;
-        public InventoryItemCardUI card;
-    }
 
     private void Awake()
     {
@@ -72,11 +68,8 @@ public class TradeupSelectionUI : MonoBehaviour
         if (clearSelectedButton == null)
             return;
 
-        clearSelectedButton.onClick.RemoveListener(
-            ClearTradeupSelection);
-
-        clearSelectedButton.onClick.AddListener(
-            ClearTradeupSelection);
+        clearSelectedButton.onClick.RemoveListener(ClearTradeupSelection);
+        clearSelectedButton.onClick.AddListener(ClearTradeupSelection);
     }
 
     private void ConfigureSortDropdown()
@@ -102,9 +95,7 @@ public class TradeupSelectionUI : MonoBehaviour
         if (inventorySubscribed || InventoryManager.Instance == null)
             return;
 
-        InventoryManager.Instance.OnInventoryChanged +=
-            HandleInventoryChanged;
-
+        InventoryManager.Instance.OnInventoryChanged += HandleInventoryChanged;
         inventorySubscribed = true;
     }
 
@@ -116,9 +107,7 @@ public class TradeupSelectionUI : MonoBehaviour
             return;
         }
 
-        InventoryManager.Instance.OnInventoryChanged -=
-            HandleInventoryChanged;
-
+        InventoryManager.Instance.OnInventoryChanged -= HandleInventoryChanged;
         inventorySubscribed = false;
     }
 
@@ -172,13 +161,12 @@ public class TradeupSelectionUI : MonoBehaviour
 
     public void RebuildGrid()
     {
-        ClearSpawnedCards();
-
         if (tradeupFlow == null)
         {
             Debug.LogError(
                 "TradeupSelectionUI: TradeupFlowUI is not assigned.");
             SetEmptyState(true, "Tradeup Flow is missing.");
+            SetActiveCardCount(0);
             return;
         }
 
@@ -187,6 +175,7 @@ public class TradeupSelectionUI : MonoBehaviour
             Debug.LogError(
                 "TradeupSelectionUI: InventoryManager is missing.");
             SetEmptyState(true, "Inventory is unavailable.");
+            SetActiveCardCount(0);
             return;
         }
 
@@ -195,6 +184,7 @@ public class TradeupSelectionUI : MonoBehaviour
             Debug.LogError(
                 "TradeupSelectionUI: Grid Content or card prefab is not assigned.");
             SetEmptyState(true, "Tradeup grid is not configured.");
+            SetActiveCardCount(0);
             return;
         }
 
@@ -202,8 +192,7 @@ public class TradeupSelectionUI : MonoBehaviour
             ? Normalize(searchInput.text)
             : "";
 
-        List<InventoryItem> eligibleItems =
-            new List<InventoryItem>();
+        eligibleItems.Clear();
 
         IReadOnlyList<InventoryItem> inventoryItems =
             InventoryManager.Instance.Items;
@@ -225,13 +214,24 @@ public class TradeupSelectionUI : MonoBehaviour
         }
 
         SortItems(eligibleItems);
+        EnsurePoolSize(eligibleItems.Count);
 
         for (int i = 0; i < eligibleItems.Count; i++)
-            SpawnCard(eligibleItems[i]);
+        {
+            InventoryItemCardUI card = cardPool[i];
+            card.gameObject.SetActive(true);
+            card.SetExternalClickHandler(HandleTradeupCardClicked);
+            card.Setup(eligibleItems[i]);
+            card.SetSelected(tradeupFlow.IsSelected(eligibleItems[i]));
+        }
+
+        SetActiveCardCount(eligibleItems.Count);
 
         if (eligibleItemCountText != null)
+        {
             eligibleItemCountText.text =
                 $"{eligibleItems.Count} eligible items";
+        }
 
         SetEmptyState(
             eligibleItems.Count == 0,
@@ -239,14 +239,36 @@ public class TradeupSelectionUI : MonoBehaviour
                 ? "No tradeupable items."
                 : "No matching tradeupable items.");
 
-        RefreshCardStates();
+        UpdateClearButton();
+    }
 
-        if (clearSelectedButton != null)
+    private void EnsurePoolSize(int requiredCount)
+    {
+        while (cardPool.Count < requiredCount)
         {
-            clearSelectedButton.interactable =
-                tradeupFlow.SelectedInputs.Count > 0;
-        }
+            InventoryItemCardUI card =
+                Instantiate(itemCardPrefab, gridContent);
 
+            card.SetExternalClickHandler(HandleTradeupCardClicked);
+            card.gameObject.SetActive(false);
+            cardPool.Add(card);
+        }
+    }
+
+    private void SetActiveCardCount(int count)
+    {
+        activeCardCount = Mathf.Clamp(count, 0, cardPool.Count);
+
+        for (int i = activeCardCount; i < cardPool.Count; i++)
+        {
+            InventoryItemCardUI card = cardPool[i];
+
+            if (card == null)
+                continue;
+
+            card.SetSelected(false);
+            card.gameObject.SetActive(false);
+        }
     }
 
     private bool IsVisibleTradeupItem(InventoryItem item)
@@ -330,7 +352,7 @@ public class TradeupSelectionUI : MonoBehaviour
         });
     }
 
-    private float GetItemValue(InventoryItem item)
+    private static float GetItemValue(InventoryItem item)
     {
         if (item == null || item.skin == null)
             return 0f;
@@ -341,88 +363,29 @@ public class TradeupSelectionUI : MonoBehaviour
         return item.marketValue;
     }
 
-    private void SpawnCard(InventoryItem item)
+    private void HandleTradeupCardClicked(InventoryItemCardUI card)
     {
-        InventoryItemCardUI card =
-            Instantiate(itemCardPrefab, gridContent);
+        if (card == null)
+            return;
 
-        card.gameObject.SetActive(true);
-        card.Setup(item);
+        InventoryItem item = card.GetItem();
 
-        if (card.button != null)
-        {
-            card.button.onClick.RemoveAllListeners();
-            InventoryItem capturedItem = item;
-            card.button.onClick.AddListener(
-                () => HandleTradeupCardClicked(capturedItem));
-        }
+        if (item == null)
+            return;
 
-        card.SetSelected(tradeupFlow.IsSelected(item));
+        tradeupFlow.ToggleInput(item);
 
-        spawnedCards.Add(
-            new SpawnedTradeupCard
-            {
-                item = item,
-                card = card
-            });
+        // Pool objects remain alive. Rebuilding only rebinds cards and removes
+        // incompatible items without Instantiate/Destroy spikes.
+        RebuildGrid();
     }
-
-private void HandleTradeupCardClicked(
-    InventoryItem item)
-{
-    if (item == null)
-        return;
-
-    tradeupFlow.ToggleInput(item);
-    RefreshCardStates();
-    UpdateClearButton();
-}
-
-private void RefreshCardStates()
-{
-    for (int i = 0; i < spawnedCards.Count; i++)
-    {
-        SpawnedTradeupCard entry = spawnedCards[i];
-
-        if (entry == null ||
-            entry.item == null ||
-            entry.card == null)
-        {
-            continue;
-        }
-
-        bool selected =
-            tradeupFlow.IsSelected(entry.item);
-
-        bool compatible =
-            selected ||
-            IsCompatibleWithCurrentSelection(entry.item);
-
-        entry.card.gameObject.SetActive(compatible);
-        entry.card.SetSelected(selected);
-
-        if (entry.card.button != null)
-            entry.card.button.interactable = compatible;
-    }
-}
-
-private void UpdateClearButton()
-{
-    if (clearSelectedButton != null)
-    {
-        clearSelectedButton.interactable =
-            tradeupFlow != null &&
-            tradeupFlow.SelectedInputs.Count > 0;
-    }
-}
 
     private bool IsCompatibleWithCurrentSelection(InventoryItem item)
     {
         if (!IsVisibleTradeupItem(item))
             return false;
 
-        IReadOnlyList<InventoryItem> selected =
-            tradeupFlow.SelectedInputs;
+        IReadOnlyList<InventoryItem> selected = tradeupFlow.SelectedInputs;
 
         if (selected == null || selected.Count == 0)
             return true;
@@ -441,34 +404,27 @@ private void UpdateClearButton()
         if (item.statTrak != first.statTrak)
             return false;
 
-        int requiredCount = first.skin.rarity == Rarity.Covert
-            ? 5
-            : 10;
-
+        int requiredCount = first.skin.rarity == Rarity.Covert ? 5 : 10;
         return selected.Count < requiredCount;
     }
 
-public void ClearTradeupSelection()
-{
-    if (tradeupFlow == null)
-        return;
-
-    tradeupFlow.ClearSelection();
-    RefreshCardStates();
-    UpdateClearButton();
-}
-
-    private void ClearSpawnedCards()
+    public void ClearTradeupSelection()
     {
-        for (int i = 0; i < spawnedCards.Count; i++)
-        {
-            SpawnedTradeupCard entry = spawnedCards[i];
+        if (tradeupFlow == null)
+            return;
 
-            if (entry != null && entry.card != null)
-                Destroy(entry.card.gameObject);
-        }
+        tradeupFlow.ClearSelection();
+        RebuildGrid();
+    }
 
-        spawnedCards.Clear();
+    private void UpdateClearButton()
+    {
+        if (clearSelectedButton == null)
+            return;
+
+        clearSelectedButton.interactable =
+            tradeupFlow != null &&
+            tradeupFlow.SelectedInputs.Count > 0;
     }
 
     private void SetEmptyState(bool visible, string message)
