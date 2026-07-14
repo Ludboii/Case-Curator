@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -42,15 +43,19 @@ public class InventoryItemCardUI : MonoBehaviour
     public GameObject selectedOverlay;
     public Image selectedBorder;
 
+    private static SkinInspectUI cachedInspectUI;
+
     private InventoryItem currentItem;
     private bool isSelected;
+    private Graphic[] favoriteGraphics = Array.Empty<Graphic>();
+    private Action<InventoryItemCardUI> externalClickHandler;
 
     public InventoryItem CurrentItem => currentItem;
     public bool IsSelected => isSelected;
 
     private void Awake()
     {
-        CacheInspectUI();
+        CacheReferencesOnce();
 
         if (button != null)
         {
@@ -61,14 +66,49 @@ public class InventoryItemCardUI : MonoBehaviour
         SetSelected(false);
     }
 
-    private void Start()
+    private void CacheReferencesOnce()
     {
-        CacheInspectUI();
+        if (inspectUI != null)
+            cachedInspectUI = inspectUI;
+        else if (SkinInspectUI.Instance != null)
+            cachedInspectUI = SkinInspectUI.Instance;
+
+        if (favoriteIcon != null)
+            favoriteGraphics = favoriteIcon.GetComponentsInChildren<Graphic>(true);
+
+        // A card only needs its Button target graphic to receive raycasts.
+        // Disabling raycasts on every text/icon substantially reduces the work
+        // performed by GraphicRaycaster when hundreds of cards are visible.
+        Graphic buttonTarget = button != null ? button.targetGraphic : null;
+        Graphic[] graphics = GetComponentsInChildren<Graphic>(true);
+
+        for (int i = 0; i < graphics.Length; i++)
+        {
+            Graphic graphic = graphics[i];
+
+            if (graphic == null || graphic == buttonTarget)
+                continue;
+
+            graphic.raycastTarget = false;
+        }
     }
 
-    private void OnEnable()
+    public void SetInspectUI(SkinInspectUI value)
     {
-        CacheInspectUI();
+        inspectUI = value;
+
+        if (value != null)
+            cachedInspectUI = value;
+    }
+
+    /// <summary>
+    /// Assigns a custom click handler without rebuilding the Button listener.
+    /// Pass null to restore the normal inventory-card behaviour.
+    /// </summary>
+    public void SetExternalClickHandler(
+        Action<InventoryItemCardUI> clickHandler)
+    {
+        externalClickHandler = clickHandler;
     }
 
     public void Setup(InventoryItem item)
@@ -82,7 +122,8 @@ public class InventoryItemCardUI : MonoBehaviour
             return;
         }
 
-        gameObject.SetActive(true);
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
 
         SkinData skin = item.skin;
 
@@ -94,43 +135,32 @@ public class InventoryItemCardUI : MonoBehaviour
         }
 
         if (rarityBar != null)
-        {
             rarityBar.color = RarityColorUtility.GetColor(skin.rarity);
-        }
 
         if (floatText != null)
-        {
             floatText.text = SkinDisplayUtility.GetCardFloatDisplay(item);
-        }
 
         if (badgeText != null)
         {
             string badge = SkinDisplayUtility.GetSpecialBadgeText(item);
+            bool showBadge = !string.IsNullOrEmpty(badge);
 
             badgeText.text = badge;
-            badgeText.gameObject.SetActive(!string.IsNullOrEmpty(badge));
+            badgeText.gameObject.SetActive(showBadge);
 
             if (badge == "ST")
-            {
                 badgeText.color = new Color(1f, 0.55f, 0f);
-            }
             else if (badge == "SV")
-            {
                 badgeText.color = new Color(1f, 0.85f, 0.25f);
-            }
         }
 
         UpdatePatternBadge(item);
 
         if (weaponNameText != null)
-        {
-            weaponNameText.text = skin.weaponName.ToUpperInvariant();
-        }
+            weaponNameText.text = (skin.weaponName ?? "").ToUpperInvariant();
 
         if (skinNameText != null)
-        {
             skinNameText.text = skin.isVanilla ? "Vanilla" : skin.skinName;
-        }
 
         if (priceText != null)
         {
@@ -163,7 +193,6 @@ public class InventoryItemCardUI : MonoBehaviour
             patternBadgeText.text = badge;
             patternBadgeText.color = badgeColor;
             patternBadgeText.gameObject.SetActive(showBadge);
-            patternBadgeText.raycastTarget = false;
         }
 
         if (patternBadgeIcon != null)
@@ -172,7 +201,6 @@ public class InventoryItemCardUI : MonoBehaviour
             patternBadgeIcon.color = badgeColor;
             patternBadgeIcon.enabled = showBadge && badgeSprite != null;
             patternBadgeIcon.gameObject.SetActive(showBadge);
-            patternBadgeIcon.raycastTarget = false;
         }
     }
 
@@ -182,78 +210,73 @@ public class InventoryItemCardUI : MonoBehaviour
             return "";
 
         SkinData skin = item.skin;
-        string skinName = skin.skinName != null ? skin.skinName.ToLowerInvariant() : "";
+        string lowerName = (skin.skinName ?? "").ToLowerInvariant();
 
-        if (skinName.Contains("black pearl"))
+        if (lowerName.Contains("black pearl"))
             return "BLACK PEARL";
-
-        if (skinName.Contains("sapphire"))
+        if (lowerName.Contains("sapphire"))
             return "SAPPHIRE";
-
-        if (skinName.Contains("emerald"))
+        if (lowerName.Contains("emerald"))
             return "EMERALD";
-
-        if (skinName.Contains("ruby"))
+        if (lowerName.Contains("ruby"))
             return "RUBY";
 
-        if (skin.patternType == PatternType.CaseHardened && item.patternTier != PatternTier.None)
+        if (skin.patternType == PatternType.CaseHardened &&
+            item.patternTier != PatternTier.None)
+        {
             return $"T{GetPatternTierNumber(item.patternTier)} BLUE GEM";
+        }
 
-        if (skin.patternType == PatternType.Fade && item.patternTier != PatternTier.None)
+        if (skin.patternType == PatternType.Fade &&
+            item.patternTier != PatternTier.None)
+        {
             return $"T{GetPatternTierNumber(item.patternTier)} FADE";
+        }
 
-        if (item.patternTier != PatternTier.None)
-            return $"T{GetPatternTierNumber(item.patternTier)}";
-
-        return "";
+        return item.patternTier != PatternTier.None
+            ? $"T{GetPatternTierNumber(item.patternTier)}"
+            : "";
     }
 
-    private int GetPatternTierNumber(PatternTier tier)
+    private static int GetPatternTierNumber(PatternTier tier)
     {
         switch (tier)
         {
-            case PatternTier.Tier1:
-                return 1;
-            case PatternTier.Tier2:
-                return 2;
-            case PatternTier.Tier3:
-                return 3;
-            default:
-                return 0;
+            case PatternTier.Tier1: return 1;
+            case PatternTier.Tier2: return 2;
+            case PatternTier.Tier3: return 3;
+            default: return 0;
         }
     }
 
-    private Color GetPatternBadgeColor(InventoryItem item, string badge)
+    private static Color GetPatternBadgeColor(
+        InventoryItem item,
+        string badge)
     {
         if (badge == "RUBY")
             return new Color(1f, 0.1f, 0.18f);
-
         if (badge == "EMERALD")
             return new Color(0.1f, 1f, 0.45f);
-
         if (badge == "SAPPHIRE" || badge == "BLACK PEARL")
             return new Color(0.25f, 0.65f, 1f);
-
         if (badge.Contains("BLUE GEM"))
             return new Color(0.25f, 0.75f, 1f);
-
         if (badge.Contains("FADE"))
             return new Color(1f, 0.75f, 0.25f);
 
         return new Color(1f, 0.85f, 0.25f);
     }
 
-    private Sprite GetPatternBadgeSprite(InventoryItem item, string badge)
+    private Sprite GetPatternBadgeSprite(
+        InventoryItem item,
+        string badge)
     {
         if (badge == "RUBY")
             return rubyIcon != null ? rubyIcon : defaultPatternIcon;
-
         if (badge == "EMERALD")
             return emeraldIcon != null ? emeraldIcon : defaultPatternIcon;
-
         if (badge == "SAPPHIRE")
             return sapphireIcon != null ? sapphireIcon : defaultPatternIcon;
-
         if (badge == "BLACK PEARL")
             return blackPearlIcon != null ? blackPearlIcon : defaultPatternIcon;
 
@@ -264,11 +287,17 @@ public class InventoryItemCardUI : MonoBehaviour
                 switch (item.patternTier)
                 {
                     case PatternTier.Tier1:
-                        return tier1BlueGemIcon != null ? tier1BlueGemIcon : defaultPatternIcon;
+                        return tier1BlueGemIcon != null
+                            ? tier1BlueGemIcon
+                            : defaultPatternIcon;
                     case PatternTier.Tier2:
-                        return tier2BlueGemIcon != null ? tier2BlueGemIcon : defaultPatternIcon;
+                        return tier2BlueGemIcon != null
+                            ? tier2BlueGemIcon
+                            : defaultPatternIcon;
                     case PatternTier.Tier3:
-                        return tier3BlueGemIcon != null ? tier3BlueGemIcon : defaultPatternIcon;
+                        return tier3BlueGemIcon != null
+                            ? tier3BlueGemIcon
+                            : defaultPatternIcon;
                 }
             }
 
@@ -284,8 +313,11 @@ public class InventoryItemCardUI : MonoBehaviour
     private void OnCardClicked()
     {
         if (currentItem == null)
+            return;
+
+        if (externalClickHandler != null)
         {
-            Debug.LogWarning("InventoryItemCardUI: No current item assigned.");
+            externalClickHandler(this);
             return;
         }
 
@@ -303,32 +335,33 @@ public class InventoryItemCardUI : MonoBehaviour
     private void OpenInspect()
     {
         if (currentItem == null)
+            return;
+
+        SkinInspectUI targetInspect = inspectUI;
+
+        if (targetInspect == null)
+            targetInspect = SkinInspectUI.Instance;
+
+        if (targetInspect == null)
+            targetInspect = cachedInspectUI;
+
+        if (targetInspect == null)
         {
-            Debug.LogWarning("InventoryItemCardUI: No current item assigned.");
+            Debug.LogWarning(
+                "InventoryItemCardUI: No SkinInspectUI is available.");
             return;
         }
 
-        CacheInspectUI();
-
-        if (inspectUI == null)
-        {
-            Debug.LogWarning("InventoryItemCardUI: No SkinInspectUI found in scene.");
-            return;
-        }
-
-        inspectUI.OpenOwnedItem(currentItem);
-    }
-
-    private void CacheInspectUI()
-    {
-        if (inspectUI != null)
-            return;
-
-        inspectUI = FindFirstObjectByType<SkinInspectUI>(FindObjectsInactive.Include);
+        inspectUI = targetInspect;
+        cachedInspectUI = targetInspect;
+        targetInspect.OpenOwnedItem(currentItem);
     }
 
     public void SetSelected(bool selected)
     {
+        if (isSelected == selected)
+            return;
+
         isSelected = selected;
 
         if (selectedOverlay != null)
@@ -346,8 +379,7 @@ public class InventoryItemCardUI : MonoBehaviour
     public void UpdateFavoriteVisual()
     {
         bool isFavorite =
-            currentItem != null &&
-            currentItem.favorite;
+            currentItem != null && currentItem.favorite;
 
         if (favoriteIcon != null)
             favoriteIcon.SetActive(isFavorite);
@@ -356,18 +388,12 @@ public class InventoryItemCardUI : MonoBehaviour
         {
             favoriteText.text = isFavorite ? "FAV" : "";
             favoriteText.gameObject.SetActive(isFavorite);
-            favoriteText.raycastTarget = false;
         }
 
-        if (favoriteIcon != null)
+        for (int i = 0; i < favoriteGraphics.Length; i++)
         {
-            Graphic[] graphics =
-                favoriteIcon.GetComponentsInChildren<Graphic>(true);
-
-            foreach (Graphic graphic in graphics)
-            {
-                graphic.raycastTarget = false;
-            }
+            if (favoriteGraphics[i] != null)
+                favoriteGraphics[i].raycastTarget = false;
         }
     }
 
