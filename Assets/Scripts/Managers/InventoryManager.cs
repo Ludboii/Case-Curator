@@ -17,6 +17,13 @@ public class InventoryManager : MonoBehaviour
     [SerializeField]
     private List<InventoryItem> items = new List<InventoryItem>();
 
+    [Header("Diagnostics")]
+    [SerializeField] private bool verboseItemLogging;
+
+    private readonly Dictionary<string, InventoryItem> itemByInstanceId =
+        new Dictionary<string, InventoryItem>(StringComparer.Ordinal);
+
+    private int[] storageItemCounts = Array.Empty<int>();
     private float cachedTotalMarketValue;
     private long nextAcquisitionSequence = 1;
 
@@ -48,6 +55,7 @@ public class InventoryManager : MonoBehaviour
 
         NormalizeStorageAssignments();
         NormalizeAcquisitionSequences();
+        RebuildRuntimeCaches();
         RecalculateCachedTotalMarketValue();
     }
 
@@ -62,7 +70,9 @@ public class InventoryManager : MonoBehaviour
         return GetFirstStorageWithSpace() >= 0;
     }
 
-    public bool HasSpaceInStorage(int storageIndex, int additionalItems = 1)
+    public bool HasSpaceInStorage(
+        int storageIndex,
+        int additionalItems = 1)
     {
         if (!IsStorageUnlocked(storageIndex))
             return false;
@@ -70,7 +80,9 @@ public class InventoryManager : MonoBehaviour
         if (additionalItems <= 0)
             return true;
 
-        return GetStorageItemCount(storageIndex) + additionalItems <=
+        EnsureStorageCountCache();
+
+        return storageItemCounts[storageIndex] + additionalItems <=
                itemsPerStoragePage;
     }
 
@@ -84,28 +96,23 @@ public class InventoryManager : MonoBehaviour
         if (!IsStorageUnlocked(storageIndex))
             return 0;
 
-        int count = 0;
-
-        foreach (InventoryItem item in items)
-        {
-            if (item != null && item.storageIndex == storageIndex)
-                count++;
-        }
-
-        return count;
+        EnsureStorageCountCache();
+        return storageItemCounts[storageIndex];
     }
 
     public int GetFirstStorageWithSpace(int preferredStorageIndex = -1)
     {
+        EnsureStorageCountCache();
+
         if (IsStorageUnlocked(preferredStorageIndex) &&
-            HasSpaceInStorage(preferredStorageIndex))
+            storageItemCounts[preferredStorageIndex] < itemsPerStoragePage)
         {
             return preferredStorageIndex;
         }
 
         for (int i = 0; i < unlockedStoragePages; i++)
         {
-            if (HasSpaceInStorage(i))
+            if (storageItemCounts[i] < itemsPerStoragePage)
                 return i;
         }
 
@@ -117,13 +124,18 @@ public class InventoryManager : MonoBehaviour
         if (unlockedStoragePages <= 1)
             return -1;
 
-        int start = Mathf.Clamp(fromStorageIndex, 0, unlockedStoragePages - 1);
+        EnsureStorageCountCache();
+
+        int start = Mathf.Clamp(
+            fromStorageIndex,
+            0,
+            unlockedStoragePages - 1);
 
         for (int offset = 1; offset < unlockedStoragePages; offset++)
         {
             int index = (start + offset) % unlockedStoragePages;
 
-            if (HasSpaceInStorage(index))
+            if (storageItemCounts[index] < itemsPerStoragePage)
                 return index;
         }
 
@@ -150,14 +162,18 @@ public class InventoryManager : MonoBehaviour
         PrepareItemForInventory(item);
         item.storageIndex = destination;
         items.Add(item);
-        cachedTotalMarketValue += item.marketValue;
+        RegisterItem(item);
+        cachedTotalMarketValue += Mathf.Max(0f, item.marketValue);
 
         NotifyInventoryChanged(true);
 
-        Debug.Log(
-            $"Added item to Storage {destination + 1}: " +
-            $"{SkinDisplayUtility.GetDisplayName(item.skin)}. " +
-            $"Inventory count: {items.Count}/{TotalCapacity}");
+        if (verboseItemLogging)
+        {
+            Debug.Log(
+                $"Added item to Storage {destination + 1}: " +
+                $"{SkinDisplayUtility.GetDisplayName(item.skin)}. " +
+                $"Inventory count: {items.Count}/{TotalCapacity}");
+        }
     }
 
     public int AddItems(List<InventoryItem> itemsToAdd)
@@ -165,11 +181,15 @@ public class InventoryManager : MonoBehaviour
         if (itemsToAdd == null || itemsToAdd.Count == 0)
             return 0;
 
+        EnsureStorageCountCache();
+
         int addedCount = 0;
         float addedValue = 0f;
 
-        foreach (InventoryItem item in itemsToAdd)
+        for (int i = 0; i < itemsToAdd.Count; i++)
         {
+            InventoryItem item = itemsToAdd[i];
+
             if (item == null)
                 continue;
 
@@ -181,7 +201,8 @@ public class InventoryManager : MonoBehaviour
             PrepareItemForInventory(item);
             item.storageIndex = destination;
             items.Add(item);
-            addedValue += item.marketValue;
+            RegisterItem(item);
+            addedValue += Mathf.Max(0f, item.marketValue);
             addedCount++;
         }
 
@@ -194,53 +215,53 @@ public class InventoryManager : MonoBehaviour
         return addedCount;
     }
 
-private void PrepareItemForInventory(InventoryItem item)
-{
-    if (item == null)
-        return;
-
-    if (string.IsNullOrWhiteSpace(item.instanceId))
-        item.instanceId = Guid.NewGuid().ToString();
-
-    if (item.acquisitionSequence <= 0)
+    private void PrepareItemForInventory(InventoryItem item)
     {
-        item.acquisitionSequence = nextAcquisitionSequence;
-        nextAcquisitionSequence++;
-    }
-    else if (item.acquisitionSequence >= nextAcquisitionSequence)
-    {
-        nextAcquisitionSequence =
-            item.acquisitionSequence + 1;
-    }
-
-    item.marketValue = PriceCalculator.GetPrice(item);
-}
-
-private void NormalizeAcquisitionSequences()
-{
-    long highestSequence = 0;
-
-    // The stored inventory list is append-based, so its current order is the
-    // safest legacy fallback: earlier entries are treated as older.
-    for (int i = 0; i < items.Count; i++)
-    {
-        InventoryItem item = items[i];
-
         if (item == null)
-            continue;
+            return;
+
+        if (string.IsNullOrWhiteSpace(item.instanceId) ||
+            itemByInstanceId.ContainsKey(item.instanceId))
+        {
+            item.instanceId = Guid.NewGuid().ToString();
+        }
 
         if (item.acquisitionSequence <= 0)
-            item.acquisitionSequence = i + 1;
+        {
+            item.acquisitionSequence = nextAcquisitionSequence;
+            nextAcquisitionSequence++;
+        }
+        else if (item.acquisitionSequence >= nextAcquisitionSequence)
+        {
+            nextAcquisitionSequence = item.acquisitionSequence + 1;
+        }
 
-        if (item.acquisitionSequence > highestSequence)
-            highestSequence = item.acquisitionSequence;
+        item.marketValue = PriceCalculator.GetPrice(item);
     }
 
-nextAcquisitionSequence =
-    highestSequence >= 1
-        ? highestSequence + 1
-        : 1;
-}
+    private void NormalizeAcquisitionSequences()
+    {
+        long highestSequence = 0;
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            InventoryItem item = items[i];
+
+            if (item == null)
+                continue;
+
+            if (item.acquisitionSequence <= 0)
+                item.acquisitionSequence = i + 1;
+
+            if (item.acquisitionSequence > highestSequence)
+                highestSequence = item.acquisitionSequence;
+        }
+
+        nextAcquisitionSequence = highestSequence >= 1
+            ? highestSequence + 1
+            : 1;
+    }
+
     public bool RemoveItem(InventoryItem item)
     {
         if (item == null)
@@ -251,10 +272,9 @@ nextAcquisitionSequence =
         if (!removed)
             return false;
 
+        UnregisterItem(item);
         cachedTotalMarketValue -= Mathf.Max(0f, item.marketValue);
-
-        if (cachedTotalMarketValue < 0f)
-            cachedTotalMarketValue = 0f;
+        cachedTotalMarketValue = Mathf.Max(0f, cachedTotalMarketValue);
 
         NotifyInventoryChanged(true);
         return true;
@@ -265,28 +285,31 @@ nextAcquisitionSequence =
         if (instanceIds == null || instanceIds.Count == 0)
             return 0;
 
+        int removedCount = 0;
         float removedValue = 0f;
 
-        int removedCount = items.RemoveAll(item =>
+        for (int i = items.Count - 1; i >= 0; i--)
         {
-            bool remove =
-                item != null &&
-                !string.IsNullOrWhiteSpace(item.instanceId) &&
-                instanceIds.Contains(item.instanceId);
+            InventoryItem item = items[i];
 
-            if (remove)
-                removedValue += Mathf.Max(0f, item.marketValue);
+            if (item == null ||
+                string.IsNullOrWhiteSpace(item.instanceId) ||
+                !instanceIds.Contains(item.instanceId))
+            {
+                continue;
+            }
 
-            return remove;
-        });
+            removedValue += Mathf.Max(0f, item.marketValue);
+            UnregisterItem(item);
+            items.RemoveAt(i);
+            removedCount++;
+        }
 
         if (removedCount <= 0)
             return 0;
 
         cachedTotalMarketValue -= removedValue;
-
-        if (cachedTotalMarketValue < 0f)
-            cachedTotalMarketValue = 0f;
+        cachedTotalMarketValue = Mathf.Max(0f, cachedTotalMarketValue);
 
         NotifyInventoryChanged(true);
         return removedCount;
@@ -297,13 +320,8 @@ nextAcquisitionSequence =
         if (string.IsNullOrWhiteSpace(instanceId))
             return null;
 
-        foreach (InventoryItem item in items)
-        {
-            if (item != null && item.instanceId == instanceId)
-                return item;
-        }
-
-        return null;
+        itemByInstanceId.TryGetValue(instanceId, out InventoryItem item);
+        return item;
     }
 
     public List<InventoryItem> GetItemsCopy()
@@ -313,13 +331,16 @@ nextAcquisitionSequence =
 
     public List<InventoryItem> GetItemsInStorageCopy(int storageIndex)
     {
-        List<InventoryItem> storageItems = new List<InventoryItem>();
+        List<InventoryItem> storageItems =
+            new List<InventoryItem>(GetStorageItemCount(storageIndex));
 
         if (!IsStorageUnlocked(storageIndex))
             return storageItems;
 
-        foreach (InventoryItem item in items)
+        for (int i = 0; i < items.Count; i++)
         {
+            InventoryItem item = items[i];
+
             if (item != null && item.storageIndex == storageIndex)
                 storageItems.Add(item);
         }
@@ -327,8 +348,6 @@ nextAcquisitionSequence =
         return storageItems;
     }
 
-    // Compatibility method retained for existing callers. Storage containers
-    // are now explicit ownership tabs rather than slices of one global list.
     public List<InventoryItem> GetItemsOnStoragePage(int pageIndex)
     {
         return GetItemsInStorageCopy(pageIndex);
@@ -347,9 +366,11 @@ nextAcquisitionSequence =
         return true;
     }
 
-    public bool MoveItemToStorage(InventoryItem item, int destinationStorageIndex)
+    public bool MoveItemToStorage(
+        InventoryItem item,
+        int destinationStorageIndex)
     {
-        if (item == null || !items.Contains(item))
+        if (!IsOwnedItem(item))
             return false;
 
         if (!IsStorageUnlocked(destinationStorageIndex))
@@ -358,17 +379,31 @@ nextAcquisitionSequence =
         if (item.storageIndex == destinationStorageIndex)
             return true;
 
-        if (!HasSpaceInStorage(destinationStorageIndex))
+        EnsureStorageCountCache();
+
+        if (storageItemCounts[destinationStorageIndex] >= itemsPerStoragePage)
             return false;
 
         int previousStorage = item.storageIndex;
+
+        if (IsStorageUnlocked(previousStorage))
+        {
+            storageItemCounts[previousStorage] =
+                Mathf.Max(0, storageItemCounts[previousStorage] - 1);
+        }
+
         item.storageIndex = destinationStorageIndex;
+        storageItemCounts[destinationStorageIndex]++;
 
         NotifyInventoryChanged(true);
 
-        Debug.Log(
-            $"Moved {SkinDisplayUtility.GetDisplayName(item.skin)} from " +
-            $"Storage {previousStorage + 1} to Storage {destinationStorageIndex + 1}.");
+        if (verboseItemLogging)
+        {
+            Debug.Log(
+                $"Moved {SkinDisplayUtility.GetDisplayName(item.skin)} from " +
+                $"Storage {previousStorage + 1} to " +
+                $"Storage {destinationStorageIndex + 1}.");
+        }
 
         return true;
     }
@@ -407,8 +442,10 @@ nextAcquisitionSequence =
 
         int changedCount = 0;
 
-        foreach (InventoryItem item in itemsToUpdate)
+        for (int i = 0; i < itemsToUpdate.Count; i++)
         {
+            InventoryItem item = itemsToUpdate[i];
+
             if (item == null || item.favorite == favorite)
                 continue;
 
@@ -432,7 +469,9 @@ nextAcquisitionSequence =
         return true;
     }
 
-    public bool SetFavoriteByInstanceId(string instanceId, bool favorite)
+    public bool SetFavoriteByInstanceId(
+        string instanceId,
+        bool favorite)
     {
         InventoryItem item = GetItemByInstanceId(instanceId);
         return item != null && SetFavorite(item, favorite);
@@ -441,7 +480,10 @@ nextAcquisitionSequence =
     public void ClearInventory()
     {
         items.Clear();
+        itemByInstanceId.Clear();
+        storageItemCounts = new int[Mathf.Max(1, unlockedStoragePages)];
         cachedTotalMarketValue = 0f;
+        nextAcquisitionSequence = 1;
         NotifyInventoryChanged(true);
     }
 
@@ -451,23 +493,28 @@ nextAcquisitionSequence =
 
         if (loadedItems != null)
         {
-            foreach (InventoryItem item in loadedItems)
+            for (int i = 0; i < loadedItems.Count; i++)
             {
+                InventoryItem item = loadedItems[i];
+
                 if (item != null && item.skin != null)
                     items.Add(item);
             }
         }
 
-NormalizeStorageAssignments();
-NormalizeAcquisitionSequences();
-RecalculateCachedTotalMarketValue();
-NotifyInventoryChanged(false);
+        NormalizeStorageAssignments();
+        NormalizeAcquisitionSequences();
+        RebuildRuntimeCaches();
+        RecalculateCachedTotalMarketValue();
+        NotifyInventoryChanged(false);
 
         Debug.Log(
             $"Inventory loaded. Item count: {items.Count}/{TotalCapacity}");
     }
 
-    public void SetStorageData(int loadedPages, int loadedItemsPerPage)
+    public void SetStorageData(
+        int loadedPages,
+        int loadedItemsPerPage)
     {
         unlockedStoragePages = Mathf.Max(1, loadedPages);
         itemsPerStoragePage = Mathf.Max(1, loadedItemsPerPage);
@@ -477,12 +524,15 @@ NotifyInventoryChanged(false);
             unlockedStoragePages - 1);
 
         NormalizeStorageAssignments();
+        RebuildRuntimeCaches();
         NotifyInventoryChanged(false);
     }
 
     public void UnlockStoragePage()
     {
         unlockedStoragePages++;
+        NormalizeStorageAssignments();
+        RebuildRuntimeCaches();
         NotifyInventoryChanged(true);
 
         Debug.Log(
@@ -497,6 +547,7 @@ NotifyInventoryChanged(false);
 
         itemsPerStoragePage += amount;
         NormalizeStorageAssignments();
+        RebuildRuntimeCaches();
         NotifyInventoryChanged(true);
 
         Debug.Log(
@@ -508,15 +559,17 @@ NotifyInventoryChanged(false);
     {
         cachedTotalMarketValue = 0f;
 
-        foreach (InventoryItem item in items)
+        for (int i = 0; i < items.Count; i++)
         {
+            InventoryItem item = items[i];
+
             if (item == null || item.skin == null)
                 continue;
 
             if (item.marketValue <= 0f)
                 item.marketValue = PriceCalculator.GetPrice(item);
 
-            cachedTotalMarketValue += item.marketValue;
+            cachedTotalMarketValue += Mathf.Max(0f, item.marketValue);
         }
     }
 
@@ -528,8 +581,10 @@ NotifyInventoryChanged(false);
         int[] counts = new int[unlockedStoragePages];
         int overflowCount = 0;
 
-        foreach (InventoryItem item in items)
+        for (int itemIndex = 0; itemIndex < items.Count; itemIndex++)
         {
+            InventoryItem item = items[itemIndex];
+
             if (item == null)
                 continue;
 
@@ -563,7 +618,6 @@ NotifyInventoryChanged(false);
             }
             else
             {
-                // Never delete an item from an over-capacity legacy/debug save.
                 item.storageIndex = desired;
                 counts[desired]++;
                 overflowCount++;
@@ -575,6 +629,82 @@ NotifyInventoryChanged(false);
             Debug.LogWarning(
                 $"Inventory contains {overflowCount} item(s) above the current " +
                 "storage capacity. No items were deleted.");
+        }
+    }
+
+    private void RebuildRuntimeCaches()
+    {
+        itemByInstanceId.Clear();
+        storageItemCounts = new int[Mathf.Max(1, unlockedStoragePages)];
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            InventoryItem item = items[i];
+
+            if (item == null)
+                continue;
+
+            if (string.IsNullOrWhiteSpace(item.instanceId) ||
+                itemByInstanceId.ContainsKey(item.instanceId))
+            {
+                item.instanceId = Guid.NewGuid().ToString();
+            }
+
+            itemByInstanceId[item.instanceId] = item;
+
+            if (IsStorageUnlocked(item.storageIndex))
+                storageItemCounts[item.storageIndex]++;
+        }
+    }
+
+    private void RegisterItem(InventoryItem item)
+    {
+        if (item == null)
+            return;
+
+        EnsureStorageCountCache();
+
+        if (!string.IsNullOrWhiteSpace(item.instanceId))
+            itemByInstanceId[item.instanceId] = item;
+
+        if (IsStorageUnlocked(item.storageIndex))
+            storageItemCounts[item.storageIndex]++;
+    }
+
+    private void UnregisterItem(InventoryItem item)
+    {
+        if (item == null)
+            return;
+
+        if (!string.IsNullOrWhiteSpace(item.instanceId))
+            itemByInstanceId.Remove(item.instanceId);
+
+        EnsureStorageCountCache();
+
+        if (IsStorageUnlocked(item.storageIndex))
+        {
+            storageItemCounts[item.storageIndex] =
+                Mathf.Max(0, storageItemCounts[item.storageIndex] - 1);
+        }
+    }
+
+    private bool IsOwnedItem(InventoryItem item)
+    {
+        if (item == null || string.IsNullOrWhiteSpace(item.instanceId))
+            return false;
+
+        return itemByInstanceId.TryGetValue(
+                   item.instanceId,
+                   out InventoryItem owned) &&
+               ReferenceEquals(owned, item);
+    }
+
+    private void EnsureStorageCountCache()
+    {
+        if (storageItemCounts == null ||
+            storageItemCounts.Length != unlockedStoragePages)
+        {
+            RebuildRuntimeCaches();
         }
     }
 
