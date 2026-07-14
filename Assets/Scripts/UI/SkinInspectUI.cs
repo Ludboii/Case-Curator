@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class SkinInspectUI : MonoBehaviour
 {
+    public static SkinInspectUI Instance { get; private set; }
+
     [Header("Root")]
     public GameObject overlayRoot;
 
@@ -26,6 +28,10 @@ public class SkinInspectUI : MonoBehaviour
     public TMP_Text floatText;
     public TMP_Text patternText;
     public TMP_Text patternTierText;
+
+    [Header("Sticker Slots")]
+    [Tooltip("Parent containing the sticker count text and all sticker slots.")]
+    public GameObject stickerSlotsRoot;
 
     [Header("Buttons")]
     public Button closeButton;
@@ -56,9 +62,30 @@ public class SkinInspectUI : MonoBehaviour
     public Sprite blackPearlGem;
 
     private InventoryItem currentItem;
+    private TMP_Text cachedMoveButtonText;
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Debug.LogWarning(
+                "Duplicate SkinInspectUI found, using the newest active instance.");
+        }
+
+        Instance = this;
+
+        if (sellButtonText == null && sellButton != null)
+            sellButtonText = sellButton.GetComponentInChildren<TMP_Text>(true);
+
+        if (favoriteButtonText == null && favoriteButton != null)
+        {
+            favoriteButtonText =
+                favoriteButton.GetComponentInChildren<TMP_Text>(true);
+        }
+
+        if (moveButton != null)
+            cachedMoveButtonText = moveButton.GetComponentInChildren<TMP_Text>(true);
+
         SetupButton(closeButton, Close);
         SetupButton(sellButton, SellCurrentItem);
         SetupButton(moveButton, MoveCurrentItem);
@@ -66,7 +93,13 @@ public class SkinInspectUI : MonoBehaviour
         Close();
     }
 
-    private void SetupButton(
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
+
+    private static void SetupButton(
         Button button,
         UnityEngine.Events.UnityAction action)
     {
@@ -100,9 +133,65 @@ public class SkinInspectUI : MonoBehaviour
         UpdateText(item, skin);
         UpdateFloatBar(item);
         UpdateGemIcon(item, skin);
+        UpdateStickerSlotVisibility(skin);
         UpdateSellButton();
         UpdateFavoriteButton();
         UpdateMoveButton();
+    }
+
+    private void UpdateStickerSlotVisibility(SkinData skin)
+    {
+        if (stickerSlotsRoot == null)
+            return;
+
+        stickerSlotsRoot.SetActive(SupportsStickers(skin));
+    }
+
+    private static bool SupportsStickers(SkinData skin)
+    {
+        if (skin == null)
+            return false;
+
+        // Current Rare Special assets are knives or gloves. Neither category
+        // receives weapon-sticker slots.
+        if (skin.rarity == Rarity.RareSpecial)
+            return false;
+
+        string weaponName = (skin.weaponName ?? "").ToLowerInvariant();
+
+        string[] nonStickerTerms =
+        {
+            "knife",
+            "bayonet",
+            "karambit",
+            "dagger",
+            "glove",
+            "hand wrap",
+            "handwrap",
+            "falchion",
+            "bowie",
+            "huntsman",
+            "butterfly",
+            "navaja",
+            "stiletto",
+            "talon",
+            "ursus",
+            "nomad",
+            "paracord",
+            "survival",
+            "skeleton",
+            "kukri",
+            "gut knife",
+            "flip knife"
+        };
+
+        for (int i = 0; i < nonStickerTerms.Length; i++)
+        {
+            if (weaponName.Contains(nonStickerTerms[i]))
+                return false;
+        }
+
+        return true;
     }
 
     private void UpdateSellButton()
@@ -110,10 +199,7 @@ public class SkinInspectUI : MonoBehaviour
         if (sellButton == null)
             return;
 
-        bool hasItem =
-            currentItem != null &&
-            currentItem.skin != null;
-
+        bool hasItem = currentItem != null && currentItem.skin != null;
         bool canSell =
             hasItem &&
             !currentItem.favorite &&
@@ -122,26 +208,15 @@ public class SkinInspectUI : MonoBehaviour
 
         sellButton.interactable = canSell;
 
-        TMP_Text targetText = sellButtonText;
-
-        if (targetText == null)
-            targetText = sellButton.GetComponentInChildren<TMP_Text>(true);
-
-        if (targetText == null)
+        if (sellButtonText == null)
             return;
 
         if (!hasItem)
-        {
-            targetText.text = "Sell";
-        }
+            sellButtonText.text = "Sell";
         else if (currentItem.favorite)
-        {
-            targetText.text = "Favorited";
-        }
+            sellButtonText.text = "Favorited";
         else
-        {
-            targetText.text = $"Sell\n{GetSellValue(currentItem):0.##}";
-        }
+            sellButtonText.text = $"Sell\n{GetSellValue(currentItem):0.##}";
     }
 
     private void ToggleFavoriteCurrentItem()
@@ -167,24 +242,13 @@ public class SkinInspectUI : MonoBehaviour
         if (favoriteButton == null)
             return;
 
-        bool hasItem =
-            currentItem != null &&
-            currentItem.skin != null;
-
+        bool hasItem = currentItem != null && currentItem.skin != null;
         favoriteButton.interactable = hasItem;
 
-        TMP_Text targetText = favoriteButtonText;
-
-        if (targetText == null)
-        {
-            targetText =
-                favoriteButton.GetComponentInChildren<TMP_Text>(true);
-        }
-
-        if (targetText == null)
+        if (favoriteButtonText == null)
             return;
 
-        targetText.text = hasItem && currentItem.favorite
+        favoriteButtonText.text = hasItem && currentItem.favorite
             ? favoriteOnText
             : favoriteOffText;
     }
@@ -194,9 +258,6 @@ public class SkinInspectUI : MonoBehaviour
         if (moveButton == null)
             return;
 
-        TMP_Text targetText =
-            moveButton.GetComponentInChildren<TMP_Text>(true);
-
         InventoryManager manager = InventoryManager.Instance;
 
         if (currentItem == null ||
@@ -205,8 +266,8 @@ public class SkinInspectUI : MonoBehaviour
         {
             moveButton.interactable = false;
 
-            if (targetText != null)
-                targetText.text = "MOVE";
+            if (cachedMoveButtonText != null)
+                cachedMoveButtonText.text = "MOVE";
 
             return;
         }
@@ -217,9 +278,9 @@ public class SkinInspectUI : MonoBehaviour
         bool canMove = destination >= 0;
         moveButton.interactable = canMove;
 
-        if (targetText != null)
+        if (cachedMoveButtonText != null)
         {
-            targetText.text = canMove
+            cachedMoveButtonText.text = canMove
                 ? $"MOVE\nTO {destination + 1}"
                 : "STORAGE\nFULL";
         }
@@ -279,7 +340,6 @@ public class SkinInspectUI : MonoBehaviour
         }
 
         float sellValue = GetSellValue(currentItem);
-
         bool shouldConfirm =
             confirmSingleSell &&
             sellValue >= singleSellConfirmationThreshold;
@@ -379,13 +439,10 @@ public class SkinInspectUI : MonoBehaviour
     private void UpdateText(InventoryItem item, SkinData skin)
     {
         if (weaponNameText != null)
-            weaponNameText.text = skin.weaponName.ToUpperInvariant();
+            weaponNameText.text = (skin.weaponName ?? "").ToUpperInvariant();
 
         if (skinNameText != null)
-        {
-            skinNameText.text =
-                skin.isVanilla ? "Vanilla" : skin.skinName;
-        }
+            skinNameText.text = skin.isVanilla ? "Vanilla" : skin.skinName;
 
         if (rarityText != null)
             rarityText.text = skin.rarity.ToString();
@@ -451,7 +508,7 @@ public class SkinInspectUI : MonoBehaviour
         gemTierIcon.gameObject.SetActive(icon != null);
     }
 
-    private string GetPatternTierText(
+    private static string GetPatternTierText(
         InventoryItem item,
         SkinData skin)
     {
@@ -467,7 +524,7 @@ public class SkinInspectUI : MonoBehaviour
         return "";
     }
 
-    private string FormatPatternTier(PatternTier tier)
+    private static string FormatPatternTier(PatternTier tier)
     {
         switch (tier)
         {
@@ -492,21 +549,15 @@ public class SkinInspectUI : MonoBehaviour
             case PatternTier.Tier3: return t3Gem;
         }
 
-        string skinName =
-            skin.skinName != null
-                ? skin.skinName.ToLowerInvariant()
-                : "";
+        string lowerName = (skin.skinName ?? "").ToLowerInvariant();
 
-        if (skinName.Contains("ruby"))
+        if (lowerName.Contains("ruby"))
             return rubyGem;
-
-        if (skinName.Contains("sapphire"))
+        if (lowerName.Contains("sapphire"))
             return sapphireGem;
-
-        if (skinName.Contains("emerald"))
+        if (lowerName.Contains("emerald"))
             return emeraldGem;
-
-        if (skinName.Contains("black pearl"))
+        if (lowerName.Contains("black pearl"))
             return blackPearlGem;
 
         return null;
