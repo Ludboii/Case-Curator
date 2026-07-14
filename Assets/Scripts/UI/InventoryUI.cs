@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -86,11 +87,14 @@ public class InventoryUI : MonoBehaviour
     public float bulkSellConfirmationThreshold;
 
     private int currentStorageIndex;
+    private int activeCardCount;
     private InventorySortMode currentSortMode = InventorySortMode.Newest;
 
     private readonly List<Rarity> onlyRarityFilters = new List<Rarity>();
     private readonly List<Rarity> hiddenRarityFilters = new List<Rarity>();
 
+    // This list is now a reusable card pool. Cards are no longer destroyed and
+    // recreated after every sort, favorite, sale or inventory mutation.
     private readonly List<InventoryItemCardUI> spawnedCards =
         new List<InventoryItemCardUI>();
 
@@ -172,7 +176,7 @@ public class InventoryUI : MonoBehaviour
         SetupButton(storageButton3, () => GoToPage(2));
     }
 
-    private void SetupButton(
+    private static void SetupButton(
         Button button,
         UnityEngine.Events.UnityAction action)
     {
@@ -185,13 +189,13 @@ public class InventoryUI : MonoBehaviour
 
     public void Refresh()
     {
-        ClearCards();
+        ClearSelection();
 
         InventoryManager manager = InventoryManager.Instance;
 
         if (manager == null)
         {
-            Debug.LogWarning("InventoryUI: No InventoryManager found.");
+            SetActiveCardCount(0);
             UpdateTexts(0, 0, 0, 0, 0, 0f);
             UpdateStorageButtons();
             UpdateSelectionUI();
@@ -213,35 +217,69 @@ public class InventoryUI : MonoBehaviour
 
         ApplyRarityFilter(storageItems);
         ApplySorting(storageItems);
+        EnsurePoolSize(storageItems.Count);
 
-        foreach (InventoryItem item in storageItems)
+        int configuredCount = 0;
+
+        for (int i = 0; i < storageItems.Count; i++)
         {
+            InventoryItem item = storageItems[i];
+
             if (item == null || item.skin == null)
                 continue;
 
-            if (itemCardPrefab == null || gridContent == null)
-                break;
-
-            InventoryItemCardUI card =
-                Instantiate(itemCardPrefab, gridContent);
-
+            InventoryItemCardUI card = spawnedCards[configuredCount];
+            card.SetExternalClickHandler(null);
             card.gameObject.SetActive(true);
             card.Setup(item);
-            spawnedCards.Add(card);
+            configuredCount++;
         }
+
+        SetActiveCardCount(configuredCount);
 
         UpdateTexts(
             manager.Count,
             manager.TotalCapacity,
             storageItemCount,
             manager.ItemsPerStoragePage,
-            storageItems.Count,
+            configuredCount,
             manager.TotalMarketValue);
 
         UpdateStorageButtons();
-        ClearSelection();
         UpdateSelectionUI();
         UpdateActiveSortFilterText();
+    }
+
+    private void EnsurePoolSize(int requiredCount)
+    {
+        if (itemCardPrefab == null || gridContent == null)
+            return;
+
+        while (spawnedCards.Count < requiredCount)
+        {
+            InventoryItemCardUI card =
+                Instantiate(itemCardPrefab, gridContent);
+
+            card.SetExternalClickHandler(null);
+            card.gameObject.SetActive(false);
+            spawnedCards.Add(card);
+        }
+    }
+
+    private void SetActiveCardCount(int count)
+    {
+        activeCardCount = Mathf.Clamp(count, 0, spawnedCards.Count);
+
+        for (int i = activeCardCount; i < spawnedCards.Count; i++)
+        {
+            InventoryItemCardUI card = spawnedCards[i];
+
+            if (card == null)
+                continue;
+
+            card.SetSelected(false);
+            card.gameObject.SetActive(false);
+        }
     }
 
     private void ApplyRarityFilter(List<InventoryItem> items)
@@ -257,11 +295,9 @@ public class InventoryUI : MonoBehaviour
             }
 
             Rarity rarity = item.skin.rarity;
-
             bool passesOnly =
                 onlyRarityFilters.Count == 0 ||
                 onlyRarityFilters.Contains(rarity);
-
             bool passesHidden =
                 !hiddenRarityFilters.Contains(rarity);
 
@@ -275,16 +311,16 @@ public class InventoryUI : MonoBehaviour
         switch (currentSortMode)
         {
             case InventorySortMode.Newest:
-    items.Sort((a, b) =>
-        GetAcquisitionSequence(b)
-            .CompareTo(GetAcquisitionSequence(a)));
-    break;
+                items.Sort((a, b) =>
+                    GetAcquisitionSequence(b)
+                        .CompareTo(GetAcquisitionSequence(a)));
+                break;
 
-case InventorySortMode.Oldest:
-    items.Sort((a, b) =>
-        GetAcquisitionSequence(a)
-            .CompareTo(GetAcquisitionSequence(b)));
-    break;
+            case InventorySortMode.Oldest:
+                items.Sort((a, b) =>
+                    GetAcquisitionSequence(a)
+                        .CompareTo(GetAcquisitionSequence(b)));
+                break;
 
             case InventorySortMode.HighestValue:
                 items.Sort((a, b) =>
@@ -318,17 +354,19 @@ case InventorySortMode.Oldest:
 
             case InventorySortMode.WeaponAZ:
                 items.Sort((a, b) =>
-                    GetWeaponName(a).CompareTo(GetWeaponName(b)));
+                    string.CompareOrdinal(GetWeaponName(a), GetWeaponName(b)));
                 break;
 
             case InventorySortMode.SkinAZ:
                 items.Sort((a, b) =>
-                    GetSkinName(a).CompareTo(GetSkinName(b)));
+                    string.CompareOrdinal(GetSkinName(a), GetSkinName(b)));
                 break;
 
             case InventorySortMode.CollectionAZ:
                 items.Sort((a, b) =>
-                    GetCollectionName(a).CompareTo(GetCollectionName(b)));
+                    string.CompareOrdinal(
+                        GetCollectionName(a),
+                        GetCollectionName(b)));
                 break;
 
             case InventorySortMode.FavoritesFirst:
@@ -347,8 +385,8 @@ case InventorySortMode.Oldest:
                 break;
         }
     }
-    
-    private float GetSortFloat(InventoryItem item)
+
+    private static float GetSortFloat(InventoryItem item)
     {
         if (item == null || item.skin == null ||
             item.isVanilla || item.floatValue < 0d)
@@ -358,29 +396,27 @@ case InventorySortMode.Oldest:
 
         return (float)item.floatValue;
     }
-    private long GetAcquisitionSequence(
-    InventoryItem item)
-{
-    return item != null
-        ? item.acquisitionSequence
-        : 0;
-}
 
-    private int GetRarityRank(InventoryItem item)
+    private static long GetAcquisitionSequence(InventoryItem item)
+    {
+        return item != null ? item.acquisitionSequence : 0;
+    }
+
+    private static int GetRarityRank(InventoryItem item)
     {
         return item != null && item.skin != null
             ? (int)item.skin.rarity
             : -1;
     }
 
-    private string GetWeaponName(InventoryItem item)
+    private static string GetWeaponName(InventoryItem item)
     {
         return item != null && item.skin != null
             ? item.skin.weaponName ?? ""
             : "";
     }
 
-    private string GetSkinName(InventoryItem item)
+    private static string GetSkinName(InventoryItem item)
     {
         if (item == null || item.skin == null)
             return "";
@@ -390,29 +426,33 @@ case InventorySortMode.Oldest:
             : item.skin.skinName ?? "";
     }
 
-    private string GetCollectionName(InventoryItem item)
+    private static string GetCollectionName(InventoryItem item)
     {
-        return item != null && item.skin != null
-            ? item.skin.collection ?? ""
-            : "";
+        if (item == null || item.skin == null)
+            return "";
+
+        if (item.skin.collectionData != null)
+            return item.skin.collectionData.collectionName ?? "";
+
+        return item.skin.collection ?? "";
     }
 
-    private int GetFavoriteRank(InventoryItem item)
+    private static int GetFavoriteRank(InventoryItem item)
     {
         return item != null && item.favorite ? 1 : 0;
     }
 
-    private int GetStatTrakRank(InventoryItem item)
+    private static int GetStatTrakRank(InventoryItem item)
     {
         return item != null && item.statTrak ? 1 : 0;
     }
 
-    private int GetSouvenirRank(InventoryItem item)
+    private static int GetSouvenirRank(InventoryItem item)
     {
         return item != null && item.souvenir ? 1 : 0;
     }
 
-    private float GetItemValue(InventoryItem item)
+    private static float GetItemValue(InventoryItem item)
     {
         if (item == null || item.skin == null)
             return 0f;
@@ -421,18 +461,6 @@ case InventorySortMode.Oldest:
             item.marketValue = PriceCalculator.GetPrice(item);
 
         return item.marketValue;
-    }
-
-    private void ClearCards()
-    {
-        foreach (InventoryItemCardUI card in spawnedCards)
-        {
-            if (card != null)
-                Destroy(card.gameObject);
-        }
-
-        spawnedCards.Clear();
-        selectedCards.Clear();
     }
 
     private void UpdateTexts(
@@ -482,13 +510,11 @@ case InventorySortMode.Oldest:
             storageButton1Text,
             0,
             unlocked);
-
         UpdateOneStorageButton(
             storageButton2,
             storageButton2Text,
             1,
             unlocked);
-
         UpdateOneStorageButton(
             storageButton3,
             storageButton3Text,
@@ -512,8 +538,6 @@ case InventorySortMode.Oldest:
             text.text = available ? (storageIndex + 1).ToString() : "X";
     }
 
-    // Retained for existing Inspector bindings. The index now selects a
-    // persistent storage container instead of a page in one global item list.
     public void GoToPage(int pageIndex)
     {
         InventoryManager manager = InventoryManager.Instance;
@@ -566,7 +590,7 @@ case InventorySortMode.Oldest:
 
     public void ToggleSelectedItem(InventoryItemCardUI card)
     {
-        if (!SelectionModeActive || card == null)
+        if (!SelectionModeActive || card == null || !card.gameObject.activeSelf)
             return;
 
         InventoryItem item = card.GetItem();
@@ -590,18 +614,18 @@ case InventorySortMode.Oldest:
 
     private void ClearSelection()
     {
-        foreach (InventoryItemCardUI card in selectedCards)
+        for (int i = 0; i < selectedCards.Count; i++)
         {
-            if (card != null)
-                card.SetSelected(false);
+            if (selectedCards[i] != null)
+                selectedCards[i].SetSelected(false);
         }
 
         selectedCards.Clear();
 
-        foreach (InventoryItemCardUI card in spawnedCards)
+        for (int i = 0; i < activeCardCount; i++)
         {
-            if (card != null)
-                card.SetSelected(false);
+            if (spawnedCards[i] != null)
+                spawnedCards[i].SetSelected(false);
         }
     }
 
@@ -635,7 +659,7 @@ case InventorySortMode.Oldest:
         if (selectAllButton != null)
         {
             selectAllButton.interactable =
-                SelectionModeActive && spawnedCards.Count > 0;
+                SelectionModeActive && activeCardCount > 0;
         }
 
         if (selectButtonText != null)
@@ -648,8 +672,10 @@ case InventorySortMode.Oldest:
             favoriteSelectedButtonText.text = $"Favorite ({selectedCount})";
 
         if (unfavoriteSelectedButtonText != null)
+        {
             unfavoriteSelectedButtonText.text =
                 $"Unfavorite ({selectedCount})";
+        }
 
         if (cancelSelectionButtonText != null)
             cancelSelectionButtonText.text = "Cancel";
@@ -671,7 +697,7 @@ case InventorySortMode.Oldest:
         }
     }
 
-    private void SetObjectActive(Button button, bool active)
+    private static void SetObjectActive(Button button, bool active)
     {
         if (button != null)
             button.gameObject.SetActive(active);
@@ -681,12 +707,12 @@ case InventorySortMode.Oldest:
     {
         float total = 0f;
 
-        foreach (InventoryItemCardUI card in selectedCards)
+        for (int i = 0; i < selectedCards.Count; i++)
         {
-            if (card == null)
-                continue;
+            InventoryItemCardUI card = selectedCards[i];
 
-            total += GetItemValue(card.GetItem()) * bulkSellMultiplier;
+            if (card != null)
+                total += GetItemValue(card.GetItem()) * bulkSellMultiplier;
         }
 
         return total;
@@ -711,9 +737,6 @@ case InventorySortMode.Oldest:
             return;
 
         List<InventoryItem> selectedItems = GetSelectedItemsCopy();
-
-        // Exit selection mode before the single batched inventory event rebuilds
-        // the grid. Previously one event was fired for every selected skin.
         SetSelectionMode(false);
 
         int changed = InventoryManager.Instance.SetFavoriteBatch(
@@ -738,8 +761,10 @@ case InventorySortMode.Oldest:
         int skippedFavoriteCount = 0;
         float totalGoldEarned = 0f;
 
-        foreach (InventoryItem item in itemsToSell)
+        for (int i = 0; i < itemsToSell.Count; i++)
         {
+            InventoryItem item = itemsToSell[i];
+
             if (item == null || item.skin == null)
                 continue;
 
@@ -804,8 +829,10 @@ case InventorySortMode.Oldest:
         float totalGoldEarned = 0f;
         int skippedFavoriteCount = 0;
 
-        foreach (InventoryItem item in itemsToSell)
+        for (int i = 0; i < itemsToSell.Count; i++)
         {
+            InventoryItem item = itemsToSell[i];
+
             if (item == null || item.skin == null)
                 continue;
 
@@ -826,8 +853,6 @@ case InventorySortMode.Oldest:
         if (instanceIds.Count == 0)
             return;
 
-        // Copy is complete, so selection can be cleared before the manager's
-        // single inventory-changed event rebuilds the visible storage tab.
         SetSelectionMode(false);
 
         int soldCount =
@@ -847,10 +872,13 @@ case InventorySortMode.Oldest:
 
     private List<InventoryItem> GetSelectedItemsCopy()
     {
-        List<InventoryItem> result = new List<InventoryItem>();
+        List<InventoryItem> result =
+            new List<InventoryItem>(selectedCards.Count);
 
-        foreach (InventoryItemCardUI card in selectedCards)
+        for (int i = 0; i < selectedCards.Count; i++)
         {
+            InventoryItemCardUI card = selectedCards[i];
+
             if (card == null)
                 continue;
 
@@ -870,8 +898,10 @@ case InventorySortMode.Oldest:
 
         selectedCards.Clear();
 
-        foreach (InventoryItemCardUI card in spawnedCards)
+        for (int i = 0; i < activeCardCount; i++)
         {
+            InventoryItemCardUI card = spawnedCards[i];
+
             if (card == null || card.GetItem() == null)
                 continue;
 
@@ -904,6 +934,9 @@ case InventorySortMode.Oldest:
 
     private void SetSortMode(InventorySortMode sortMode)
     {
+        if (currentSortMode == sortMode)
+            return;
+
         currentSortMode = sortMode;
         Refresh();
     }
@@ -966,25 +999,25 @@ case InventorySortMode.Oldest:
             $"Filter:\n{filterText}";
     }
 
-    private string BuildRarityListText(List<Rarity> rarities)
+    private static string BuildRarityListText(List<Rarity> rarities)
     {
         if (rarities == null || rarities.Count == 0)
             return "None";
 
-        string text = "";
+        StringBuilder builder = new StringBuilder();
 
         for (int i = 0; i < rarities.Count; i++)
         {
             if (i > 0)
-                text += ", ";
+                builder.Append(", ");
 
-            text += GetRarityDisplayName(rarities[i]);
+            builder.Append(GetRarityDisplayName(rarities[i]));
         }
 
-        return text;
+        return builder.ToString();
     }
 
-    private string GetSortDisplayName(InventorySortMode sortMode)
+    private static string GetSortDisplayName(InventorySortMode sortMode)
     {
         switch (sortMode)
         {
@@ -1006,7 +1039,7 @@ case InventorySortMode.Oldest:
         }
     }
 
-    private string GetRarityDisplayName(Rarity rarity)
+    private static string GetRarityDisplayName(Rarity rarity)
     {
         switch (rarity)
         {
