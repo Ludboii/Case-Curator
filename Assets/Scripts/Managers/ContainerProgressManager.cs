@@ -454,11 +454,11 @@ public class ContainerProgressManager : MonoBehaviour
         switch (tier)
         {
             case ContainerCompletionTier.Bronze:
-                reward = 10;
+                reward = 20;
                 progress.bronzeRewardClaimed = true;
                 break;
             case ContainerCompletionTier.Silver:
-                reward = 20;
+                reward = 40;
                 progress.silverRewardClaimed = true;
                 break;
             default:
