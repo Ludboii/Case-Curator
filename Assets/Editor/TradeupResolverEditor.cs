@@ -16,10 +16,10 @@ public class TradeupResolverEditor : Editor
             EditorStyles.boldLabel);
 
         EditorGUILayout.HelpBox(
-            "Map only Covert sources that are allowed to produce a Rare " +
-            "Special item. Normal Covert contracts may use knives and gloves. " +
-            "StatTrak Covert contracts automatically exclude gloves and every " +
-            "other Rare Special skin with Can Be StatTrak disabled.",
+            "Every mapped Rare Special item stays in the Covert output pool. " +
+            "With five StatTrak Covert inputs, knives that support StatTrak " +
+            "remain StatTrak, while gloves and other normal-only outputs are " +
+            "awarded without StatTrak.",
             MessageType.Info);
 
         if (GUILayout.Button("Validate Covert Tradeup Mappings"))
@@ -82,14 +82,15 @@ public class TradeupResolverEditor : Editor
                 continue;
             }
 
-            int normalRareSpecialCount = 0;
-            int statTrakRareSpecialCount = 0;
+            int totalRareSpecialCount = 0;
+            int statTrakCapableCount = 0;
+            int normalOnlyCount = 0;
             int gloveCount = 0;
 
             if (rareSpecialCase.dropPool != null)
             {
-                HashSet<SkinData> normalUnique = new HashSet<SkinData>();
-                HashSet<SkinData> statTrakUnique = new HashSet<SkinData>();
+                HashSet<SkinData> uniqueRareSpecials =
+                    new HashSet<SkinData>();
 
                 for (int dropIndex = 0;
                      dropIndex < rareSpecialCase.dropPool.Count;
@@ -106,20 +107,23 @@ public class TradeupResolverEditor : Editor
                     }
 
                     SkinData skin = drop.skin;
-                    normalUnique.Add(skin);
+
+                    if (!uniqueRareSpecials.Add(skin))
+                        continue;
 
                     if (skin.canBeStatTrak)
-                        statTrakUnique.Add(skin);
+                        statTrakCapableCount++;
+                    else
+                        normalOnlyCount++;
 
                     if (LooksLikeGlove(skin.weaponName))
                         gloveCount++;
                 }
 
-                normalRareSpecialCount = normalUnique.Count;
-                statTrakRareSpecialCount = statTrakUnique.Count;
+                totalRareSpecialCount = uniqueRareSpecials.Count;
             }
 
-            if (normalRareSpecialCount == 0)
+            if (totalRareSpecialCount == 0)
             {
                 Debug.LogError(
                     $"{label}: {rareSpecialCase.caseName} contains no " +
@@ -129,22 +133,12 @@ public class TradeupResolverEditor : Editor
                 continue;
             }
 
-            if (statTrakRareSpecialCount == 0)
-            {
-                Debug.LogWarning(
-                    $"{label}: {source.collectionName} supports normal Covert " +
-                    $"tradeups ({normalRareSpecialCount} outputs), but no " +
-                    "StatTrak Covert tradeup. This is expected for glove-only pools.");
-                warningCount++;
-            }
-            else
-            {
-                Debug.Log(
-                    $"{label}: {source.collectionName} -> " +
-                    $"{rareSpecialCase.caseName}. Normal outputs: " +
-                    $"{normalRareSpecialCount}; StatTrak outputs: " +
-                    $"{statTrakRareSpecialCount}; glove entries: {gloveCount}.");
-            }
+            Debug.Log(
+                $"{label}: {source.collectionName} -> " +
+                $"{rareSpecialCase.caseName}. Total outputs: " +
+                $"{totalRareSpecialCount}; StatTrak-capable: " +
+                $"{statTrakCapableCount}; normal-only: {normalOnlyCount}; " +
+                $"gloves: {gloveCount}.");
         }
 
         if (mappings.arraySize == 0)
