@@ -23,9 +23,10 @@ public class CaseInventoryUI : MonoBehaviour
     public Color selectedAmountColor = new Color(0.2f, 0.85f, 0.35f, 1f);
     public Color normalAmountColor = new Color(0.35f, 0.35f, 0.35f, 1f);
 
-    private readonly List<CaseInventoryCardUI> spawnedCards =
+    private readonly List<CaseInventoryCardUI> cardPool =
         new List<CaseInventoryCardUI>();
 
+    private int activeCardCount;
     private int selectedOpenAmount = 1;
     private bool maxAmountSelected;
 
@@ -40,12 +41,6 @@ public class CaseInventoryUI : MonoBehaviour
     {
         SubscribeToEvents();
         Refresh();
-    }
-
-    private void Start()
-    {
-        Refresh();
-        Invoke(nameof(Refresh), 0.1f);
     }
 
     private void OnDisable()
@@ -79,86 +74,89 @@ public class CaseInventoryUI : MonoBehaviour
 
     private void SetupAmountButtons()
     {
-        if (open1Button != null)
-        {
-            open1Button.onClick.RemoveAllListeners();
-            open1Button.onClick.AddListener(SetOpenAmount1);
-        }
+        SetupButton(open1Button, SetOpenAmount1);
+        SetupButton(open5Button, SetOpenAmount5);
+        SetupButton(open10Button, SetOpenAmount10);
+        SetupButton(open50Button, SetOpenAmount50);
+        SetupButton(openMaxButton, SetOpenAmountMax);
+    }
 
-        if (open5Button != null)
-        {
-            open5Button.onClick.RemoveAllListeners();
-            open5Button.onClick.AddListener(SetOpenAmount5);
-        }
+    private static void SetupButton(
+        Button button,
+        UnityEngine.Events.UnityAction action)
+    {
+        if (button == null)
+            return;
 
-        if (open10Button != null)
-        {
-            open10Button.onClick.RemoveAllListeners();
-            open10Button.onClick.AddListener(SetOpenAmount10);
-        }
-
-        if (open50Button != null)
-        {
-            open50Button.onClick.RemoveAllListeners();
-            open50Button.onClick.AddListener(SetOpenAmount50);
-        }
-
-        if (openMaxButton != null)
-        {
-            openMaxButton.onClick.RemoveAllListeners();
-            openMaxButton.onClick.AddListener(SetOpenAmountMax);
-        }
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(action);
     }
 
     public void Refresh()
     {
-        ClearCards();
-
         if (CaseInventoryManager.Instance == null)
         {
-            Debug.LogWarning("CaseInventoryUI: No CaseInventoryManager found.");
             UpdateCaseCountText();
             RefreshAmountButtons();
+            SetActiveCardCount(0);
             return;
         }
 
         IReadOnlyList<CaseInventoryEntry> entries =
             CaseInventoryManager.Instance.Cases;
 
-        foreach (CaseInventoryEntry entry in entries)
+        int validEntryCount = 0;
+
+        for (int i = 0; i < entries.Count; i++)
         {
+            CaseInventoryEntry entry = entries[i];
+
             if (entry == null || entry.caseData == null || entry.amount <= 0)
                 continue;
 
-            CaseInventoryCardUI card =
-                Instantiate(caseCardPrefab, caseGridContent);
+            EnsurePoolSize(validEntryCount + 1);
 
+            CaseInventoryCardUI card = cardPool[validEntryCount];
             card.gameObject.SetActive(true);
             card.Setup(entry, this);
-
-            spawnedCards.Add(card);
+            validEntryCount++;
         }
 
+        SetActiveCardCount(validEntryCount);
         UpdateCaseCountText();
         RefreshAmountButtons();
         RefreshCards();
     }
 
-    private void ClearCards()
+    private void EnsurePoolSize(int requiredCount)
     {
-        foreach (CaseInventoryCardUI card in spawnedCards)
+        while (cardPool.Count < requiredCount)
         {
-            if (card != null)
-                Destroy(card.gameObject);
-        }
+            CaseInventoryCardUI card =
+                Instantiate(caseCardPrefab, caseGridContent);
 
-        spawnedCards.Clear();
+            card.gameObject.SetActive(false);
+            cardPool.Add(card);
+        }
+    }
+
+    private void SetActiveCardCount(int count)
+    {
+        activeCardCount = Mathf.Clamp(count, 0, cardPool.Count);
+
+        for (int i = activeCardCount; i < cardPool.Count; i++)
+        {
+            if (cardPool[i] != null)
+                cardPool[i].gameObject.SetActive(false);
+        }
     }
 
     public void RefreshCards()
     {
-        foreach (CaseInventoryCardUI card in spawnedCards)
+        for (int i = 0; i < activeCardCount; i++)
         {
+            CaseInventoryCardUI card = cardPool[i];
+
             if (card != null)
                 card.RefreshState();
         }
@@ -172,10 +170,9 @@ public class CaseInventoryUI : MonoBehaviour
         if (caseCountText == null)
             return;
 
-        int totalCases = 0;
-
-        if (CaseInventoryManager.Instance != null)
-            totalCases = CaseInventoryManager.Instance.TotalCaseCount;
+        int totalCases = CaseInventoryManager.Instance != null
+            ? CaseInventoryManager.Instance.TotalCaseCount
+            : 0;
 
         caseCountText.text = $"Cases: {totalCases}";
     }
@@ -185,18 +182,14 @@ public class CaseInventoryUI : MonoBehaviour
         if (entry == null)
             return 0;
 
-        if (maxAmountSelected)
-            return GetMaxOpenAmount(entry);
-
-        return Mathf.Min(selectedOpenAmount, entry.amount);
+        return maxAmountSelected
+            ? GetMaxOpenAmount(entry)
+            : Mathf.Min(selectedOpenAmount, entry.amount);
     }
 
     public int GetMaxOpenAmount(CaseInventoryEntry entry)
     {
-        if (entry == null)
-            return 0;
-
-        if (InventoryManager.Instance == null)
+        if (entry == null || InventoryManager.Instance == null)
             return 0;
 
         int availableSkinSpace =
@@ -206,7 +199,9 @@ public class CaseInventoryUI : MonoBehaviour
         return Mathf.Clamp(entry.amount, 0, availableSkinSpace);
     }
 
-    public bool CanOpenCases(CaseInventoryEntry entry, out string failReason)
+    public bool CanOpenCases(
+        CaseInventoryEntry entry,
+        out string failReason)
     {
         failReason = "";
 
@@ -265,7 +260,8 @@ public class CaseInventoryUI : MonoBehaviour
     {
         if (!CanOpenCases(entry, out string failReason))
         {
-            Debug.LogWarning($"CaseInventoryUI: Cannot open case. Reason: {failReason}");
+            Debug.LogWarning(
+                $"CaseInventoryUI: Cannot open case. Reason: {failReason}");
             RefreshCards();
             return;
         }
@@ -277,29 +273,24 @@ public class CaseInventoryUI : MonoBehaviour
 
         CaseData caseData = entry.caseData;
 
-        bool removedCases = CaseInventoryManager.Instance.RemoveCases(caseData, amount);
-
-        if (!removedCases)
+        if (!CaseInventoryManager.Instance.RemoveCases(caseData, amount))
         {
-            Debug.LogWarning($"CaseInventoryUI: Failed to remove {amount}x {caseData.caseName} before opening.");
+            Debug.LogWarning(
+                $"CaseInventoryUI: Failed to remove {amount}x " +
+                $"{caseData.caseName} before opening.");
             RefreshCards();
             return;
         }
 
-        List<InventoryItem> openedItems = new List<InventoryItem>();
-        int totalXPGained = 0;
+        List<InventoryItem> openedItems =
+            new List<InventoryItem>(amount);
 
         for (int i = 0; i < amount; i++)
         {
             InventoryItem item = CaseOpener.OpenCase(caseData);
 
-            if (item == null)
-            {
-                Debug.LogWarning($"CaseInventoryUI: CaseOpener returned null for {caseData.caseName}.");
-                continue;
-            }
-
-            openedItems.Add(item);
+            if (item != null)
+                openedItems.Add(item);
         }
 
         int addedCount = InventoryManager.Instance.AddItems(openedItems);
@@ -307,28 +298,26 @@ public class CaseInventoryUI : MonoBehaviour
 
         for (int i = 0; i < addedCount; i++)
         {
-            InventoryItem item = openedItems[i];
+            if (ContainerProgressManager.Instance == null)
+                continue;
 
-            if (ContainerProgressManager.Instance != null)
-            {
-                ContainerProgressManager.Instance.RecordContainerOpened(
-                    caseData,
-                    item,
-                    caseData.priceInGold,
-                    false);
+            ContainerProgressManager.Instance.RecordContainerOpened(
+                caseData,
+                openedItems[i],
+                caseData.priceInGold,
+                false);
 
-                progressChanged = true;
-            }
-
-            if (caseData.xpRewardOnOpen > 0)
-            {
-                SaveManager.Instance.AddXP(caseData.xpRewardOnOpen);
-                totalXPGained += caseData.xpRewardOnOpen;
-            }
+            progressChanged = true;
         }
 
         if (progressChanged)
             ContainerProgressManager.Instance.SaveProgress();
+
+        int totalXPGained =
+            Mathf.Max(0, caseData.xpRewardOnOpen) * addedCount;
+
+        if (totalXPGained > 0)
+            SaveManager.Instance.AddXP(totalXPGained);
 
         SaveManager.Instance.SaveGame();
 
@@ -336,7 +325,9 @@ public class CaseInventoryUI : MonoBehaviour
             $"Opened {addedCount}x {caseData.caseName}. " +
             $"Gained {totalXPGained} XP.");
 
-        Refresh();
+        // Both inventory managers already raised their change events. Only the
+        // lightweight card state needs a final refresh here.
+        RefreshCards();
     }
 
     public void OpenCaseInspect(CaseData caseData)
@@ -346,7 +337,8 @@ public class CaseInventoryUI : MonoBehaviour
 
         if (CaseInspectUI.Instance == null)
         {
-            Debug.LogWarning("CaseInventoryUI: No CaseInspectUI found in scene.");
+            Debug.LogWarning(
+                "CaseInventoryUI: No CaseInspectUI found in scene.");
             return;
         }
 
@@ -355,20 +347,31 @@ public class CaseInventoryUI : MonoBehaviour
 
     private void RefreshAmountButtons()
     {
-        ApplyAmountButtonVisual(open1Button, !maxAmountSelected && selectedOpenAmount == 1);
-        ApplyAmountButtonVisual(open5Button, !maxAmountSelected && selectedOpenAmount == 5);
-        ApplyAmountButtonVisual(open10Button, !maxAmountSelected && selectedOpenAmount == 10);
-        ApplyAmountButtonVisual(open50Button, !maxAmountSelected && selectedOpenAmount == 50);
+        ApplyAmountButtonVisual(
+            open1Button,
+            !maxAmountSelected && selectedOpenAmount == 1);
+        ApplyAmountButtonVisual(
+            open5Button,
+            !maxAmountSelected && selectedOpenAmount == 5);
+        ApplyAmountButtonVisual(
+            open10Button,
+            !maxAmountSelected && selectedOpenAmount == 10);
+        ApplyAmountButtonVisual(
+            open50Button,
+            !maxAmountSelected && selectedOpenAmount == 50);
         ApplyAmountButtonVisual(openMaxButton, maxAmountSelected);
     }
 
-    private void ApplyAmountButtonVisual(Button button, bool selected)
+    private static void ApplyAmountButtonVisual(
+        Button button,
+        bool selected,
+        Color selectedColor,
+        Color normalColor)
     {
         if (button == null)
             return;
 
-        Color targetColor = selected ? selectedAmountColor : normalAmountColor;
-
+        Color targetColor = selected ? selectedColor : normalColor;
         ColorBlock colors = button.colors;
         colors.normalColor = targetColor;
         colors.highlightedColor = targetColor;
@@ -376,7 +379,6 @@ public class CaseInventoryUI : MonoBehaviour
         colors.selectedColor = targetColor;
         colors.disabledColor = targetColor;
         colors.colorMultiplier = 1f;
-
         button.colors = colors;
 
         TMP_Text text = button.GetComponentInChildren<TMP_Text>();
@@ -388,41 +390,44 @@ public class CaseInventoryUI : MonoBehaviour
         }
     }
 
+    private void ApplyAmountButtonVisual(Button button, bool selected)
+    {
+        ApplyAmountButtonVisual(
+            button,
+            selected,
+            selectedAmountColor,
+            normalAmountColor);
+    }
+
     public void SetOpenAmount1()
     {
-        selectedOpenAmount = 1;
-        maxAmountSelected = false;
-        RefreshAmountButtons();
-        RefreshCards();
+        SetOpenAmount(1, false);
     }
 
     public void SetOpenAmount5()
     {
-        selectedOpenAmount = 5;
-        maxAmountSelected = false;
-        RefreshAmountButtons();
-        RefreshCards();
+        SetOpenAmount(5, false);
     }
 
     public void SetOpenAmount10()
     {
-        selectedOpenAmount = 10;
-        maxAmountSelected = false;
-        RefreshAmountButtons();
-        RefreshCards();
+        SetOpenAmount(10, false);
     }
 
     public void SetOpenAmount50()
     {
-        selectedOpenAmount = 50;
-        maxAmountSelected = false;
-        RefreshAmountButtons();
-        RefreshCards();
+        SetOpenAmount(50, false);
     }
 
     public void SetOpenAmountMax()
     {
-        maxAmountSelected = true;
+        SetOpenAmount(selectedOpenAmount, true);
+    }
+
+    private void SetOpenAmount(int amount, bool useMax)
+    {
+        selectedOpenAmount = Mathf.Max(1, amount);
+        maxAmountSelected = useMax;
         RefreshAmountButtons();
         RefreshCards();
     }
