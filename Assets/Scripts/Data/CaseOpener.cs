@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public static class CaseOpener
@@ -11,16 +10,13 @@ public static class CaseOpener
         {
             Debug.LogWarning(
                 "CaseOpener: Tried to open a null case.");
-
             return null;
         }
 
-        if (caseData.dropPool == null ||
-            caseData.dropPool.Count == 0)
+        if (caseData.dropPool == null || caseData.dropPool.Count == 0)
         {
             Debug.LogWarning(
                 $"CaseOpener: {caseData.caseName} has no drops.");
-
             return null;
         }
 
@@ -31,7 +27,6 @@ public static class CaseOpener
             Debug.LogWarning(
                 $"CaseOpener: Could not select a valid skin " +
                 $"from {caseData.caseName}.");
-
             return null;
         }
 
@@ -44,18 +39,13 @@ public static class CaseOpener
 
         bool forceSouvenir =
             caseData.forceSouvenirDrops ||
-            caseData.containerType ==
-                CaseContainerType.SouvenirPackage;
+            caseData.containerType == CaseContainerType.SouvenirPackage;
 
-        item.souvenir =
-            forceSouvenir &&
-            selectedSkin.canBeSouvenir;
+        item.souvenir = forceSouvenir && selectedSkin.canBeSouvenir;
 
         bool containerAllowsStatTrak =
-            caseData.containerType ==
-                CaseContainerType.WeaponCase ||
-            caseData.containerType ==
-                CaseContainerType.CustomCase;
+            caseData.containerType == CaseContainerType.WeaponCase ||
+            caseData.containerType == CaseContainerType.CustomCase;
 
         item.statTrak =
             !item.souvenir &&
@@ -78,11 +68,9 @@ public static class CaseOpener
                 selectedSkin.maxFloat);
 
             item.patternId = Random.Range(0, 1001);
-
             item.patternTier = PatternResolver.ResolveTier(
                 selectedSkin,
                 item.patternId);
-
             item.isVanilla = false;
         }
 
@@ -91,36 +79,27 @@ public static class CaseOpener
 
     private static SkinData GetRandomSkin(CaseData caseData)
     {
-        bool rarityRolled =
-            TryRollRarity(
-                caseData,
-                out Rarity rolledRarity);
-
-        if (!rarityRolled)
+        if (!TryRollRarity(caseData, out Rarity rolledRarity))
         {
             Debug.LogWarning(
                 $"CaseOpener: Could not roll rarity for " +
                 $"{caseData.caseName}. Using weighted fallback " +
                 "from all valid drops.");
 
-            return GetWeightedRandomSkinFromAllValidDrops(
-                caseData);
+            return RollWeightedDrop(caseData, false, Rarity.MilSpec);
         }
 
         SkinData selectedSkin =
-            GetWeightedRandomSkinFromRarity(
-                caseData,
-                rolledRarity);
+            RollWeightedDrop(caseData, true, rolledRarity);
 
         if (selectedSkin != null)
             return selectedSkin;
 
         Debug.LogWarning(
-            $"CaseOpener: No valid skins of rarity " +
-            $"{rolledRarity} in {caseData.caseName}. " +
-            "Using weighted fallback from all valid drops.");
+            $"CaseOpener: No valid skins of rarity {rolledRarity} in " +
+            $"{caseData.caseName}. Using weighted fallback from all valid drops.");
 
-        return GetWeightedRandomSkinFromAllValidDrops(caseData);
+        return RollWeightedDrop(caseData, false, rolledRarity);
     }
 
     private static bool TryRollRarity(
@@ -136,55 +115,35 @@ public static class CaseOpener
             return false;
         }
 
-        List<RarityChance> validRarityChances =
-            new List<RarityChance>();
-
-        foreach (RarityChance rarityChance
-                 in caseData.rarityChances)
-        {
-            if (rarityChance == null)
-                continue;
-
-            if (rarityChance.chance <= 0f)
-                continue;
-
-            if (!IsRarityAllowedForCase(
-                    caseData,
-                    rarityChance.rarity))
-            {
-                continue;
-            }
-
-            if (!HasValidSkinOfRarity(
-                    caseData,
-                    rarityChance.rarity))
-            {
-                continue;
-            }
-
-            validRarityChances.Add(rarityChance);
-        }
-
-        if (validRarityChances.Count == 0)
-            return false;
-
         float totalChance = 0f;
+        Rarity lastValidRarity = rolledRarity;
+        bool foundValid = false;
 
-        foreach (RarityChance rarityChance
-                 in validRarityChances)
+        for (int i = 0; i < caseData.rarityChances.Count; i++)
         {
+            RarityChance rarityChance = caseData.rarityChances[i];
+
+            if (!IsValidRarityChance(caseData, rarityChance))
+                continue;
+
             totalChance += rarityChance.chance;
+            lastValidRarity = rarityChance.rarity;
+            foundValid = true;
         }
 
-        if (totalChance <= 0f)
+        if (!foundValid || totalChance <= 0f)
             return false;
 
         float roll = Random.Range(0f, totalChance);
         float current = 0f;
 
-        foreach (RarityChance rarityChance
-                 in validRarityChances)
+        for (int i = 0; i < caseData.rarityChances.Count; i++)
         {
+            RarityChance rarityChance = caseData.rarityChances[i];
+
+            if (!IsValidRarityChance(caseData, rarityChance))
+                continue;
+
             current += rarityChance.chance;
 
             if (roll <= current)
@@ -194,98 +153,113 @@ public static class CaseOpener
             }
         }
 
-        rolledRarity =
-            validRarityChances[
-                validRarityChances.Count - 1].rarity;
-
+        rolledRarity = lastValidRarity;
         return true;
     }
 
-    private static SkinData GetWeightedRandomSkinFromRarity(
+    private static bool IsValidRarityChance(
         CaseData caseData,
+        RarityChance rarityChance)
+    {
+        return rarityChance != null &&
+               rarityChance.chance > 0f &&
+               IsRarityAllowedForCase(caseData, rarityChance.rarity) &&
+               HasValidSkinOfRarity(caseData, rarityChance.rarity);
+    }
+
+    /// <summary>
+    /// Performs a two-pass weighted roll directly against CaseData. This avoids
+    /// allocating temporary drop lists for every opened container.
+    /// </summary>
+    private static SkinData RollWeightedDrop(
+        CaseData caseData,
+        bool filterByRarity,
         Rarity rarity)
     {
-        List<WeightedDrop> validDrops =
-            new List<WeightedDrop>();
-
-        foreach (WeightedDrop drop in caseData.dropPool)
-        {
-            if (!IsDropValidForCase(caseData, drop))
-                continue;
-
-            if (drop.skin.rarity != rarity)
-                continue;
-
-            validDrops.Add(drop);
-        }
-
-        return RollWeightedDrop(validDrops);
-    }
-
-    private static SkinData
-        GetWeightedRandomSkinFromAllValidDrops(
-            CaseData caseData)
-    {
-        List<WeightedDrop> validDrops =
-            new List<WeightedDrop>();
-
-        foreach (WeightedDrop drop in caseData.dropPool)
-        {
-            if (!IsDropValidForCase(caseData, drop))
-                continue;
-
-            validDrops.Add(drop);
-        }
-
-        return RollWeightedDrop(validDrops);
-    }
-
-    private static SkinData RollWeightedDrop(
-        List<WeightedDrop> validDrops)
-    {
-        if (validDrops == null || validDrops.Count == 0)
+        if (caseData == null || caseData.dropPool == null)
             return null;
 
         float totalWeight = 0f;
+        int validCount = 0;
 
-        foreach (WeightedDrop drop in validDrops)
+        for (int i = 0; i < caseData.dropPool.Count; i++)
         {
-            if (drop == null || drop.skin == null)
+            WeightedDrop drop = caseData.dropPool[i];
+
+            if (!IsValidCandidate(caseData, drop, filterByRarity, rarity))
                 continue;
+
+            validCount++;
 
             if (drop.weight > 0f)
                 totalWeight += drop.weight;
         }
 
+        if (validCount == 0)
+            return null;
+
         if (totalWeight <= 0f)
         {
-            WeightedDrop randomDrop =
-                validDrops[
-                    Random.Range(0, validDrops.Count)];
+            int targetIndex = Random.Range(0, validCount);
+            int currentIndex = 0;
 
-            return randomDrop != null
-                ? randomDrop.skin
-                : null;
+            for (int i = 0; i < caseData.dropPool.Count; i++)
+            {
+                WeightedDrop drop = caseData.dropPool[i];
+
+                if (!IsValidCandidate(
+                        caseData,
+                        drop,
+                        filterByRarity,
+                        rarity))
+                {
+                    continue;
+                }
+
+                if (currentIndex == targetIndex)
+                    return drop.skin;
+
+                currentIndex++;
+            }
+
+            return null;
         }
 
         float roll = Random.Range(0f, totalWeight);
-        float current = 0f;
+        float currentWeight = 0f;
+        SkinData lastValidSkin = null;
 
-        foreach (WeightedDrop drop in validDrops)
+        for (int i = 0; i < caseData.dropPool.Count; i++)
         {
-            if (drop == null || drop.skin == null)
+            WeightedDrop drop = caseData.dropPool[i];
+
+            if (!IsValidCandidate(caseData, drop, filterByRarity, rarity))
                 continue;
+
+            lastValidSkin = drop.skin;
 
             if (drop.weight <= 0f)
                 continue;
 
-            current += drop.weight;
+            currentWeight += drop.weight;
 
-            if (roll <= current)
+            if (roll <= currentWeight)
                 return drop.skin;
         }
 
-        return validDrops[validDrops.Count - 1].skin;
+        return lastValidSkin;
+    }
+
+    private static bool IsValidCandidate(
+        CaseData caseData,
+        WeightedDrop drop,
+        bool filterByRarity,
+        Rarity rarity)
+    {
+        if (!IsDropValidForCase(caseData, drop))
+            return false;
+
+        return !filterByRarity || drop.skin.rarity == rarity;
     }
 
     private static bool HasValidSkinOfRarity(
@@ -295,13 +269,15 @@ public static class CaseOpener
         if (caseData == null || caseData.dropPool == null)
             return false;
 
-        foreach (WeightedDrop drop in caseData.dropPool)
+        for (int i = 0; i < caseData.dropPool.Count; i++)
         {
-            if (!IsDropValidForCase(caseData, drop))
-                continue;
+            WeightedDrop drop = caseData.dropPool[i];
 
-            if (drop.skin.rarity == rarity)
+            if (IsDropValidForCase(caseData, drop) &&
+                drop.skin.rarity == rarity)
+            {
                 return true;
+            }
         }
 
         return false;
@@ -311,12 +287,8 @@ public static class CaseOpener
         CaseData caseData,
         WeightedDrop drop)
     {
-        if (caseData == null ||
-            drop == null ||
-            drop.skin == null)
-        {
+        if (caseData == null || drop == null || drop.skin == null)
             return false;
-        }
 
         SkinData skin = drop.skin;
 
@@ -325,13 +297,9 @@ public static class CaseOpener
 
         bool forceSouvenir =
             caseData.forceSouvenirDrops ||
-            caseData.containerType ==
-                CaseContainerType.SouvenirPackage;
+            caseData.containerType == CaseContainerType.SouvenirPackage;
 
-        if (forceSouvenir && !skin.canBeSouvenir)
-            return false;
-
-        return true;
+        return !forceSouvenir || skin.canBeSouvenir;
     }
 
     private static bool IsRarityAllowedForCase(
@@ -345,16 +313,13 @@ public static class CaseOpener
             return true;
 
         bool containerCanHaveRareSpecial =
-            caseData.containerType ==
-                CaseContainerType.WeaponCase ||
-            caseData.containerType ==
-                CaseContainerType.CustomCase;
+            caseData.containerType == CaseContainerType.WeaponCase ||
+            caseData.containerType == CaseContainerType.CustomCase;
 
         bool rulesAllowRareSpecial =
             caseData.allowRareSpecialItem &&
             caseData.shouldHaveRareSpecial;
 
-        return containerCanHaveRareSpecial &&
-               rulesAllowRareSpecial;
+        return containerCanHaveRareSpecial && rulesAllowRareSpecial;
     }
 }
