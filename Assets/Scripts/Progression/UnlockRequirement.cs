@@ -24,7 +24,7 @@ public class UnlockRequirement
     [Min(0)] public int minimumDiamonds;
 
     [Header("Museum")]
-    [Min(0d)] public double minimumMuseumPoints;
+    [Min(0f)] public double minimumMuseumPoints;
 
     [Tooltip("Stable ID from the Museum milestone definition.")]
     public string requiredMilestoneId;
