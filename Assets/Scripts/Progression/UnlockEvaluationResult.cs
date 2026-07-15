@@ -28,6 +28,11 @@ public class UnlockEvaluationResult
     {
         get
         {
+            // An ANY-group can contain failed alternatives while still being
+            // unlocked, so overall state must take priority over child results.
+            if (isUnlocked)
+                return "Unlocked.";
+
             if (requirementResults == null)
                 return "Unlock requirements were not evaluated.";
 
@@ -43,9 +48,7 @@ public class UnlockEvaluationResult
                 }
             }
 
-            return isUnlocked
-                ? "Unlocked."
-                : "Unlock requirements have not been met.";
+            return "Unlock requirements have not been met.";
         }
     }
 
