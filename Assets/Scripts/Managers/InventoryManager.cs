@@ -103,20 +103,9 @@ public class InventoryManager : MonoBehaviour
     public int GetFirstStorageWithSpace(int preferredStorageIndex = -1)
     {
         EnsureStorageCountCache();
-
-        if (IsStorageUnlocked(preferredStorageIndex) &&
-            storageItemCounts[preferredStorageIndex] < itemsPerStoragePage)
-        {
-            return preferredStorageIndex;
-        }
-
-        for (int i = 0; i < unlockedStoragePages; i++)
-        {
-            if (storageItemCounts[i] < itemsPerStoragePage)
-                return i;
-        }
-
-        return -1;
+        return FindStorageWithSpaceInCounts(
+            storageItemCounts,
+            preferredStorageIndex);
     }
 
     public int FindNextStorageWithSpace(int fromStorageIndex)
@@ -213,6 +202,219 @@ public class InventoryManager : MonoBehaviour
         }
 
         return addedCount;
+    }
+
+    /// <summary>
+    /// Validates and applies inventory removals and additions as one mutation.
+    /// No inventory state changes when validation fails. A successful transaction
+    /// updates all caches, marks SaveData dirty once, and raises one inventory event.
+    /// </summary>
+    public bool TryExecuteTransaction(
+        IReadOnlyCollection<string> removalInstanceIds,
+        IReadOnlyList<InventoryItem> additions,
+        out InventoryTransactionResult result)
+    {
+        EnsureStorageCountCache();
+
+        List<InventoryItem> removals = new List<InventoryItem>();
+        List<InventoryItem> validAdditions = new List<InventoryItem>();
+        List<int> plannedStorageIndices = new List<int>();
+        HashSet<string> uniqueRemovalIds =
+            new HashSet<string>(StringComparer.Ordinal);
+
+        if (removalInstanceIds != null)
+        {
+            foreach (string instanceId in removalInstanceIds)
+            {
+                if (string.IsNullOrWhiteSpace(instanceId))
+                {
+                    result = InventoryTransactionResult.Failed(
+                        "A removal item has no instance ID.");
+                    return false;
+                }
+
+                if (!uniqueRemovalIds.Add(instanceId))
+                {
+                    result = InventoryTransactionResult.Failed(
+                        "The same inventory item was requested for removal more than once.");
+                    return false;
+                }
+
+                if (!itemByInstanceId.TryGetValue(
+                        instanceId,
+                        out InventoryItem ownedItem) ||
+                    ownedItem == null)
+                {
+                    result = InventoryTransactionResult.Failed(
+                        "One or more requested removal items are no longer owned.");
+                    return false;
+                }
+
+                removals.Add(ownedItem);
+            }
+        }
+
+        HashSet<InventoryItem> uniqueAdditionReferences =
+            new HashSet<InventoryItem>();
+
+        if (additions != null)
+        {
+            for (int i = 0; i < additions.Count; i++)
+            {
+                InventoryItem addition = additions[i];
+
+                if (addition == null || addition.skin == null)
+                {
+                    result = InventoryTransactionResult.Failed(
+                        $"Addition {i + 1} is missing item or skin data.");
+                    return false;
+                }
+
+                if (!uniqueAdditionReferences.Add(addition))
+                {
+                    result = InventoryTransactionResult.Failed(
+                        "The same output item object was added more than once.");
+                    return false;
+                }
+
+                if (IsOwnedItem(addition))
+                {
+                    result = InventoryTransactionResult.Failed(
+                        "An output item is already present in the inventory.");
+                    return false;
+                }
+
+                validAdditions.Add(addition);
+            }
+        }
+
+        if (removals.Count == 0 && validAdditions.Count == 0)
+        {
+            result = InventoryTransactionResult.Failed(
+                "The inventory transaction contains no changes.");
+            return false;
+        }
+
+        int[] simulatedCounts =
+            new int[Mathf.Max(1, unlockedStoragePages)];
+
+        Array.Copy(
+            storageItemCounts,
+            simulatedCounts,
+            Mathf.Min(storageItemCounts.Length, simulatedCounts.Length));
+
+        for (int i = 0; i < removals.Count; i++)
+        {
+            InventoryItem removal = removals[i];
+
+            if (removal != null && IsStorageUnlocked(removal.storageIndex))
+            {
+                simulatedCounts[removal.storageIndex] = Mathf.Max(
+                    0,
+                    simulatedCounts[removal.storageIndex] - 1);
+            }
+        }
+
+        for (int i = 0; i < validAdditions.Count; i++)
+        {
+            InventoryItem addition = validAdditions[i];
+            int destination = FindStorageWithSpaceInCounts(
+                simulatedCounts,
+                addition.storageIndex);
+
+            if (destination < 0)
+            {
+                result = InventoryTransactionResult.Failed(
+                    "There is not enough storage space for every transaction output.");
+                return false;
+            }
+
+            plannedStorageIndices.Add(destination);
+            simulatedCounts[destination]++;
+        }
+
+        float removedValue = 0f;
+        float addedValue = 0f;
+
+        for (int i = 0; i < removals.Count; i++)
+            removedValue += Mathf.Max(0f, removals[i].marketValue);
+
+        // Every removal was validated above. Mutating in one uninterrupted block
+        // prevents UI or save observers from seeing an intermediate state.
+        for (int i = items.Count - 1; i >= 0; i--)
+        {
+            InventoryItem item = items[i];
+
+            if (item == null ||
+                string.IsNullOrWhiteSpace(item.instanceId) ||
+                !uniqueRemovalIds.Contains(item.instanceId))
+            {
+                continue;
+            }
+
+            UnregisterItem(item);
+            items.RemoveAt(i);
+        }
+
+        for (int i = 0; i < validAdditions.Count; i++)
+        {
+            InventoryItem addition = validAdditions[i];
+
+            PrepareItemForInventory(addition);
+            addition.storageIndex = plannedStorageIndices[i];
+            items.Add(addition);
+            RegisterItem(addition);
+            addedValue += Mathf.Max(0f, addition.marketValue);
+        }
+
+        cachedTotalMarketValue = Mathf.Max(
+            0f,
+            cachedTotalMarketValue - removedValue + addedValue);
+
+        result = InventoryTransactionResult.Completed(
+            new List<InventoryItem>(removals),
+            new List<InventoryItem>(validAdditions),
+            removedValue,
+            addedValue);
+
+        NotifyInventoryChanged(true);
+
+        if (verboseItemLogging)
+        {
+            Debug.Log(
+                $"Inventory transaction completed. " +
+                $"Removed: {result.RemovedCount}, Added: {result.AddedCount}, " +
+                $"Count: {items.Count}/{TotalCapacity}");
+        }
+
+        return true;
+    }
+
+    private int FindStorageWithSpaceInCounts(
+        int[] counts,
+        int preferredStorageIndex)
+    {
+        if (counts == null || counts.Length == 0)
+            return -1;
+
+        if (IsStorageUnlocked(preferredStorageIndex) &&
+            preferredStorageIndex < counts.Length &&
+            counts[preferredStorageIndex] < itemsPerStoragePage)
+        {
+            return preferredStorageIndex;
+        }
+
+        int availableCount = Mathf.Min(
+            unlockedStoragePages,
+            counts.Length);
+
+        for (int i = 0; i < availableCount; i++)
+        {
+            if (counts[i] < itemsPerStoragePage)
+                return i;
+        }
+
+        return -1;
     }
 
     private void PrepareItemForInventory(InventoryItem item)
