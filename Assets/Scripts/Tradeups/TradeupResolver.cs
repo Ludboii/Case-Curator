@@ -45,7 +45,6 @@ public class TradeupSourceChance
     public CollectionData source;
     public string sourceApiId;
     public string sourceName;
-
     public int inputCount;
 
     [Range(0f, 1f)]
@@ -58,7 +57,6 @@ public class TradeupOutcomeChance
     public CollectionData source;
     public string sourceApiId;
     public string sourceName;
-
     public SkinData skin;
 
     [Range(0f, 1f)]
@@ -190,29 +188,36 @@ public class TradeupResolver : MonoBehaviour
         IReadOnlyList<InventoryItem> inputs)
     {
         if (inputs == null || inputs.Count == 0)
+        {
             return TradeupValidationResult.Invalid(
                 "No tradeup inputs selected.");
+        }
 
         GameDatabase activeDatabase = ActiveDatabase;
 
         if (activeDatabase == null)
+        {
             return TradeupValidationResult.Invalid(
                 "TradeupResolver has no GameDatabase.");
+        }
 
         InventoryItem firstItem = inputs[0];
 
         if (firstItem == null || firstItem.skin == null)
+        {
             return TradeupValidationResult.Invalid(
                 "The first selected item is invalid.");
+        }
 
         Rarity inputRarity = firstItem.skin.rarity;
 
         if (inputRarity == Rarity.RareSpecial)
+        {
             return TradeupValidationResult.Invalid(
                 "Rare Special items cannot be used in tradeups.");
+        }
 
         bool covertTradeup = inputRarity == Rarity.Covert;
-
         int requiredCount = covertTradeup
             ? covertInputCount
             : standardInputCount;
@@ -223,9 +228,7 @@ public class TradeupResolver : MonoBehaviour
                 $"This tradeup requires exactly {requiredCount} inputs.");
         }
 
-        if (!TryGetOutputRarity(
-                inputRarity,
-                out Rarity outputRarity))
+        if (!TryGetOutputRarity(inputRarity, out Rarity outputRarity))
         {
             return TradeupValidationResult.Invalid(
                 $"There is no tradeup rarity above {inputRarity}.");
@@ -234,7 +237,7 @@ public class TradeupResolver : MonoBehaviour
         bool statTrakTradeup = firstItem.statTrak;
 
         HashSet<string> usedInstanceIds =
-            new HashSet<string>();
+            new HashSet<string>(StringComparer.Ordinal);
 
         HashSet<CollectionData> usedSources =
             new HashSet<CollectionData>();
@@ -324,21 +327,20 @@ public class TradeupResolver : MonoBehaviour
                     statTrakTradeup,
                     covertTradeup);
 
-            if (candidates.Count == 0)
+            if (candidates.Count > 0)
+                continue;
+
+            string sourceName = GetSourceName(source);
+
+            if (covertTradeup)
             {
-                string sourceName = GetSourceName(source);
-
-                if (covertTradeup)
-                {
-                    return TradeupValidationResult.Invalid(
-                        $"{sourceName} has no configured Rare Special " +
-                        "tradeup pool.");
-                }
-
                 return TradeupValidationResult.Invalid(
-                    $"{sourceName} has no valid " +
-                    $"{outputRarity} tradeup outputs.");
+                    $"{sourceName} has no configured Rare Special " +
+                    "tradeup pool.");
             }
+
+            return TradeupValidationResult.Invalid(
+                $"{sourceName} has no valid {outputRarity} tradeup outputs.");
         }
 
         return new TradeupValidationResult
@@ -411,8 +413,7 @@ public class TradeupResolver : MonoBehaviour
         preview.inputRarity = validation.inputRarity;
         preview.outputRarity = validation.outputRarity;
         preview.isStatTrak = validation.isStatTrak;
-        preview.isCovertTradeup =
-            validation.isCovertTradeup;
+        preview.isCovertTradeup = validation.isCovertTradeup;
 
         Dictionary<CollectionData, int> sourceInputCounts =
             new Dictionary<CollectionData, int>();
@@ -427,8 +428,7 @@ public class TradeupResolver : MonoBehaviour
             totalFloat += item.floatValue;
             totalInputValue += GetItemValue(item);
 
-            CollectionData source =
-                item.skin.collectionData;
+            CollectionData source = item.skin.collectionData;
 
             if (!sourceInputCounts.ContainsKey(source))
                 sourceInputCounts[source] = 0;
@@ -436,18 +436,14 @@ public class TradeupResolver : MonoBehaviour
             sourceInputCounts[source]++;
         }
 
-        preview.averageInputFloat =
-            totalFloat / inputs.Count;
-
-        preview.totalInputMarketValue =
-            totalInputValue;
+        preview.averageInputFloat = totalFloat / inputs.Count;
+        preview.totalInputMarketValue = totalInputValue;
 
         foreach (KeyValuePair<CollectionData, int> pair
                  in sourceInputCounts)
         {
             CollectionData source = pair.Key;
             int sourceInputCount = pair.Value;
-
             float sourceProbability =
                 sourceInputCount / (float)inputs.Count;
 
@@ -468,12 +464,10 @@ public class TradeupResolver : MonoBehaviour
         }
 
         preview.sourceChances.Sort(
-            (a, b) =>
-                b.probability.CompareTo(a.probability));
+            (a, b) => b.probability.CompareTo(a.probability));
 
         preview.possibleOutcomes.Sort(
-            (a, b) =>
-                b.probability.CompareTo(a.probability));
+            (a, b) => b.probability.CompareTo(a.probability));
 
         return preview;
     }
@@ -496,11 +490,7 @@ public class TradeupResolver : MonoBehaviour
         float totalWeight = 0f;
 
         for (int i = 0; i < candidates.Count; i++)
-        {
-            totalWeight += Mathf.Max(
-                0f,
-                candidates[i].weight);
-        }
+            totalWeight += Mathf.Max(0f, candidates[i].weight);
 
         bool useEqualWeights = totalWeight <= 0f;
 
@@ -509,14 +499,10 @@ public class TradeupResolver : MonoBehaviour
 
         for (int i = 0; i < candidates.Count; i++)
         {
-            WeightedSkinCandidate candidate =
-                candidates[i];
+            WeightedSkinCandidate candidate = candidates[i];
 
-            if (candidate == null ||
-                candidate.skin == null)
-            {
+            if (candidate == null || candidate.skin == null)
                 continue;
-            }
 
             float candidateWeight = useEqualWeights
                 ? 1f
@@ -533,8 +519,7 @@ public class TradeupResolver : MonoBehaviour
                     sourceName = GetSourceName(source),
                     skin = candidate.skin,
                     probability =
-                        sourceProbability *
-                        withinSourceProbability
+                        sourceProbability * withinSourceProbability
                 });
         }
     }
@@ -546,8 +531,7 @@ public class TradeupResolver : MonoBehaviour
     public TradeupExecutionResult ExecuteTradeup(
         List<InventoryItem> inputs)
     {
-        TradeupPreview preview =
-            BuildPreview(inputs);
+        TradeupPreview preview = BuildPreview(inputs);
 
         if (!preview.validation.isValid)
         {
@@ -556,7 +540,9 @@ public class TradeupResolver : MonoBehaviour
                 preview);
         }
 
-        if (InventoryManager.Instance == null)
+        InventoryManager inventory = InventoryManager.Instance;
+
+        if (inventory == null)
         {
             return TradeupExecutionResult.Failed(
                 "InventoryManager is missing.",
@@ -570,23 +556,21 @@ public class TradeupResolver : MonoBehaviour
                 preview);
         }
 
-        TradeupOutcomeChance rolledOutcome =
-            RollOutcome(preview);
+        TradeupOutcomeChance rolledOutcome = RollOutcome(preview);
 
-        if (rolledOutcome == null ||
-            rolledOutcome.skin == null)
+        if (rolledOutcome == null || rolledOutcome.skin == null)
         {
             return TradeupExecutionResult.Failed(
                 "The tradeup output roll failed.",
                 preview);
         }
 
-        // Confirm all inputs still exist immediately before mutation.
+        // Revalidate protection immediately before the transaction. Ownership is
+        // validated again inside InventoryManager.TryExecuteTransaction().
         for (int i = 0; i < inputs.Count; i++)
         {
             InventoryItem ownedItem =
-                InventoryManager.Instance.GetItemByInstanceId(
-                    inputs[i].instanceId);
+                inventory.GetItemByInstanceId(inputs[i].instanceId);
 
             if (ownedItem == null)
             {
@@ -595,8 +579,7 @@ public class TradeupResolver : MonoBehaviour
                     preview);
             }
 
-            if (ownedItem.favorite &&
-                rejectFavoritedItems)
+            if (ownedItem.favorite && rejectFavoritedItems)
             {
                 return TradeupExecutionResult.Failed(
                     "One or more inputs became favorited.",
@@ -604,14 +587,12 @@ public class TradeupResolver : MonoBehaviour
             }
         }
 
-        int destinationStorage =
-            DetermineOutputStorage(inputs);
+        int destinationStorage = DetermineOutputStorage(inputs);
 
-        InventoryItem outputItem =
-            CreateOutputItem(
-                rolledOutcome.skin,
-                preview,
-                destinationStorage);
+        InventoryItem outputItem = CreateOutputItem(
+            rolledOutcome.skin,
+            preview,
+            destinationStorage);
 
         if (outputItem == null)
         {
@@ -621,49 +602,53 @@ public class TradeupResolver : MonoBehaviour
         }
 
         HashSet<string> consumedIds =
-            new HashSet<string>();
+            new HashSet<string>(StringComparer.Ordinal);
 
         for (int i = 0; i < inputs.Count; i++)
             consumedIds.Add(inputs[i].instanceId);
 
-        int removedCount =
-            InventoryManager.Instance.RemoveItemsByInstanceIds(
-                consumedIds);
+        List<InventoryItem> additions =
+            new List<InventoryItem>(1)
+            {
+                outputItem
+            };
 
-        if (removedCount != consumedIds.Count)
+        if (!inventory.TryExecuteTransaction(
+                consumedIds,
+                additions,
+                out InventoryTransactionResult transaction))
         {
-            RestoreMissingInputs(inputs);
+            string reason = transaction != null &&
+                            !string.IsNullOrWhiteSpace(
+                                transaction.errorMessage)
+                ? transaction.errorMessage
+                : "Unknown inventory transaction failure.";
 
             return TradeupExecutionResult.Failed(
-                "The tradeup transaction could not remove every input. " +
-                "Removed items were restored.",
+                "The tradeup transaction failed: " + reason,
                 preview);
         }
 
-        InventoryManager.Instance.AddItem(outputItem);
-
         InventoryItem addedOutput =
-            InventoryManager.Instance.GetItemByInstanceId(
-                outputItem.instanceId);
+            transaction.addedItems != null &&
+            transaction.addedItems.Count > 0
+                ? transaction.addedItems[0]
+                : null;
 
         if (addedOutput == null)
         {
-            RestoreMissingInputs(inputs);
-
             return TradeupExecutionResult.Failed(
-                "The output could not be added. Inputs were restored.",
+                "The tradeup completed without returning an output item.",
                 preview);
         }
 
-        TradeupHistorySaveData history =
-            BuildHistoryRecord(
-                inputs,
-                preview,
-                rolledOutcome,
-                addedOutput);
+        TradeupHistorySaveData history = BuildHistoryRecord(
+            inputs,
+            preview,
+            rolledOutcome,
+            addedOutput);
 
-        SaveManager.Instance.RecordCompletedTradeup(
-            history);
+        SaveManager.Instance.RecordCompletedTradeup(history);
 
         if (logCompletedTradeups)
         {
@@ -672,7 +657,7 @@ public class TradeupResolver : MonoBehaviour
                 : "";
 
             Debug.Log(
-                $"Tradeup completed: {inputs.Count}x " +
+                $"Tradeup completed atomically: {inputs.Count}x " +
                 $"{preview.inputRarity} → {variant}" +
                 $"{SkinDisplayUtility.GetDisplayName(addedOutput.skin)}. " +
                 $"Float: {addedOutput.floatValue:0.0000000000}. " +
@@ -690,8 +675,7 @@ public class TradeupResolver : MonoBehaviour
         };
     }
 
-    private TradeupOutcomeChance RollOutcome(
-        TradeupPreview preview)
+    private TradeupOutcomeChance RollOutcome(TradeupPreview preview)
     {
         if (preview == null ||
             preview.possibleOutcomes == null ||
@@ -702,9 +686,7 @@ public class TradeupResolver : MonoBehaviour
 
         float totalProbability = 0f;
 
-        for (int i = 0;
-             i < preview.possibleOutcomes.Count;
-             i++)
+        for (int i = 0; i < preview.possibleOutcomes.Count; i++)
         {
             totalProbability += Mathf.Max(
                 0f,
@@ -714,23 +696,15 @@ public class TradeupResolver : MonoBehaviour
         if (totalProbability <= 0f)
             return null;
 
-        float roll =
-            UnityEngine.Random.Range(
-                0f,
-                totalProbability);
-
+        float roll = UnityEngine.Random.Range(0f, totalProbability);
         float current = 0f;
 
-        for (int i = 0;
-             i < preview.possibleOutcomes.Count;
-             i++)
+        for (int i = 0; i < preview.possibleOutcomes.Count; i++)
         {
             TradeupOutcomeChance outcome =
                 preview.possibleOutcomes[i];
 
-            current += Mathf.Max(
-                0f,
-                outcome.probability);
+            current += Mathf.Max(0f, outcome.probability);
 
             if (roll <= current)
                 return outcome;
@@ -745,11 +719,8 @@ public class TradeupResolver : MonoBehaviour
         TradeupPreview preview,
         int storageIndex)
     {
-        if (outputSkin == null ||
-            preview == null)
-        {
+        if (outputSkin == null || preview == null)
             return null;
-        }
 
         InventoryItem output = new InventoryItem
         {
@@ -780,11 +751,8 @@ public class TradeupResolver : MonoBehaviour
             double normalizedAverage =
                 Clamp01(preview.averageInputFloat);
 
-            double minimumFloat =
-                outputSkin.minFloat;
-
-            double maximumFloat =
-                outputSkin.maxFloat;
+            double minimumFloat = outputSkin.minFloat;
+            double maximumFloat = outputSkin.maxFloat;
 
             if (maximumFloat < minimumFloat)
             {
@@ -803,18 +771,13 @@ public class TradeupResolver : MonoBehaviour
                 minimumFloat,
                 maximumFloat);
 
-            output.patternId =
-                UnityEngine.Random.Range(0, 1001);
-
-            output.patternTier =
-                PatternResolver.ResolveTier(
-                    outputSkin,
-                    output.patternId);
+            output.patternId = UnityEngine.Random.Range(0, 1001);
+            output.patternTier = PatternResolver.ResolveTier(
+                outputSkin,
+                output.patternId);
         }
 
-        output.marketValue =
-            PriceCalculator.GetPrice(output);
-
+        output.marketValue = PriceCalculator.GetPrice(output);
         return output;
     }
 
@@ -826,8 +789,7 @@ public class TradeupResolver : MonoBehaviour
 
         for (int i = 0; i < inputs.Count; i++)
         {
-            int storageIndex =
-                Mathf.Max(0, inputs[i].storageIndex);
+            int storageIndex = Mathf.Max(0, inputs[i].storageIndex);
 
             if (!storageCounts.ContainsKey(storageIndex))
                 storageCounts[storageIndex] = 0;
@@ -838,8 +800,7 @@ public class TradeupResolver : MonoBehaviour
         int highestCount = -1;
         List<int> tiedStorages = new List<int>();
 
-        foreach (KeyValuePair<int, int> pair
-                 in storageCounts)
+        foreach (KeyValuePair<int, int> pair in storageCounts)
         {
             if (pair.Value > highestCount)
             {
@@ -856,42 +817,12 @@ public class TradeupResolver : MonoBehaviour
         if (tiedStorages.Count == 0)
             return InventoryManager.Instance.ActiveStorageIndex;
 
-        int activeStorage =
-            InventoryManager.Instance.ActiveStorageIndex;
+        int activeStorage = InventoryManager.Instance.ActiveStorageIndex;
 
         if (tiedStorages.Contains(activeStorage))
             return activeStorage;
 
         return tiedStorages[0];
-    }
-
-    private void RestoreMissingInputs(
-        IReadOnlyList<InventoryItem> inputs)
-    {
-        if (InventoryManager.Instance == null ||
-            inputs == null)
-        {
-            return;
-        }
-
-        for (int i = 0; i < inputs.Count; i++)
-        {
-            InventoryItem input = inputs[i];
-
-            if (input == null ||
-                string.IsNullOrWhiteSpace(input.instanceId))
-            {
-                continue;
-            }
-
-            if (InventoryManager.Instance.GetItemByInstanceId(
-                    input.instanceId) != null)
-            {
-                continue;
-            }
-
-            InventoryManager.Instance.AddItem(input);
-        }
     }
 
     #endregion
@@ -918,17 +849,15 @@ public class TradeupResolver : MonoBehaviour
             statTrak);
     }
 
-    private List<WeightedSkinCandidate>
-        GetStandardOutputCandidates(
-            CollectionData source,
-            Rarity outputRarity,
-            bool statTrak)
+    private List<WeightedSkinCandidate> GetStandardOutputCandidates(
+        CollectionData source,
+        Rarity outputRarity,
+        bool statTrak)
     {
         List<WeightedSkinCandidate> candidates =
             new List<WeightedSkinCandidate>();
 
-        GameDatabase activeDatabase =
-            ActiveDatabase;
+        GameDatabase activeDatabase = ActiveDatabase;
 
         if (activeDatabase == null ||
             activeDatabase.allSkins == null ||
@@ -940,22 +869,15 @@ public class TradeupResolver : MonoBehaviour
         HashSet<SkinData> addedSkins =
             new HashSet<SkinData>();
 
-        for (int i = 0;
-             i < activeDatabase.allSkins.Count;
-             i++)
+        for (int i = 0; i < activeDatabase.allSkins.Count; i++)
         {
-            SkinData skin =
-                activeDatabase.allSkins[i];
+            SkinData skin = activeDatabase.allSkins[i];
 
             if (skin == null)
                 continue;
 
-            if (!SameCollection(
-                    skin.collectionData,
-                    source))
-            {
+            if (!SameCollection(skin.collectionData, source))
                 continue;
-            }
 
             if (skin.rarity != outputRarity)
                 continue;
@@ -980,9 +902,8 @@ public class TradeupResolver : MonoBehaviour
         return candidates;
     }
 
-    private List<WeightedSkinCandidate>
-        GetCovertOutputCandidates(
-            CollectionData source)
+    private List<WeightedSkinCandidate> GetCovertOutputCandidates(
+        CollectionData source)
     {
         List<WeightedSkinCandidate> candidates =
             new List<WeightedSkinCandidate>();
@@ -999,18 +920,12 @@ public class TradeupResolver : MonoBehaviour
         Dictionary<SkinData, float> weightBySkin =
             new Dictionary<SkinData, float>();
 
-        for (int i = 0;
-             i < rareSpecialCase.dropPool.Count;
-             i++)
+        for (int i = 0; i < rareSpecialCase.dropPool.Count; i++)
         {
-            WeightedDrop drop =
-                rareSpecialCase.dropPool[i];
+            WeightedDrop drop = rareSpecialCase.dropPool[i];
 
-            if (drop == null ||
-                drop.skin == null)
-            {
+            if (drop == null || drop.skin == null)
                 continue;
-            }
 
             SkinData skin = drop.skin;
 
@@ -1023,12 +938,10 @@ public class TradeupResolver : MonoBehaviour
             if (!weightBySkin.ContainsKey(skin))
                 weightBySkin[skin] = 0f;
 
-            weightBySkin[skin] +=
-                Mathf.Max(0f, drop.weight);
+            weightBySkin[skin] += Mathf.Max(0f, drop.weight);
         }
 
-        foreach (KeyValuePair<SkinData, float> pair
-                 in weightBySkin)
+        foreach (KeyValuePair<SkinData, float> pair in weightBySkin)
         {
             candidates.Add(
                 new WeightedSkinCandidate
@@ -1044,15 +957,10 @@ public class TradeupResolver : MonoBehaviour
     private CaseData GetRareSpecialCaseForSource(
         CollectionData source)
     {
-        if (source == null ||
-            covertTradeupPools == null)
-        {
+        if (source == null || covertTradeupPools == null)
             return null;
-        }
 
-        for (int i = 0;
-             i < covertTradeupPools.Count;
-             i++)
+        for (int i = 0; i < covertTradeupPools.Count; i++)
         {
             CovertTradeupPoolMapping mapping =
                 covertTradeupPools[i];
@@ -1064,12 +972,8 @@ public class TradeupResolver : MonoBehaviour
                 continue;
             }
 
-            if (SameCollection(
-                    mapping.sourceCollection,
-                    source))
-            {
+            if (SameCollection(mapping.sourceCollection, source))
                 return mapping.rareSpecialCase;
-            }
         }
 
         return null;
@@ -1124,48 +1028,37 @@ public class TradeupResolver : MonoBehaviour
                 // remains authoritative for whether the received item actually
                 // has StatTrak (for example, a glove never does).
                 statTrak = preview.isStatTrak,
-                covertToRareSpecial =
-                    preview.isCovertTradeup,
+                covertToRareSpecial = preview.isCovertTradeup,
 
-                averageInputFloat =
-                    preview.averageInputFloat,
+                averageInputFloat = preview.averageInputFloat,
+                totalInputMarketValue = preview.totalInputMarketValue,
 
-                totalInputMarketValue =
-                    preview.totalInputMarketValue,
+                outputSkinApiId = output.skin != null
+                    ? output.skin.apiId
+                    : "",
 
-                outputSkinApiId =
-                    output.skin != null
-                        ? output.skin.apiId
-                        : "",
+                outputInstanceId = output.instanceId,
 
-                outputInstanceId =
-                    output.instanceId,
+                outputFloat = output.isVanilla
+                    ? -1d
+                    : output.floatValue,
 
-                outputFloat =
-                    output.isVanilla
-                        ? -1d
-                        : output.floatValue,
+                outputPatternId = output.isVanilla
+                    ? -1
+                    : output.patternId,
 
-                outputPatternId =
-                    output.isVanilla
-                        ? -1
-                        : output.patternId,
+                outputPatternTier = output.isVanilla
+                    ? PatternTier.None
+                    : output.patternTier,
 
-                outputPatternTier =
-                    output.isVanilla
-                        ? PatternTier.None
-                        : output.patternTier,
-
-                outputMarketValue =
-                    output.marketValue
+                outputMarketValue = output.marketValue
             };
 
         for (int i = 0; i < inputs.Count; i++)
         {
             InventoryItem input = inputs[i];
 
-            history.inputInstanceIds.Add(
-                input.instanceId ?? "");
+            history.inputInstanceIds.Add(input.instanceId ?? "");
 
             history.inputSkinApiIds.Add(
                 input.skin != null
@@ -1174,8 +1067,7 @@ public class TradeupResolver : MonoBehaviour
 
             history.inputSourceApiIds.Add(
                 input.skin != null
-                    ? GetSourceId(
-                        input.skin.collectionData)
+                    ? GetSourceId(input.skin.collectionData)
                     : "");
         }
 
@@ -1186,23 +1078,18 @@ public class TradeupResolver : MonoBehaviour
 
     #region Helpers
 
-    private float GetItemValue(
-        InventoryItem item)
+    private float GetItemValue(InventoryItem item)
     {
         if (item == null || item.skin == null)
             return 0f;
 
         if (item.marketValue <= 0f)
-        {
-            item.marketValue =
-                PriceCalculator.GetPrice(item);
-        }
+            item.marketValue = PriceCalculator.GetPrice(item);
 
         return item.marketValue;
     }
 
-    private string GetSourceId(
-        CollectionData source)
+    private string GetSourceId(CollectionData source)
     {
         if (source == null)
             return "";
@@ -1213,25 +1100,20 @@ public class TradeupResolver : MonoBehaviour
         return source.collectionName ?? "";
     }
 
-    private string GetSourceName(
-        CollectionData source)
+    private string GetSourceName(CollectionData source)
     {
         if (source == null)
             return "Unknown Source";
 
-        if (!string.IsNullOrWhiteSpace(
-                source.collectionName))
-        {
+        if (!string.IsNullOrWhiteSpace(source.collectionName))
             return source.collectionName;
-        }
 
         return !string.IsNullOrWhiteSpace(source.apiId)
             ? source.apiId
             : "Unknown Source";
     }
 
-    private static double Clamp01(
-        double value)
+    private static double Clamp01(double value)
     {
         return Clamp(value, 0d, 1d);
     }
