@@ -167,7 +167,8 @@ public class TradeupOutcomePreviewUI : MonoBehaviour
             card.Setup(
                 outcome.skin,
                 outcome.probability,
-                preview.isStatTrak);
+                preview.isStatTrak,
+                preview.averageInputFloat);
         }
 
         SetHeader($"POSSIBLE OUTPUTS ({outcomes.Count})");
