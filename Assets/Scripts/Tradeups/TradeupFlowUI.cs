@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -36,6 +37,8 @@ public class TradeupFlowUI : MonoBehaviour
         new List<InventoryItem>();
 
     private InventoryItemCardUI spawnedResultCard;
+
+    public event Action<IReadOnlyList<InventoryItem>> OnSelectionChanged;
 
     public IReadOnlyList<InventoryItem> SelectedInputs =>
         selectedInputs;
@@ -80,10 +83,10 @@ public class TradeupFlowUI : MonoBehaviour
         }
 
         if (selectionExitButton != null)
-{
-    selectionExitButton.onClick.RemoveListener(ReturnToInventory);
-    selectionExitButton.onClick.AddListener(ReturnToInventory);
-}
+        {
+            selectionExitButton.onClick.RemoveListener(ReturnToInventory);
+            selectionExitButton.onClick.AddListener(ReturnToInventory);
+        }
 
         if (resultBackToInventoryButton != null)
         {
@@ -95,51 +98,51 @@ public class TradeupFlowUI : MonoBehaviour
         }
     }
 
-public void OpenTradeupSelection()
-{
-    Debug.Log("TradeupFlowUI: OpenTradeupSelection called.");
-
-    if (mainPanelController == null)
+    public void OpenTradeupSelection()
     {
-        Debug.LogError(
-            "TradeupFlowUI: MainPanelController is not assigned.");
+        Debug.Log("TradeupFlowUI: OpenTradeupSelection called.");
 
-        return;
+        if (mainPanelController == null)
+        {
+            Debug.LogError(
+                "TradeupFlowUI: MainPanelController is not assigned.");
+
+            return;
+        }
+
+        if (mainPanelController.tradeupsPanel == null)
+        {
+            Debug.LogError(
+                "TradeupFlowUI: Tradeups Panel is not assigned " +
+                "on MainPanelController.");
+
+            return;
+        }
+
+        ClearSelection();
+
+        mainPanelController.ShowTradeups();
+
+        if (tradeupSelectionView != null)
+        {
+            tradeupSelectionView.SetActive(true);
+        }
+        else
+        {
+            Debug.LogError(
+                "TradeupFlowUI: Tradeup Selection View is not assigned.");
+        }
+
+        if (tradeupResultView != null)
+            tradeupResultView.SetActive(false);
+
+        ClearResultCard();
+        RefreshSelectionState();
+
+        Debug.Log(
+            "TradeupFlowUI: Showing panel " +
+            mainPanelController.tradeupsPanel.name);
     }
-
-    if (mainPanelController.tradeupsPanel == null)
-    {
-        Debug.LogError(
-            "TradeupFlowUI: Tradeups Panel is not assigned " +
-            "on MainPanelController.");
-
-        return;
-    }
-
-    ClearSelection();
-
-    mainPanelController.ShowTradeups();
-
-    if (tradeupSelectionView != null)
-    {
-        tradeupSelectionView.SetActive(true);
-    }
-    else
-    {
-        Debug.LogError(
-            "TradeupFlowUI: Tradeup Selection View is not assigned.");
-    }
-
-    if (tradeupResultView != null)
-        tradeupResultView.SetActive(false);
-
-    ClearResultCard();
-    RefreshSelectionState();
-
-    Debug.Log(
-        "TradeupFlowUI: Showing panel " +
-        mainPanelController.tradeupsPanel.name);
-}
 
     public bool AddInput(InventoryItem item)
     {
@@ -209,50 +212,50 @@ public void OpenTradeupSelection()
         RefreshSelectionState();
     }
 
-public void ReviewContract()
-{
-    if (TradeupResolver.Instance == null)
+    public void ReviewContract()
     {
-        SetValidationText("Tradeup Resolver is missing.");
-        return;
+        if (TradeupResolver.Instance == null)
+        {
+            SetValidationText("Tradeup Resolver is missing.");
+            return;
+        }
+
+        if (tradeupContractUI == null)
+        {
+            SetValidationText("Tradeup Contract UI is missing.");
+            return;
+        }
+
+        List<InventoryItem> contractInputs =
+            new List<InventoryItem>(selectedInputs);
+
+        TradeupPreview preview =
+            TradeupResolver.Instance.BuildPreview(contractInputs);
+
+        if (preview == null ||
+            preview.validation == null ||
+            !preview.validation.isValid)
+        {
+            string reason =
+                preview != null &&
+                preview.validation != null
+                    ? preview.validation.errorMessage
+                    : "Invalid tradeup.";
+
+            SetValidationText(reason);
+            RefreshSelectionState();
+            return;
+        }
+
+        bool opened =
+            tradeupContractUI.OpenContract(contractInputs);
+
+        if (!opened)
+        {
+            SetValidationText(
+                "The tradeup contract could not be opened.");
+        }
     }
-
-    if (tradeupContractUI == null)
-    {
-        SetValidationText("Tradeup Contract UI is missing.");
-        return;
-    }
-
-    List<InventoryItem> contractInputs =
-        new List<InventoryItem>(selectedInputs);
-
-    TradeupPreview preview =
-        TradeupResolver.Instance.BuildPreview(contractInputs);
-
-    if (preview == null ||
-        preview.validation == null ||
-        !preview.validation.isValid)
-    {
-        string reason =
-            preview != null &&
-            preview.validation != null
-                ? preview.validation.errorMessage
-                : "Invalid tradeup.";
-
-        SetValidationText(reason);
-        RefreshSelectionState();
-        return;
-    }
-
-    bool opened =
-        tradeupContractUI.OpenContract(contractInputs);
-
-    if (!opened)
-    {
-        SetValidationText(
-            "The tradeup contract could not be opened.");
-    }
-}
 
     private void ShowTradeupResult(
         InventoryItem outputItem)
@@ -262,7 +265,6 @@ public void ReviewContract()
         {
             SetValidationText(
                 "Tradeup produced no output item.");
-
             ReturnToTradeupSelection();
             return;
         }
@@ -329,24 +331,26 @@ public void ReviewContract()
             mainPanelController.ShowSkinInventory();
     }
 
-public void ShowResultFromContract()
-{
-    if (tradeupContractUI == null)
-        return;
-
-    InventoryItem outputItem =
-        tradeupContractUI.OutputItem;
-
-    if (outputItem == null)
+    public void ShowResultFromContract()
     {
-        SetValidationText(
-            "The contract has no tradeup output.");
-        return;
+        if (tradeupContractUI == null)
+            return;
+
+        InventoryItem outputItem =
+            tradeupContractUI.OutputItem;
+
+        if (outputItem == null)
+        {
+            SetValidationText(
+                "The contract has no tradeup output.");
+            return;
+        }
+
+        selectedInputs.Clear();
+        RefreshSelectionState();
+        ShowTradeupResult(outputItem);
     }
 
-    selectedInputs.Clear();
-    ShowTradeupResult(outputItem);
-}
     private void RefreshSelectionState()
     {
         int requiredCount = GetCurrentRequiredCount();
@@ -389,6 +393,7 @@ public void ShowResultFromContract()
             reviewContractButton.interactable = valid;
 
         SetValidationText(message);
+        OnSelectionChanged?.Invoke(selectedInputs);
     }
 
     private string BuildReadyMessage(
