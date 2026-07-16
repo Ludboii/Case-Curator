@@ -14,6 +14,11 @@ public class TradeupOutcomeCardUI : MonoBehaviour
     [SerializeField] private TMP_Text skinNameText;
     [SerializeField] private TMP_Text chanceText;
 
+    [Tooltip(
+        "Optional testing text. Displays the exact output float that this " +
+        "skin would receive from the current contract.")]
+    [SerializeField] private TMP_Text expectedFloatText;
+
     [Header("Optional Variant Badge")]
     [SerializeField] private TMP_Text variantBadgeText;
 
@@ -33,7 +38,8 @@ public class TradeupOutcomeCardUI : MonoBehaviour
     public void Setup(
         SkinData skin,
         float probability,
-        bool statTrakContract)
+        bool statTrakContract,
+        double averageInputFloat)
     {
         if (skin == null)
         {
@@ -71,6 +77,26 @@ public class TradeupOutcomeCardUI : MonoBehaviour
         if (chanceText != null)
             chanceText.text = FormatProbability(probability);
 
+        if (expectedFloatText != null)
+        {
+            if (skin.isVanilla)
+            {
+                expectedFloatText.text = "";
+                expectedFloatText.gameObject.SetActive(false);
+            }
+            else
+            {
+                double expectedFloat = CalculateExpectedFloat(
+                    skin,
+                    averageInputFloat);
+
+                expectedFloatText.text =
+                    $"FLOAT: {expectedFloat:0.0000000000}";
+
+                expectedFloatText.gameObject.SetActive(true);
+            }
+        }
+
         if (variantBadgeText != null)
         {
             bool outputIsStatTrak =
@@ -98,11 +124,64 @@ public class TradeupOutcomeCardUI : MonoBehaviour
         if (chanceText != null)
             chanceText.text = "";
 
+        if (expectedFloatText != null)
+        {
+            expectedFloatText.text = "";
+            expectedFloatText.gameObject.SetActive(false);
+        }
+
         if (variantBadgeText != null)
         {
             variantBadgeText.text = "";
             variantBadgeText.gameObject.SetActive(false);
         }
+    }
+
+    private static double CalculateExpectedFloat(
+        SkinData skin,
+        double averageInputFloat)
+    {
+        if (skin == null || skin.isVanilla)
+            return -1d;
+
+        double normalizedAverage = Clamp(
+            averageInputFloat,
+            0d,
+            1d);
+
+        double minimumFloat = skin.minFloat;
+        double maximumFloat = skin.maxFloat;
+
+        if (maximumFloat < minimumFloat)
+        {
+            double temporary = minimumFloat;
+            minimumFloat = maximumFloat;
+            maximumFloat = temporary;
+        }
+
+        double expectedFloat =
+            minimumFloat +
+            normalizedAverage *
+            (maximumFloat - minimumFloat);
+
+        return Clamp(
+            expectedFloat,
+            minimumFloat,
+            maximumFloat);
+    }
+
+    private static double Clamp(
+        double value,
+        double minimum,
+        double maximum)
+    {
+        if (value < minimum)
+            return minimum;
+
+        if (value > maximum)
+            return maximum;
+
+        return value;
     }
 
     private static string FormatProbability(float probability)
