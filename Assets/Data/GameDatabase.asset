@@ -2091,3 +2091,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 300bcecba72313044a66b5158b765cf9, type: 2}
   - {fileID: 11400000, guid: d8341446569b84245bb89b58d040e288, type: 2}
   - {fileID: 11400000, guid: 0a4a33f205d4051448eba4faadf98646, type: 2}
+  upgradeCatalog: {fileID: 11400000, guid: 5d2770f8edc828041821ea130f521b70, type: 2}
