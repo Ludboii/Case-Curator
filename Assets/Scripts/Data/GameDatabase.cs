@@ -6,9 +6,13 @@ using UnityEngine;
     menuName = "Case Catcher/Game Database")]
 public class GameDatabase : ScriptableObject
 {
+    [Header("Core Content")]
     public List<SkinData> allSkins = new List<SkinData>();
     public List<CaseData> allCases = new List<CaseData>();
     public List<CollectionData> allCollections = new List<CollectionData>();
+
+    [Header("Progression")]
+    public UpgradeCatalog upgradeCatalog;
 
     public SkinData GetSkinByApiId(string apiId)
     {
@@ -41,5 +45,12 @@ public class GameDatabase : ScriptableObject
         }
 
         return null;
+    }
+
+    public UpgradeData GetUpgradeById(string upgradeId)
+    {
+        return upgradeCatalog != null
+            ? upgradeCatalog.GetUpgradeById(upgradeId)
+            : null;
     }
 }
