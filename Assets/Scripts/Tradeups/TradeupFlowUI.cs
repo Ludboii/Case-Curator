@@ -409,9 +409,7 @@ public class TradeupFlowUI : MonoBehaviour
 
         return
             $"{variant}{preview.inputRarity} → " +
-            $"{preview.outputRarity}\n" +
-            $"Average float: " +
-            $"{preview.averageInputFloat:0.0000000000}";
+            $"{preview.outputRarity}";
     }
 
     private int GetCurrentRequiredCount()
