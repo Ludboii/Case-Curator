@@ -14,6 +14,10 @@ public class TradeupOutcomePreviewUI : MonoBehaviour
     [SerializeField] private Transform content;
     [SerializeField] private TradeupOutcomeCardUI outcomeCardPrefab;
     [SerializeField] private ScrollRect scrollRect;
+
+    [Tooltip(
+        "Optional child containing only the ScrollRect/list visuals. " +
+        "Do not assign the GameObject that holds this component.")]
     [SerializeField] private GameObject outcomesRoot;
 
     [Header("Text")]
@@ -85,6 +89,14 @@ public class TradeupOutcomePreviewUI : MonoBehaviour
         if (TradeupResolver.Instance == null)
         {
             ShowStatus("Tradeup Resolver is unavailable.");
+            SetOutcomeRootVisible(false);
+            return;
+        }
+
+        if (content == null || outcomeCardPrefab == null)
+        {
+            ShowStatus(
+                "Possible-output Content or Outcome Card Prefab is not assigned.");
             SetOutcomeRootVisible(false);
             return;
         }
@@ -258,9 +270,6 @@ public class TradeupOutcomePreviewUI : MonoBehaviour
 
     private void EnsurePoolSize(int requiredCount)
     {
-        if (content == null || outcomeCardPrefab == null)
-            return;
-
         while (cardPool.Count < requiredCount)
         {
             TradeupOutcomeCardUI card =
@@ -287,8 +296,10 @@ public class TradeupOutcomePreviewUI : MonoBehaviour
 
     private void SetOutcomeRootVisible(bool visible)
     {
-        if (outcomesRoot != null)
-            outcomesRoot.SetActive(visible);
+        if (outcomesRoot == null || outcomesRoot == gameObject)
+            return;
+
+        outcomesRoot.SetActive(visible);
     }
 
     private void SetHeader(string message)
