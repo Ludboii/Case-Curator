@@ -15,6 +15,7 @@ public enum UnlockRequirementType
     CompletedTradeupsAtLeast = 20,
 
     ContainerCompletionAtLeast = 30,
+    OpenablesOpenedAtLeast = 31,
 
     UpgradeLevelAtLeast = 40,
     FeatureUnlocked = 41,
