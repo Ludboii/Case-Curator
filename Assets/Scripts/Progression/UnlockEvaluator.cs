@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 /// <summary>
 /// Central, side-effect-free caller API for evaluating UnlockDefinition assets.
-/// The evaluator reads the current managers and returns detailed failure reasons;
-/// it never spends currency or changes progression itself.
+/// The evaluator reads current managers and returns detailed failure/progress
+/// data; it never spends currency or changes progression itself.
 /// </summary>
 public static class UnlockEvaluator
 {
@@ -40,15 +40,11 @@ public static class UnlockEvaluator
         {
             result.isUnlocked = false;
             result.requirementResults.Add(
-                new UnlockRequirementEvaluation
-                {
-                    passed = false,
-                    requirementType = UnlockRequirementType.FeatureUnlocked,
-                    message =
-                        $"Circular unlock dependency detected at " +
-                        $"{definition.DisplayName}."
-                });
-
+                CreateResult(
+                    UnlockRequirementType.FeatureUnlocked,
+                    false,
+                    $"Circular unlock dependency detected at " +
+                    $"{definition.DisplayName}."));
             return result;
         }
 
@@ -61,13 +57,11 @@ public static class UnlockEvaluator
             if (!result.isUnlocked)
             {
                 result.requirementResults.Add(
-                    new UnlockRequirementEvaluation
-                    {
-                        passed = false,
-                        message =
-                            $"{definition.DisplayName} has no configured " +
-                            "unlock requirements and is set to remain locked."
-                    });
+                    CreateResult(
+                        UnlockRequirementType.FeatureUnlocked,
+                        false,
+                        $"{definition.DisplayName} has no configured " +
+                        "unlock requirements and is set to remain locked."));
             }
 
             evaluationStack.Remove(definition);
@@ -101,11 +95,10 @@ public static class UnlockEvaluator
     {
         if (requirement == null)
         {
-            return new UnlockRequirementEvaluation
-            {
-                passed = false,
-                message = "An unlock requirement entry is empty."
-            };
+            return CreateResult(
+                UnlockRequirementType.FeatureUnlocked,
+                false,
+                "An unlock requirement entry is empty.");
         }
 
         UnlockRequirementEvaluation result;
@@ -146,6 +139,10 @@ public static class UnlockEvaluator
 
             case UnlockRequirementType.ContainerCompletionAtLeast:
                 result = EvaluateContainerCompletion(requirement);
+                break;
+
+            case UnlockRequirementType.OpenablesOpenedAtLeast:
+                result = EvaluateOpenablesOpened(requirement);
                 break;
 
             case UnlockRequirementType.UpgradeLevelAtLeast:
@@ -193,7 +190,8 @@ public static class UnlockEvaluator
             return MissingSaveManager(requirement.requirementType);
 
         PlayerRank current = save.CurrentRank;
-        bool passed = (int)current >= (int)requirement.minimumRank;
+        PlayerRank target = requirement.minimumRank;
+        bool passed = (int)current >= (int)target;
 
         return CreateResult(
             requirement.requirementType,
@@ -201,8 +199,12 @@ public static class UnlockEvaluator
             passed
                 ? "Rank requirement met."
                 : $"Requires " +
-                  $"{PlayerProgressUtility.GetRankDisplayName(requirement.minimumRank)}. " +
-                  $"Current rank: {PlayerProgressUtility.GetRankDisplayName(current)}.");
+                  $"{PlayerProgressUtility.GetRankDisplayName(target)}. " +
+                  $"Current rank: " +
+                  $"{PlayerProgressUtility.GetRankDisplayName(current)}.",
+            (int)current,
+            (int)target,
+            true);
     }
 
     private static UnlockRequirementEvaluation EvaluateXp(
@@ -214,14 +216,18 @@ public static class UnlockEvaluator
             return MissingSaveManager(requirement.requirementType);
 
         int target = Math.Max(0, requirement.minimumXp);
-        bool passed = save.XP >= target;
+        int current = Math.Max(0, save.XP);
+        bool passed = current >= target;
 
         return CreateResult(
             requirement.requirementType,
             passed,
             passed
                 ? "XP requirement met."
-                : $"Requires {target:N0} XP. Current XP: {save.XP:N0}.");
+                : $"Requires {target:N0} XP. Current XP: {current:N0}.",
+            current,
+            target,
+            true);
     }
 
     private static UnlockRequirementEvaluation EvaluateGold(
@@ -233,14 +239,18 @@ public static class UnlockEvaluator
             return MissingSaveManager(requirement.requirementType);
 
         float target = Math.Max(0f, requirement.minimumGold);
-        bool passed = save.Gold + 0.0001f >= target;
+        float current = Math.Max(0f, save.Gold);
+        bool passed = current + 0.0001f >= target;
 
         return CreateResult(
             requirement.requirementType,
             passed,
             passed
                 ? "Gold requirement met."
-                : $"Requires {target:N2} Gold. Current Gold: {save.Gold:N2}.");
+                : $"Requires {target:N2} Gold. Current Gold: {current:N2}.",
+            current,
+            target,
+            true);
     }
 
     private static UnlockRequirementEvaluation EvaluateDiamonds(
@@ -252,7 +262,8 @@ public static class UnlockEvaluator
             return MissingSaveManager(requirement.requirementType);
 
         int target = Math.Max(0, requirement.minimumDiamonds);
-        bool passed = save.Diamonds >= target;
+        int current = Math.Max(0, save.Diamonds);
+        bool passed = current >= target;
 
         return CreateResult(
             requirement.requirementType,
@@ -260,7 +271,10 @@ public static class UnlockEvaluator
             passed
                 ? "Diamond requirement met."
                 : $"Requires {target:N0} Diamonds. " +
-                  $"Current Diamonds: {save.Diamonds:N0}.");
+                  $"Current Diamonds: {current:N0}.",
+            current,
+            target,
+            true);
     }
 
     private static UnlockRequirementEvaluation EvaluateMuseumPoints(
@@ -289,7 +303,10 @@ public static class UnlockEvaluator
             passed
                 ? "Museum Point requirement met."
                 : $"Requires {target:N0} Museum Points. " +
-                  $"Current Museum Points: {current:N0}.");
+                  $"Current Museum Points: {current:N0}.",
+            current,
+            target,
+            true);
     }
 
     private static UnlockRequirementEvaluation EvaluateMuseumMilestone(
@@ -323,7 +340,10 @@ public static class UnlockEvaluator
             passed,
             passed
                 ? "Museum milestone requirement met."
-                : $"Requires claimed Museum milestone '{milestoneId}'.");
+                : $"Requires claimed Museum milestone '{milestoneId}'.",
+            passed ? 1d : 0d,
+            1d,
+            true);
     }
 
     private static UnlockRequirementEvaluation EvaluateClaimedMilestoneCount(
@@ -348,7 +368,10 @@ public static class UnlockEvaluator
             passed
                 ? "Museum Staircase requirement met."
                 : $"Requires {target:N0} claimed Museum Staircase steps. " +
-                  $"Current claimed steps: {current:N0}.");
+                  $"Current claimed steps: {current:N0}.",
+            current,
+            target,
+            true);
     }
 
     private static UnlockRequirementEvaluation EvaluateCompletedTradeups(
@@ -372,7 +395,10 @@ public static class UnlockEvaluator
             passed
                 ? "Tradeup requirement met."
                 : $"Requires {target:N0} completed tradeups. " +
-                  $"Current tradeups: {current:N0}.");
+                  $"Current tradeups: {current:N0}.",
+            current,
+            target,
+            true);
     }
 
     private static UnlockRequirementEvaluation EvaluateContainerCompletion(
@@ -408,21 +434,63 @@ public static class UnlockEvaluator
         ContainerCompletionTier current =
             progress.GetCompletionTier(requirement.requiredContainer);
 
-        bool passed =
-            (int)current >= (int)requirement.minimumContainerTier;
+        ContainerCompletionTier target =
+            requirement.minimumContainerTier;
 
-        string containerName =
-            !string.IsNullOrWhiteSpace(requirement.requiredContainer.caseName)
-                ? requirement.requiredContainer.caseName
-                : requirement.requiredContainer.name;
+        bool passed = (int)current >= (int)target;
+        string containerName = GetContainerName(
+            requirement.requiredContainer);
 
         return CreateResult(
             requirement.requirementType,
             passed,
             passed
                 ? "Container completion requirement met."
-                : $"Requires {requirement.minimumContainerTier} Completion " +
-                  $"for {containerName}. Current tier: {current}.");
+                : $"Requires {target} Completion for {containerName}. " +
+                  $"Current tier: {current}.",
+            (int)current,
+            (int)target,
+            true);
+    }
+
+    private static UnlockRequirementEvaluation EvaluateOpenablesOpened(
+        UnlockRequirement requirement)
+    {
+        if (ContainerProgressManager.Instance == null)
+        {
+            return CreateResult(
+                requirement.requirementType,
+                false,
+                "Container progression is unavailable.");
+        }
+
+        if (requirement.openableProgressType ==
+                OpenableProgressType.SpecificContainer &&
+            requirement.requiredOpenedContainer == null)
+        {
+            return CreateResult(
+                requirement.requirementType,
+                false,
+                "No specific container is assigned to this opening requirement.");
+        }
+
+        int target = Math.Max(0, requirement.minimumOpenableCount);
+        int current = OpenableStatisticsService.GetCount(
+            requirement.openableProgressType,
+            requirement.requiredOpenedContainer);
+
+        bool passed = current >= target;
+        string subject = GetOpenableSubject(requirement);
+
+        return CreateResult(
+            requirement.requirementType,
+            passed,
+            passed
+                ? $"{subject} opening requirement met."
+                : $"Open {target:N0} {subject}. Current: {current:N0}.",
+            current,
+            target,
+            true);
     }
 
     private static UnlockRequirementEvaluation EvaluateUpgradeLevel(
@@ -446,7 +514,10 @@ public static class UnlockEvaluator
         }
 
         int target = Math.Max(0, requirement.minimumUpgradeLevel);
-        int current = GetUpgradeLevel(save.Upgrades, upgradeId);
+        int current = UpgradeSaveUtility.GetLevel(
+            save.Upgrades,
+            upgradeId);
+
         bool passed = current >= target;
 
         return CreateResult(
@@ -455,7 +526,10 @@ public static class UnlockEvaluator
             passed
                 ? "Upgrade requirement met."
                 : $"Requires upgrade '{upgradeId}' level {target}. " +
-                  $"Current level: {current}.");
+                  $"Current level: {current}.",
+            current,
+            target,
+            true);
     }
 
     private static UnlockRequirementEvaluation EvaluateRequiredFeature(
@@ -480,7 +554,10 @@ public static class UnlockEvaluator
             nested.isUnlocked
                 ? $"Required feature {nested.displayName} is unlocked."
                 : $"Requires {nested.displayName}. " +
-                  nested.FirstFailureReason);
+                  nested.FirstFailureReason,
+            nested.isUnlocked ? 1d : 0d,
+            1d,
+            true);
     }
 
     private static UnlockRequirementEvaluation EvaluateOpeningSlots(
@@ -501,7 +578,10 @@ public static class UnlockEvaluator
             passed
                 ? "Opening-slot requirement met."
                 : $"Requires {target} owned opening slots. " +
-                  $"Current slots: {current}.");
+                  $"Current slots: {current}.",
+            current,
+            target,
+            true);
     }
 
     private static UnlockRequirementEvaluation EvaluateStoragePages(
@@ -527,41 +607,47 @@ public static class UnlockEvaluator
             passed
                 ? "Storage requirement met."
                 : $"Requires {target} unlocked storage pages. " +
-                  $"Current pages: {current}.");
+                  $"Current pages: {current}.",
+            current,
+            target,
+            true);
     }
 
-    private static int GetUpgradeLevel(
-        UpgradeStateSaveData upgradeState,
-        string upgradeId)
+    private static string GetOpenableSubject(
+        UnlockRequirement requirement)
     {
-        if (upgradeState == null ||
-            upgradeState.upgradeLevels == null ||
-            string.IsNullOrWhiteSpace(upgradeId))
+        switch (requirement.openableProgressType)
         {
-            return 0;
+            case OpenableProgressType.WeaponCases:
+                return "Weapon Cases";
+
+            case OpenableProgressType.CollectionPackages:
+                return "Collection Packages";
+
+            case OpenableProgressType.SouvenirPackages:
+                return "Souvenir Packages";
+
+            case OpenableProgressType.StickerCapsules:
+                return "Sticker Capsules";
+
+            case OpenableProgressType.SpecificContainer:
+                return GetContainerName(
+                    requirement.requiredOpenedContainer);
+
+            default:
+                return "Containers";
         }
+    }
 
-        for (int i = 0; i < upgradeState.upgradeLevels.Count; i++)
-        {
-            UpgradeLevelSaveData entry =
-                upgradeState.upgradeLevels[i];
+    private static string GetContainerName(CaseData container)
+    {
+        if (container == null)
+            return "Container";
 
-            if (entry == null ||
-                string.IsNullOrWhiteSpace(entry.upgradeId))
-            {
-                continue;
-            }
+        if (!string.IsNullOrWhiteSpace(container.caseName))
+            return container.caseName.Trim();
 
-            if (string.Equals(
-                    entry.upgradeId.Trim(),
-                    upgradeId,
-                    StringComparison.OrdinalIgnoreCase))
-            {
-                return Math.Max(0, entry.level);
-            }
-        }
-
-        return 0;
+        return container.name;
     }
 
     private static bool ContainsId(
@@ -614,13 +700,19 @@ public static class UnlockEvaluator
     private static UnlockRequirementEvaluation CreateResult(
         UnlockRequirementType type,
         bool passed,
-        string message)
+        string message,
+        double currentValue = 0d,
+        double targetValue = 0d,
+        bool hasNumericProgress = false)
     {
         return new UnlockRequirementEvaluation
         {
             requirementType = type,
             passed = passed,
-            message = message ?? ""
+            message = message ?? "",
+            hasNumericProgress = hasNumericProgress,
+            currentValue = currentValue,
+            targetValue = targetValue
         };
     }
 }
