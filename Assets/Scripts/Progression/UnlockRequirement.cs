@@ -39,6 +39,17 @@ public class UnlockRequirement
     public ContainerCompletionTier minimumContainerTier =
         ContainerCompletionTier.Bronze;
 
+    [Header("Openable Progress")]
+    public OpenableProgressType openableProgressType =
+        OpenableProgressType.TotalContainers;
+
+    [Min(0)]
+    public int minimumOpenableCount;
+
+    [Tooltip(
+        "Used only when Openable Progress Type is Specific Container.")]
+    public CaseData requiredOpenedContainer;
+
     [Header("Upgrade / Feature Dependencies")]
     [Tooltip("Stable UpgradeData ID. Matching is case-insensitive.")]
     public string requiredUpgradeId;
