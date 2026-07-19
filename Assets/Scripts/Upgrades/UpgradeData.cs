@@ -12,7 +12,10 @@ public enum UpgradeCategory
     TrophyRoom,
     Tradeups,
     AutomatedAcquisitions,
-    Debug
+    Debug,
+    Minigames,
+    SingleUse,
+    Others
 }
 
 public enum UpgradeCurrency
