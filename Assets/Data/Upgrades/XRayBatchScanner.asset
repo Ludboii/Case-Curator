@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff1fafda9512383479c4f566a1b73a80, type: 3}
+  m_Name: XRayBatchScanner
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
+  upgradeId: xray_batch_scanner_upgrade
+  displayName: X-Ray Batch Scanner
+  description: 
+  icon: {fileID: 0}
+  category: 0
+  sortOrder: 0
+  hiddenUntilUnlocked: 0
+  unlockDefinition: {fileID: 11400000, guid: 1e2693f71af799142bed1ce8eb1e4b47, type: 2}
+  effectType: 0
+  defaultEffectValue: 0
+  levels:
+  - levelName: X-Ray Capacity I
+    description: Allows you to use the X-Ray Batch Scanner for 4 cases at a time.
+    currency: 0
+    cost: 100
+    additionalRequirement: {fileID: 0}
+    effectValue: 4
+  - levelName: X-Ray Capacity II
+    description: Allows you to use the X-Ray Batch Scanner for 5 cases at a time.
+    currency: 0
+    cost: 200
+    additionalRequirement: {fileID: 11400000, guid: 731a926b9baf9824f81172e0e38c04a8, type: 2}
+    effectValue: 5
+  - levelName: X-Ray Capacity III
+    description: Allows you to use the X-Ray Batch Scanner for 6 cases at a time.
+    currency: 0
+    cost: 300
+    additionalRequirement: {fileID: 11400000, guid: b11ee81681b094342801cd7f4c2c2af9, type: 2}
+    effectValue: 6
+  - levelName: X-Ray Capacity IV
+    description: Allows you to use the X-Ray Batch Scanner for 7 cases at a time.
+    currency: 0
+    cost: 400
+    additionalRequirement: {fileID: 11400000, guid: 6e4a621e078c6194bbae7ec360575e18, type: 2}
+    effectValue: 7
+  - levelName: X-Ray Capacity V
+    description: Allows you to use the X-Ray Batch Scanner for 8 cases at a time.
+    currency: 0
+    cost: 500
+    additionalRequirement: {fileID: 11400000, guid: a4773e7c4a1999b4f8f6878ae84ff5b4, type: 2}
+    effectValue: 8
+  - levelName: X-Ray Capacity VI
+    description: Allows you to use the X-Ray Batch Scanner for 9 cases at a time.
+    currency: 0
+    cost: 600
+    additionalRequirement: {fileID: 11400000, guid: 0cbf824cb6d146744b3a0eb0203c5908, type: 2}
+    effectValue: 9
+  - levelName: X-Ray Capacity VII
+    description: Allows you to use the X-Ray Batch Scanner for 10 cases at a time.
+    currency: 0
+    cost: 700
+    additionalRequirement: {fileID: 11400000, guid: ba9ae71bf1217d74799beceff8a42fbc, type: 2}
+    effectValue: 10

@@ -13,109 +13,109 @@ MonoBehaviour:
   m_Name: StorageContainerAmountUpgrade
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   upgradeId: storage_container_space_upgrade
-  displayName: Storagecontainerspaceupgrade
-  description: Upgrades skin storage space by 10.
+  displayName: Storage container space upgrade
+  description: Upgrades each storage container space.
   icon: {fileID: 0}
   category: 2
   sortOrder: 0
   hiddenUntilUnlocked: 0
   unlockDefinition: {fileID: 11400000, guid: 6351582ba0a1a7e4fb3848e5f84266cb, type: 2}
   effectType: 0
-  defaultEffectValue: 1
+  defaultEffectValue: 50
   levels:
   - levelName: 'Storage container space I '
     description: Upgrade storage container space from 50 to 60 slots.
     currency: 0
     cost: 30
     additionalRequirement: {fileID: 0}
-    effectValue: 2
+    effectValue: 60
   - levelName: 'Storage container space II '
     description: Upgrade storage container space from 60 to 70 slots.
     currency: 0
-    cost: 50
+    cost: 70
     additionalRequirement: {fileID: 0}
-    effectValue: 3
+    effectValue: 70
   - levelName: 'Storage container space III '
     description: Upgrade storage container space from 70 to 80 slots.
     currency: 0
-    cost: 70
+    cost: 80
     additionalRequirement: {fileID: 0}
-    effectValue: 4
+    effectValue: 80
   - levelName: 'Storage container space IV '
     description: Upgrade storage container space from 80 to 90 slots.
     currency: 0
     cost: 95
     additionalRequirement: {fileID: 11400000, guid: 78a7b13026b3e684c9b9dbde40a4b4c7, type: 2}
-    effectValue: 5
+    effectValue: 90
   - levelName: 'Storage container space V '
     description: Upgrade storage container space from 90 to 100 slots.
     currency: 0
     cost: 125
     additionalRequirement: {fileID: 11400000, guid: 78a7b13026b3e684c9b9dbde40a4b4c7, type: 2}
-    effectValue: 6
+    effectValue: 100
   - levelName: 'Storage container space VI '
     description: Upgrade storage container space from 100 to 110 slots.
     currency: 0
     cost: 170
     additionalRequirement: {fileID: 11400000, guid: fa8226f050dfbe44ca5d772e82cb8cbc, type: 2}
-    effectValue: 7
+    effectValue: 110
   - levelName: 'Storage container space VII '
     description: Upgrade storage container space from 110 to 120 slots.
     currency: 0
     cost: 200
     additionalRequirement: {fileID: 11400000, guid: fa8226f050dfbe44ca5d772e82cb8cbc, type: 2}
-    effectValue: 8
+    effectValue: 120
   - levelName: 'Storage container space VIII '
     description: Upgrade storage container space from 120 to 130 slots.
     currency: 0
     cost: 225
     additionalRequirement: {fileID: 11400000, guid: fa8226f050dfbe44ca5d772e82cb8cbc, type: 2}
-    effectValue: 9
+    effectValue: 130
   - levelName: 'Storage container space IX '
     description: Upgrade storage container space from 130 to 140 slots.
     currency: 0
     cost: 260
     additionalRequirement: {fileID: 11400000, guid: fa8226f050dfbe44ca5d772e82cb8cbc, type: 2}
-    effectValue: 10
+    effectValue: 140
   - levelName: Storage container space X
     description: Upgrade storage container space from 140 to 150 slots.
     currency: 0
     cost: 300
     additionalRequirement: {fileID: 11400000, guid: fa8226f050dfbe44ca5d772e82cb8cbc, type: 2}
-    effectValue: 11
+    effectValue: 150
   - levelName: Storage container space XI
     description: Upgrade storage container space from 150 to 170 slots.
     currency: 0
     cost: 500
     additionalRequirement: {fileID: 11400000, guid: b11ee81681b094342801cd7f4c2c2af9, type: 2}
-    effectValue: 12
+    effectValue: 170
   - levelName: Storage container space XII
     description: Upgrade storage container space from 170 to 190 slots.
     currency: 0
     cost: 800
     additionalRequirement: {fileID: 11400000, guid: b11ee81681b094342801cd7f4c2c2af9, type: 2}
-    effectValue: 13
+    effectValue: 190
   - levelName: Storage container space XII
     description: Upgrade storage container space from 190 to 210 slots.
     currency: 0
     cost: 1105
     additionalRequirement: {fileID: 11400000, guid: b11ee81681b094342801cd7f4c2c2af9, type: 2}
-    effectValue: 14
+    effectValue: 210
   - levelName: Storage container space XIII
     description: Upgrade storage container space from 210 to 230 slots.
     currency: 0
     cost: 1500
     additionalRequirement: {fileID: 11400000, guid: b11ee81681b094342801cd7f4c2c2af9, type: 2}
-    effectValue: 15
+    effectValue: 230
   - levelName: Storage container space XIV
     description: Upgrade storage container space from 230 to 250 slots.
     currency: 0
     cost: 2000
     additionalRequirement: {fileID: 11400000, guid: b11ee81681b094342801cd7f4c2c2af9, type: 2}
-    effectValue: 16
+    effectValue: 250
   - levelName: Storage container space XV
     description: Upgrade storage container space from 250 to 300 slots.
     currency: 0
     cost: 5000
     additionalRequirement: {fileID: 11400000, guid: a4773e7c4a1999b4f8f6878ae84ff5b4, type: 2}
-    effectValue: 17
+    effectValue: 300

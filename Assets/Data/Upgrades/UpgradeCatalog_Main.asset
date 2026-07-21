@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: UpgradeCatalog_Main
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeCatalog
   upgrades:
-  - {fileID: 11400000, guid: 8bc3b1ee9796155449f0938feccde837, type: 2}
-  - {fileID: 11400000, guid: 8bc3b1ee9796155449f0938feccde837, type: 2}
+  - {fileID: 11400000, guid: b7d6de06deb3f8843ae5c59ac8210c09, type: 2}
+  - {fileID: 11400000, guid: 2d0238e09b2d0724f955ccb9e700f20c, type: 2}
+  - {fileID: 11400000, guid: d557d97dbc616ca4189c03f7cc5cfe31, type: 2}

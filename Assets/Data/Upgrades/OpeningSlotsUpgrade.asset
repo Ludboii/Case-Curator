@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: OpeningSlotsUpgrade
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   upgradeId: opening_slots_upgrade
-  displayName: OpeningSlotsUpgrade
+  displayName: Opening Slots Upgrade
   description: Unlock extra opening slots.
   icon: {fileID: 0}
   category: 1
