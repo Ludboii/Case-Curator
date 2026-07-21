@@ -18,17 +18,41 @@ public class CaseShopRankDividerUI : MonoBehaviour
 
     public void Setup(PlayerRank requiredRank)
     {
+        Setup(requiredRank, CaseShopCategory.Cases);
+    }
+
+    public void Setup(
+        PlayerRank requiredRank,
+        CaseShopCategory category)
+    {
         if (titleText == null)
             return;
 
         if (requiredRank == PlayerRank.SilverI)
         {
-            titleText.text = "Starter Cases";
+            titleText.text = GetStarterTitle(category);
+            return;
         }
-        else
+
+        titleText.text =
+            $"Unlocked at {PlayerProgressUtility.GetRankDisplayName(requiredRank)}";
+    }
+
+    private static string GetStarterTitle(CaseShopCategory category)
+    {
+        switch (category)
         {
-            titleText.text =
-                $"Unlocked at {PlayerProgressUtility.GetRankDisplayName(requiredRank)}";
+            case CaseShopCategory.Collections:
+                return "Starter Collections";
+
+            case CaseShopCategory.SouvenirCollections:
+                return "Starter Souvenir Packages";
+
+            case CaseShopCategory.CustomCases:
+                return "Starter Custom Cases";
+
+            default:
+                return "Starter Cases";
         }
     }
 }
