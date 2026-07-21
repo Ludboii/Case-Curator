@@ -21,11 +21,17 @@ MonoBehaviour:
   hiddenUntilUnlocked: 0
   unlockDefinition: {fileID: 0}
   effectType: 0
-  defaultEffectValue: 0
+  defaultEffectValue: 1
   levels:
-  - levelName: 
-    description: 
+  - levelName: Opening slot 2
+    description: Allows you to open 2 cases at a time.
     currency: 0
-    cost: 0
-    additionalRequirement: {fileID: 0}
-    effectValue: 0
+    cost: 50
+    additionalRequirement: {fileID: 11400000, guid: 78a7b13026b3e684c9b9dbde40a4b4c7, type: 2}
+    effectValue: 2
+  - levelName: Opening slot 3
+    description: Allows you to open 3 cases at a time.
+    currency: 0
+    cost: 250
+    additionalRequirement: {fileID: 11400000, guid: fa8226f050dfbe44ca5d772e82cb8cbc, type: 2}
+    effectValue: 2
