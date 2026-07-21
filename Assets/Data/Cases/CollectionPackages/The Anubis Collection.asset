@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: The Anubis Collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_package_collection_set_anubis
+  caseName: The Anubis Collection
+  icon: {fileID: 21300000, guid: a11f03bc4ea80cc45a8dec212dd87079, type: 3}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 5
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 3
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.8
+  dropPool:
+  - skin: {fileID: 11400000, guid: df86c851ea2e45e47aac0fc3b9245354, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 23fcf77a0b07d7e4db70301127383180, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e779a9625c3f1ff41af4b57e6dab0468, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 50d262d9de708d545b604f3c6039917a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 90578b8b17c6d5b439571428ac3acc20, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ba5a0d1b5644b0643b42ec6d5eec3f0a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9fe3e096124f40844ad4ccfdced76d57, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: aa6b4571642a30b4d96dbf1aec0e3435, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5b8ef5a8b5da6dd459b962d8946917e1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 62948ce902d6b1d459cbd351516a069e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 622b4b5bfb2d54841b669fe4517c66d4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a0c9ca735f8fe2e43a7e5a4fec50e861, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 0b88ed34a245bdb43bd64ce1e763df14, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 62772d258060b8a4eb40918abb925700, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f173253390610e44b8b0916fe1ae8b1c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 36a64c477cb593240827e50660b35f7c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e422464481f1fb040b184fb968f50ad1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: cf3e23b4024209743aed1a4f9dd9973c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2ff847fcb6eddb348b2c99d668deef52, type: 2}
+    weight: 1

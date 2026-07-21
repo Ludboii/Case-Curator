@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Breakout Collection
   apiId: collection-set-community-4
-  type: 0
+  type: 2
   icon: {fileID: 21300000, guid: 23be72caed7861c459d465441d351f41, type: 3}

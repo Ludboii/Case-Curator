@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
   m_Name: the_2021_train_collection
   m_EditorClassIdentifier: Assembly-CSharp::CaseData
-  apiId: cc_collection_the_2021_train_collection
+  apiId: cc_collection_package_collection_set_train_2021
   caseName: The 2021 Train Collection
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: d1ab58e06beca574c9387912788f0cb9, type: 3}
   containerType: 1
   allowRareSpecialItem: 0
   allowStatTrak: 0
@@ -43,27 +43,9 @@ MonoBehaviour:
   dropPool:
   - skin: {fileID: 11400000, guid: 50e17cae16e71d046a0a2ea89b641546, type: 2}
     weight: 1
-  - skin: {fileID: 11400000, guid: 05d5be93eb91d4e4f9387dfa735f5f94, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: b8ec7c7f20ae3e742b0feb3c25545cf6, type: 2}
-    weight: 1
   - skin: {fileID: 11400000, guid: 6d0669108e7ff5b4db425a224184d220, type: 2}
     weight: 1
-  - skin: {fileID: 11400000, guid: efac1ba1a1a2b184998a363fbdbab8c5, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: d9e2523ec533e3440b6235a3a15898c2, type: 2}
-    weight: 1
   - skin: {fileID: 11400000, guid: c96a3ef5e51f9ff4db1365a23d042c83, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: fcc14a1690c776048a0047f8dab790cb, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 199689409fba03647aafcebb2c1bad8c, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 97b282461cd5e0c4ca5aeac8b76ec1ea, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 3e17ce1ff16bcaa4dba0a087cdaae74c, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 4623ec4b929b9a24e9edc417636d60a3, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: d1b5a6752c6b17c45a4695bb1b20590b, type: 2}
     weight: 1
@@ -73,5 +55,23 @@ MonoBehaviour:
     weight: 1
   - skin: {fileID: 11400000, guid: 1169c7de151a12a4c8d93000a149b804, type: 2}
     weight: 1
+  - skin: {fileID: 11400000, guid: 05d5be93eb91d4e4f9387dfa735f5f94, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b8ec7c7f20ae3e742b0feb3c25545cf6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 97b282461cd5e0c4ca5aeac8b76ec1ea, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3e17ce1ff16bcaa4dba0a087cdaae74c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4623ec4b929b9a24e9edc417636d60a3, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: efac1ba1a1a2b184998a363fbdbab8c5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 199689409fba03647aafcebb2c1bad8c, type: 2}
+    weight: 1
   - skin: {fileID: 11400000, guid: d8952e61f1951c849aeb36206261d592, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d9e2523ec533e3440b6235a3a15898c2, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fcc14a1690c776048a0047f8dab790cb, type: 2}
     weight: 1

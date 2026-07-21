@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: The Inferno Collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_package_collection_set_inferno
+  caseName: The Inferno Collection
+  icon: {fileID: 21300000, guid: cf02016989fe05f4fba11201cec0dd25, type: 3}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 5
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 3
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.8
+  dropPool:
+  - skin: {fileID: 11400000, guid: f91efb172fc7e4546b567108c9326835, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b39df249be9a4464780c86658dd99e8f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d111085968e7d43469a5b72f41c69cb4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b3263b5b1c4e575418750334b743d9be, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 795602011d09a7049a1e0e4da1b4b8f5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2cbfbef32bc801b47b5d28b7c55a556e, type: 2}
+    weight: 1

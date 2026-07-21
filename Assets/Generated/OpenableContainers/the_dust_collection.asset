@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
   m_Name: the_dust_collection
   m_EditorClassIdentifier: Assembly-CSharp::CaseData
-  apiId: cc_collection_the_dust_collection
+  apiId: cc_collection_package_collection_set_dust
   caseName: The Dust Collection
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: a84bbf7d7836d6c4ab0f1662c507362e, type: 3}
   containerType: 1
   allowRareSpecialItem: 0
   allowStatTrak: 0
@@ -43,19 +43,19 @@ MonoBehaviour:
   dropPool:
   - skin: {fileID: 11400000, guid: e037ed5791c69fa4a8548f3c0097e434, type: 2}
     weight: 1
+  - skin: {fileID: 11400000, guid: 04d8617cb2088d5488e75384244b376f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7c238a65cbe9eb4429a1ec923d429025, type: 2}
+    weight: 1
   - skin: {fileID: 11400000, guid: b74f514745aadc24aa9e1f3921b23dca, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 92d82320ce7071f40b64cd3b6adf4f4f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 67f9512039571284bacc66cd96c9a223, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 86b042c1be3602f4fbf38495fd020abe, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: bfbbe94f8b6a4274c9155dcf3f08bcd3, type: 2}
     weight: 1
-  - skin: {fileID: 11400000, guid: 04d8617cb2088d5488e75384244b376f, type: 2}
-    weight: 1
   - skin: {fileID: 11400000, guid: 12a9e1dc0e9da2045b8a4c93befcd175, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 67f9512039571284bacc66cd96c9a223, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 7c238a65cbe9eb4429a1ec923d429025, type: 2}
     weight: 1

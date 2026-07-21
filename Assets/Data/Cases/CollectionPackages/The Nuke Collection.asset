@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: The Nuke Collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_package_collection_set_nuke
+  caseName: The Nuke Collection
+  icon: {fileID: 21300000, guid: d0e64f6e291ddfa41a85f9dfe33a5e00, type: 3}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 5
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 3
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.8
+  dropPool:
+  - skin: {fileID: 11400000, guid: f6c45a032e3ad72469483b1cf577be7a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6316eb57d9c27814881337b2c0ae5fcd, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: da4e4bb465c08f64ba8de1083b6dddf0, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ec41a6d4178baee4084c785fde7478a9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a603c70478fcc974eaba64dbc06b7076, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4401532bd7d108d4d8129f83792eed86, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2bb70d20e820e584681614d29aaeee60, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 30a960a12116ae840b46a954745b82d1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 759a45b415e910045a1278b8e86fc2f0, type: 2}
+    weight: 1

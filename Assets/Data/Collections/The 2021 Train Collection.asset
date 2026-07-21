@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The 2021 Train Collection
   apiId: collection-set-train-2021
-  type: 1
+  type: 0
   icon: {fileID: 21300000, guid: d1ab58e06beca574c9387912788f0cb9, type: 3}

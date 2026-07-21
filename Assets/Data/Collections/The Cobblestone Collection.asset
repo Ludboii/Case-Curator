@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Cobblestone Collection
   apiId: collection-set-cobblestone
-  type: 1
+  type: 0
   icon: {fileID: 21300000, guid: d83b0ab65ad1f54449d474602efeff38, type: 3}

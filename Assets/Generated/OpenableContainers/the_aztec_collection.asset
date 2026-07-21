@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
   m_Name: the_aztec_collection
   m_EditorClassIdentifier: Assembly-CSharp::CaseData
-  apiId: cc_collection_the_aztec_collection
+  apiId: cc_collection_package_collection_set_aztec
   caseName: The Aztec Collection
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: eb7b5ba4d9289ec49ba3a0a018f754cd, type: 3}
   containerType: 1
   allowRareSpecialItem: 0
   allowStatTrak: 0
@@ -41,15 +41,15 @@ MonoBehaviour:
   - rarity: 5
     chance: 0.0256
   dropPool:
-  - skin: {fileID: 11400000, guid: 10b171c0c7206ab419f6c7d9492484fa, type: 2}
-    weight: 1
   - skin: {fileID: 11400000, guid: 07403304c3c017248a9231c5717610da, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 7cd576a968ad0d24e809706361d15331, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 1ab4d5771e886234d923480bf8b13768, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: e5a029a23a99a5345a6e727de9f9b0f2, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 10b171c0c7206ab419f6c7d9492484fa, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7cd576a968ad0d24e809706361d15331, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: bfebcca343ac1a046a4e88ebc9c1916d, type: 2}
     weight: 1

@@ -36096,6 +36096,11 @@ MonoBehaviour:
   caseGridContent: {fileID: 665411315}
   caseCardPrefab: {fileID: 5818618314600828005, guid: 7f4c1cd14c306a5499563f70df4a70a3, type: 3}
   rankDividerPrefab: {fileID: 7296356321816817262, guid: 3352cfdd9a0325046aa7465e80890b6c, type: 3}
+  fallbackCardsPerRow: 3
+  fallbackCardCellSize: {x: 500, y: 160}
+  fallbackCardSpacing: {x: 12, y: 12}
+  rankDividerHeight: 95
+  rankSectionSpacing: 12
   categoryText: {fileID: 1438882381}
   previousCategoryButton: {fileID: 1879208501}
   nextCategoryButton: {fileID: 644294911}

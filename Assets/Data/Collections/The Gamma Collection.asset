@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Gamma Collection
   apiId: collection-set-community-13
-  type: 0
+  type: 2
   icon: {fileID: 21300000, guid: 3ffa2e13a9fc1784ebde9a777e01c289, type: 3}

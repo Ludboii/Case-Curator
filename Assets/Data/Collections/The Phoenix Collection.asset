@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Phoenix Collection
   apiId: collection-set-community-2
-  type: 0
+  type: 2
   icon: {fileID: 21300000, guid: 46e90727e254d2d4fbda6721af461189, type: 3}

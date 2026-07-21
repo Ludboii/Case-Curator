@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Vertigo Collection
   apiId: collection-set-vertigo
-  type: 1
+  type: 0
   icon: {fileID: 21300000, guid: 3fc8afc692a8f0c4fb2b05d2d9282501, type: 3}

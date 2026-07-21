@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Dust Collection
   apiId: collection-set-dust
-  type: 1
+  type: 0
   icon: {fileID: 21300000, guid: a84bbf7d7836d6c4ab0f1662c507362e, type: 3}

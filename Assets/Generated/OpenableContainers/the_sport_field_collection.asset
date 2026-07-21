@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
   m_Name: the_sport_field_collection
   m_EditorClassIdentifier: Assembly-CSharp::CaseData
-  apiId: cc_collection_the_sport_field_collection
+  apiId: cc_collection_package_collection_set_realism_camo
   caseName: The Sport & Field Collection
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 3702a59b795a1ee49bfafe82276be9d7, type: 3}
   containerType: 1
   allowRareSpecialItem: 0
   allowStatTrak: 0
@@ -45,31 +45,31 @@ MonoBehaviour:
     weight: 1
   - skin: {fileID: 11400000, guid: b5451d1d404c49647b043984cba0c918, type: 2}
     weight: 1
+  - skin: {fileID: 11400000, guid: 1c3dd86f7c5faa04f8edac3289d76a9c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 39b891bd6c52f6840a5e6a40f5814ac0, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 83808d51adf2f5249a7953bbc52187f8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ac733f5219c7cfb4491d01c8f9830a0f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8a563b728513e254fb05933acdd8fa66, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3b238fdfb98456e428a84c85ac05b69d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: cb0644a326bb6ec4c99e44d7cbbecfb7, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 30f3b5ed7bd224e45b9ebdfe2dd6fd2c, type: 2}
+    weight: 1
   - skin: {fileID: 11400000, guid: 4c454fd569897a74189cc93d230c019f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: eed140f033c30cb4ab68ff103e96a367, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: cccfd2ea80977d94f8891af49966e916, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 9ed2bcd51b8021346833937ac2e0b214, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 92db2eaf2d9ba374aa3827817080950b, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 1e13539a1901c6643905d9ffd7334f44, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 1c3dd86f7c5faa04f8edac3289d76a9c, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 39b891bd6c52f6840a5e6a40f5814ac0, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: eed140f033c30cb4ab68ff103e96a367, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 8a563b728513e254fb05933acdd8fa66, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 3b238fdfb98456e428a84c85ac05b69d, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 83808d51adf2f5249a7953bbc52187f8, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: cb0644a326bb6ec4c99e44d7cbbecfb7, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: ac733f5219c7cfb4491d01c8f9830a0f, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: cccfd2ea80977d94f8891af49966e916, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 30f3b5ed7bd224e45b9ebdfe2dd6fd2c, type: 2}
     weight: 1

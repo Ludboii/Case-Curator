@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Huntsman Collection
   apiId: collection-set-community-3
-  type: 0
+  type: 2
   icon: {fileID: 21300000, guid: db78252d8fe457247ac9d75454138720, type: 3}

@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: The 2021 Vertigo Collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_package_collection_set_vertigo_2021
+  caseName: The 2021 Vertigo Collection
+  icon: {fileID: 21300000, guid: 1532cd15c3c702643a84f7887be97ddd, type: 3}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 5
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 3
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.8
+  dropPool:
+  - skin: {fileID: 11400000, guid: 9297f999390cdf64fb42871eb927e62c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 20d6254011aa4754289abbdcd436789a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fbca814feb0b4af498881b94da929ca5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e0d7c31bd4a49544aa8ed82fe5a20b78, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 0c87f7092415fa0419f4be78c096dae2, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ef013bb25215fad4597340ae83bdd1e5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ef157118e4ca68d4fa52986d398a9962, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 0602866320b13194da99c97d10076be0, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 678f06da6ed07854496e906e12c8dfc4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2b0511c09d9232e4ea306b57a7cf0613, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f84e0b5f86a0ffa449c4467f6dd5247d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8d3f4ec1c5af4044795672419304fddc, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 06fa2d2066613a942bf3e0b6ba35ef2d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: aa04349eef1561948a434fce3c75d29c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 68e4efd2c8aa11d4091520b9e6fdff82, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 61bef03549e596746b5ffbeb495ebe6f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 34a60be009438854f8f577a378bd2c07, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 552f8db050549c14c84587755518289c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e8d56b26e554bc449a50bc2d5356f284, type: 2}
+    weight: 1

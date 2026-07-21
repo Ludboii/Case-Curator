@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
   m_Name: the_ascent_collection
   m_EditorClassIdentifier: Assembly-CSharp::CaseData
-  apiId: cc_collection_the_ascent_collection
+  apiId: cc_collection_package_collection_set_timed_drops_cool
   caseName: The Ascent Collection
   icon: {fileID: 0}
   containerType: 1
@@ -41,25 +41,7 @@ MonoBehaviour:
   - rarity: 5
     chance: 0.0256
   dropPool:
-  - skin: {fileID: 11400000, guid: 9795f3ba5af731a40bf043a9d65430ee, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 625344675e747294a8a9bdfc0a1ee424, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 0a2a71029139fc24f91efae22df58ba5, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: bb7d331afeb171749aee2a9994a26c37, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 80689c0ca41af3345a39c8c83b9c8887, type: 2}
-    weight: 1
   - skin: {fileID: 11400000, guid: f2bc2ea4362920e46bc66cda3e060de9, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: c087f5f6d0a39c043a9c7d02ddcd83e5, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: f4f43510f86efe24da0fc99952d670f8, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 6d3c44805262a1c46af9e97ad9d7942f, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: d7223f22be85d3f4da27617318dcf3bb, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 75fefbf0fb9cb6d45ac357fb65db8309, type: 2}
     weight: 1
@@ -67,19 +49,9 @@ MonoBehaviour:
     weight: 1
   - skin: {fileID: 11400000, guid: 648a7bf5fd1b05c41aecf31959e4fad6, type: 2}
     weight: 1
-  - skin: {fileID: 11400000, guid: 7523eff883ad0df4ab903446858b9e51, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 7d71db36d0313b645b1c2aafdd91b92d, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: b98a509dc0e662047b8b7ab8531aa59f, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: d79b2326228f94d4eb9b285c37e46d68, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: b315f3a5c7d88984d8b0ba79a6a64555, type: 2}
-    weight: 1
   - skin: {fileID: 11400000, guid: 1b123ca4c22ed7449a22dcd8a79cbf27, type: 2}
     weight: 1
-  - skin: {fileID: 11400000, guid: 33362558c8c3d2d4b91b5d7296610509, type: 2}
+  - skin: {fileID: 11400000, guid: d79b2326228f94d4eb9b285c37e46d68, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 8a7c7ecf068259e44aac63e67c509b88, type: 2}
     weight: 1
@@ -91,9 +63,37 @@ MonoBehaviour:
     weight: 1
   - skin: {fileID: 11400000, guid: 4ad7b930ab92fdd4a9e27847c6ecd66d, type: 2}
     weight: 1
-  - skin: {fileID: 11400000, guid: 1c1a7d00c4e55ec4ab5e530607c39acc, type: 2}
+  - skin: {fileID: 11400000, guid: 0a2a71029139fc24f91efae22df58ba5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 80689c0ca41af3345a39c8c83b9c8887, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c087f5f6d0a39c043a9c7d02ddcd83e5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f4f43510f86efe24da0fc99952d670f8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d7223f22be85d3f4da27617318dcf3bb, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7d71db36d0313b645b1c2aafdd91b92d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b98a509dc0e662047b8b7ab8531aa59f, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: f361caf0678e32f48bd0554cbbc5f3c8, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: ebac8108ddd764e4980ddcb19584ff81, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 625344675e747294a8a9bdfc0a1ee424, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bb7d331afeb171749aee2a9994a26c37, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7523eff883ad0df4ab903446858b9e51, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 33362558c8c3d2d4b91b5d7296610509, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b315f3a5c7d88984d8b0ba79a6a64555, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9795f3ba5af731a40bf043a9d65430ee, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1c1a7d00c4e55ec4ab5e530607c39acc, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6d3c44805262a1c46af9e97ad9d7942f, type: 2}
     weight: 1

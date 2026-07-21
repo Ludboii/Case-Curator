@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Kilowatt Collection
   apiId: collection-set-community-33
-  type: 0
+  type: 2
   icon: {fileID: 21300000, guid: d9e47d23251078247853cd3a3e74abb9, type: 3}

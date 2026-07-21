@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Operation Riptide Collection
   apiId: collection-set-community-29
-  type: 0
+  type: 2
   icon: {fileID: 21300000, guid: 091f72ca219e6d0408ca401b94295c67, type: 3}

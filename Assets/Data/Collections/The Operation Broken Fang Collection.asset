@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Operation Broken Fang Collection
   apiId: collection-set-community-27
-  type: 0
+  type: 2
   icon: {fileID: 21300000, guid: b019f2541629a6747b729beb846d7c79, type: 3}

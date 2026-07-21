@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: The Vertigo Collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_package_collection_set_vertigo
+  caseName: The Vertigo Collection
+  icon: {fileID: 21300000, guid: 3fc8afc692a8f0c4fb2b05d2d9282501, type: 3}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 5
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 3
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.8
+  dropPool:
+  - skin: {fileID: 11400000, guid: 8b479001add74764d8dfdbc378df41d9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e71dc02d6845d6d4aacd836ab47291c1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4655739cc8131364aba4d481e79a0033, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ffe9bb7a1f298184a82595973baa4413, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 22d2a4c1442ea634a8cdb431564833a0, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 136593df6b791fc448ff4fe0afb308de, type: 2}
+    weight: 1

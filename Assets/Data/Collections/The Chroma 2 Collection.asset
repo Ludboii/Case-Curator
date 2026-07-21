@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Chroma 2 Collection
   apiId: collection-set-community-7
-  type: 0
+  type: 2
   icon: {fileID: 21300000, guid: cab337b9ddd89834db907c728c086908, type: 3}

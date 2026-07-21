@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The eSports 2013 Collection
   apiId: collection-set-esports
-  type: 0
+  type: 2
   icon: {fileID: 21300000, guid: f867b1978121e534b9dbcdca0691b315, type: 3}

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
   m_Name: the_assault_collection
   m_EditorClassIdentifier: Assembly-CSharp::CaseData
-  apiId: cc_collection_the_assault_collection
+  apiId: cc_collection_package_collection_set_assault
   caseName: The Assault Collection
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: d3ab5bf56bf50274ab5a0d8b70b380a3, type: 3}
   containerType: 1
   allowRareSpecialItem: 0
   allowStatTrak: 0
@@ -41,17 +41,17 @@ MonoBehaviour:
   - rarity: 5
     chance: 0.0256
   dropPool:
-  - skin: {fileID: 11400000, guid: 703259d32c1305d4ab54bceabbeff633, type: 2}
+  - skin: {fileID: 11400000, guid: 2e532a8f5ccb2664ba4a34bd183a69a4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fff2fb567c69c424da79ba1a18b853a6, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 070fe06101f04b9458ea9f050217c797, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 703259d32c1305d4ab54bceabbeff633, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: af004f58f99227347ab9e2fb7b87f0b4, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 3ba0c76e64b439b4fad740aa0c711410, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 90238357667cdc14aafc41221b5aaf86, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: af004f58f99227347ab9e2fb7b87f0b4, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 2e532a8f5ccb2664ba4a34bd183a69a4, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: fff2fb567c69c424da79ba1a18b853a6, type: 2}
     weight: 1

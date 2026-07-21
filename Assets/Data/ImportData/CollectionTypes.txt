@@ -21,13 +21,13 @@ The Italy Collection=SouvenirCollection
 The Lake Collection=SouvenirCollection
 The Safehouse Collection=SouvenirCollection
 The Aztec Collection=SouvenirCollection
-The Militia Collection=SouvenirCollection
-The Assault Collection=SouvenirCollection
+The Train 2025 Collection=SouvenirCollection
+The Office Collection=SouvenirCollection
 
-The Train 2025 Collection=Collection
+The Militia Collection=Collection
+The Assault Collection=Collection
 The Achroma Collection=Collection
 The Harlequin Collection=Collection
-The Genesis Collection=Collection
 The Sport & Field Collection=Collection
 The Graphic Collection=Collection
 The Control Collection=Collection
@@ -43,7 +43,6 @@ The Ascent Collection=Collection
 The Radiant Collection=Collection
 The Bank Collection=Collection
 The Baggage Collection=Collection
-The Office Collection=Collection
 The Alpha Collection=Collection
 
 Sealed Dead Hand Terminal=Case

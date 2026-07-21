@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Falchion Collection
   apiId: collection-set-community-8
-  type: 0
+  type: 2
   icon: {fileID: 21300000, guid: dd6c1f61351e568458451abc68c33e40, type: 3}

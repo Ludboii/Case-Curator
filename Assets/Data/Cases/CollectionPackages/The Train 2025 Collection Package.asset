@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: The Train 2025 Collection Package
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_package_collection_set_train_2025
+  caseName: The Train 2025 Collection
+  icon: {fileID: 0}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 5
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 3
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.8
+  dropPool:
+  - skin: {fileID: 11400000, guid: 443dac4121e6e5b4183ccdb55fb239b8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 480cd0643c69c1f49a98a892890f62e0, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f6615b8ab031cf548843dedf15a43460, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: deeb617b09c68e14eb0fb68caaaff676, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 17e0c9a23b4bb1c49aa7ce9f8ab268eb, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ae47ef7b1a96ec2439f226582d6ef66b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8f2f5ac873d5cb34a887e91b1973c090, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 0858a2382d7e0e444a20b931a16b8989, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ef67be4a21addcd4b9d2345dcefa2a88, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 74bfb9d503952e74bb584383c74fccaf, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 90f44e77d687b9041a28e2e8b1e43785, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 378a46ca5cc1b074689b889cb0da6ce1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3ef84bc5c41da6a4e99c1b2e374ca5d6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f225e428f52b09e4ead2844ba69d138b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c6d5ac8abe5a43849b51c660196ed722, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a3752b913c215cb4685b8421c3e2202e, type: 2}
+    weight: 1

@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Spectrum 2 Collection
   apiId: collection-set-community-18
-  type: 0
+  type: 2
   icon: {fileID: 21300000, guid: 5966894a85bff094b8bf635672ea4f0b, type: 3}

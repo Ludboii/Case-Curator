@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: The 2018 Inferno Collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_package_collection_set_inferno_2
+  caseName: The 2018 Inferno Collection
+  icon: {fileID: 21300000, guid: 7871d935042106e468c469246f839a37, type: 3}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 5
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 3
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.8
+  dropPool:
+  - skin: {fileID: 11400000, guid: 9bd4697faceeb63409cae85d51ca17a0, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 71d390a3eeee13241b33b8b45472e515, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 068745106d71bae42beb51c25f7bfbe7, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4b5d55dbe7d80024aa42f583f8105e7f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8b06dc7edbc6d694287cf72a357c319d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8f7036b8827c11842bed136b23c115d1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4925d9e3a57a02c4ba75d1cd51ed0e02, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e287191668cb9a346920c04b8a773ccd, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: cd46bdb0d7799b04aa4d2e8708001c73, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 93478b4997f999f44ad97472787fe282, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f05b7984fe13e3344863a29f4fb0e1df, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d29771e14bc25c248875b3f0fda47ff6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7ef8f9b88e6062842be27a4194cfdbcb, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4572e8e281140d643a7a01fa1667542d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ab47ce2ceff37c346a42aecdc0a34183, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ff7b35299dcafe04a9323dd0ef758313, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 21fc2fbfa7d86fb4db309333e42aaa67, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2e4ad3d2ad0311042b54d8fa29118ae6, type: 2}
+    weight: 1

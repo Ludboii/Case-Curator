@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Winter Offensive Collection
   apiId: collection-set-community-1
-  type: 0
+  type: 2
   icon: {fileID: 21300000, guid: 088ba5cc80c4fe4429b655a8e47653b6, type: 3}

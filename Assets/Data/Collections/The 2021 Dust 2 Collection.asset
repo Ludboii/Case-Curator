@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The 2021 Dust 2 Collection
   apiId: collection-set-dust-2-2021
-  type: 1
+  type: 0
   icon: {fileID: 21300000, guid: 551fae86f1b38ab45acabaecce0ecee0, type: 3}
