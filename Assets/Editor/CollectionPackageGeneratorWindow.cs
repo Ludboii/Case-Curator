@@ -11,6 +11,9 @@ public class CollectionPackageGeneratorWindow : EditorWindow
     private const string DefaultOutputFolder =
         "Assets/Data/Cases/CollectionPackages";
 
+    private const string GeneratedPackagePrefix =
+        "cc_collection_package_";
+
     [SerializeField] private GameDatabase database;
     [SerializeField] private CaseData templatePackage;
     [SerializeField] private string outputFolder = DefaultOutputFolder;
@@ -23,7 +26,7 @@ public class CollectionPackageGeneratorWindow : EditorWindow
             GetWindow<CollectionPackageGeneratorWindow>();
 
         window.titleContent = new GUIContent("Collection Packages");
-        window.minSize = new Vector2(540f, 330f);
+        window.minSize = new Vector2(560f, 420f);
         window.Show();
     }
 
@@ -34,10 +37,11 @@ public class CollectionPackageGeneratorWindow : EditorWindow
             EditorStyles.boldLabel);
 
         EditorGUILayout.HelpBox(
-            "Creates or updates one CollectionPackage CaseData asset for every " +
-            "CollectionData whose Type is Collection. Skin membership comes " +
-            "from SkinData.collectionData. The template supplies rarity chances " +
-            "and default shop settings.",
+            "The imported CollectionData Type field is not reliable enough to " +
+            "distinguish case collections from standalone map collections. " +
+            "This tool now infers case collections from the drop pools of real " +
+            "WeaponCase assets and only generates packages for collections that " +
+            "are not used by a weapon case.",
             MessageType.Info);
 
         EditorGUILayout.Space(8f);
@@ -67,9 +71,8 @@ public class CollectionPackageGeneratorWindow : EditorWindow
 
         EditorGUILayout.HelpBox(
             "Use your working The Lake Collection asset as the template. " +
-            "Existing collection packages are matched by API ID, displayed " +
-            "collection name, or their current drop-pool collection. With " +
-            "overwrite disabled, manually edited prices and ranks are preserved.",
+            "Generated packages receive their skins from SkinData.collectionData. " +
+            "Existing package prices and ranks are preserved while overwrite is disabled.",
             MessageType.None);
 
         EditorGUILayout.Space(12f);
@@ -78,12 +81,37 @@ public class CollectionPackageGeneratorWindow : EditorWindow
                    database == null || templatePackage == null))
         {
             if (GUILayout.Button(
-                    "Generate / Update Collection Packages",
+                    "Generate / Update Standalone Collection Packages",
                     GUILayout.Height(38f)))
             {
                 GeneratePackages();
             }
         }
+
+        EditorGUILayout.Space(8f);
+
+        using (new EditorGUI.DisabledScope(database == null))
+        {
+            if (GUILayout.Button(
+                    "Remove Incorrect Generated Case-Collection Packages",
+                    GUILayout.Height(32f)))
+            {
+                RemoveIncorrectGeneratedPackages();
+            }
+
+            if (GUILayout.Button(
+                    "Repair Collection Type Labels",
+                    GUILayout.Height(32f)))
+            {
+                RepairCollectionTypeLabels();
+            }
+        }
+
+        EditorGUILayout.HelpBox(
+            "Cleanup only deletes assets created by this generator whose API ID " +
+            "starts with 'cc_collection_package_' and whose skins belong to a " +
+            "real weapon case. Manually created packages without that prefix are untouched.",
+            MessageType.Warning);
     }
 
     private void GeneratePackages()
@@ -103,9 +131,13 @@ public class CollectionPackageGeneratorWindow : EditorWindow
         outputFolder = NormalizeOutputFolder(outputFolder);
         EnsureFolderExists(outputFolder);
 
+        List<CollectionData> caseCollections =
+            GetCollectionsUsedByWeaponCases();
+
         int created = 0;
         int updated = 0;
         int registered = 0;
+        int skippedCaseCollections = 0;
         int skippedEmpty = 0;
 
         Undo.RecordObject(database, "Generate Collection Packages");
@@ -114,9 +146,12 @@ public class CollectionPackageGeneratorWindow : EditorWindow
         {
             CollectionData collection = database.allCollections[i];
 
-            if (collection == null ||
-                collection.type != CollectionType.Collection)
+            if (collection == null)
+                continue;
+
+            if (ContainsCollection(caseCollections, collection))
             {
+                skippedCaseCollections++;
                 continue;
             }
 
@@ -188,12 +223,197 @@ public class CollectionPackageGeneratorWindow : EditorWindow
         AssetDatabase.Refresh();
 
         EditorUtility.DisplayDialog(
-            "Collection Packages Generated",
+            "Standalone Collection Packages Generated",
             $"Created: {created}\n" +
             $"Updated: {updated}\n" +
             $"Registered in GameDatabase: {registered}\n" +
+            $"Skipped weapon-case collections: {skippedCaseCollections}\n" +
             $"Skipped empty collections: {skippedEmpty}",
             "OK");
+    }
+
+    private void RemoveIncorrectGeneratedPackages()
+    {
+        if (database == null || database.allCases == null)
+            return;
+
+        List<CollectionData> caseCollections =
+            GetCollectionsUsedByWeaponCases();
+
+        List<CaseData> toDelete = new List<CaseData>();
+
+        for (int i = 0; i < database.allCases.Count; i++)
+        {
+            CaseData package = database.allCases[i];
+
+            if (!IsGeneratorOwnedPackage(package))
+                continue;
+
+            CollectionData sourceCollection =
+                GetPrimaryCollectionFromPackage(package);
+
+            if (sourceCollection != null &&
+                ContainsCollection(caseCollections, sourceCollection))
+            {
+                toDelete.Add(package);
+            }
+        }
+
+        if (toDelete.Count == 0)
+        {
+            EditorUtility.DisplayDialog(
+                "Collection Package Cleanup",
+                "No incorrect generated case-collection packages were found.",
+                "OK");
+            return;
+        }
+
+        bool confirmed = EditorUtility.DisplayDialog(
+            "Remove Incorrect Generated Packages",
+            $"Delete {toDelete.Count} generator-created packages that belong " +
+            "to real weapon cases?\n\nManually created packages without the " +
+            "generator API prefix will not be touched.",
+            "Delete",
+            "Cancel");
+
+        if (!confirmed)
+            return;
+
+        Undo.RecordObject(database, "Remove Incorrect Collection Packages");
+
+        int deleted = 0;
+
+        for (int i = 0; i < toDelete.Count; i++)
+        {
+            CaseData package = toDelete[i];
+            database.allCases.Remove(package);
+
+            string path = AssetDatabase.GetAssetPath(package);
+
+            if (!string.IsNullOrWhiteSpace(path) &&
+                AssetDatabase.DeleteAsset(path))
+            {
+                deleted++;
+            }
+        }
+
+        EditorUtility.SetDirty(database);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        EditorUtility.DisplayDialog(
+            "Collection Package Cleanup",
+            $"Deleted {deleted} incorrect generated packages.",
+            "OK");
+    }
+
+    private void RepairCollectionTypeLabels()
+    {
+        if (database == null || database.allCollections == null)
+            return;
+
+        List<CollectionData> caseCollections =
+            GetCollectionsUsedByWeaponCases();
+
+        int markedCase = 0;
+        int markedCollection = 0;
+
+        for (int i = 0; i < database.allCollections.Count; i++)
+        {
+            CollectionData collection = database.allCollections[i];
+
+            if (collection == null)
+                continue;
+
+            Undo.RecordObject(collection, "Repair Collection Type");
+
+            CollectionType desiredType =
+                ContainsCollection(caseCollections, collection)
+                    ? CollectionType.Case
+                    : CollectionType.Collection;
+
+            if (collection.type == desiredType)
+                continue;
+
+            collection.type = desiredType;
+            EditorUtility.SetDirty(collection);
+
+            if (desiredType == CollectionType.Case)
+                markedCase++;
+            else
+                markedCollection++;
+        }
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        EditorUtility.DisplayDialog(
+            "Collection Type Labels Repaired",
+            $"Marked as Case: {markedCase}\n" +
+            $"Marked as Collection: {markedCollection}\n\n" +
+            "Souvenir packages should reference the same underlying map " +
+            "collection rather than requiring a separate collection type.",
+            "OK");
+    }
+
+    private List<CollectionData> GetCollectionsUsedByWeaponCases()
+    {
+        List<CollectionData> result = new List<CollectionData>();
+
+        if (database == null || database.allCases == null)
+            return result;
+
+        for (int i = 0; i < database.allCases.Count; i++)
+        {
+            CaseData container = database.allCases[i];
+
+            if (container == null ||
+                container.containerType != CaseContainerType.WeaponCase)
+            {
+                continue;
+            }
+
+            AddCollectionsFromContainer(container, result);
+        }
+
+        return result;
+    }
+
+    private static void AddCollectionsFromContainer(
+        CaseData container,
+        List<CollectionData> target)
+    {
+        SerializedObject serializedContainer =
+            new SerializedObject(container);
+
+        SerializedProperty dropPool =
+            serializedContainer.FindProperty("dropPool");
+
+        if (dropPool == null || !dropPool.isArray)
+            return;
+
+        for (int i = 0; i < dropPool.arraySize; i++)
+        {
+            SerializedProperty entry =
+                dropPool.GetArrayElementAtIndex(i);
+
+            SerializedProperty skinProperty =
+                entry.FindPropertyRelative("skin");
+
+            SkinData skin = skinProperty != null
+                ? skinProperty.objectReferenceValue as SkinData
+                : null;
+
+            CollectionData collection = skin != null
+                ? skin.collectionData
+                : null;
+
+            if (collection != null &&
+                !ContainsCollection(target, collection))
+            {
+                target.Add(collection);
+            }
+        }
     }
 
     private List<SkinData> GetCollectionSkins(
@@ -342,6 +562,49 @@ public class CollectionPackageGeneratorWindow : EditorWindow
         return false;
     }
 
+    private static CollectionData GetPrimaryCollectionFromPackage(
+        CaseData package)
+    {
+        if (package == null)
+            return null;
+
+        SerializedObject serializedPackage =
+            new SerializedObject(package);
+
+        SerializedProperty dropPool =
+            serializedPackage.FindProperty("dropPool");
+
+        if (dropPool == null || !dropPool.isArray)
+            return null;
+
+        for (int i = 0; i < dropPool.arraySize; i++)
+        {
+            SerializedProperty entry =
+                dropPool.GetArrayElementAtIndex(i);
+
+            SerializedProperty skinProperty =
+                entry.FindPropertyRelative("skin");
+
+            SkinData skin = skinProperty != null
+                ? skinProperty.objectReferenceValue as SkinData
+                : null;
+
+            if (skin != null && skin.collectionData != null)
+                return skin.collectionData;
+        }
+
+        return null;
+    }
+
+    private static bool IsGeneratorOwnedPackage(CaseData package)
+    {
+        return package != null &&
+               !string.IsNullOrWhiteSpace(package.apiId) &&
+               package.apiId.StartsWith(
+                   GeneratedPackagePrefix,
+                   StringComparison.OrdinalIgnoreCase);
+    }
+
     private static void ApplyCollectionIdentityAndRules(
         CaseData package,
         CollectionData collection,
@@ -400,6 +663,22 @@ public class CollectionPackageGeneratorWindow : EditorWindow
         serializedPackage.ApplyModifiedPropertiesWithoutUndo();
     }
 
+    private static bool ContainsCollection(
+        List<CollectionData> collections,
+        CollectionData target)
+    {
+        if (collections == null || target == null)
+            return false;
+
+        for (int i = 0; i < collections.Count; i++)
+        {
+            if (SameCollection(collections[i], target))
+                return true;
+        }
+
+        return false;
+    }
+
     private static bool SameCollection(
         CollectionData first,
         CollectionData second)
@@ -425,7 +704,7 @@ public class CollectionPackageGeneratorWindow : EditorWindow
             ? collection.apiId
             : collection.collectionName;
 
-        return "cc_collection_package_" + Slugify(source);
+        return GeneratedPackagePrefix + Slugify(source);
     }
 
     private static string GetCollectionDisplayName(
