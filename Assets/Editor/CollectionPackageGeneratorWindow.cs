@@ -8,16 +8,33 @@ using UnityEngine;
 
 public class CollectionPackageGeneratorWindow : EditorWindow
 {
-    private const string DefaultOutputFolder =
+    private const string DefaultCollectionOutputFolder =
         "Assets/Data/Cases/CollectionPackages";
 
-    private const string GeneratedPackagePrefix =
+    private const string DefaultSouvenirOutputFolder =
+        "Assets/Data/Cases/SouvenirPackages";
+
+    private const string CollectionPackagePrefix =
         "cc_collection_package_";
 
+    private const string SouvenirPackagePrefix =
+        "cc_souvenir_package_";
+
     [SerializeField] private GameDatabase database;
-    [SerializeField] private CaseData templatePackage;
-    [SerializeField] private string outputFolder = DefaultOutputFolder;
-    [SerializeField] private bool overwriteExistingSettingsFromTemplate;
+
+    [Header("Templates")]
+    [SerializeField] private CaseData collectionPackageTemplate;
+    [SerializeField] private CaseData souvenirPackageTemplate;
+
+    [Header("Output")]
+    [SerializeField] private string collectionOutputFolder =
+        DefaultCollectionOutputFolder;
+
+    [SerializeField] private string souvenirOutputFolder =
+        DefaultSouvenirOutputFolder;
+
+    [SerializeField]
+    private bool overwriteExistingSettingsFromTemplates;
 
     [MenuItem("Case Curator/Containers/Generate Collection Packages")]
     public static void OpenWindow()
@@ -26,22 +43,22 @@ public class CollectionPackageGeneratorWindow : EditorWindow
             GetWindow<CollectionPackageGeneratorWindow>();
 
         window.titleContent = new GUIContent("Collection Packages");
-        window.minSize = new Vector2(560f, 390f);
+        window.minSize = new Vector2(590f, 500f);
         window.Show();
     }
 
     private void OnGUI()
     {
         EditorGUILayout.LabelField(
-            "Collection Package Generator",
+            "Collection and Souvenir Package Generator",
             EditorStyles.boldLabel);
 
         EditorGUILayout.HelpBox(
-            "CollectionData.type is authoritative. This tool creates normal " +
-            "openable package assets only for entries marked Collection. " +
-            "Entries marked Case are skipped. Entries marked " +
-            "SouvenirCollection are also skipped for now so their souvenir " +
-            "packages can be configured separately.",
+            "CollectionData.type is authoritative. Collection and " +
+            "SouvenirCollection entries both receive a normal openable " +
+            "Collection Package on the Collections shop page. " +
+            "SouvenirCollection entries also receive a separate Souvenir " +
+            "Package on the Souvenir shop page. Case entries are skipped.",
             MessageType.Info);
 
         EditorGUILayout.Space(8f);
@@ -52,65 +69,97 @@ public class CollectionPackageGeneratorWindow : EditorWindow
             typeof(GameDatabase),
             false);
 
-        templatePackage = (CaseData)EditorGUILayout.ObjectField(
-            "Template Package",
-            templatePackage,
-            typeof(CaseData),
-            false);
+        EditorGUILayout.Space(6f);
+        EditorGUILayout.LabelField("Templates", EditorStyles.boldLabel);
 
-        outputFolder = EditorGUILayout.TextField(
-            "Output Folder",
-            outputFolder);
+        collectionPackageTemplate =
+            (CaseData)EditorGUILayout.ObjectField(
+                "Collection Package Template",
+                collectionPackageTemplate,
+                typeof(CaseData),
+                false);
 
-        overwriteExistingSettingsFromTemplate =
-            EditorGUILayout.ToggleLeft(
-                "Overwrite existing prices, ranks, quality and rarity chances",
-                overwriteExistingSettingsFromTemplate);
-
-        EditorGUILayout.Space(8f);
+        souvenirPackageTemplate =
+            (CaseData)EditorGUILayout.ObjectField(
+                "Souvenir Package Template",
+                souvenirPackageTemplate,
+                typeof(CaseData),
+                false);
 
         EditorGUILayout.HelpBox(
-            "Use a working normal Collection Package as the template. Skin " +
-            "membership is generated from SkinData.collectionData. Existing " +
-            "manual prices and ranks are preserved while overwrite is disabled.",
+            "Use a working normal collection package for the first template " +
+            "and a working souvenir package for the second. The generator " +
+            "overrides identity, package type, shop category and Souvenir / " +
+            "StatTrak rules, while the templates provide balancing defaults.",
             MessageType.None);
+
+        EditorGUILayout.Space(6f);
+        EditorGUILayout.LabelField("Output Folders", EditorStyles.boldLabel);
+
+        collectionOutputFolder = EditorGUILayout.TextField(
+            "Collection Packages",
+            collectionOutputFolder);
+
+        souvenirOutputFolder = EditorGUILayout.TextField(
+            "Souvenir Packages",
+            souvenirOutputFolder);
+
+        overwriteExistingSettingsFromTemplates =
+            EditorGUILayout.ToggleLeft(
+                "Overwrite existing prices, ranks, quality and rarity chances",
+                overwriteExistingSettingsFromTemplates);
 
         EditorGUILayout.Space(12f);
 
-        using (new EditorGUI.DisabledScope(
-                   database == null || templatePackage == null))
+        bool canGenerate = database != null &&
+                           collectionPackageTemplate != null &&
+                           souvenirPackageTemplate != null;
+
+        using (new EditorGUI.DisabledScope(!canGenerate))
         {
             if (GUILayout.Button(
-                    "Generate / Update Collection Packages",
-                    GUILayout.Height(38f)))
+                    "Generate / Update All Collection Packages",
+                    GUILayout.Height(42f)))
             {
                 GeneratePackages();
             }
         }
 
-        EditorGUILayout.Space(8f);
+        if (!canGenerate)
+        {
+            EditorGUILayout.HelpBox(
+                "Assign the GameDatabase and both templates before generating.",
+                MessageType.Warning);
+        }
+
+        EditorGUILayout.Space(10f);
 
         using (new EditorGUI.DisabledScope(database == null))
         {
             if (GUILayout.Button(
-                    "Remove Generated Non-Collection Packages",
+                    "Remove Generated Packages With Invalid Source Types",
                     GUILayout.Height(32f)))
             {
-                RemoveGeneratedNonCollectionPackages();
+                RemoveInvalidGeneratedPackages();
             }
         }
 
         EditorGUILayout.HelpBox(
-            "Cleanup only removes generator-created assets whose source " +
-            "CollectionData is no longer marked Collection. Manually created " +
-            "assets without the generator API prefix are never deleted.",
+            "Cleanup only deletes generator-owned assets. A normal generated " +
+            "package is valid for Collection or SouvenirCollection. A generated " +
+            "souvenir package is valid only for SouvenirCollection. Assets " +
+            "without the generator prefixes are never deleted.",
             MessageType.Warning);
     }
 
     private void GeneratePackages()
     {
-        if (database == null || templatePackage == null)
+        if (database == null ||
+            collectionPackageTemplate == null ||
+            souvenirPackageTemplate == null)
+        {
             return;
+        }
 
         if (database.allCollections == null || database.allSkins == null)
         {
@@ -121,16 +170,18 @@ public class CollectionPackageGeneratorWindow : EditorWindow
             return;
         }
 
-        outputFolder = NormalizeOutputFolder(outputFolder);
-        EnsureFolderExists(outputFolder);
+        collectionOutputFolder = NormalizeOutputFolder(
+            collectionOutputFolder,
+            DefaultCollectionOutputFolder);
 
-        int created = 0;
-        int updated = 0;
-        int registered = 0;
-        int skippedCase = 0;
-        int skippedSouvenir = 0;
-        int skippedEmpty = 0;
+        souvenirOutputFolder = NormalizeOutputFolder(
+            souvenirOutputFolder,
+            DefaultSouvenirOutputFolder);
 
+        EnsureFolderExists(collectionOutputFolder);
+        EnsureFolderExists(souvenirOutputFolder);
+
+        GenerationCounters counters = new GenerationCounters();
         Undo.RecordObject(database, "Generate Collection Packages");
 
         for (int i = 0; i < database.allCollections.Count; i++)
@@ -142,80 +193,45 @@ public class CollectionPackageGeneratorWindow : EditorWindow
 
             if (collection.type == CollectionType.Case)
             {
-                skippedCase++;
+                counters.skippedCaseCollections++;
                 continue;
             }
 
-            if (collection.type == CollectionType.SouvenirCollection)
-            {
-                skippedSouvenir++;
-                continue;
-            }
+            bool isNormalCollection =
+                collection.type == CollectionType.Collection;
 
-            if (collection.type != CollectionType.Collection)
+            bool isSouvenirCollection =
+                collection.type == CollectionType.SouvenirCollection;
+
+            if (!isNormalCollection && !isSouvenirCollection)
                 continue;
 
             List<SkinData> skins = GetCollectionSkins(collection);
 
             if (skins.Count == 0)
             {
-                skippedEmpty++;
+                counters.skippedEmptyCollections++;
                 continue;
             }
 
-            string generatedId = BuildPackageId(collection);
-            CaseData package = FindExistingPackage(
+            CreateOrUpdatePackage(
                 collection,
-                generatedId);
+                skins,
+                false,
+                collectionPackageTemplate,
+                collectionOutputFolder,
+                counters);
 
-            bool isNew = package == null;
-
-            if (isNew)
+            if (isSouvenirCollection)
             {
-                package = CreateInstance<CaseData>();
-                EditorUtility.CopySerialized(templatePackage, package);
-
-                string fileName =
-                    MakeSafeFileName(GetCollectionDisplayName(collection)) +
-                    " Package.asset";
-
-                string path = AssetDatabase.GenerateUniqueAssetPath(
-                    Path.Combine(outputFolder, fileName)
-                        .Replace("\\", "/"));
-
-                AssetDatabase.CreateAsset(package, path);
-                created++;
+                CreateOrUpdatePackage(
+                    collection,
+                    skins,
+                    true,
+                    souvenirPackageTemplate,
+                    souvenirOutputFolder,
+                    counters);
             }
-            else
-            {
-                Undo.RecordObject(package, "Update Collection Package");
-
-                if (overwriteExistingSettingsFromTemplate &&
-                    package != templatePackage)
-                {
-                    EditorUtility.CopySerialized(templatePackage, package);
-                }
-
-                updated++;
-            }
-
-            ApplyCollectionIdentityAndRules(
-                package,
-                collection,
-                generatedId);
-
-            ReplaceDropPool(package, skins);
-
-            if (database.allCases == null)
-                database.allCases = new List<CaseData>();
-
-            if (!database.allCases.Contains(package))
-            {
-                database.allCases.Add(package);
-                registered++;
-            }
-
-            EditorUtility.SetDirty(package);
         }
 
         EditorUtility.SetDirty(database);
@@ -224,16 +240,104 @@ public class CollectionPackageGeneratorWindow : EditorWindow
 
         EditorUtility.DisplayDialog(
             "Collection Packages Generated",
-            $"Created: {created}\n" +
-            $"Updated: {updated}\n" +
-            $"Registered in GameDatabase: {registered}\n" +
-            $"Skipped Case entries: {skippedCase}\n" +
-            $"Skipped SouvenirCollection entries: {skippedSouvenir}\n" +
-            $"Skipped empty collections: {skippedEmpty}",
+            $"Normal packages created: {counters.normalCreated}\n" +
+            $"Normal packages updated: {counters.normalUpdated}\n" +
+            $"Souvenir packages created: {counters.souvenirCreated}\n" +
+            $"Souvenir packages updated: {counters.souvenirUpdated}\n" +
+            $"Registered in GameDatabase: {counters.registered}\n" +
+            $"Skipped Case collections: {counters.skippedCaseCollections}\n" +
+            $"Skipped empty collections: {counters.skippedEmptyCollections}",
             "OK");
     }
 
-    private void RemoveGeneratedNonCollectionPackages()
+    private void CreateOrUpdatePackage(
+        CollectionData collection,
+        List<SkinData> skins,
+        bool souvenir,
+        CaseData template,
+        string outputFolder,
+        GenerationCounters counters)
+    {
+        string generatedId = BuildPackageId(collection, souvenir);
+        CaseContainerType containerType = souvenir
+            ? CaseContainerType.SouvenirPackage
+            : CaseContainerType.CollectionPackage;
+
+        CaseShopCategory shopCategory = souvenir
+            ? CaseShopCategory.SouvenirCollections
+            : CaseShopCategory.Collections;
+
+        CaseData package = FindExistingPackage(
+            collection,
+            generatedId,
+            containerType,
+            shopCategory,
+            souvenir);
+
+        bool isNew = package == null;
+
+        if (isNew)
+        {
+            package = CreateInstance<CaseData>();
+            EditorUtility.CopySerialized(template, package);
+
+            string fileName = MakeSafeFileName(
+                GetPackageDisplayName(collection, souvenir)) +
+                ".asset";
+
+            string path = AssetDatabase.GenerateUniqueAssetPath(
+                Path.Combine(outputFolder, fileName)
+                    .Replace("\\", "/"));
+
+            AssetDatabase.CreateAsset(package, path);
+
+            if (souvenir)
+                counters.souvenirCreated++;
+            else
+                counters.normalCreated++;
+        }
+        else
+        {
+            Undo.RecordObject(package, "Update Collection Package");
+
+            if (overwriteExistingSettingsFromTemplates &&
+                package != template)
+            {
+                EditorUtility.CopySerialized(template, package);
+            }
+
+            if (souvenir)
+                counters.souvenirUpdated++;
+            else
+                counters.normalUpdated++;
+        }
+
+        ApplyIdentityAndRules(
+            package,
+            collection,
+            generatedId,
+            souvenir);
+
+        ReplaceDropPool(package, skins);
+        RegisterPackage(package, counters);
+        EditorUtility.SetDirty(package);
+    }
+
+    private void RegisterPackage(
+        CaseData package,
+        GenerationCounters counters)
+    {
+        if (database.allCases == null)
+            database.allCases = new List<CaseData>();
+
+        if (database.allCases.Contains(package))
+            return;
+
+        database.allCases.Add(package);
+        counters.registered++;
+    }
+
+    private void RemoveInvalidGeneratedPackages()
     {
         if (database == null || database.allCases == null)
             return;
@@ -247,9 +351,27 @@ public class CollectionPackageGeneratorWindow : EditorWindow
             if (!IsGeneratorOwnedPackage(package))
                 continue;
 
-            CollectionData source = GetPrimaryCollectionFromPackage(package);
+            CollectionData source =
+                GetPrimaryCollectionFromPackage(package);
 
-            if (source == null || source.type != CollectionType.Collection)
+            bool normalPackage = HasPrefix(
+                package,
+                CollectionPackagePrefix);
+
+            bool souvenirPackage = HasPrefix(
+                package,
+                SouvenirPackagePrefix);
+
+            bool validNormal = normalPackage &&
+                source != null &&
+                (source.type == CollectionType.Collection ||
+                 source.type == CollectionType.SouvenirCollection);
+
+            bool validSouvenir = souvenirPackage &&
+                source != null &&
+                source.type == CollectionType.SouvenirCollection;
+
+            if (!validNormal && !validSouvenir)
                 toDelete.Add(package);
         }
 
@@ -257,23 +379,23 @@ public class CollectionPackageGeneratorWindow : EditorWindow
         {
             EditorUtility.DisplayDialog(
                 "Collection Package Cleanup",
-                "No generated non-Collection packages were found.",
+                "No invalid generated packages were found.",
                 "OK");
             return;
         }
 
         bool confirmed = EditorUtility.DisplayDialog(
-            "Remove Generated Non-Collection Packages",
-            $"Delete {toDelete.Count} generator-created package assets whose " +
-            "source is not marked Collection?\n\nManually created assets are " +
-            "not affected.",
+            "Remove Invalid Generated Packages",
+            $"Delete {toDelete.Count} generator-owned package assets whose " +
+            "source type no longer matches their generated package type?\n\n" +
+            "Manually created assets are not affected.",
             "Delete",
             "Cancel");
 
         if (!confirmed)
             return;
 
-        Undo.RecordObject(database, "Remove Generated Non-Collection Packages");
+        Undo.RecordObject(database, "Remove Invalid Collection Packages");
         int deleted = 0;
 
         for (int i = 0; i < toDelete.Count; i++)
@@ -296,11 +418,12 @@ public class CollectionPackageGeneratorWindow : EditorWindow
 
         EditorUtility.DisplayDialog(
             "Collection Package Cleanup",
-            $"Deleted {deleted} generated non-Collection packages.",
+            $"Deleted {deleted} invalid generated packages.",
             "OK");
     }
 
-    private List<SkinData> GetCollectionSkins(CollectionData collection)
+    private List<SkinData> GetCollectionSkins(
+        CollectionData collection)
     {
         List<SkinData> result = new List<SkinData>();
 
@@ -308,8 +431,11 @@ public class CollectionPackageGeneratorWindow : EditorWindow
         {
             SkinData skin = database.allSkins[i];
 
-            if (skin != null && SameCollection(skin.collectionData, collection))
+            if (skin != null &&
+                SameCollection(skin.collectionData, collection))
+            {
                 result.Add(skin);
+            }
         }
 
         result.Sort((a, b) =>
@@ -337,7 +463,10 @@ public class CollectionPackageGeneratorWindow : EditorWindow
 
     private CaseData FindExistingPackage(
         CollectionData collection,
-        string generatedId)
+        string generatedId,
+        CaseContainerType containerType,
+        CaseShopCategory shopCategory,
+        bool souvenir)
     {
         if (database.allCases != null)
         {
@@ -345,8 +474,16 @@ public class CollectionPackageGeneratorWindow : EditorWindow
             {
                 CaseData existing = database.allCases[i];
 
-                if (IsMatchingPackage(existing, collection, generatedId))
+                if (IsMatchingPackage(
+                        existing,
+                        collection,
+                        generatedId,
+                        containerType,
+                        shopCategory,
+                        souvenir))
+                {
                     return existing;
+                }
             }
         }
 
@@ -357,8 +494,16 @@ public class CollectionPackageGeneratorWindow : EditorWindow
             CaseData existing = AssetDatabase.LoadAssetAtPath<CaseData>(
                 AssetDatabase.GUIDToAssetPath(guids[i]));
 
-            if (IsMatchingPackage(existing, collection, generatedId))
+            if (IsMatchingPackage(
+                    existing,
+                    collection,
+                    generatedId,
+                    containerType,
+                    shopCategory,
+                    souvenir))
+            {
                 return existing;
+            }
         }
 
         return null;
@@ -367,7 +512,10 @@ public class CollectionPackageGeneratorWindow : EditorWindow
     private static bool IsMatchingPackage(
         CaseData existing,
         CollectionData collection,
-        string generatedId)
+        string generatedId,
+        CaseContainerType containerType,
+        CaseShopCategory shopCategory,
+        bool souvenir)
     {
         if (existing == null)
             return false;
@@ -380,15 +528,19 @@ public class CollectionPackageGeneratorWindow : EditorWindow
             return true;
         }
 
-        if (existing.containerType != CaseContainerType.CollectionPackage &&
-            existing.shopCategory != CaseShopCategory.Collections)
+        if (existing.containerType != containerType ||
+            existing.shopCategory != shopCategory)
         {
             return false;
         }
 
+        string expectedName = GetPackageDisplayName(
+            collection,
+            souvenir);
+
         if (string.Equals(
                 NormalizeName(existing.caseName),
-                NormalizeName(GetCollectionDisplayName(collection)),
+                NormalizeName(expectedName),
                 StringComparison.OrdinalIgnoreCase))
         {
             return true;
@@ -401,22 +553,32 @@ public class CollectionPackageGeneratorWindow : EditorWindow
         CaseData package,
         CollectionData collection)
     {
-        SerializedObject serializedPackage = new SerializedObject(package);
-        SerializedProperty dropPool = serializedPackage.FindProperty("dropPool");
+        SerializedObject serializedPackage =
+            new SerializedObject(package);
+
+        SerializedProperty dropPool =
+            serializedPackage.FindProperty("dropPool");
 
         if (dropPool == null || !dropPool.isArray)
             return false;
 
         for (int i = 0; i < dropPool.arraySize; i++)
         {
-            SerializedProperty entry = dropPool.GetArrayElementAtIndex(i);
-            SerializedProperty skinProperty = entry.FindPropertyRelative("skin");
+            SerializedProperty entry =
+                dropPool.GetArrayElementAtIndex(i);
+
+            SerializedProperty skinProperty =
+                entry.FindPropertyRelative("skin");
+
             SkinData skin = skinProperty != null
                 ? skinProperty.objectReferenceValue as SkinData
                 : null;
 
-            if (skin != null && SameCollection(skin.collectionData, collection))
+            if (skin != null &&
+                SameCollection(skin.collectionData, collection))
+            {
                 return true;
+            }
         }
 
         return false;
@@ -428,16 +590,23 @@ public class CollectionPackageGeneratorWindow : EditorWindow
         if (package == null)
             return null;
 
-        SerializedObject serializedPackage = new SerializedObject(package);
-        SerializedProperty dropPool = serializedPackage.FindProperty("dropPool");
+        SerializedObject serializedPackage =
+            new SerializedObject(package);
+
+        SerializedProperty dropPool =
+            serializedPackage.FindProperty("dropPool");
 
         if (dropPool == null || !dropPool.isArray)
             return null;
 
         for (int i = 0; i < dropPool.arraySize; i++)
         {
-            SerializedProperty entry = dropPool.GetArrayElementAtIndex(i);
-            SerializedProperty skinProperty = entry.FindPropertyRelative("skin");
+            SerializedProperty entry =
+                dropPool.GetArrayElementAtIndex(i);
+
+            SerializedProperty skinProperty =
+                entry.FindPropertyRelative("skin");
+
             SkinData skin = skinProperty != null
                 ? skinProperty.objectReferenceValue as SkinData
                 : null;
@@ -451,26 +620,41 @@ public class CollectionPackageGeneratorWindow : EditorWindow
 
     private static bool IsGeneratorOwnedPackage(CaseData package)
     {
+        return HasPrefix(package, CollectionPackagePrefix) ||
+               HasPrefix(package, SouvenirPackagePrefix);
+    }
+
+    private static bool HasPrefix(
+        CaseData package,
+        string prefix)
+    {
         return package != null &&
                !string.IsNullOrWhiteSpace(package.apiId) &&
                package.apiId.StartsWith(
-                   GeneratedPackagePrefix,
+                   prefix,
                    StringComparison.OrdinalIgnoreCase);
     }
 
-    private static void ApplyCollectionIdentityAndRules(
+    private static void ApplyIdentityAndRules(
         CaseData package,
         CollectionData collection,
-        string generatedId)
+        string generatedId,
+        bool souvenir)
     {
         package.apiId = generatedId;
-        package.caseName = GetCollectionDisplayName(collection);
+        package.caseName = GetPackageDisplayName(collection, souvenir);
         package.icon = collection.icon;
-        package.containerType = CaseContainerType.CollectionPackage;
+        package.containerType = souvenir
+            ? CaseContainerType.SouvenirPackage
+            : CaseContainerType.CollectionPackage;
+
         package.allowRareSpecialItem = false;
         package.allowStatTrak = false;
-        package.forceSouvenirDrops = false;
-        package.shopCategory = CaseShopCategory.Collections;
+        package.forceSouvenirDrops = souvenir;
+        package.shopCategory = souvenir
+            ? CaseShopCategory.SouvenirCollections
+            : CaseShopCategory.Collections;
+
         package.isCustomCase = false;
         package.shouldHaveRareSpecial = false;
     }
@@ -479,8 +663,11 @@ public class CollectionPackageGeneratorWindow : EditorWindow
         CaseData package,
         List<SkinData> skins)
     {
-        SerializedObject serializedPackage = new SerializedObject(package);
-        SerializedProperty dropPool = serializedPackage.FindProperty("dropPool");
+        SerializedObject serializedPackage =
+            new SerializedObject(package);
+
+        SerializedProperty dropPool =
+            serializedPackage.FindProperty("dropPool");
 
         if (dropPool == null || !dropPool.isArray)
         {
@@ -494,9 +681,14 @@ public class CollectionPackageGeneratorWindow : EditorWindow
 
         for (int i = 0; i < skins.Count; i++)
         {
-            SerializedProperty entry = dropPool.GetArrayElementAtIndex(i);
-            SerializedProperty skinProperty = entry.FindPropertyRelative("skin");
-            SerializedProperty weightProperty = entry.FindPropertyRelative("weight");
+            SerializedProperty entry =
+                dropPool.GetArrayElementAtIndex(i);
+
+            SerializedProperty skinProperty =
+                entry.FindPropertyRelative("skin");
+
+            SerializedProperty weightProperty =
+                entry.FindPropertyRelative("weight");
 
             if (skinProperty != null)
                 skinProperty.objectReferenceValue = skins[i];
@@ -526,16 +718,33 @@ public class CollectionPackageGeneratorWindow : EditorWindow
                    StringComparison.OrdinalIgnoreCase);
     }
 
-    private static string BuildPackageId(CollectionData collection)
+    private static string BuildPackageId(
+        CollectionData collection,
+        bool souvenir)
     {
         string source = !string.IsNullOrWhiteSpace(collection.apiId)
             ? collection.apiId
             : collection.collectionName;
 
-        return GeneratedPackagePrefix + Slugify(source);
+        return (souvenir
+                ? SouvenirPackagePrefix
+                : CollectionPackagePrefix) +
+               Slugify(source);
     }
 
-    private static string GetCollectionDisplayName(CollectionData collection)
+    private static string GetPackageDisplayName(
+        CollectionData collection,
+        bool souvenir)
+    {
+        string collectionName = GetCollectionDisplayName(collection);
+
+        return souvenir
+            ? collectionName + " Souvenir Package"
+            : collectionName;
+    }
+
+    private static string GetCollectionDisplayName(
+        CollectionData collection)
     {
         return !string.IsNullOrWhiteSpace(collection.collectionName)
             ? collection.collectionName.Trim()
@@ -549,8 +758,27 @@ public class CollectionPackageGeneratorWindow : EditorWindow
 
         value = value.Trim();
 
-        if (value.EndsWith(" Package", StringComparison.OrdinalIgnoreCase))
-            value = value.Substring(0, value.Length - 8).Trim();
+        string[] suffixes =
+        {
+            " Souvenir Package",
+            " Collection Package",
+            " Package"
+        };
+
+        for (int i = 0; i < suffixes.Length; i++)
+        {
+            string suffix = suffixes[i];
+
+            if (value.EndsWith(
+                    suffix,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                value = value.Substring(
+                    0,
+                    value.Length - suffix.Length).Trim();
+                break;
+            }
+        }
 
         return value;
     }
@@ -583,7 +811,7 @@ public class CollectionPackageGeneratorWindow : EditorWindow
     private static string MakeSafeFileName(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            return "Collection";
+            return "Collection Package";
 
         foreach (char invalid in Path.GetInvalidFileNameChars())
             value = value.Replace(invalid, '_');
@@ -591,10 +819,12 @@ public class CollectionPackageGeneratorWindow : EditorWindow
         return value.Trim();
     }
 
-    private static string NormalizeOutputFolder(string folderPath)
+    private static string NormalizeOutputFolder(
+        string folderPath,
+        string fallback)
     {
         string normalized = string.IsNullOrWhiteSpace(folderPath)
-            ? DefaultOutputFolder
+            ? fallback
             : folderPath.Replace("\\", "/").TrimEnd('/');
 
         if (!normalized.StartsWith("Assets", StringComparison.Ordinal))
@@ -620,6 +850,17 @@ public class CollectionPackageGeneratorWindow : EditorWindow
 
             current = next;
         }
+    }
+
+    private sealed class GenerationCounters
+    {
+        public int normalCreated;
+        public int normalUpdated;
+        public int souvenirCreated;
+        public int souvenirUpdated;
+        public int registered;
+        public int skippedCaseCollections;
+        public int skippedEmptyCollections;
     }
 }
 #endif
