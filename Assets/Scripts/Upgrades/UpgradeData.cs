@@ -200,11 +200,9 @@ public class UpgradeData : ScriptableObject
 
     private void OnValidate()
     {
-        if (upgradeId != null)
-            upgradeId = upgradeId.Trim();
-
-        if (displayName != null)
-            displayName = displayName.Trim();
+        // Do not trim displayName here. Unity calls OnValidate after each edit,
+        // and trimming a trailing space makes it impossible to type multi-word
+        // display names in the Inspector. DisplayName trims only when read.
 
         if (levels == null)
             levels = new List<UpgradeLevelData>();
