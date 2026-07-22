@@ -19,8 +19,11 @@ public class CaseInspectDropCardUI : MonoBehaviour
     [Header("Completion Text Colors")]
     public Color foundColor = new Color(1f, 0.82f, 0.10f, 1f);
     public Color notFoundColor = new Color(0.62f, 0.62f, 0.62f, 1f);
-    public Color requirementCompleteColor = new Color(0.30f, 0.92f, 0.20f, 1f);
-    public Color requirementIncompleteColor = new Color(1f, 0.25f, 0.22f, 1f);
+    public Color requirementCompleteColor =
+        new Color(0.30f, 0.92f, 0.20f, 1f);
+
+    public Color requirementIncompleteColor =
+        new Color(1f, 0.25f, 0.22f, 1f);
 
     [Header("Button")]
     public Button button;
@@ -228,60 +231,55 @@ public class CaseInspectDropCardUI : MonoBehaviour
             return;
         }
 
-        // After Bronze, expose each skin's best discovered wear so the player
-        // can see exactly what remains for Silver Completion.
+        bool diamondStage =
+            progress.IsGoldComplete(sourceCase) &&
+            progress.CanCompleteDiamond(sourceCase);
+
+        // Bronze unlocks the wear-quality line. During Diamond progression the
+        // normal line is replaced, rather than adding a fourth line.
         if (progress.IsBronzeComplete(sourceCase))
         {
-            int bestWearIndex =
-                progress.GetBestFoundWearIndex(sourceCase, skin);
+            int bestWearIndex = diamondStage
+                ? progress.GetBestFoundStatTrakWearIndex(sourceCase, skin)
+                : progress.GetBestFoundWearIndex(sourceCase, skin);
 
-            bool bestWearComplete =
-                progress.HasFoundBestWear(sourceCase, skin);
+            bool highestWearComplete = diamondStage
+                ? progress.HasFoundBestWearStatTrak(sourceCase, skin)
+                : progress.HasFoundBestWear(sourceCase, skin);
 
-            string bestWearText = bestWearIndex >= 0
-                ? $"Highest: {ContainerProgressManager.GetWearDisplayName(bestWearIndex)}"
-                : "Highest: Unknown";
+            string prefix = diamondStage
+                ? "StatTrak Highest: "
+                : "Highest: ";
+
+            string wearName = bestWearIndex >= 0
+                ? ContainerProgressManager.GetWearDisplayName(bestWearIndex)
+                : "Unknown";
 
             builder.Append('\n');
             builder.Append(
                 Colorize(
-                    bestWearText,
-                    bestWearComplete
+                    prefix + wearName,
+                    highestWearComplete
                         ? requirementCompleteColor
                         : requirementIncompleteColor));
         }
 
-        // After Silver, expose the per-skin threshold used by Gold.
+        // Silver unlocks the float line. Gold uses any eligible variant;
+        // Diamond resets the line to StatTrak-only progress.
         if (progress.IsSilverComplete(sourceCase))
         {
             float threshold =
                 ContainerProgressManager.GetTopQuarterFloatThreshold(skin);
 
-            bool topQuarterComplete =
-                progress.HasFoundTopQuarterFloat(sourceCase, skin);
+            bool floatComplete = diamondStage
+                ? progress.HasFoundTopQuarterFloatStatTrak(sourceCase, skin)
+                : progress.HasFoundTopQuarterFloat(sourceCase, skin);
 
             builder.Append('\n');
             builder.Append(
                 Colorize(
                     $"Float ≤ {threshold:0.######}",
-                    topQuarterComplete
-                        ? requirementCompleteColor
-                        : requirementIncompleteColor));
-        }
-
-        // Once Gold is complete, show the final StatTrak requirement on cases
-        // where Diamond Completion is possible.
-        if (progress.IsGoldComplete(sourceCase) &&
-            progress.CanCompleteDiamond(sourceCase))
-        {
-            bool diamondSkinComplete =
-                progress.HasFoundTopQuarterFloatStatTrak(sourceCase, skin);
-
-            builder.Append('\n');
-            builder.Append(
-                Colorize(
-                    "StatTrak Top 25%",
-                    diamondSkinComplete
+                    floatComplete
                         ? requirementCompleteColor
                         : requirementIncompleteColor));
         }
