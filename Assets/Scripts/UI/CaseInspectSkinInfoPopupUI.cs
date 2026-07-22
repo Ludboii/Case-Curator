@@ -97,7 +97,12 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
         }
 
         if (wearRangeText != null)
+        {
+            wearRangeText.richText = true;
+            wearRangeText.alignment = TextAlignmentOptions.TopLeft;
+            wearRangeText.enableWordWrapping = false;
             wearRangeText.text = BuildWearAndDiscoveryText(skin, sourceCase);
+        }
 
         if (sourceText != null)
         {
@@ -138,7 +143,8 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
     {
         StringBuilder builder = new StringBuilder();
         builder.AppendLine("Wear range:");
-        builder.Append($"{skin.minFloat:0.00} - {skin.maxFloat:0.00}");
+        builder.AppendLine($"{skin.minFloat:0.00} - {skin.maxFloat:0.00}");
+        builder.AppendLine();
 
         double lowestFound = 0d;
         double highestFound = 0d;
@@ -155,19 +161,17 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
                     out highestFound);
         }
 
-        builder.AppendLine();
-        builder.AppendLine();
+        builder.AppendLine("Lowest found:");
+        builder.AppendLine(
+            hasObservedRange
+                ? SkinDisplayUtility.GetTrackedFloatDisplay(lowestFound)
+                : "—");
 
-        if (hasObservedRange)
-        {
-            builder.AppendLine($"Lowest found: {FormatFloat(lowestFound)}");
-            builder.Append($"Highest found: {FormatFloat(highestFound)}");
-        }
-        else
-        {
-            builder.AppendLine("Lowest found: —");
-            builder.Append("Highest found: —");
-        }
+        builder.AppendLine("Highest found:");
+        builder.Append(
+            hasObservedRange
+                ? SkinDisplayUtility.GetTrackedFloatDisplay(highestFound)
+                : "—");
 
         return builder.ToString();
     }
@@ -446,10 +450,5 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
             return "-";
 
         return $"{value:0.##} G";
-    }
-
-    private static string FormatFloat(double value)
-    {
-        return value.ToString("0.###########");
     }
 }
