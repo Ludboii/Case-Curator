@@ -30,6 +30,7 @@ public class ContainerProgressManager : MonoBehaviour
     public static ContainerProgressManager Instance { get; private set; }
 
     private const string LegacySaveKey = "ContainerProgress_Save_v1";
+    private const double FloatComparisonEpsilon = 0.0000001d;
 
     public event Action OnContainerProgressChanged;
 
@@ -64,6 +65,7 @@ public class ContainerProgressManager : MonoBehaviour
     public ContainerProgressData GetProgress(CaseData caseData)
     {
         string key = GetContainerKey(caseData);
+
         if (string.IsNullOrWhiteSpace(key))
             return null;
 
@@ -88,6 +90,7 @@ public class ContainerProgressManager : MonoBehaviour
             return;
 
         ContainerProgressData progress = GetProgress(caseData);
+
         if (progress == null)
             return;
 
@@ -98,6 +101,15 @@ public class ContainerProgressManager : MonoBehaviour
 
         SkinData skin = pulledItem.skin;
         string skinKey = GetSkinKey(skin);
+        int wearIndex = GetOpenedWearIndex(pulledItem);
+        ContainerItemVariant variant = GetItemVariant(pulledItem);
+
+        RecordObservedFloat(progress, skinKey, pulledItem.floatValue);
+        RecordBestFoundWear(progress, skinKey, wearIndex);
+        RecordPriceDiscovery(progress, skinKey, wearIndex, variant);
+
+        if (pulledItem.statTrak && !pulledItem.souvenir)
+            RecordBestFoundStatTrakWear(progress, skinKey, wearIndex);
 
         if (skin.rarity == Rarity.RareSpecial)
         {
@@ -108,15 +120,15 @@ public class ContainerProgressManager : MonoBehaviour
         {
             AddUnique(progress.foundSkinKeys, skinKey);
 
-            int wearIndex = GetOpenedWearIndex(pulledItem);
-            RecordBestFoundWear(progress, skinKey, wearIndex);
-            RecordPriceDiscovery(progress, skinKey, wearIndex, GetItemVariant(pulledItem));
-
             bool bestWear = IsBestPossibleWear(pulledItem);
             bool correctVariant = HasRequiredVariant(caseData, pulledItem);
-            bool topQuarterFloat = IsTopQuarterFloat(pulledItem);
-            bool topQuarterStatTrak =
-                topQuarterFloat && pulledItem.statTrak && !pulledItem.souvenir;
+            bool topQuarterHighestWear =
+                IsTopQuarterOfHighestPossibleWear(pulledItem);
+
+            bool topQuarterHighestWearStatTrak =
+                topQuarterHighestWear &&
+                pulledItem.statTrak &&
+                !pulledItem.souvenir;
 
             if (bestWear)
                 AddUnique(progress.bestWearSkinKeys, skinKey);
@@ -127,11 +139,19 @@ public class ContainerProgressManager : MonoBehaviour
             if (bestWear && correctVariant)
                 AddUnique(progress.bestWearVariantSkinKeys, skinKey);
 
-            if (topQuarterFloat)
-                AddUnique(progress.topQuarterFloatSkinKeys, skinKey);
+            if (topQuarterHighestWear)
+            {
+                AddUnique(
+                    progress.topQuarterHighestWearSkinKeys,
+                    skinKey);
+            }
 
-            if (topQuarterStatTrak)
-                AddUnique(progress.topQuarterFloatStatTrakSkinKeys, skinKey);
+            if (topQuarterHighestWearStatTrak)
+            {
+                AddUnique(
+                    progress.topQuarterHighestWearStatTrakSkinKeys,
+                    skinKey);
+            }
         }
 
         if (saveImmediately)
@@ -143,8 +163,9 @@ public class ContainerProgressManager : MonoBehaviour
         }
     }
 
-    // Compatibility overload for older callers. Exact wear, float-band and
-    // variant discovery requires the InventoryItem overload above.
+    // Compatibility overload for older callers. Exact wear, float-band,
+    // variant, price-discovery and observed-float tracking require the
+    // InventoryItem overload above.
     public void RecordContainerOpened(
         CaseData caseData,
         SkinData pulledSkin,
@@ -155,6 +176,7 @@ public class ContainerProgressManager : MonoBehaviour
             return;
 
         ContainerProgressData progress = GetProgress(caseData);
+
         if (progress == null)
             return;
 
@@ -182,7 +204,7 @@ public class ContainerProgressManager : MonoBehaviour
     }
 
     // SaveData 2.0 owns disk persistence. This method keeps the existing API
-    // and sends the UI refresh event; the mutating caller saves via SaveManager.
+    // and sends the UI refresh event; mutating callers mark SaveManager dirty.
     public void SaveProgress()
     {
         OnContainerProgressChanged?.Invoke();
@@ -193,7 +215,8 @@ public class ContainerProgressManager : MonoBehaviour
         EnsureSaveData();
 
         ContainerProgressSaveData copy =
-            JsonUtility.FromJson<ContainerProgressSaveData>(JsonUtility.ToJson(saveData));
+            JsonUtility.FromJson<ContainerProgressSaveData>(
+                JsonUtility.ToJson(saveData));
 
         if (copy == null)
             copy = new ContainerProgressSaveData();
@@ -206,18 +229,13 @@ public class ContainerProgressManager : MonoBehaviour
 
     public void ReplaceProgress(ContainerProgressSaveData loadedProgress)
     {
-        if (loadedProgress == null)
-        {
-            saveData = new ContainerProgressSaveData();
-        }
-        else
-        {
-            saveData = JsonUtility.FromJson<ContainerProgressSaveData>(
+        saveData = loadedProgress == null
+            ? new ContainerProgressSaveData()
+            : JsonUtility.FromJson<ContainerProgressSaveData>(
                 JsonUtility.ToJson(loadedProgress));
 
-            if (saveData == null)
-                saveData = new ContainerProgressSaveData();
-        }
+        if (saveData == null)
+            saveData = new ContainerProgressSaveData();
 
         loadedLegacyProgress = false;
         RebuildLookup();
@@ -236,6 +254,7 @@ public class ContainerProgressManager : MonoBehaviour
             return new ContainerProgressSaveData();
 
         string json = PlayerPrefs.GetString(LegacySaveKey, "");
+
         if (string.IsNullOrWhiteSpace(json))
             return new ContainerProgressSaveData();
 
@@ -273,6 +292,7 @@ public class ContainerProgressManager : MonoBehaviour
     public float GetProfit(CaseData caseData)
     {
         ContainerProgressData progress = GetProgress(caseData);
+
         return progress != null
             ? progress.totalValuePulled - progress.totalSpent
             : 0f;
@@ -281,10 +301,13 @@ public class ContainerProgressManager : MonoBehaviour
     public int GetFoundCount(CaseData caseData)
     {
         ContainerProgressData progress = GetProgress(caseData);
+
         if (progress == null)
             return 0;
 
-        int found = CountMatchingNormalTargets(caseData, progress.foundSkinKeys);
+        int found = CountMatchingNormalTargets(
+            caseData,
+            progress.foundSkinKeys);
 
         if (HasRareSpecialTarget(caseData) && progress.foundRareSpecial)
             found++;
@@ -316,7 +339,7 @@ public class ContainerProgressManager : MonoBehaviour
             : CountMatchingNormalTargets(caseData, progress.bestWearSkinKeys);
     }
 
-    // Kept for compatibility with older UI and data. Gold no longer uses this.
+    // Legacy APIs retained because older UI/save code may still query them.
     public int GetVariantCount(CaseData caseData)
     {
         ContainerProgressData progress = GetProgress(caseData);
@@ -326,14 +349,15 @@ public class ContainerProgressManager : MonoBehaviour
             : CountMatchingNormalTargets(caseData, progress.variantSkinKeys);
     }
 
-    // Kept for compatibility with older UI and data. Diamond no longer uses this.
     public int GetBestWearVariantCount(CaseData caseData)
     {
         ContainerProgressData progress = GetProgress(caseData);
 
         return progress == null
             ? 0
-            : CountMatchingNormalTargets(caseData, progress.bestWearVariantSkinKeys);
+            : CountMatchingNormalTargets(
+                caseData,
+                progress.bestWearVariantSkinKeys);
     }
 
     public int GetTopQuarterFloatCount(CaseData caseData)
@@ -342,7 +366,9 @@ public class ContainerProgressManager : MonoBehaviour
 
         return progress == null
             ? 0
-            : CountMatchingNormalTargets(caseData, progress.topQuarterFloatSkinKeys);
+            : CountMatchingNormalTargets(
+                caseData,
+                progress.topQuarterHighestWearSkinKeys);
     }
 
     public int GetTopQuarterFloatStatTrakCount(CaseData caseData)
@@ -353,7 +379,7 @@ public class ContainerProgressManager : MonoBehaviour
             ? 0
             : CountMatchingNormalTargets(
                 caseData,
-                progress.topQuarterFloatStatTrakSkinKeys);
+                progress.topQuarterHighestWearStatTrakSkinKeys);
     }
 
     public ContainerCompletionTier GetCompletionTier(CaseData caseData)
@@ -373,22 +399,20 @@ public class ContainerProgressManager : MonoBehaviour
         return ContainerCompletionTier.None;
     }
 
-    public bool IsTierComplete(CaseData caseData, ContainerCompletionTier tier)
+    public bool IsTierComplete(
+        CaseData caseData,
+        ContainerCompletionTier tier)
     {
         switch (tier)
         {
             case ContainerCompletionTier.Bronze:
                 return IsBronzeComplete(caseData);
-
             case ContainerCompletionTier.Silver:
                 return IsSilverComplete(caseData);
-
             case ContainerCompletionTier.Gold:
                 return IsGoldComplete(caseData);
-
             case ContainerCompletionTier.Diamond:
                 return IsDiamondComplete(caseData);
-
             default:
                 return false;
         }
@@ -397,10 +421,12 @@ public class ContainerProgressManager : MonoBehaviour
     public bool IsBronzeComplete(CaseData caseData)
     {
         int target = GetNormalSkinTargetCount(caseData);
+
         if (target <= 0)
             return false;
 
         ContainerProgressData progress = GetProgress(caseData);
+
         if (progress == null)
             return false;
 
@@ -464,16 +490,12 @@ public class ContainerProgressManager : MonoBehaviour
         {
             case ContainerCompletionTier.Diamond:
                 return "Diamond Completion";
-
             case ContainerCompletionTier.Gold:
                 return "Gold Completion";
-
             case ContainerCompletionTier.Silver:
                 return "Silver Completion";
-
             case ContainerCompletionTier.Bronze:
                 return "Bronze Completion";
-
             default:
                 return $"Found {GetFoundCount(caseData)} / {GetTargetCount(caseData)}";
         }
@@ -509,10 +531,8 @@ public class ContainerProgressManager : MonoBehaviour
         {
             case ContainerVariantRequirement.Souvenir:
                 return "Souvenir";
-
             case ContainerVariantRequirement.StatTrak:
                 return "StatTrak";
-
             default:
                 return "Unavailable";
         }
@@ -524,6 +544,7 @@ public class ContainerProgressManager : MonoBehaviour
             return false;
 
         ContainerProgressData progress = GetProgress(caseData);
+
         if (progress == null)
             return false;
 
@@ -547,11 +568,20 @@ public class ContainerProgressManager : MonoBehaviour
             return false;
 
         ContainerProgressData progress = GetProgress(caseData);
+
         if (progress == null)
             return false;
 
         EnsureProgressLists(progress);
         return progress.bestWearSkinKeys.Contains(GetSkinKey(skin));
+    }
+
+    public bool HasFoundBestWearStatTrak(CaseData caseData, SkinData skin)
+    {
+        int foundWear = GetBestFoundStatTrakWearIndex(caseData, skin);
+
+        return foundWear >= 0 &&
+               foundWear == GetBestPossibleWearIndex(skin);
     }
 
     public bool HasFoundTopQuarterFloat(CaseData caseData, SkinData skin)
@@ -560,24 +590,32 @@ public class ContainerProgressManager : MonoBehaviour
             return false;
 
         ContainerProgressData progress = GetProgress(caseData);
+
         if (progress == null)
             return false;
 
         EnsureProgressLists(progress);
-        return progress.topQuarterFloatSkinKeys.Contains(GetSkinKey(skin));
+
+        return progress.topQuarterHighestWearSkinKeys.Contains(
+            GetSkinKey(skin));
     }
 
-    public bool HasFoundTopQuarterFloatStatTrak(CaseData caseData, SkinData skin)
+    public bool HasFoundTopQuarterFloatStatTrak(
+        CaseData caseData,
+        SkinData skin)
     {
         if (caseData == null || skin == null)
             return false;
 
         ContainerProgressData progress = GetProgress(caseData);
+
         if (progress == null)
             return false;
 
         EnsureProgressLists(progress);
-        return progress.topQuarterFloatStatTrakSkinKeys.Contains(GetSkinKey(skin));
+
+        return progress.topQuarterHighestWearStatTrakSkinKeys.Contains(
+            GetSkinKey(skin));
     }
 
     public int GetBestFoundWearIndex(CaseData caseData, SkinData skin)
@@ -586,35 +624,109 @@ public class ContainerProgressManager : MonoBehaviour
             return -1;
 
         ContainerProgressData progress = GetProgress(caseData);
+
         if (progress == null)
             return -1;
 
         EnsureProgressLists(progress);
         string skinKey = GetSkinKey(skin);
+        int result = FindBestWearIndex(progress.bestFoundWearBySkin, skinKey);
 
-        for (int i = 0; i < progress.bestFoundWearBySkin.Count; i++)
+        if (result >= 0)
+            return result;
+
+        // Additive migration fallback: an old save can prove the best possible
+        // wear was found even though it did not retain the exact wear index.
+        return progress.bestWearSkinKeys.Contains(skinKey)
+            ? GetBestPossibleWearIndex(skin)
+            : -1;
+    }
+
+    public int GetBestFoundStatTrakWearIndex(
+        CaseData caseData,
+        SkinData skin)
+    {
+        if (caseData == null || skin == null)
+            return -1;
+
+        ContainerProgressData progress = GetProgress(caseData);
+
+        if (progress == null)
+            return -1;
+
+        EnsureProgressLists(progress);
+        string skinKey = GetSkinKey(skin);
+        int result = FindBestWearIndex(
+            progress.bestFoundStatTrakWearBySkin,
+            skinKey);
+
+        if (result >= 0)
+            return result;
+
+        // Old normal-case saves used bestWearVariantSkinKeys for StatTrak.
+        if (CanCompleteDiamond(caseData) &&
+            progress.bestWearVariantSkinKeys.Contains(skinKey))
         {
-            ContainerSkinWearProgress entry = progress.bestFoundWearBySkin[i];
-
-            if (entry != null &&
-                string.Equals(entry.skinKey, skinKey, StringComparison.Ordinal))
-            {
-                return Mathf.Clamp(entry.bestWearIndex, 0, 4);
-            }
-        }
-
-        // Additive migration fallback: old saves know when the best possible
-        // wear was found, even though they did not store the exact wear index.
-        if (progress.bestWearSkinKeys.Contains(skinKey))
             return GetBestPossibleWearIndex(skin);
+        }
 
         return -1;
     }
 
-    public string GetBestFoundWearDisplayName(CaseData caseData, SkinData skin)
+    public string GetBestFoundWearDisplayName(
+        CaseData caseData,
+        SkinData skin)
     {
         int wearIndex = GetBestFoundWearIndex(caseData, skin);
         return wearIndex >= 0 ? GetWearDisplayName(wearIndex) : "Unknown";
+    }
+
+    public string GetBestFoundStatTrakWearDisplayName(
+        CaseData caseData,
+        SkinData skin)
+    {
+        int wearIndex = GetBestFoundStatTrakWearIndex(caseData, skin);
+        return wearIndex >= 0 ? GetWearDisplayName(wearIndex) : "Unknown";
+    }
+
+    public bool TryGetObservedFloatRange(
+        CaseData caseData,
+        SkinData skin,
+        out double lowestFloat,
+        out double highestFloat)
+    {
+        lowestFloat = 0d;
+        highestFloat = 0d;
+
+        if (caseData == null || skin == null)
+            return false;
+
+        ContainerProgressData progress = GetProgress(caseData);
+
+        if (progress == null)
+            return false;
+
+        EnsureProgressLists(progress);
+        string skinKey = GetSkinKey(skin);
+
+        for (int i = 0; i < progress.observedFloatRangesBySkin.Count; i++)
+        {
+            ContainerSkinFloatRangeProgress entry =
+                progress.observedFloatRangesBySkin[i];
+
+            if (entry == null ||
+                !entry.hasValue ||
+                !string.Equals(entry.skinKey, skinKey, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            lowestFloat = entry.lowestFloat;
+            highestFloat = entry.highestFloat;
+            return true;
+        }
+
+        return false;
     }
 
     public bool HasDiscoveredPrice(
@@ -627,12 +739,14 @@ public class ContainerProgressManager : MonoBehaviour
             return false;
 
         ContainerProgressData progress = GetProgress(caseData);
+
         if (progress == null)
             return false;
 
         EnsureProgressLists(progress);
         string skinKey = GetSkinKey(skin);
         int clampedWear = Mathf.Clamp(wearIndex, 0, 4);
+
         string discoveryKey = BuildPriceDiscoveryKey(
             skinKey,
             clampedWear,
@@ -641,8 +755,8 @@ public class ContainerProgressManager : MonoBehaviour
         if (progress.discoveredPriceKeys.Contains(discoveryKey))
             return true;
 
-        // Limited migration fallback for old saves: a best-wear discovery can
-        // be reconstructed, but arbitrary historic wear rows cannot.
+        // Limited migration fallback: arbitrary historic wear rows cannot be
+        // reconstructed, but the recorded best-wear row can.
         if (clampedWear != GetBestPossibleWearIndex(skin))
             return false;
 
@@ -652,14 +766,30 @@ public class ContainerProgressManager : MonoBehaviour
         return progress.bestWearVariantSkinKeys.Contains(skinKey);
     }
 
+    /// <summary>
+    /// Returns the upper threshold of the best 25% inside the skin's highest
+    /// possible wear quality, not the best 25% of its complete float range.
+    /// </summary>
     public static float GetTopQuarterFloatThreshold(SkinData skin)
     {
         if (skin == null)
             return 0f;
 
-        float min = Mathf.Min(skin.minFloat, skin.maxFloat);
-        float max = Mathf.Max(skin.minFloat, skin.maxFloat);
-        return min + (max - min) * 0.25f;
+        if (skin.isVanilla)
+            return Mathf.Min(skin.minFloat, skin.maxFloat);
+
+        float minimum = Mathf.Clamp01(Mathf.Min(skin.minFloat, skin.maxFloat));
+        float maximum = Mathf.Clamp01(Mathf.Max(skin.minFloat, skin.maxFloat));
+        int bestWearIndex = GetBestPossibleWearIndex(skin);
+
+        float highestWearUpperBound = Mathf.Min(
+            maximum,
+            GetWearUpperBound(bestWearIndex));
+
+        highestWearUpperBound = Mathf.Max(minimum, highestWearUpperBound);
+
+        return minimum +
+               (highestWearUpperBound - minimum) * 0.25f;
     }
 
     public static int GetBestPossibleWearIndex(SkinData skin)
@@ -682,9 +812,12 @@ public class ContainerProgressManager : MonoBehaviour
         }
     }
 
-    public bool IsRewardClaimed(CaseData caseData, ContainerCompletionTier tier)
+    public bool IsRewardClaimed(
+        CaseData caseData,
+        ContainerCompletionTier tier)
     {
         ContainerProgressData progress = GetProgress(caseData);
+
         if (progress == null)
             return false;
 
@@ -692,16 +825,12 @@ public class ContainerProgressManager : MonoBehaviour
         {
             case ContainerCompletionTier.Bronze:
                 return progress.bronzeRewardClaimed;
-
             case ContainerCompletionTier.Silver:
                 return progress.silverRewardClaimed;
-
             case ContainerCompletionTier.Gold:
                 return progress.goldRewardClaimed;
-
             case ContainerCompletionTier.Diamond:
                 return progress.diamondRewardClaimed;
-
             default:
                 return false;
         }
@@ -713,14 +842,18 @@ public class ContainerProgressManager : MonoBehaviour
                tier == ContainerCompletionTier.Silver;
     }
 
-    public bool CanClaimReward(CaseData caseData, ContainerCompletionTier tier)
+    public bool CanClaimReward(
+        CaseData caseData,
+        ContainerCompletionTier tier)
     {
         return IsRewardImplemented(tier) &&
                IsTierComplete(caseData, tier) &&
                !IsRewardClaimed(caseData, tier);
     }
 
-    public bool ClaimReward(CaseData caseData, ContainerCompletionTier tier)
+    public bool ClaimReward(
+        CaseData caseData,
+        ContainerCompletionTier tier)
     {
         if (!CanClaimReward(caseData, tier))
             return false;
@@ -733,6 +866,7 @@ public class ContainerProgressManager : MonoBehaviour
         }
 
         ContainerProgressData progress = GetProgress(caseData);
+
         if (progress == null)
             return false;
 
@@ -744,12 +878,10 @@ public class ContainerProgressManager : MonoBehaviour
                 reward = 20;
                 progress.bronzeRewardClaimed = true;
                 break;
-
             case ContainerCompletionTier.Silver:
                 reward = 40;
                 progress.silverRewardClaimed = true;
                 break;
-
             default:
                 return false;
         }
@@ -799,10 +931,8 @@ public class ContainerProgressManager : MonoBehaviour
         {
             case ContainerVariantRequirement.Souvenir:
                 return item.souvenir && !item.statTrak;
-
             case ContainerVariantRequirement.StatTrak:
                 return item.statTrak && !item.souvenir;
-
             default:
                 return false;
         }
@@ -816,12 +946,11 @@ public class ContainerProgressManager : MonoBehaviour
         if (item.isVanilla || item.skin.isVanilla)
             return true;
 
-        int bestWear = GetBestPossibleWearIndex(item.skin);
-        int openedWear = WearUtility.GetWearIndex((float)item.floatValue);
-        return openedWear == bestWear;
+        return GetOpenedWearIndex(item) ==
+               GetBestPossibleWearIndex(item.skin);
     }
 
-    private static bool IsTopQuarterFloat(InventoryItem item)
+    private static bool IsTopQuarterOfHighestPossibleWear(InventoryItem item)
     {
         if (item == null || item.skin == null)
             return false;
@@ -829,8 +958,11 @@ public class ContainerProgressManager : MonoBehaviour
         if (item.isVanilla || item.skin.isVanilla)
             return true;
 
+        if (!IsBestPossibleWear(item))
+            return false;
+
         double threshold = GetTopQuarterFloatThreshold(item.skin);
-        return item.floatValue <= threshold + 0.0000001d;
+        return item.floatValue <= threshold + FloatComparisonEpsilon;
     }
 
     private static int GetOpenedWearIndex(InventoryItem item)
@@ -847,20 +979,81 @@ public class ContainerProgressManager : MonoBehaviour
             4);
     }
 
+    private static float GetWearUpperBound(int wearIndex)
+    {
+        switch (Mathf.Clamp(wearIndex, 0, 4))
+        {
+            case 0: return 0.07f;
+            case 1: return 0.15f;
+            case 2: return 0.38f;
+            case 3: return 0.45f;
+            default: return 1f;
+        }
+    }
+
+    private static int FindBestWearIndex(
+        List<ContainerSkinWearProgress> entries,
+        string skinKey)
+    {
+        if (entries == null)
+            return -1;
+
+        for (int i = 0; i < entries.Count; i++)
+        {
+            ContainerSkinWearProgress entry = entries[i];
+
+            if (entry != null &&
+                string.Equals(entry.skinKey, skinKey, StringComparison.Ordinal))
+            {
+                return Mathf.Clamp(entry.bestWearIndex, 0, 4);
+            }
+        }
+
+        return -1;
+    }
+
     private static void RecordBestFoundWear(
         ContainerProgressData progress,
         string skinKey,
         int wearIndex)
     {
-        if (progress == null || string.IsNullOrWhiteSpace(skinKey))
-            return;
+        RecordBestWearInList(
+            progress,
+            progress.bestFoundWearBySkin,
+            skinKey,
+            wearIndex);
+    }
 
-        EnsureProgressLists(progress);
+    private static void RecordBestFoundStatTrakWear(
+        ContainerProgressData progress,
+        string skinKey,
+        int wearIndex)
+    {
+        RecordBestWearInList(
+            progress,
+            progress.bestFoundStatTrakWearBySkin,
+            skinKey,
+            wearIndex);
+    }
+
+    private static void RecordBestWearInList(
+        ContainerProgressData progress,
+        List<ContainerSkinWearProgress> entries,
+        string skinKey,
+        int wearIndex)
+    {
+        if (progress == null ||
+            entries == null ||
+            string.IsNullOrWhiteSpace(skinKey))
+        {
+            return;
+        }
+
         int clampedWear = Mathf.Clamp(wearIndex, 0, 4);
 
-        for (int i = 0; i < progress.bestFoundWearBySkin.Count; i++)
+        for (int i = 0; i < entries.Count; i++)
         {
-            ContainerSkinWearProgress entry = progress.bestFoundWearBySkin[i];
+            ContainerSkinWearProgress entry = entries[i];
 
             if (entry == null ||
                 !string.Equals(entry.skinKey, skinKey, StringComparison.Ordinal))
@@ -872,11 +1065,62 @@ public class ContainerProgressManager : MonoBehaviour
             return;
         }
 
-        progress.bestFoundWearBySkin.Add(
+        entries.Add(
             new ContainerSkinWearProgress
             {
                 skinKey = skinKey,
                 bestWearIndex = clampedWear
+            });
+    }
+
+    private static void RecordObservedFloat(
+        ContainerProgressData progress,
+        string skinKey,
+        double floatValue)
+    {
+        if (progress == null ||
+            string.IsNullOrWhiteSpace(skinKey) ||
+            double.IsNaN(floatValue) ||
+            double.IsInfinity(floatValue))
+        {
+            return;
+        }
+
+        EnsureProgressLists(progress);
+
+        for (int i = 0; i < progress.observedFloatRangesBySkin.Count; i++)
+        {
+            ContainerSkinFloatRangeProgress entry =
+                progress.observedFloatRangesBySkin[i];
+
+            if (entry == null ||
+                !string.Equals(entry.skinKey, skinKey, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            if (!entry.hasValue)
+            {
+                entry.lowestFloat = floatValue;
+                entry.highestFloat = floatValue;
+                entry.hasValue = true;
+            }
+            else
+            {
+                entry.lowestFloat = Math.Min(entry.lowestFloat, floatValue);
+                entry.highestFloat = Math.Max(entry.highestFloat, floatValue);
+            }
+
+            return;
+        }
+
+        progress.observedFloatRangesBySkin.Add(
+            new ContainerSkinFloatRangeProgress
+            {
+                skinKey = skinKey,
+                lowestFloat = floatValue,
+                highestFloat = floatValue,
+                hasValue = true
             });
     }
 
@@ -890,6 +1134,7 @@ public class ContainerProgressManager : MonoBehaviour
             return;
 
         EnsureProgressLists(progress);
+
         AddUnique(
             progress.discoveredPriceKeys,
             BuildPriceDiscoveryKey(skinKey, wearIndex, variant));
@@ -980,13 +1225,15 @@ public class ContainerProgressManager : MonoBehaviour
     {
         progressByContainer.Clear();
         EnsureSaveData();
-
         List<ContainerProgressData> valid = new List<ContainerProgressData>();
 
         foreach (ContainerProgressData progress in saveData.progressEntries)
         {
-            if (progress == null || string.IsNullOrWhiteSpace(progress.containerId))
+            if (progress == null ||
+                string.IsNullOrWhiteSpace(progress.containerId))
+            {
                 continue;
+            }
 
             EnsureProgressLists(progress);
 
@@ -1058,17 +1305,44 @@ public class ContainerProgressManager : MonoBehaviour
         if (progress.bestWearVariantSkinKeys == null)
             progress.bestWearVariantSkinKeys = new List<string>();
 
+        // Previous top-quarter fields remain serialized for additive save
+        // compatibility, but are intentionally not used after the corrected
+        // highest-wear-only rule.
         if (progress.topQuarterFloatSkinKeys == null)
             progress.topQuarterFloatSkinKeys = new List<string>();
 
         if (progress.topQuarterFloatStatTrakSkinKeys == null)
             progress.topQuarterFloatStatTrakSkinKeys = new List<string>();
 
+        if (progress.topQuarterHighestWearSkinKeys == null)
+            progress.topQuarterHighestWearSkinKeys = new List<string>();
+
+        if (progress.topQuarterHighestWearStatTrakSkinKeys == null)
+        {
+            progress.topQuarterHighestWearStatTrakSkinKeys =
+                new List<string>();
+        }
+
         if (progress.discoveredPriceKeys == null)
             progress.discoveredPriceKeys = new List<string>();
 
         if (progress.bestFoundWearBySkin == null)
-            progress.bestFoundWearBySkin = new List<ContainerSkinWearProgress>();
+        {
+            progress.bestFoundWearBySkin =
+                new List<ContainerSkinWearProgress>();
+        }
+
+        if (progress.bestFoundStatTrakWearBySkin == null)
+        {
+            progress.bestFoundStatTrakWearBySkin =
+                new List<ContainerSkinWearProgress>();
+        }
+
+        if (progress.observedFloatRangesBySkin == null)
+        {
+            progress.observedFloatRangesBySkin =
+                new List<ContainerSkinFloatRangeProgress>();
+        }
     }
 }
 
@@ -1092,16 +1366,30 @@ public class ContainerProgressData
     public List<string> foundRareSpecialSkinKeys = new List<string>();
     public List<string> bestWearSkinKeys = new List<string>();
 
-    // Legacy variant completion fields are retained for additive save support.
+    // Legacy variant completion fields retained for additive save support.
     public List<string> variantSkinKeys = new List<string>();
     public List<string> bestWearVariantSkinKeys = new List<string>();
 
-    // New completion and item-info discovery state.
+    // Legacy, incorrect whole-range top-quarter fields. Retained but no longer
+    // used so corrected Gold/Diamond progress starts cleanly.
     public List<string> topQuarterFloatSkinKeys = new List<string>();
     public List<string> topQuarterFloatStatTrakSkinKeys = new List<string>();
+
+    // Corrected completion state: top 25% inside the highest possible wear.
+    public List<string> topQuarterHighestWearSkinKeys = new List<string>();
+    public List<string> topQuarterHighestWearStatTrakSkinKeys =
+        new List<string>();
+
     public List<string> discoveredPriceKeys = new List<string>();
+
     public List<ContainerSkinWearProgress> bestFoundWearBySkin =
         new List<ContainerSkinWearProgress>();
+
+    public List<ContainerSkinWearProgress> bestFoundStatTrakWearBySkin =
+        new List<ContainerSkinWearProgress>();
+
+    public List<ContainerSkinFloatRangeProgress> observedFloatRangesBySkin =
+        new List<ContainerSkinFloatRangeProgress>();
 
     public bool bronzeRewardClaimed;
     public bool silverRewardClaimed;
@@ -1114,4 +1402,13 @@ public class ContainerSkinWearProgress
 {
     public string skinKey;
     [Range(0, 4)] public int bestWearIndex = 4;
+}
+
+[Serializable]
+public class ContainerSkinFloatRangeProgress
+{
+    public string skinKey;
+    public bool hasValue;
+    public double lowestFloat;
+    public double highestFloat;
 }
