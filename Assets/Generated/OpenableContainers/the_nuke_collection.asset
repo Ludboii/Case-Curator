@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
-  m_Name: The 2021 Mirage Souvenir Package
+  m_Name: the_nuke_collection
   m_EditorClassIdentifier: Assembly-CSharp::CaseData
   apiId: cc_souvenir_package_nuke
   caseName: The Nuke Collection Souvenir Package

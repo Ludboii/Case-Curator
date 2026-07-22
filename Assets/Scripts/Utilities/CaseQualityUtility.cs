@@ -7,19 +7,19 @@ public static class CaseQualityUtility
         if (price <= 15f)
             return CaseQuality.Consumer;
 
-        if (price <= 30f)
+        if (price <= 35f)
             return CaseQuality.Industrial;
 
-        if (price <= 50f)
+        if (price <= 103f)
             return CaseQuality.MilSpec;
 
-        if (price <= 65f)
+        if (price <= 220f)
             return CaseQuality.Restricted;
 
-        if (price <= 90f)
+        if (price <= 500f)
             return CaseQuality.Classified;
 
-        if (price <= 114f)
+        if (price <= 1500f)
             return CaseQuality.Covert;
 
         return CaseQuality.Gold;
