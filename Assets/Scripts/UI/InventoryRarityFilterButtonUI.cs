@@ -9,9 +9,9 @@ public enum InventoryRarityFilterButtonMode
 }
 
 /// <summary>
-/// Visual state for one rarity-filter button. The rarity colour is preserved
-/// exactly; active state is shown with an outline and optional marker instead
-/// of replacing the button colour with Unity's selected/pressed tint.
+/// Visual state for one rarity-filter button. The authored rarity colour is
+/// never replaced by Unity's button-state tint. Active state is represented by
+/// an outline and optional marker instead.
 /// </summary>
 [DisallowMultipleComponent]
 public class InventoryRarityFilterButtonUI : MonoBehaviour
@@ -26,10 +26,23 @@ public class InventoryRarityFilterButtonUI : MonoBehaviour
     [SerializeField] private GameObject activeIndicator;
     [SerializeField] private TMP_Text activeIndicatorText;
 
+    [Header("Rarity Colour")]
+    [Tooltip(
+        "Uses the central RarityColorUtility value instead of caching the " +
+        "button's current Inspector/EventSystem tint. Keep this enabled for " +
+        "the standard inventory rarity buttons.")]
+    [SerializeField] private bool useRarityUtilityColor = true;
+
+    [SerializeField, Range(0f, 1f)] private float rarityColorAlpha = 1f;
+
     [Header("Active Appearance")]
     [SerializeField] private Color onlyOutlineColor = Color.white;
-    [SerializeField] private Color hideOutlineColor = new Color(1f, 0.25f, 0.25f, 1f);
-    [SerializeField] private Vector2 outlineDistance = new Vector2(3f, -3f);
+    [SerializeField] private Color hideOutlineColor =
+        new Color(1f, 0.25f, 0.25f, 1f);
+
+    [SerializeField] private Vector2 outlineDistance =
+        new Vector2(3f, -3f);
+
     [SerializeField] private bool useGraphicAlpha = true;
     [SerializeField] private string onlyMarker = "✓";
     [SerializeField] private string hideMarker = "×";
@@ -42,35 +55,52 @@ public class InventoryRarityFilterButtonUI : MonoBehaviour
 
     private void Reset()
     {
-        button = GetComponent<Button>();
-
-        if (button != null)
-            rarityBackground = button.targetGraphic;
+        ResolveReferences();
+        RefreshExactRarityColor();
+        ApplyExactRarityColor();
     }
 
     private void Awake()
     {
         ResolveReferences();
-        CacheExactRarityColour();
+        RefreshExactRarityColor();
         DisableUnityColourTinting();
         EnsureOutline();
         SetActive(false);
     }
 
+    private void OnEnable()
+    {
+        ResolveReferences();
+        RefreshExactRarityColor();
+        DisableUnityColourTinting();
+        ApplyExactRarityColor();
+    }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        ResolveReferences();
+        RefreshExactRarityColor();
+        ApplyExactRarityColor();
+    }
+#endif
+
     public void SetActive(bool active)
     {
         ResolveReferences();
+        RefreshExactRarityColor();
         IsActive = active;
-
-        if (rarityBackground != null)
-            rarityBackground.color = exactRarityColor;
+        ApplyExactRarityColor();
 
         if (activeOutline != null)
         {
             activeOutline.enabled = active;
-            activeOutline.effectColor = mode == InventoryRarityFilterButtonMode.Only
-                ? onlyOutlineColor
-                : hideOutlineColor;
+            activeOutline.effectColor =
+                mode == InventoryRarityFilterButtonMode.Only
+                    ? onlyOutlineColor
+                    : hideOutlineColor;
+
             activeOutline.effectDistance = outlineDistance;
             activeOutline.useGraphicAlpha = useGraphicAlpha;
         }
@@ -80,11 +110,22 @@ public class InventoryRarityFilterButtonUI : MonoBehaviour
 
         if (activeIndicatorText != null)
         {
-            activeIndicatorText.text = mode == InventoryRarityFilterButtonMode.Only
-                ? onlyMarker
-                : hideMarker;
+            activeIndicatorText.text =
+                mode == InventoryRarityFilterButtonMode.Only
+                    ? onlyMarker
+                    : hideMarker;
+
             activeIndicatorText.gameObject.SetActive(active);
         }
+    }
+
+    [ContextMenu("Refresh Rarity Colour")]
+    public void RefreshRarityColourNow()
+    {
+        ResolveReferences();
+        RefreshExactRarityColor();
+        DisableUnityColourTinting();
+        ApplyExactRarityColor();
     }
 
     private void ResolveReferences()
@@ -99,10 +140,24 @@ public class InventoryRarityFilterButtonUI : MonoBehaviour
             rarityBackground = GetComponent<Graphic>();
     }
 
-    private void CacheExactRarityColour()
+    private void RefreshExactRarityColor()
+    {
+        if (useRarityUtilityColor)
+        {
+            exactRarityColor = RarityColorUtility.GetColor(rarity);
+        }
+        else if (rarityBackground != null)
+        {
+            exactRarityColor = rarityBackground.color;
+        }
+
+        exactRarityColor.a = rarityColorAlpha;
+    }
+
+    private void ApplyExactRarityColor()
     {
         if (rarityBackground != null)
-            exactRarityColor = rarityBackground.color;
+            rarityBackground.color = exactRarityColor;
     }
 
     private void DisableUnityColourTinting()
@@ -110,10 +165,13 @@ public class InventoryRarityFilterButtonUI : MonoBehaviour
         if (button == null)
             return;
 
-        // Unity's Color Tint transition caused the grey idle colour, green
-        // click flash and black selected state. None keeps the authored rarity
-        // colour unchanged in every EventSystem state.
         button.transition = Selectable.Transition.None;
+
+        if (button.targetGraphic == rarityBackground &&
+            button.targetGraphic != null)
+        {
+            button.targetGraphic.color = exactRarityColor;
+        }
     }
 
     private void EnsureOutline()
@@ -124,7 +182,10 @@ public class InventoryRarityFilterButtonUI : MonoBehaviour
         activeOutline = rarityBackground.GetComponent<Outline>();
 
         if (activeOutline == null)
-            activeOutline = rarityBackground.gameObject.AddComponent<Outline>();
+        {
+            activeOutline =
+                rarityBackground.gameObject.AddComponent<Outline>();
+        }
 
         activeOutline.enabled = false;
     }
