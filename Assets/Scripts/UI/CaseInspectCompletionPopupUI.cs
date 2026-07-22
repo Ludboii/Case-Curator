@@ -47,7 +47,6 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
         SetupButton(goldClaimButton, ClaimGoldReward);
         SetupButton(diamondClaimButton, ClaimDiamondReward);
         SetupButton(closeButton, Close);
-
         Close();
     }
 
@@ -92,7 +91,8 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
         if (currentCase == null)
             return;
 
-        ContainerProgressManager progressManager = ContainerProgressManager.Instance;
+        ContainerProgressManager progressManager =
+            ContainerProgressManager.Instance;
 
         if (progressManager == null)
         {
@@ -100,16 +100,17 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
             return;
         }
 
-        string variantName = progressManager.GetVariantDisplayName(currentCase);
-        bool variantsAvailable =
-            progressManager.GetVariantRequirement(currentCase) != ContainerVariantRequirement.None;
-
         int foundCount = progressManager.GetFoundCount(currentCase);
         int foundTarget = progressManager.GetTargetCount(currentCase);
         int normalTarget = progressManager.GetNormalSkinTargetCount(currentCase);
         int bestWearCount = progressManager.GetBestWearCount(currentCase);
-        int variantCount = progressManager.GetVariantCount(currentCase);
-        int bestWearVariantCount = progressManager.GetBestWearVariantCount(currentCase);
+        int topQuarterCount =
+            progressManager.GetTopQuarterFloatCount(currentCase);
+        int topQuarterStatTrakCount =
+            progressManager.GetTopQuarterFloatStatTrakCount(currentCase);
+
+        bool diamondAvailable =
+            progressManager.CanCompleteDiamond(currentCase);
 
         string containerName = string.IsNullOrWhiteSpace(currentCase.caseName)
             ? "this container"
@@ -126,7 +127,7 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
                 "<color=#CD7F32>BRONZE COMPLETION</color>\n" +
                 bronzeRequirement + "\n" +
                 $"Progress: {foundCount} / {foundTarget}\n" +
-                $"Reward: 10x {containerName}.";
+                $"Reward: 20x {containerName}.";
         }
 
         if (silverExplanationText != null)
@@ -136,33 +137,35 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
                 "Open every normal skin in its best possible wear. " +
                 "Rare Special items are not required.\n" +
                 $"Progress: {bestWearCount} / {normalTarget}\n" +
-                $"Reward: 20x {containerName}.";
+                $"Reward: 40x {containerName}.";
         }
 
         if (goldExplanationText != null)
         {
-            goldExplanationText.text = variantsAvailable
-                ? "<color=#FFD12A>GOLD COMPLETION</color>\n" +
-                  $"Open every normal skin as {variantName}. Any wear is accepted. " +
-                  "Rare Special items are not required.\n" +
-                  $"Progress: {variantCount} / {normalTarget}\n" +
-                  "Reward: 20-40 Present Shards from the current Museum band + " +
-                  "25% discount on this container."
-                : "<color=#FFD12A>GOLD COMPLETION</color>\n" +
-                  "Unavailable: this container cannot generate StatTrak or Souvenir variants.";
+            goldExplanationText.text =
+                "<color=#FFD12A>GOLD COMPLETION</color>\n" +
+                "Open every normal skin with a float in the best 25% of " +
+                "that skin's available float range. StatTrak and Souvenir " +
+                "items also count. Rare Special items are not required.\n" +
+                $"Progress: {topQuarterCount} / {normalTarget}\n" +
+                "Reward: 20-40 Present Shards from the current Museum band + " +
+                "25% discount on this container.";
         }
 
         if (diamondExplanationText != null)
         {
-            diamondExplanationText.text = variantsAvailable
+            diamondExplanationText.text = diamondAvailable
                 ? "<color=#67E8FF>DIAMOND COMPLETION</color>\n" +
-                  $"Open every normal skin as {variantName} in its best possible wear. " +
-                  "Rare Special items are not required.\n" +
-                  $"Progress: {bestWearVariantCount} / {normalTarget}\n" +
+                  "Open every normal skin as StatTrak with a float in the best " +
+                  "25% of that skin's available float range. Rare Special " +
+                  "items are not required.\n" +
+                  $"Progress: {topQuarterStatTrakCount} / {normalTarget}\n" +
                   "Reward: +0.05% Museum Points when donating + " +
                   "+0.025% Museum idle Gold income."
                 : "<color=#67E8FF>DIAMOND COMPLETION</color>\n" +
-                  "Unavailable: this container cannot generate StatTrak or Souvenir variants.";
+                  "Unavailable: this container cannot generate StatTrak items. " +
+                  "Normal Collection Packages and Souvenir Packages therefore " +
+                  "cannot reach Diamond Completion.";
         }
 
         RefreshClaimButton(
@@ -181,13 +184,13 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
             goldClaimButton,
             goldClaimButtonText,
             ContainerCompletionTier.Gold,
-            variantsAvailable);
+            true);
 
         RefreshClaimButton(
             diamondClaimButton,
             diamondClaimButtonText,
             ContainerCompletionTier.Diamond,
-            variantsAvailable);
+            diamondAvailable);
     }
 
     private void RefreshClaimButton(
@@ -199,7 +202,8 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
         if (button == null)
             return;
 
-        ContainerProgressManager progressManager = ContainerProgressManager.Instance;
+        ContainerProgressManager progressManager =
+            ContainerProgressManager.Instance;
 
         if (progressManager == null || currentCase == null)
         {
@@ -209,7 +213,12 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
 
         if (!tierAvailable)
         {
-            SetButtonState(button, buttonText, false, "UNAVAILABLE", unavailableColor);
+            SetButtonState(
+                button,
+                buttonText,
+                false,
+                "UNAVAILABLE",
+                unavailableColor);
             return;
         }
 
@@ -231,14 +240,24 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
 
         if (!implemented)
         {
-            SetButtonState(button, buttonText, false, "REWARD NEXT", comingLaterColor);
+            SetButtonState(
+                button,
+                buttonText,
+                false,
+                "REWARD NEXT",
+                comingLaterColor);
             return;
         }
 
-        SetButtonState(button, buttonText, true, "CLAIM REWARD", claimableColor);
+        SetButtonState(
+            button,
+            buttonText,
+            true,
+            "CLAIM REWARD",
+            claimableColor);
     }
 
-    private void SetButtonState(
+    private static void SetButtonState(
         Button button,
         TMP_Text buttonText,
         bool interactable,
@@ -248,7 +267,6 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
         button.interactable = interactable;
 
         Graphic targetGraphic = button.targetGraphic;
-
         if (targetGraphic != null)
             targetGraphic.color = color;
 
@@ -288,10 +306,33 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
         if (diamondExplanationText != null)
             diamondExplanationText.text = "";
 
-        SetButtonState(bronzeClaimButton, bronzeClaimButtonText, false, "UNAVAILABLE", unavailableColor);
-        SetButtonState(silverClaimButton, silverClaimButtonText, false, "UNAVAILABLE", unavailableColor);
-        SetButtonState(goldClaimButton, goldClaimButtonText, false, "UNAVAILABLE", unavailableColor);
-        SetButtonState(diamondClaimButton, diamondClaimButtonText, false, "UNAVAILABLE", unavailableColor);
+        SetButtonState(
+            bronzeClaimButton,
+            bronzeClaimButtonText,
+            false,
+            "UNAVAILABLE",
+            unavailableColor);
+
+        SetButtonState(
+            silverClaimButton,
+            silverClaimButtonText,
+            false,
+            "UNAVAILABLE",
+            unavailableColor);
+
+        SetButtonState(
+            goldClaimButton,
+            goldClaimButtonText,
+            false,
+            "UNAVAILABLE",
+            unavailableColor);
+
+        SetButtonState(
+            diamondClaimButton,
+            diamondClaimButtonText,
+            false,
+            "UNAVAILABLE",
+            unavailableColor);
     }
 
     private void ClaimBronzeReward()
@@ -323,7 +364,9 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
         Refresh();
     }
 
-    private void SetupButton(Button button, UnityEngine.Events.UnityAction action)
+    private static void SetupButton(
+        Button button,
+        UnityEngine.Events.UnityAction action)
     {
         if (button == null)
             return;
