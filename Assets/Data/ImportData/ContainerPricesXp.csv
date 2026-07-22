@@ -1,0 +1,107 @@
+SourceName,CaseDataAssetName,ContainerType,ShopCategory,PriceGold,XPReward
+Kilowatt Case,Kilowatt Case,WeaponCase,Cases,1.65,2
+Revolution Case,Revolution Case,WeaponCase,Cases,1.9,2
+Recoil Case,Recoil Case,WeaponCase,Cases,2.15,3
+The Lake Collection,The Lake Collection Package,CollectionPackage,Collections,3.0,3
+Fracture Case,Fracture Case,WeaponCase,Cases,3.1,4
+Snakebite Case,Snakebite Case,WeaponCase,Cases,3.2,4
+The Train Collection,The Train Collection Package,CollectionPackage,Collections,4.5,5
+The Italy Collection,The Italy Collection Package,CollectionPackage,Collections,5.0,7
+Clutch Case,Clutch Case,WeaponCase,Cases,5.3,5
+CS20 Case,CS20 Case,WeaponCase,Cases,5.6,5
+Fever Case,Fever Case,WeaponCase,Cases,6.15,5
+Shadow Case,Shadow Case,WeaponCase,Cases,6.3,5
+The Dust 2 Collection,The Dust 2 Collection Package,CollectionPackage,Collections,6.8,8
+Gallery Case,Gallery Case,WeaponCase,Cases,7.2,6
+The Bank Collection,The Bank Collection Package,CollectionPackage,Collections,8.5,7
+Falchion Case,Falchion Case,WeaponCase,Cases,9.2,7
+Sealed Dead Hand Terminal,Sealed Dead Hand Terminal,WeaponCase,Cases,10.5,8
+Prisma 2 Case,Prisma 2 Case,WeaponCase,Cases,11.5,8
+Dreams & Nightmares Case,Dreams & Nightmares Case,WeaponCase,Cases,12.3,9
+Huntsman Weapon Case,Huntsman Weapon Case,WeaponCase,Cases,12.95,9
+Prisma Case,Prisma Case,WeaponCase,Cases,13.0,9
+Spectrum Case,Spectrum Case,WeaponCase,Cases,13.4,10
+Danger Zone Case,Danger Zone Case,WeaponCase,Cases,14.2,11
+Gamma Case,Gamma Case,WeaponCase,Cases,15.2,12
+Horizon Case,Horizon Case,WeaponCase,Cases,15.3,12
+The Aztec Collection,The Aztec Collection Package,CollectionPackage,Collections,15.5,13
+Operation Wildfire Case,Operation Wildfire Case,WeaponCase,Cases,16.3,13
+Operation Phoenix Weapon Case,Operation Phoenix Weapon Case,WeaponCase,Cases,16.7,13
+Revolver Case,Revolver Case,WeaponCase,Cases,18.3,15
+Chroma 3 Case,Chroma 3 Case,WeaponCase,Cases,18.4,15
+Operation Vanguard Weapon Case,Operation Vanguard Weapon Case,WeaponCase,Cases,19.25,17
+Gamma 2 Case,Gamma 2 Case,WeaponCase,Cases,19.3,17
+The Safehouse Collection,The Safehouse Collection Package,CollectionPackage,Collections,19.8,17
+Chroma Case,Chroma Case,WeaponCase,Cases,20.65,18
+The Cache Collection,The Cache Collection Package,CollectionPackage,Collections,21.9,17
+Chroma 2 Case,Chroma 2 Case,WeaponCase,Cases,22.2,20
+Operation Broken Fang Case,Operation Broken Fang Case,WeaponCase,Cases,22.3,20
+Spectrum 2 Case,Spectrum 2 Case,WeaponCase,Cases,25.2,22
+Winter Offensive Weapon Case,Winter Offensive Weapon Case,WeaponCase,Cases,25.2,22
+Shattered Web Case,Shattered Web Case,WeaponCase,Cases,25.3,22
+The Vertigo Collection,The Vertigo Collection Package,CollectionPackage,Collections,28.5,21
+Operation Riptide Case,Operation Riptide Case,WeaponCase,Cases,28.65,25
+Operation Breakout Weapon Case,Operation Breakout Weapon Case,WeaponCase,Cases,29.3,26
+The Train Collection,Souvenir Train Package,SouvenirPackage,SouvenirCollections,30.0,22
+CS:GO Weapon Case 3,CS:GO Weapon Case 3,WeaponCase,Cases,30.85,27
+The 2018 Inferno Collection,The 2018 Inferno Collection Package,CollectionPackage,Collections,35.0,23
+eSports 2014 Summer Case,eSports 2014 Summer Case,WeaponCase,Cases,37.1,31
+The Inferno Collection,The Inferno Collection Package,CollectionPackage,Collections,39.0,24
+Glove Case,Glove Case,WeaponCase,Cases,44.3,34
+The 2018 Nuke Collection,The 2018 Nuke Collection Package,CollectionPackage,Collections,48.0,32
+eSports 2013 Winter Case,eSports 2013 Winter Case,WeaponCase,Cases,51.5,40
+CS:GO Weapon Case 2,CS:GO Weapon Case 2,WeaponCase,Cases,55.2,43
+The Harlequin Collection,The Harlequin Collection Package,CollectionPackage,Collections,66.5,34
+The Achroma Collection,The Achroma Collection Package,CollectionPackage,Collections,69.9,39
+The Dust 2 Collection,Souvenir Dust 2 Package,SouvenirPackage,SouvenirCollections,70.0,35
+eSports 2013 Case,eSports 2013 Case,WeaponCase,Cases,79.4,49
+Operation Hydra Case,Operation Hydra Case,WeaponCase,Cases,80.2,52
+The Office Collection,The Office Collection Package,CollectionPackage,Collections,85.0,42
+The Cache Collection,Souvenir Cache Package,SouvenirPackage,SouvenirCollections,95.0,43
+The Ascent Collection,The Ascent Collection Package,CollectionPackage,Collections,103.0,50
+The Mirage Collection,The Mirage Collection Package,CollectionPackage,Collections,108.0,52
+The Boreal Collection,The Boreal Collection Package,CollectionPackage,Collections,121.0,56
+Operation Bravo Case,Operation Bravo Case,WeaponCase,Cases,125.7,62
+The Inferno Collection,Souvenir Inferno Package,SouvenirPackage,SouvenirCollections,130.0,51
+The Radiant Collection,The Radiant Collection Package,CollectionPackage,Collections,145.0,62
+The Alpha Collection,The Alpha Collection Package,CollectionPackage,Collections,145.5,62
+The Overpass Collection,The Overpass Collection Package,CollectionPackage,Collections,189.0,70
+The Sport & Field Collection,The Sport & Field Collection Package,CollectionPackage,Collections,193.0,70
+CS:GO Weapon Case,CS:GO Weapon Case,WeaponCase,Cases,195.3,83
+The Vertigo Collection,Souvenir Vertigo Package,SouvenirPackage,SouvenirCollections,220.0,66
+The Dust Collection,The Dust Collection Package,CollectionPackage,Collections,225.0,82
+The Overpass 2024 Collection,The Overpass 2024 Collection Package,CollectionPackage,Collections,245.0,85
+The Train 2025 Collection,The Train 2025 Collection Package,CollectionPackage,Collections,250.0,85
+The Militia Collection,The Militia Collection Package,CollectionPackage,Collections,280.0,87
+The 2018 Nuke Collection,Souvenir 2018 Nuke Package,SouvenirPackage,SouvenirCollections,300.0,78
+The Graphic Design Collection,The Graphic Design Collection Package,CollectionPackage,Collections,330.0,91
+The 2018 Inferno Collection,Souvenir 2018 Inferno Package,SouvenirPackage,SouvenirCollections,340.0,84
+The Control Collection,The Control Collection Package,CollectionPackage,Collections,400.0,100
+The Baggage Collection,The Baggage Collection Package,CollectionPackage,Collections,430.0,105
+The 2021 Train Collection,The 2021 Train Collection Package,CollectionPackage,Collections,460.0,112
+The Mirage Collection,Souvenir Mirage Package,SouvenirPackage,SouvenirCollections,495.0,97
+The Ancient Collection,The Ancient Collection Package,CollectionPackage,Collections,500.0,118
+The Anubis Collection,The Anubis Collection Package,CollectionPackage,Collections,500.0,118
+The 2021 Dust 2 Collection,The 2021 Dust 2 Collection Package,CollectionPackage,Collections,540.0,127
+The Assault Collection,The Assault Collection Package,CollectionPackage,Collections,595.0,134
+The Chop Shop Collection,The Chop Shop Collection Package,CollectionPackage,Collections,650.0,137
+The Overpass Collection,Souvenir Overpass Package,SouvenirPackage,SouvenirCollections,670.0,139
+The Havoc Collection,The Havoc Collection Package,CollectionPackage,Collections,745.0,145
+The Nuke Collection,The Nuke Collection Package,CollectionPackage,Collections,745.0,145
+The 2021 Mirage Collection,The 2021 Mirage Collection Package,CollectionPackage,Collections,750.0,146
+The Overpass 2024 Collection,Souvenir Overpass 2024 Package,SouvenirPackage,SouvenirCollections,815.0,148
+The Train 2025 Collection,Souvenir Train 2025 Package,SouvenirPackage,SouvenirCollections,830.0,150
+The 2021 Vertigo Collection,The 2021 Vertigo Collection Package,CollectionPackage,Collections,850.0,152
+The Rising Sun Collection,The Rising Sun Collection Package,CollectionPackage,Collections,950.0,157
+The Anubis Collection,Souvenir Anubis Package,SouvenirPackage,SouvenirCollections,980.0,160
+The Ancient Collection,Souvenir Ancient Package,SouvenirPackage,SouvenirCollections,1040.0,163
+The Canals Collection,The Canals Collection Package,CollectionPackage,Collections,1050.0,165
+The St. Marc Collection,The St. Marc Collection Package,CollectionPackage,Collections,1090.0,169
+The Gods and Monsters Collection,The Gods and Monsters Collection Package,CollectionPackage,Collections,1150.0,179
+The Norse Collection,The Norse Collection Package,CollectionPackage,Collections,1250.0,189
+The Nuke Collection,Souvenir Nuke Package,SouvenirPackage,SouvenirCollections,1320.0,194
+The Cobblestone Collection,The Cobblestone Collection Package,CollectionPackage,Collections,1540.0,198
+The 2021 Dust 2 Collection,Souvenir 2021 Dust 2 Package,SouvenirPackage,SouvenirCollections,1865.0,215
+The 2021 Mirage Collection,Souvenir 2021 Mirage Package,SouvenirPackage,SouvenirCollections,2205.0,236
+The 2021 Vertigo Collection,Souvenir 2021 Vertigo Package,SouvenirPackage,SouvenirCollections,2595.0,279
+The Cobblestone Collection,Souvenir Cobblestone Package,SouvenirPackage,SouvenirCollections,4375.0,450
