@@ -43,6 +43,7 @@ public class CaseShopUI : MonoBehaviour
     private bool maxQuantitySelected;
     private CaseShopCategory currentCategory = CaseShopCategory.Cases;
     private GridSettings gridSettings;
+    private bool layoutPrepared;
 
     public bool IsMaxQuantitySelected => maxQuantitySelected;
 
@@ -53,14 +54,13 @@ public class CaseShopUI : MonoBehaviour
         public GridLayoutGroup.Corner startCorner;
         public GridLayoutGroup.Axis startAxis;
         public TextAnchor childAlignment;
-        public GridLayoutGroup.Constraint constraint;
         public int constraintCount;
         public RectOffset contentPadding;
     }
 
     private void Awake()
     {
-        CaptureGridSettings();
+        PrepareRankSectionLayout();
         SetupBuyAmountButtons();
         SetupCategoryButtons();
     }
@@ -68,11 +68,6 @@ public class CaseShopUI : MonoBehaviour
     private void OnEnable()
     {
         SubscribeToEvents();
-        RefreshShop();
-    }
-
-    private void Start()
-    {
         RefreshShop();
     }
 
@@ -87,7 +82,6 @@ public class CaseShopUI : MonoBehaviour
         {
             SaveManager.Instance.OnCurrencyChanged -= RefreshCards;
             SaveManager.Instance.OnCurrencyChanged += RefreshCards;
-
             SaveManager.Instance.OnProgressChanged -= RefreshCards;
             SaveManager.Instance.OnProgressChanged += RefreshCards;
         }
@@ -126,19 +120,23 @@ public class CaseShopUI : MonoBehaviour
         SetupButton(nextCategoryButton, NextCategory);
     }
 
-    private void SetupButton(Button button, UnityEngine.Events.UnityAction action)
+    private static void SetupButton(
+        Button button,
+        UnityEngine.Events.UnityAction action)
     {
         if (button == null)
             return;
 
-        button.onClick.RemoveAllListeners();
+        button.onClick.RemoveListener(action);
         button.onClick.AddListener(action);
     }
 
     public void RefreshShop()
     {
+        if (!layoutPrepared)
+            PrepareRankSectionLayout();
+
         ClearSpawnedObjects();
-        EnsureRankSectionLayout();
         SpawnCurrentCategory();
         RefreshCards();
         RefreshQuantityButtons();
@@ -146,69 +144,44 @@ public class CaseShopUI : MonoBehaviour
         RebuildLayout();
     }
 
-    private void CaptureGridSettings()
-    {
-        GridLayoutGroup existingGrid = caseGridContent != null
-            ? caseGridContent.GetComponent<GridLayoutGroup>()
-            : null;
-
-        gridSettings = new GridSettings
-        {
-            cellSize = existingGrid != null
-                ? existingGrid.cellSize
-                : fallbackCardCellSize,
-
-            spacing = existingGrid != null
-                ? existingGrid.spacing
-                : fallbackCardSpacing,
-
-            startCorner = existingGrid != null
-                ? existingGrid.startCorner
-                : GridLayoutGroup.Corner.UpperLeft,
-
-            startAxis = existingGrid != null
-                ? existingGrid.startAxis
-                : GridLayoutGroup.Axis.Horizontal,
-
-            childAlignment = existingGrid != null
-                ? existingGrid.childAlignment
-                : TextAnchor.UpperLeft,
-
-            constraint = GridLayoutGroup.Constraint.FixedColumnCount,
-
-            constraintCount = existingGrid != null &&
-                              existingGrid.constraint ==
-                                  GridLayoutGroup.Constraint.FixedColumnCount
-                ? Mathf.Max(1, existingGrid.constraintCount)
-                : Mathf.Max(1, fallbackCardsPerRow),
-
-            contentPadding = existingGrid != null
-                ? CopyPadding(existingGrid.padding)
-                : new RectOffset()
-        };
-    }
-
-    private void EnsureRankSectionLayout()
+    private void PrepareRankSectionLayout()
     {
         if (caseGridContent == null)
+        {
+            Debug.LogWarning("CaseShopUI: caseGridContent is not assigned.", this);
             return;
-
-        if (gridSettings == null)
-            CaptureGridSettings();
+        }
 
         GridLayoutGroup oldGrid =
             caseGridContent.GetComponent<GridLayoutGroup>();
 
+        CaptureGridSettings(oldGrid);
+
+        // Unity allows only one LayoutGroup on a GameObject. The previous
+        // implementation disabled GridLayoutGroup and then tried to add a
+        // VerticalLayoutGroup, which Unity rejects. Removing the old component
+        // first is required because the outer content is now a vertical list of
+        // divider + per-rank grid sections.
         if (oldGrid != null)
-            oldGrid.enabled = false;
+        {
+            if (Application.isPlaying)
+                DestroyImmediate(oldGrid);
+            else
+                DestroyImmediate(oldGrid, true);
+        }
 
         VerticalLayoutGroup verticalLayout =
             caseGridContent.GetComponent<VerticalLayoutGroup>();
 
         if (verticalLayout == null)
+            verticalLayout = caseGridContent.gameObject.AddComponent<VerticalLayoutGroup>();
+
+        if (verticalLayout == null)
         {
-            verticalLayout =
-                caseGridContent.gameObject.AddComponent<VerticalLayoutGroup>();
+            Debug.LogError(
+                "CaseShopUI: Could not create the VerticalLayoutGroup used by rank sections.",
+                this);
+            return;
         }
 
         verticalLayout.enabled = true;
@@ -224,14 +197,40 @@ public class CaseShopUI : MonoBehaviour
             caseGridContent.GetComponent<ContentSizeFitter>();
 
         if (fitter == null)
-        {
-            fitter =
-                caseGridContent.gameObject.AddComponent<ContentSizeFitter>();
-        }
+            fitter = caseGridContent.gameObject.AddComponent<ContentSizeFitter>();
 
-        fitter.enabled = true;
         fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
         fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+        layoutPrepared = true;
+    }
+
+    private void CaptureGridSettings(GridLayoutGroup existingGrid)
+    {
+        gridSettings = new GridSettings
+        {
+            cellSize = existingGrid != null
+                ? existingGrid.cellSize
+                : fallbackCardCellSize,
+            spacing = existingGrid != null
+                ? existingGrid.spacing
+                : fallbackCardSpacing,
+            startCorner = existingGrid != null
+                ? existingGrid.startCorner
+                : GridLayoutGroup.Corner.UpperLeft,
+            startAxis = existingGrid != null
+                ? existingGrid.startAxis
+                : GridLayoutGroup.Axis.Horizontal,
+            childAlignment = existingGrid != null
+                ? existingGrid.childAlignment
+                : TextAnchor.UpperLeft,
+            constraintCount = existingGrid != null &&
+                              existingGrid.constraint == GridLayoutGroup.Constraint.FixedColumnCount
+                ? Mathf.Max(1, existingGrid.constraintCount)
+                : Mathf.Max(1, fallbackCardsPerRow),
+            contentPadding = existingGrid != null
+                ? CopyPadding(existingGrid.padding)
+                : new RectOffset()
+        };
     }
 
     private void RebuildLayout()
@@ -241,29 +240,17 @@ public class CaseShopUI : MonoBehaviour
 
         Canvas.ForceUpdateCanvases();
 
-        RectTransform rect = caseGridContent as RectTransform;
-
-        if (rect != null)
+        if (caseGridContent is RectTransform rect)
             LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
     }
 
     private void SpawnCurrentCategory()
     {
-        if (database == null)
+        if (database == null || caseGridContent == null || caseCardPrefab == null)
         {
-            Debug.LogWarning("CaseShopUI: No GameDatabase assigned.");
-            return;
-        }
-
-        if (caseGridContent == null)
-        {
-            Debug.LogWarning("CaseShopUI: No caseGridContent assigned.");
-            return;
-        }
-
-        if (caseCardPrefab == null)
-        {
-            Debug.LogWarning("CaseShopUI: No caseCardPrefab assigned.");
+            Debug.LogWarning(
+                "CaseShopUI: Database, content, or case-card prefab is missing.",
+                this);
             return;
         }
 
@@ -292,10 +279,7 @@ public class CaseShopUI : MonoBehaviour
 
             int sectionCount = index - sectionStart;
             SpawnRankDivider(rank);
-
-            Transform rankGrid = CreateRankCardGrid(
-                rank,
-                sectionCount);
+            Transform rankGrid = CreateRankCardGrid(rank, sectionCount);
 
             for (int i = sectionStart; i < index; i++)
                 SpawnCaseCard(casesToShow[i], rankGrid);
@@ -311,21 +295,17 @@ public class CaseShopUI : MonoBehaviour
 
         foreach (CaseData caseData in database.allCases)
         {
-            if (caseData == null || caseData.shopCategory != currentCategory)
-                continue;
-
-            cases.Add(caseData);
+            if (caseData != null && caseData.shopCategory == currentCategory)
+                cases.Add(caseData);
         }
 
         cases.Sort((a, b) =>
         {
             int rankCompare = a.requiredRank.CompareTo(b.requiredRank);
-
             if (rankCompare != 0)
                 return rankCompare;
 
             int priceCompare = a.priceInGold.CompareTo(b.priceInGold);
-
             if (priceCompare != 0)
                 return priceCompare;
 
@@ -347,9 +327,7 @@ public class CaseShopUI : MonoBehaviour
         divider.gameObject.SetActive(true);
         divider.Setup(requiredRank, currentCategory);
 
-        RectTransform dividerRect = divider.transform as RectTransform;
-
-        if (dividerRect != null)
+        if (divider.transform is RectTransform dividerRect)
         {
             dividerRect.anchorMin = new Vector2(0f, 1f);
             dividerRect.anchorMax = new Vector2(1f, 1f);
@@ -357,9 +335,7 @@ public class CaseShopUI : MonoBehaviour
             dividerRect.sizeDelta = new Vector2(0f, rankDividerHeight);
         }
 
-        LayoutElement layoutElement =
-            divider.GetComponent<LayoutElement>();
-
+        LayoutElement layoutElement = divider.GetComponent<LayoutElement>();
         if (layoutElement == null)
             layoutElement = divider.gameObject.AddComponent<LayoutElement>();
 
@@ -367,13 +343,10 @@ public class CaseShopUI : MonoBehaviour
         layoutElement.preferredHeight = rankDividerHeight;
         layoutElement.flexibleWidth = 1f;
         layoutElement.flexibleHeight = 0f;
-
         spawnedObjects.Add(divider.gameObject);
     }
 
-    private Transform CreateRankCardGrid(
-        PlayerRank rank,
-        int cardCount)
+    private Transform CreateRankCardGrid(PlayerRank rank, int cardCount)
     {
         GameObject gridObject = new GameObject(
             $"RankCards_{rank}",
@@ -383,17 +356,13 @@ public class CaseShopUI : MonoBehaviour
 
         gridObject.transform.SetParent(caseGridContent, false);
 
-        RectTransform rect =
-            gridObject.GetComponent<RectTransform>();
-
+        RectTransform rect = gridObject.GetComponent<RectTransform>();
         rect.anchorMin = new Vector2(0f, 1f);
         rect.anchorMax = new Vector2(1f, 1f);
         rect.pivot = new Vector2(0.5f, 1f);
         rect.sizeDelta = Vector2.zero;
 
-        GridLayoutGroup grid =
-            gridObject.GetComponent<GridLayoutGroup>();
-
+        GridLayoutGroup grid = gridObject.GetComponent<GridLayoutGroup>();
         grid.cellSize = gridSettings.cellSize;
         grid.spacing = gridSettings.spacing;
         grid.startCorner = gridSettings.startCorner;
@@ -405,36 +374,28 @@ public class CaseShopUI : MonoBehaviour
 
         int rows = Mathf.Max(
             1,
-            Mathf.CeilToInt(
-                cardCount / (float)grid.constraintCount));
+            Mathf.CeilToInt(cardCount / (float)grid.constraintCount));
 
         float preferredHeight =
             rows * grid.cellSize.y +
             Mathf.Max(0, rows - 1) * grid.spacing.y;
 
-        LayoutElement layoutElement =
-            gridObject.GetComponent<LayoutElement>();
-
-        layoutElement.minHeight = preferredHeight;
-        layoutElement.preferredHeight = preferredHeight;
-        layoutElement.flexibleWidth = 1f;
-        layoutElement.flexibleHeight = 0f;
+        LayoutElement layout = gridObject.GetComponent<LayoutElement>();
+        layout.minHeight = preferredHeight;
+        layout.preferredHeight = preferredHeight;
+        layout.flexibleWidth = 1f;
+        layout.flexibleHeight = 0f;
 
         spawnedObjects.Add(gridObject);
         return gridObject.transform;
     }
 
-    private void SpawnCaseCard(
-        CaseData caseData,
-        Transform parent)
+    private void SpawnCaseCard(CaseData caseData, Transform parent)
     {
         if (caseData == null || parent == null)
             return;
 
-        CaseShopCardUI card = Instantiate(
-            caseCardPrefab,
-            parent);
-
+        CaseShopCardUI card = Instantiate(caseCardPrefab, parent);
         card.gameObject.SetActive(true);
         card.Setup(caseData, this);
         spawnedCards.Add(card);
@@ -466,25 +427,11 @@ public class CaseShopUI : MonoBehaviour
 
     private void RefreshQuantityButtons()
     {
-        ApplyQuantityButtonVisual(
-            buy1Button,
-            !maxQuantitySelected && selectedBuyAmount == 1);
-
-        ApplyQuantityButtonVisual(
-            buy5Button,
-            !maxQuantitySelected && selectedBuyAmount == 5);
-
-        ApplyQuantityButtonVisual(
-            buy10Button,
-            !maxQuantitySelected && selectedBuyAmount == 10);
-
-        ApplyQuantityButtonVisual(
-            buy50Button,
-            !maxQuantitySelected && selectedBuyAmount == 50);
-
-        ApplyQuantityButtonVisual(
-            buyMaxButton,
-            maxQuantitySelected);
+        ApplyQuantityButtonVisual(buy1Button, !maxQuantitySelected && selectedBuyAmount == 1);
+        ApplyQuantityButtonVisual(buy5Button, !maxQuantitySelected && selectedBuyAmount == 5);
+        ApplyQuantityButtonVisual(buy10Button, !maxQuantitySelected && selectedBuyAmount == 10);
+        ApplyQuantityButtonVisual(buy50Button, !maxQuantitySelected && selectedBuyAmount == 50);
+        ApplyQuantityButtonVisual(buyMaxButton, maxQuantitySelected);
     }
 
     private void ApplyQuantityButtonVisual(Button button, bool selected)
@@ -492,10 +439,7 @@ public class CaseShopUI : MonoBehaviour
         if (button == null)
             return;
 
-        Color targetColor = selected
-            ? selectedQuantityColor
-            : normalQuantityColor;
-
+        Color targetColor = selected ? selectedQuantityColor : normalQuantityColor;
         ColorBlock colors = button.colors;
         colors.normalColor = targetColor;
         colors.highlightedColor = targetColor;
@@ -506,7 +450,6 @@ public class CaseShopUI : MonoBehaviour
         button.colors = colors;
 
         TMP_Text text = button.GetComponentInChildren<TMP_Text>();
-
         if (text != null)
         {
             text.color = Color.white;
@@ -535,9 +478,7 @@ public class CaseShopUI : MonoBehaviour
 
         return Mathf.Max(
             0,
-            Mathf.FloorToInt(
-                SaveManager.Instance.Gold /
-                caseData.priceInGold));
+            Mathf.FloorToInt(SaveManager.Instance.Gold / caseData.priceInGold));
     }
 
     public bool CanBuyCase(CaseData caseData, out string failReason)
@@ -566,20 +507,17 @@ public class CaseShopUI : MonoBehaviour
         {
             failReason =
                 $"Rank: {PlayerProgressUtility.GetRankDisplayName(caseData.requiredRank)}";
-
             return false;
         }
 
         int amount = GetRequestedBuyAmount(caseData);
-
         if (amount <= 0)
         {
             failReason = "Amount 0";
             return false;
         }
 
-        if (SaveManager.Instance.Gold <
-            caseData.priceInGold * amount)
+        if (SaveManager.Instance.Gold < caseData.priceInGold * amount)
         {
             failReason = "Not enough gold";
             return false;
@@ -592,9 +530,7 @@ public class CaseShopUI : MonoBehaviour
     {
         if (!CanBuyCase(caseData, out string failReason))
         {
-            Debug.Log(
-                $"CaseShopUI: Cannot buy case. Reason: {failReason}");
-
+            Debug.Log($"CaseShopUI: Cannot buy case. Reason: {failReason}");
             RefreshCards();
             return;
         }
@@ -602,8 +538,7 @@ public class CaseShopUI : MonoBehaviour
         int amount = GetRequestedBuyAmount(caseData);
         float totalCost = caseData.priceInGold * amount;
 
-        if (totalCost > 0f &&
-            !SaveManager.Instance.SpendGold(totalCost))
+        if (totalCost > 0f && !SaveManager.Instance.SpendGold(totalCost))
         {
             Debug.LogWarning("CaseShopUI: Failed to spend gold.");
             RefreshCards();
@@ -622,9 +557,7 @@ public class CaseShopUI : MonoBehaviour
 
         if (CaseInspectUI.Instance == null)
         {
-            Debug.LogWarning(
-                "CaseShopUI: No CaseInspectUI found in scene.");
-
+            Debug.LogWarning("CaseShopUI: No CaseInspectUI found in scene.");
             return;
         }
 
@@ -653,9 +586,7 @@ public class CaseShopUI : MonoBehaviour
 
     public void PreviousCategory()
     {
-        int count = System.Enum.GetValues(
-            typeof(CaseShopCategory)).Length;
-
+        int count = System.Enum.GetValues(typeof(CaseShopCategory)).Length;
         int index = (int)currentCategory - 1;
 
         if (index < 0)
@@ -667,9 +598,7 @@ public class CaseShopUI : MonoBehaviour
 
     public void NextCategory()
     {
-        int count = System.Enum.GetValues(
-            typeof(CaseShopCategory)).Length;
-
+        int count = System.Enum.GetValues(typeof(CaseShopCategory)).Length;
         int index = (int)currentCategory + 1;
 
         if (index >= count)
@@ -689,19 +618,15 @@ public class CaseShopUI : MonoBehaviour
             case CaseShopCategory.Cases:
                 categoryText.text = "Cases";
                 break;
-
             case CaseShopCategory.Collections:
                 categoryText.text = "Collections";
                 break;
-
             case CaseShopCategory.SouvenirCollections:
                 categoryText.text = "Souvenir";
                 break;
-
             case CaseShopCategory.CustomCases:
                 categoryText.text = "Custom";
                 break;
-
             default:
                 categoryText.text = currentCategory.ToString();
                 break;
