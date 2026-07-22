@@ -51,8 +51,17 @@ public static class SkinDisplayUtility
         if (item == null || item.isVanilla)
             return "Vanilla";
 
-        string rawValue = FormatFloat(item.floatValue, 10);
-        return ApplyFloatTierStyle(item.floatValue, rawValue);
+        return GetTrackedFloatDisplay(item.floatValue);
+    }
+
+    /// <summary>
+    /// Formats an arbitrary observed float using the exact same precision and
+    /// rich-text colour thresholds as inventory and inspect float values.
+    /// </summary>
+    public static string GetTrackedFloatDisplay(double floatValue)
+    {
+        string rawValue = FormatFloat(floatValue, 10);
+        return ApplyFloatTierStyle(floatValue, rawValue);
     }
 
     private static int GetCardDecimalCount(double floatValue)
