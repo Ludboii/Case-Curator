@@ -144,7 +144,7 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
         {
             goldExplanationText.text =
                 "<color=#FFD12A>GOLD COMPLETION</color>\n" +
-                "Open every normal skin with a float in the best 25% of that " +
+                "Open every normal skin with a float in the best 50% of that " +
                 "skin's highest possible wear quality. Normal, StatTrak and " +
                 "Souvenir items can satisfy this requirement. Rare Special " +
                 "items are not required.\n" +
@@ -158,7 +158,7 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
             diamondExplanationText.text = diamondAvailable
                 ? "<color=#67E8FF>DIAMOND COMPLETION</color>\n" +
                   "Open every normal skin as StatTrak with a float in the best " +
-                  "25% of that skin's highest possible wear quality. Rare " +
+                  "50% of that skin's highest possible wear quality. Rare " +
                   "Special items are not required.\n" +
                   $"Progress: {topQuarterStatTrakCount} / {normalTarget}\n" +
                   "Reward: +0.05% Museum Points when donating + " +
@@ -233,130 +233,48 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
             return;
         }
 
-        if (!complete)
-        {
-            SetButtonState(button, buttonText, false, "LOCKED", lockedColor);
-            return;
-        }
-
         if (!implemented)
         {
             SetButtonState(
                 button,
                 buttonText,
                 false,
-                "REWARD NEXT",
-                comingLaterColor);
+                complete ? "REWARD COMING LATER" : "LOCKED",
+                complete ? comingLaterColor : lockedColor);
             return;
         }
+
+        bool canClaim = progressManager.CanClaimReward(currentCase, tier);
 
         SetButtonState(
             button,
             buttonText,
-            true,
-            "CLAIM REWARD",
-            claimableColor);
-    }
-
-    private static void SetButtonState(
-        Button button,
-        TMP_Text buttonText,
-        bool interactable,
-        string label,
-        Color color)
-    {
-        button.interactable = interactable;
-
-        Graphic targetGraphic = button.targetGraphic;
-        if (targetGraphic != null)
-            targetGraphic.color = color;
-
-        ColorBlock colors = button.colors;
-        colors.normalColor = color;
-        colors.highlightedColor = color * 1.08f;
-        colors.pressedColor = color * 0.9f;
-        colors.selectedColor = color;
-        colors.disabledColor = color;
-        colors.colorMultiplier = 1f;
-        button.colors = colors;
-
-        TMP_Text targetText = buttonText;
-
-        if (targetText == null)
-            targetText = button.GetComponentInChildren<TMP_Text>(true);
-
-        if (targetText != null)
-        {
-            targetText.text = label;
-            targetText.color = Color.white;
-            targetText.raycastTarget = false;
-        }
-    }
-
-    private void SetMissingManagerState()
-    {
-        if (bronzeExplanationText != null)
-            bronzeExplanationText.text = "ContainerProgressManager is missing.";
-
-        if (silverExplanationText != null)
-            silverExplanationText.text = "";
-
-        if (goldExplanationText != null)
-            goldExplanationText.text = "";
-
-        if (diamondExplanationText != null)
-            diamondExplanationText.text = "";
-
-        SetButtonState(
-            bronzeClaimButton,
-            bronzeClaimButtonText,
-            false,
-            "UNAVAILABLE",
-            unavailableColor);
-
-        SetButtonState(
-            silverClaimButton,
-            silverClaimButtonText,
-            false,
-            "UNAVAILABLE",
-            unavailableColor);
-
-        SetButtonState(
-            goldClaimButton,
-            goldClaimButtonText,
-            false,
-            "UNAVAILABLE",
-            unavailableColor);
-
-        SetButtonState(
-            diamondClaimButton,
-            diamondClaimButtonText,
-            false,
-            "UNAVAILABLE",
-            unavailableColor);
+            canClaim,
+            canClaim ? "CLAIM" : "LOCKED",
+            canClaim ? claimableColor : lockedColor);
     }
 
     private void ClaimBronzeReward()
     {
-        ClaimReward(ContainerCompletionTier.Bronze);
+        Claim(ContainerCompletionTier.Bronze);
     }
 
     private void ClaimSilverReward()
     {
-        ClaimReward(ContainerCompletionTier.Silver);
+        Claim(ContainerCompletionTier.Silver);
     }
 
     private void ClaimGoldReward()
     {
-        ClaimReward(ContainerCompletionTier.Gold);
+        Claim(ContainerCompletionTier.Gold);
     }
 
     private void ClaimDiamondReward()
     {
-        ClaimReward(ContainerCompletionTier.Diamond);
+        Claim(ContainerCompletionTier.Diamond);
     }
 
-    private void ClaimReward(ContainerCompletionTier tier)
+    private void Claim(ContainerCompletionTier tier)
     {
         if (currentCase == null || ContainerProgressManager.Instance == null)
             return;
@@ -365,9 +283,22 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
         Refresh();
     }
 
-    private static void SetupButton(
-        Button button,
-        UnityEngine.Events.UnityAction action)
+    private void SubscribeToProgress()
+    {
+        if (ContainerProgressManager.Instance != null)
+        {
+            ContainerProgressManager.Instance.OnContainerProgressChanged -= Refresh;
+            ContainerProgressManager.Instance.OnContainerProgressChanged += Refresh;
+        }
+    }
+
+    private void UnsubscribeFromProgress()
+    {
+        if (ContainerProgressManager.Instance != null)
+            ContainerProgressManager.Instance.OnContainerProgressChanged -= Refresh;
+    }
+
+    private static void SetupButton(Button button, UnityEngine.Events.UnityAction action)
     {
         if (button == null)
             return;
@@ -376,18 +307,42 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
         button.onClick.AddListener(action);
     }
 
-    private void SubscribeToProgress()
+    private void SetMissingManagerState()
     {
-        if (ContainerProgressManager.Instance == null)
-            return;
+        if (bronzeExplanationText != null)
+            bronzeExplanationText.text = "ContainerProgressManager is unavailable.";
 
-        ContainerProgressManager.Instance.OnContainerProgressChanged -= Refresh;
-        ContainerProgressManager.Instance.OnContainerProgressChanged += Refresh;
+        if (silverExplanationText != null)
+            silverExplanationText.text = "ContainerProgressManager is unavailable.";
+
+        if (goldExplanationText != null)
+            goldExplanationText.text = "ContainerProgressManager is unavailable.";
+
+        if (diamondExplanationText != null)
+            diamondExplanationText.text = "ContainerProgressManager is unavailable.";
+
+        SetButtonState(bronzeClaimButton, bronzeClaimButtonText, false, "LOCKED", lockedColor);
+        SetButtonState(silverClaimButton, silverClaimButtonText, false, "LOCKED", lockedColor);
+        SetButtonState(goldClaimButton, goldClaimButtonText, false, "LOCKED", lockedColor);
+        SetButtonState(diamondClaimButton, diamondClaimButtonText, false, "LOCKED", lockedColor);
     }
 
-    private void UnsubscribeFromProgress()
+    private static void SetButtonState(
+        Button button,
+        TMP_Text buttonText,
+        bool interactable,
+        string text,
+        Color color)
     {
-        if (ContainerProgressManager.Instance != null)
-            ContainerProgressManager.Instance.OnContainerProgressChanged -= Refresh;
+        if (button == null)
+            return;
+
+        button.interactable = interactable;
+
+        if (button.image != null)
+            button.image.color = color;
+
+        if (buttonText != null)
+            buttonText.text = text;
     }
 }
