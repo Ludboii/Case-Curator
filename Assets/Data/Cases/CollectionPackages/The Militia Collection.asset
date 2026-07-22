@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: The Militia Collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_package_militia
+  caseName: The Militia Collection
+  icon: {fileID: 21300000, guid: 927632de223ad4a448c6f383f2cc0b07, type: 3}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 40
+  isPremium: 0
+  quality: 6
+  requiredRank: 8
+  xpRewardOnOpen: 20
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.6
+  - rarity: 4
+    chance: 0.1
+  - rarity: 5
+    chance: 0.02
+  dropPool:
+  - skin: {fileID: 11400000, guid: 91708d8919a192f4fad02a134f06b6f2, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 40a96e4a869ddf648be8f50afe296ff8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 56676ff9679bed04690ff0955d4baa9b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4858e6d4372932048ac89d5fce678864, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 64d0dce68e50a084383e4360bb3f0128, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c5e4a821cc05431498f052da37b6b1e4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f0c082191a641ce488c8f69b727d4509, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1dafa89e10dffa546952b541b4949578, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 835e94b4633079d4087567053012a39c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 363b25d61b204c548b00fffc2d16c5ef, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b4b0f850902a9304a86edecfcbf1757a, type: 2}
+    weight: 1

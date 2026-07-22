@@ -10,70 +10,70 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
-  m_Name: the_2018_nuke_collection
+  m_Name: The 2021 Mirage Souvenir Package
   m_EditorClassIdentifier: Assembly-CSharp::CaseData
-  apiId: cc_collection_the_2018_nuke_collection
-  caseName: The 2018 Nuke Collection
-  icon: {fileID: 0}
+  apiId: cc_souvenir_package_2018_nuke
+  caseName: The 2018 Nuke Collection Souvenir Package
+  icon: {fileID: 21300000, guid: 41926d7a19784144a8041f5d58484ad1, type: 3}
   containerType: 2
   allowRareSpecialItem: 0
   allowStatTrak: 0
   forceSouvenirDrops: 1
-  priceInGold: 370
+  priceInGold: 200
   isPremium: 0
-  quality: 5
-  requiredRank: 12
-  xpRewardOnOpen: 78
+  quality: 6
+  requiredRank: 8
+  xpRewardOnOpen: 20
   shopCategory: 2
   isCustomCase: 0
   shouldHaveRareSpecial: 0
   rarityChances:
   - rarity: 0
-    chance: 79.92
+    chance: 80
   - rarity: 1
-    chance: 15.98
+    chance: 16
   - rarity: 2
     chance: 3.2
   - rarity: 3
-    chance: 0.64
+    chance: 0.6
   - rarity: 4
-    chance: 0.128
+    chance: 0.1
   - rarity: 5
-    chance: 0.0256
+    chance: 0.02
   dropPool:
-  - skin: {fileID: 11400000, guid: 2b371d2956a009848af600ec8b45d80b, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 103e5d8a60174ce48bbbac2fa440db05, type: 2}
-    weight: 1
   - skin: {fileID: 11400000, guid: 581b9284d4cdde44a81ffa3a0be67710, type: 2}
     weight: 1
-  - skin: {fileID: 11400000, guid: 297d40267c2dbdc47a793f1c3466e4ac, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: c79ea4ee76f883d46b55226170a2e2d4, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 45f2030904f1c8343a4669583368bd8d, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: f9fbb9c66ad046b42876f2b2d1cdf0a4, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: b39143bd738bcb1459114d15095c2c1e, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: a0ef93e816424cb47a99d9d8e7f0002a, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 468296018eb004f439fb52b3ac9abf09, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 00d95ce34504b0949b9a5d676cd4cca8, type: 2}
-    weight: 1
   - skin: {fileID: 11400000, guid: 3b6e8ae6f0cc91049b84d532d0813948, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 3cbaf99a038bcfc4095aa720917d4724, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 58226d7a42c3b5c4dbdb48830dd0f856, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 413c6dd9380ee6644b090890a4fe3b98, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 4bef9b7e712ad654b966d5ac14002cb9, type: 2}
     weight: 1
-  - skin: {fileID: 11400000, guid: 5d7e107b38321d149a720dd57a6e23db, type: 2}
-    weight: 1
   - skin: {fileID: 11400000, guid: 6dbef9162eeb71b4b9c1d2660fd22a3b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 297d40267c2dbdc47a793f1c3466e4ac, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f9fbb9c66ad046b42876f2b2d1cdf0a4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 468296018eb004f439fb52b3ac9abf09, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 00d95ce34504b0949b9a5d676cd4cca8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 103e5d8a60174ce48bbbac2fa440db05, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a0ef93e816424cb47a99d9d8e7f0002a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 58226d7a42c3b5c4dbdb48830dd0f856, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3cbaf99a038bcfc4095aa720917d4724, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2b371d2956a009848af600ec8b45d80b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c79ea4ee76f883d46b55226170a2e2d4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b39143bd738bcb1459114d15095c2c1e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 45f2030904f1c8343a4669583368bd8d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5d7e107b38321d149a720dd57a6e23db, type: 2}
     weight: 1

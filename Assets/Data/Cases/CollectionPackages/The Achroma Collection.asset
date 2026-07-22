@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: The Achroma Collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_package_achroma
+  caseName: The Achroma Collection
+  icon: {fileID: 0}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 40
+  isPremium: 0
+  quality: 6
+  requiredRank: 8
+  xpRewardOnOpen: 20
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.6
+  - rarity: 4
+    chance: 0.1
+  - rarity: 5
+    chance: 0.02
+  dropPool:
+  - skin: {fileID: 11400000, guid: 156ef790400c5de4ca23dfb1b363c968, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: aa2cd8666f460d34e9e67d5d0679d19e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8288a2f148fbc2f499907eccb8896c8c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6536502c328661d4f927b028985fb806, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 92c1109b9963b6142887a60afe227835, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 28f4b4112b8f0cb4fb12721673e3cce9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ab92a1bcd74a05b4582fd2ef5fb12188, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 71ec2cb0129170f4f9c48f8a532429d0, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: dce27a70dd0202048844a28a0874483c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 10177799a91c8ea438933b32f4027e3d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 12b884f58f61e1749b6a3c6c72332185, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c53b8653f58b87e4aaf774d6d7a72f24, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5f9e3e0b22a6d244fa155ce98f156c0d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c93d8a809ef64784fb3b208443558d3e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ac2e2462ce97fba4faf75555a1cc1d9e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f97e00d33e031b44ca8685e7c4a11acc, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5d392261cbb2b7d42a210cdef4512d36, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e4b1338b551cce84498d488f40e60f14, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7b98e24cc1e179b40b2ca1ae36b20943, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: aa556ee78c6864c40aed306e03d2d909, type: 2}
+    weight: 1

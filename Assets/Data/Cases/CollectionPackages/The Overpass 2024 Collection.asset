@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: The Overpass 2024 Collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_package_overpass_2024
+  caseName: The Overpass 2024 Collection
+  icon: {fileID: 0}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 40
+  isPremium: 0
+  quality: 6
+  requiredRank: 8
+  xpRewardOnOpen: 20
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.6
+  - rarity: 4
+    chance: 0.1
+  - rarity: 5
+    chance: 0.02
+  dropPool:
+  - skin: {fileID: 11400000, guid: 67d2e85e48830614ab59ccfbceffc7ea, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c7e8e2ffa0b9c3d43b994c2825914bb0, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 32882b5f115e86147b6f66b481f9056f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e78633006bd703b48872796cca8a01ad, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 71343e6eca330954b9ad1a2ae65f7337, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c6e6c7a58444ad24ea2069ff67e89e27, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: aa3185eb80d004c409386b54a2e3ef37, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e560b162d2e62b14b992e81d6755a028, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 731fc5ad5b0e32d4a87cea861730e801, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c6c54739adf5d7c4d9ac03bb2ab7c44b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 39a284137d9e118438fbfaa93c924b90, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: aeb33c6744b11394c9150d3d7e6a81bc, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2a63eb146e73486439a80bdff3de310f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ce5ae485530522c4eb333a71074be8d2, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ad4e61b8a8acbcf4db20595c52b7c14d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 890d53cc5c4542049877cf9836902fbe, type: 2}
+    weight: 1

@@ -12,18 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
   m_Name: The Ancient Collection
   m_EditorClassIdentifier: Assembly-CSharp::CaseData
-  apiId: cc_collection_package_collection_set_op10_ancient
+  apiId: cc_collection_package_ancient
   caseName: The Ancient Collection
   icon: {fileID: 21300000, guid: 70b4e58d7073aea4ab13bcb402b21127, type: 3}
   containerType: 1
   allowRareSpecialItem: 0
   allowStatTrak: 0
   forceSouvenirDrops: 0
-  priceInGold: 5
+  priceInGold: 40
   isPremium: 0
-  quality: 0
-  requiredRank: 0
-  xpRewardOnOpen: 3
+  quality: 6
+  requiredRank: 8
+  xpRewardOnOpen: 20
   shopCategory: 1
   isCustomCase: 0
   shouldHaveRareSpecial: 0
@@ -35,7 +35,11 @@ MonoBehaviour:
   - rarity: 2
     chance: 3.2
   - rarity: 3
-    chance: 0.8
+    chance: 0.6
+  - rarity: 4
+    chance: 0.1
+  - rarity: 5
+    chance: 0.02
   dropPool:
   - skin: {fileID: 11400000, guid: eb49991482c22484bae6e837b12d0936, type: 2}
     weight: 1

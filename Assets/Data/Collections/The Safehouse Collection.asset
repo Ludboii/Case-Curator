@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Safehouse Collection
   apiId: collection-set-safehouse
-  type: 0
+  type: 1
   icon: {fileID: 21300000, guid: 7ba1338ba8056064fb773817ed63d2d3, type: 3}

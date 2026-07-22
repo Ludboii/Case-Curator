@@ -10,36 +10,36 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
-  m_Name: the_mirage_collection
+  m_Name: The 2021 Mirage Souvenir Package
   m_EditorClassIdentifier: Assembly-CSharp::CaseData
-  apiId: cc_collection_the_mirage_collection
-  caseName: The Mirage Collection
-  icon: {fileID: 0}
+  apiId: cc_souvenir_package_mirage
+  caseName: The Mirage Collection Souvenir Package
+  icon: {fileID: 21300000, guid: 33a4f1b20d508db45af703f0b4bd142a, type: 3}
   containerType: 2
   allowRareSpecialItem: 0
   allowStatTrak: 0
   forceSouvenirDrops: 1
-  priceInGold: 555
+  priceInGold: 200
   isPremium: 0
-  quality: 5
-  requiredRank: 14
-  xpRewardOnOpen: 97
+  quality: 6
+  requiredRank: 8
+  xpRewardOnOpen: 20
   shopCategory: 2
   isCustomCase: 0
   shouldHaveRareSpecial: 0
   rarityChances:
   - rarity: 0
-    chance: 79.92
+    chance: 80
   - rarity: 1
-    chance: 15.98
+    chance: 16
   - rarity: 2
     chance: 3.2
   - rarity: 3
-    chance: 0.64
+    chance: 0.6
   - rarity: 4
-    chance: 0.128
+    chance: 0.1
   - rarity: 5
-    chance: 0.0256
+    chance: 0.02
   dropPool:
   - skin: {fileID: 11400000, guid: 37a046e54ce517f438450879c0ad3c25, type: 2}
     weight: 1
@@ -49,25 +49,25 @@ MonoBehaviour:
     weight: 1
   - skin: {fileID: 11400000, guid: 2d0b7a682a2b22746ad52e5d2c0a7460, type: 2}
     weight: 1
-  - skin: {fileID: 11400000, guid: 6df92180d79b369439ad1e8d3167ca29, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 8bd071bfc5f91654c857996678369c4e, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: f29ec79dd4183f544bbfd016768761af, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 93604b02aa1d8f043a3d4cbe977631c9, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 8939115eca0c5d24593dae5984d582df, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 272665c9322e2d048ba3c47c250719b5, type: 2}
+  - skin: {fileID: 11400000, guid: 1fcf1fa6fcbe6d54c9dfbfc0a0a6741c, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 7a70028ea3085c74daa612bbb95f072b, type: 2}
     weight: 1
-  - skin: {fileID: 11400000, guid: 1fcf1fa6fcbe6d54c9dfbfc0a0a6741c, type: 2}
+  - skin: {fileID: 11400000, guid: 6df92180d79b369439ad1e8d3167ca29, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 93604b02aa1d8f043a3d4cbe977631c9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 272665c9322e2d048ba3c47c250719b5, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 426ef7744ab498842a2250ef07f7223c, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: ac8e46fcd9b45f949b90bd4f2d04408b, type: 2}
     weight: 1
+  - skin: {fileID: 11400000, guid: 8bd071bfc5f91654c857996678369c4e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8939115eca0c5d24593dae5984d582df, type: 2}
+    weight: 1
   - skin: {fileID: 11400000, guid: 7cd38f4ae19cc2c45b6f2a9b3ccd6ac8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f29ec79dd4183f544bbfd016768761af, type: 2}
     weight: 1

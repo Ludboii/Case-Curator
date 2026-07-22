@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Nuke Collection
   apiId: collection-set-nuke
-  type: 0
+  type: 1
   icon: {fileID: 21300000, guid: d0e64f6e291ddfa41a85f9dfe33a5e00, type: 3}

@@ -10,46 +10,46 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
-  m_Name: the_inferno_collection
+  m_Name: The 2021 Mirage Souvenir Package
   m_EditorClassIdentifier: Assembly-CSharp::CaseData
-  apiId: cc_collection_the_inferno_collection
-  caseName: The Inferno Collection
-  icon: {fileID: 0}
+  apiId: cc_souvenir_package_inferno
+  caseName: The Inferno Collection Souvenir Package
+  icon: {fileID: 21300000, guid: cf02016989fe05f4fba11201cec0dd25, type: 3}
   containerType: 2
   allowRareSpecialItem: 0
   allowStatTrak: 0
   forceSouvenirDrops: 1
-  priceInGold: 190
+  priceInGold: 200
   isPremium: 0
-  quality: 4
-  requiredRank: 10
-  xpRewardOnOpen: 51
+  quality: 6
+  requiredRank: 8
+  xpRewardOnOpen: 20
   shopCategory: 2
   isCustomCase: 0
   shouldHaveRareSpecial: 0
   rarityChances:
   - rarity: 0
-    chance: 79.92
+    chance: 80
   - rarity: 1
-    chance: 15.98
+    chance: 16
   - rarity: 2
     chance: 3.2
   - rarity: 3
-    chance: 0.64
+    chance: 0.6
   - rarity: 4
-    chance: 0.128
+    chance: 0.1
   - rarity: 5
-    chance: 0.0256
+    chance: 0.02
   dropPool:
-  - skin: {fileID: 11400000, guid: 795602011d09a7049a1e0e4da1b4b8f5, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: d111085968e7d43469a5b72f41c69cb4, type: 2}
-    weight: 1
   - skin: {fileID: 11400000, guid: f91efb172fc7e4546b567108c9326835, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: b39df249be9a4464780c86658dd99e8f, type: 2}
     weight: 1
+  - skin: {fileID: 11400000, guid: d111085968e7d43469a5b72f41c69cb4, type: 2}
+    weight: 1
   - skin: {fileID: 11400000, guid: b3263b5b1c4e575418750334b743d9be, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 795602011d09a7049a1e0e4da1b4b8f5, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 2cbfbef32bc801b47b5d28b7c55a556e, type: 2}
     weight: 1

@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: The 2021 Train Collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_package_2021_train
+  caseName: The 2021 Train Collection
+  icon: {fileID: 21300000, guid: d1ab58e06beca574c9387912788f0cb9, type: 3}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 40
+  isPremium: 0
+  quality: 6
+  requiredRank: 8
+  xpRewardOnOpen: 20
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.6
+  - rarity: 4
+    chance: 0.1
+  - rarity: 5
+    chance: 0.02
+  dropPool:
+  - skin: {fileID: 11400000, guid: 50e17cae16e71d046a0a2ea89b641546, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6d0669108e7ff5b4db425a224184d220, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c96a3ef5e51f9ff4db1365a23d042c83, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d1b5a6752c6b17c45a4695bb1b20590b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b993c1720307c8848ba04f648e59cad6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 94df2cdd7bc18874dbe97284cd5e2593, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1169c7de151a12a4c8d93000a149b804, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 05d5be93eb91d4e4f9387dfa735f5f94, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b8ec7c7f20ae3e742b0feb3c25545cf6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 97b282461cd5e0c4ca5aeac8b76ec1ea, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3e17ce1ff16bcaa4dba0a087cdaae74c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4623ec4b929b9a24e9edc417636d60a3, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: efac1ba1a1a2b184998a363fbdbab8c5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 199689409fba03647aafcebb2c1bad8c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d8952e61f1951c849aeb36206261d592, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d9e2523ec533e3440b6235a3a15898c2, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fcc14a1690c776048a0047f8dab790cb, type: 2}
+    weight: 1

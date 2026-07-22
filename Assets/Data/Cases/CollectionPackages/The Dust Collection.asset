@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: The Dust Collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_package_dust
+  caseName: The Dust Collection
+  icon: {fileID: 21300000, guid: a84bbf7d7836d6c4ab0f1662c507362e, type: 3}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 40
+  isPremium: 0
+  quality: 6
+  requiredRank: 8
+  xpRewardOnOpen: 20
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.6
+  - rarity: 4
+    chance: 0.1
+  - rarity: 5
+    chance: 0.02
+  dropPool:
+  - skin: {fileID: 11400000, guid: e037ed5791c69fa4a8548f3c0097e434, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 04d8617cb2088d5488e75384244b376f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7c238a65cbe9eb4429a1ec923d429025, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b74f514745aadc24aa9e1f3921b23dca, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 92d82320ce7071f40b64cd3b6adf4f4f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 67f9512039571284bacc66cd96c9a223, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 86b042c1be3602f4fbf38495fd020abe, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bfbbe94f8b6a4274c9155dcf3f08bcd3, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 12a9e1dc0e9da2045b8a4c93befcd175, type: 2}
+    weight: 1

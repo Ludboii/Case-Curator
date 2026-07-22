@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The 2021 Mirage Collection
   apiId: collection-set-mirage-2021
-  type: 0
+  type: 1
   icon: {fileID: 21300000, guid: 357b1a7ae8dcccd4483e711f6cecefdf, type: 3}

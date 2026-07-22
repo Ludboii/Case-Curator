@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The 2021 Vertigo Collection
   apiId: collection-set-vertigo-2021
-  type: 0
+  type: 1
   icon: {fileID: 21300000, guid: 1532cd15c3c702643a84f7887be97ddd, type: 3}

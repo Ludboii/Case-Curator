@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Ancient Collection
   apiId: collection-set-op10-ancient
-  type: 0
+  type: 1
   icon: {fileID: 21300000, guid: 70b4e58d7073aea4ab13bcb402b21127, type: 3}

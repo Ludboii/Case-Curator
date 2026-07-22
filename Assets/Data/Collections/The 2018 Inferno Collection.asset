@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The 2018 Inferno Collection
   apiId: collection-set-inferno-2
-  type: 0
+  type: 1
   icon: {fileID: 21300000, guid: 7871d935042106e468c469246f839a37, type: 3}

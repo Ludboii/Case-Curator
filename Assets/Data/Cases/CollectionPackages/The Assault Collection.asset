@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: The Assault Collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_package_assault
+  caseName: The Assault Collection
+  icon: {fileID: 21300000, guid: d3ab5bf56bf50274ab5a0d8b70b380a3, type: 3}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 40
+  isPremium: 0
+  quality: 6
+  requiredRank: 8
+  xpRewardOnOpen: 20
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.6
+  - rarity: 4
+    chance: 0.1
+  - rarity: 5
+    chance: 0.02
+  dropPool:
+  - skin: {fileID: 11400000, guid: 2e532a8f5ccb2664ba4a34bd183a69a4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fff2fb567c69c424da79ba1a18b853a6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 070fe06101f04b9458ea9f050217c797, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 703259d32c1305d4ab54bceabbeff633, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: af004f58f99227347ab9e2fb7b87f0b4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3ba0c76e64b439b4fad740aa0c711410, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 90238357667cdc14aafc41221b5aaf86, type: 2}
+    weight: 1

@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectionData
   collectionName: The Anubis Collection
   apiId: collection-set-anubis
-  type: 0
+  type: 1
   icon: {fileID: 21300000, guid: a11f03bc4ea80cc45a8dec212dd87079, type: 3}

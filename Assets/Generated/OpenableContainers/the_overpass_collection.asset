@@ -10,64 +10,64 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
-  m_Name: the_overpass_collection
+  m_Name: The 2021 Mirage Souvenir Package
   m_EditorClassIdentifier: Assembly-CSharp::CaseData
-  apiId: cc_collection_the_overpass_collection
-  caseName: The Overpass Collection
-  icon: {fileID: 0}
+  apiId: cc_souvenir_package_overpass
+  caseName: The Overpass Collection Souvenir Package
+  icon: {fileID: 21300000, guid: eb6fc7975eea77d49942f9aea6d10fdf, type: 3}
   containerType: 2
   allowRareSpecialItem: 0
   allowStatTrak: 0
   forceSouvenirDrops: 1
-  priceInGold: 910
+  priceInGold: 200
   isPremium: 0
-  quality: 5
-  requiredRank: 15
-  xpRewardOnOpen: 165
+  quality: 6
+  requiredRank: 8
+  xpRewardOnOpen: 20
   shopCategory: 2
   isCustomCase: 0
   shouldHaveRareSpecial: 0
   rarityChances:
   - rarity: 0
-    chance: 79.92
+    chance: 80
   - rarity: 1
-    chance: 15.98
+    chance: 16
   - rarity: 2
     chance: 3.2
   - rarity: 3
-    chance: 0.64
+    chance: 0.6
   - rarity: 4
-    chance: 0.128
+    chance: 0.1
   - rarity: 5
-    chance: 0.0256
+    chance: 0.02
   dropPool:
-  - skin: {fileID: 11400000, guid: b045342c61afc3c4f9e4ceed8e736af6, type: 2}
+  - skin: {fileID: 11400000, guid: dc3c972943bf90147a7d6b2b29727473, type: 2}
     weight: 1
-  - skin: {fileID: 11400000, guid: ccd50b080b38f444dac0aede35fc2c15, type: 2}
+  - skin: {fileID: 11400000, guid: 7c9fe1e8730b1a6458905cb4accafbfa, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 0f622fc0a1de5cb48b255636e9de58e1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ed33e4d41b836f543bb4eac7deea3ae4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d857e693c73f6e1439623fb22626a6f9, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 4750f7ed1eb998645973c11657bdca63, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: b5f8884452863ad4b9e918cafd82e2dc, type: 2}
     weight: 1
-  - skin: {fileID: 11400000, guid: f03593f735de8334bae16b82860a9b1a, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: dc3c972943bf90147a7d6b2b29727473, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 7c9fe1e8730b1a6458905cb4accafbfa, type: 2}
-    weight: 1
   - skin: {fileID: 11400000, guid: 9360b5796f41f5d4d93200e77645a081, type: 2}
-    weight: 1
-  - skin: {fileID: 11400000, guid: 0f622fc0a1de5cb48b255636e9de58e1, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 4a14728c6e29fc942924674e8766c779, type: 2}
     weight: 1
-  - skin: {fileID: 11400000, guid: ed33e4d41b836f543bb4eac7deea3ae4, type: 2}
+  - skin: {fileID: 11400000, guid: ccd50b080b38f444dac0aede35fc2c15, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 5630958f337a06b42805cbbed1f6c05b, type: 2}
     weight: 1
-  - skin: {fileID: 11400000, guid: d857e693c73f6e1439623fb22626a6f9, type: 2}
+  - skin: {fileID: 11400000, guid: d32c7c0423ea14a4ab4025d83693de30, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b045342c61afc3c4f9e4ceed8e736af6, type: 2}
     weight: 1
   - skin: {fileID: 11400000, guid: 68c5f5ad4c9fbdf478102b96358fc941, type: 2}
     weight: 1
-  - skin: {fileID: 11400000, guid: d32c7c0423ea14a4ab4025d83693de30, type: 2}
+  - skin: {fileID: 11400000, guid: f03593f735de8334bae16b82860a9b1a, type: 2}
     weight: 1

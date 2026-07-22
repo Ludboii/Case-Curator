@@ -12,18 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
   m_Name: The 2021 Dust 2 Collection
   m_EditorClassIdentifier: Assembly-CSharp::CaseData
-  apiId: cc_collection_package_collection_set_dust_2_2021
+  apiId: cc_collection_package_2021_dust_2
   caseName: The 2021 Dust 2 Collection
   icon: {fileID: 21300000, guid: 551fae86f1b38ab45acabaecce0ecee0, type: 3}
   containerType: 1
   allowRareSpecialItem: 0
   allowStatTrak: 0
   forceSouvenirDrops: 0
-  priceInGold: 5
+  priceInGold: 40
   isPremium: 0
-  quality: 0
-  requiredRank: 0
-  xpRewardOnOpen: 3
+  quality: 6
+  requiredRank: 8
+  xpRewardOnOpen: 20
   shopCategory: 1
   isCustomCase: 0
   shouldHaveRareSpecial: 0
@@ -35,7 +35,11 @@ MonoBehaviour:
   - rarity: 2
     chance: 3.2
   - rarity: 3
-    chance: 0.8
+    chance: 0.6
+  - rarity: 4
+    chance: 0.1
+  - rarity: 5
+    chance: 0.02
   dropPool:
   - skin: {fileID: 11400000, guid: 469e83c929828784b93da17fc9a39a90, type: 2}
     weight: 1

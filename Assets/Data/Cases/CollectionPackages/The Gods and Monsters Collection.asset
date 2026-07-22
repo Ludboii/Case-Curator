@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: The Gods and Monsters Collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: cc_collection_package_gods_and_monsters
+  caseName: The Gods and Monsters Collection
+  icon: {fileID: 21300000, guid: a84bc71d2566e1140a369ccb9f8dd268, type: 3}
+  containerType: 1
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 40
+  isPremium: 0
+  quality: 6
+  requiredRank: 8
+  xpRewardOnOpen: 20
+  shopCategory: 1
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.6
+  - rarity: 4
+    chance: 0.1
+  - rarity: 5
+    chance: 0.02
+  dropPool:
+  - skin: {fileID: 11400000, guid: 8fc2c4579d18d2247abb276ac8d7d383, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f2dc3aeb1e4b7304eb251e81284b37d4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bba17a25e9f785d489b9eb8decbe3c29, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 375d8eb172d1ad449af9f72d3414f81b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 35e9bdc4775c4894d9aaed450e418c25, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 75982f2f7ac11cd4c825cfb87fbd152f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6a56fc5a0a9b48244baf69feb60f00d1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b832fb0d87983ef4f80c8624adaf991a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 54923b984c517e8469e9b4d67b5dd19a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c685f9848e171b44da1333b6c899b86e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b402e22e2ebb0104b9698274b769ad9d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b368bdcf5e74223438b21099733a9bca, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 031f5866bd183d14e9dd046583cf92e9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e4c224074fac2194fa73c5f90862b03b, type: 2}
+    weight: 1
