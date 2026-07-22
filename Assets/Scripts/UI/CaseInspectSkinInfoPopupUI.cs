@@ -27,8 +27,12 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
     [Range(0f, 100f)] public float premiumColumnPosition = 68f;
 
     [Header("Discovered Price Colors")]
-    public Color normalFoundPriceColor = new Color(0.25f, 1f, 0.35f, 1f);
-    public Color premiumFoundPriceColor = new Color(1f, 0.25f, 0.82f, 1f);
+    public Color normalFoundPriceColor =
+        new Color(0.25f, 1f, 0.35f, 1f);
+
+    public Color premiumFoundPriceColor =
+        new Color(1f, 0.25f, 0.82f, 1f);
+
     public Color undiscoveredPriceColor = Color.white;
 
     [Header("Buttons")]
@@ -93,10 +97,7 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
         }
 
         if (wearRangeText != null)
-        {
-            wearRangeText.text =
-                $"Wear range:\n{skin.minFloat:0.00} - {skin.maxFloat:0.00}";
-        }
+            wearRangeText.text = BuildWearAndDiscoveryText(skin, sourceCase);
 
         if (sourceText != null)
         {
@@ -131,6 +132,40 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
             topBarImage.color = topBarColor;
     }
 
+    private string BuildWearAndDiscoveryText(
+        SkinData skin,
+        CaseData sourceCase)
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.AppendLine("Wear range:");
+        builder.Append($"{skin.minFloat:0.00} - {skin.maxFloat:0.00}");
+
+        bool hasObservedRange =
+            sourceCase != null &&
+            ContainerProgressManager.Instance != null &&
+            ContainerProgressManager.Instance.TryGetObservedFloatRange(
+                sourceCase,
+                skin,
+                out double lowestFound,
+                out double highestFound);
+
+        builder.AppendLine();
+        builder.AppendLine();
+
+        if (hasObservedRange)
+        {
+            builder.AppendLine($"Lowest found: {FormatFloat(lowestFound)}");
+            builder.Append($"Highest found: {FormatFloat(highestFound)}");
+        }
+        else
+        {
+            builder.AppendLine("Lowest found: —");
+            builder.Append("Highest found: —");
+        }
+
+        return builder.ToString();
+    }
+
     private string BuildPriceText(SkinData skin, CaseData sourceCase)
     {
         if (skin == null)
@@ -140,6 +175,7 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
             return BuildVanillaPriceText(skin, sourceCase);
 
         WearPrices normalPrices = skin.exteriorPrices;
+
         bool hasPremium = TryGetPremiumColumn(
             skin,
             sourceCase,
@@ -380,7 +416,9 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
         float positionPercent,
         string text)
     {
-        builder.Append($"<pos={Mathf.Clamp(positionPercent, 0f, 100f):0.##}%>");
+        builder.Append(
+            $"<pos={Mathf.Clamp(positionPercent, 0f, 100f):0.##}%>");
+
         builder.Append(text);
     }
 
@@ -402,5 +440,10 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
             return "-";
 
         return $"{value:0.##} G";
+    }
+
+    private static string FormatFloat(double value)
+    {
+        return value.ToString("0.###########");
     }
 }
