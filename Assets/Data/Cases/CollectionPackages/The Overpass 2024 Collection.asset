@@ -19,11 +19,11 @@ MonoBehaviour:
   allowRareSpecialItem: 0
   allowStatTrak: 0
   forceSouvenirDrops: 0
-  priceInGold: 40
+  priceInGold: 245
   isPremium: 0
   quality: 2
-  requiredRank: 8
-  xpRewardOnOpen: 20
+  requiredRank: 9
+  xpRewardOnOpen: 85
   shopCategory: 1
   isCustomCase: 0
   shouldHaveRareSpecial: 0
