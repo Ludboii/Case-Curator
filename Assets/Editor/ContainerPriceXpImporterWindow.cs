@@ -7,8 +7,8 @@ using UnityEditor;
 using UnityEngine;
 
 /// <summary>
-/// Imports only priceInGold and xpRewardOnOpen from the compact CSV exported
-/// from the authoritative Container Balance sheet. No ranks, rarity odds,
+/// Imports priceInGold, xpRewardOnOpen and requiredRank from the compact CSV
+/// exported from the authoritative Container Balance sheet. No rarity odds,
 /// flags, drop pools, icons or other CaseData fields are changed.
 /// </summary>
 public class ContainerPriceXpImporterWindow : EditorWindow
@@ -20,14 +20,14 @@ public class ContainerPriceXpImporterWindow : EditorWindow
     [SerializeField] private TextAsset balanceCsv;
     [SerializeField] private bool logEveryMatchedContainer;
 
-    [MenuItem("Case Curator/Containers/Import Prices and XP")]
+    [MenuItem("Case Curator/Containers/Import Price XP and Rank")]
     public static void OpenWindow()
     {
         ContainerPriceXpImporterWindow window =
             GetWindow<ContainerPriceXpImporterWindow>();
 
-        window.titleContent = new GUIContent("Container Price + XP");
-        window.minSize = new Vector2(560f, 330f);
+        window.titleContent = new GUIContent("Container Balance Import");
+        window.minSize = new Vector2(590f, 350f);
         window.Show();
     }
 
@@ -43,12 +43,12 @@ public class ContainerPriceXpImporterWindow : EditorWindow
     private void OnGUI()
     {
         EditorGUILayout.LabelField(
-            "Container Balance — Price and XP Import",
+            "Container Balance — Price, XP and Rank Import",
             EditorStyles.boldLabel);
 
         EditorGUILayout.HelpBox(
-            "Updates only CaseData.priceInGold and CaseData.xpRewardOnOpen. " +
-            "All other CaseData settings remain untouched.",
+            "Updates only CaseData.priceInGold, CaseData.xpRewardOnOpen and " +
+            "CaseData.requiredRank. Every other CaseData setting remains untouched.",
             MessageType.Info);
 
         EditorGUILayout.Space(8f);
@@ -60,7 +60,7 @@ public class ContainerPriceXpImporterWindow : EditorWindow
             false);
 
         balanceCsv = (TextAsset)EditorGUILayout.ObjectField(
-            "Price + XP CSV",
+            "Price + XP + Rank CSV",
             balanceCsv,
             typeof(TextAsset),
             false);
@@ -72,10 +72,11 @@ public class ContainerPriceXpImporterWindow : EditorWindow
         EditorGUILayout.Space(10f);
 
         EditorGUILayout.HelpBox(
-            "The bundled CSV was exported from CaseCuratorBalancingSheet3.4 " +
-            "using Source / Collection, CaseData Asset Name, Container Type, " +
-            "Shop Category, Price and XP Reward. Collection packages are " +
-            "matched through their drop-pool CollectionData when names differ.",
+            "The bundled CSV was exported from the latest Container Balance " +
+            "sheet using source name, CaseData asset name, container type, shop " +
+            "category, price, XP reward and required rank. Rank names are matched " +
+            "against PlayerProgressUtility display names, so entries such as " +
+            "Silver Elite Master and Global Elite IX are supported.",
             MessageType.None);
 
         EditorGUILayout.Space(12f);
@@ -90,13 +91,13 @@ public class ContainerPriceXpImporterWindow : EditorWindow
                 RunImport(false);
 
             if (GUILayout.Button(
-                    "Import Prices and XP",
+                    "Import Price, XP and Required Rank",
                     GUILayout.Height(42f)))
             {
                 bool confirmed = EditorUtility.DisplayDialog(
-                    "Import Container Prices and XP",
-                    "Update only priceInGold and xpRewardOnOpen on matched " +
-                    "CaseData assets?",
+                    "Import Container Balance",
+                    "Update priceInGold, xpRewardOnOpen and requiredRank on all " +
+                    "matched CaseData assets?",
                     "Import",
                     "Cancel");
 
@@ -115,9 +116,8 @@ public class ContainerPriceXpImporterWindow : EditorWindow
 
     private void RunImport(bool applyChanges)
     {
-        List<BalanceRow> rows = ParseRows(balanceCsv != null
-            ? balanceCsv.text
-            : "");
+        List<BalanceRow> rows = ParseRows(
+            balanceCsv != null ? balanceCsv.text : "");
 
         int matched = 0;
         int changed = 0;
@@ -128,6 +128,7 @@ public class ContainerPriceXpImporterWindow : EditorWindow
 
         List<string> unmatchedRows = new List<string>();
         List<string> ambiguousRows = new List<string>();
+        List<string> invalidRows = new List<string>();
 
         for (int i = 0; i < rows.Count; i++)
         {
@@ -136,6 +137,7 @@ public class ContainerPriceXpImporterWindow : EditorWindow
             if (!row.valid)
             {
                 invalid++;
+                invalidRows.Add(row.DisplayIdentity);
                 continue;
             }
 
@@ -164,7 +166,10 @@ public class ContainerPriceXpImporterWindow : EditorWindow
             bool xpChanged =
                 caseData.xpRewardOnOpen != row.xpReward;
 
-            if (!priceChanged && !xpChanged)
+            bool rankChanged =
+                caseData.requiredRank != row.requiredRank;
+
+            if (!priceChanged && !xpChanged && !rankChanged)
             {
                 unchanged++;
 
@@ -173,7 +178,8 @@ public class ContainerPriceXpImporterWindow : EditorWindow
                     Debug.Log(
                         $"Container balance unchanged: {caseData.caseName} " +
                         $"({caseData.priceInGold:0.##} Gold, " +
-                        $"{caseData.xpRewardOnOpen} XP)",
+                        $"{caseData.xpRewardOnOpen} XP, " +
+                        $"{PlayerProgressUtility.GetRankDisplayName(caseData.requiredRank)})",
                         caseData);
                 }
 
@@ -188,16 +194,19 @@ public class ContainerPriceXpImporterWindow : EditorWindow
                     $"Container balance {(applyChanges ? "update" : "preview")}: " +
                     $"{caseData.caseName} | " +
                     $"Price {caseData.priceInGold:0.##} → {row.priceGold:0.##} | " +
-                    $"XP {caseData.xpRewardOnOpen} → {row.xpReward}",
+                    $"XP {caseData.xpRewardOnOpen} → {row.xpReward} | " +
+                    $"Rank {PlayerProgressUtility.GetRankDisplayName(caseData.requiredRank)} " +
+                    $"→ {PlayerProgressUtility.GetRankDisplayName(row.requiredRank)}",
                     caseData);
             }
 
             if (!applyChanges)
                 continue;
 
-            Undo.RecordObject(caseData, "Import Container Price and XP");
+            Undo.RecordObject(caseData, "Import Container Price XP and Rank");
             caseData.priceInGold = Mathf.Max(0f, row.priceGold);
             caseData.xpRewardOnOpen = Mathf.Max(0, row.xpReward);
+            caseData.requiredRank = row.requiredRank;
             EditorUtility.SetDirty(caseData);
         }
 
@@ -207,24 +216,24 @@ public class ContainerPriceXpImporterWindow : EditorWindow
             AssetDatabase.Refresh();
         }
 
-        if (unmatchedRows.Count > 0)
-        {
-            Debug.LogWarning(
-                "ContainerPriceXpImporter unmatched rows:\n- " +
-                string.Join("\n- ", unmatchedRows));
-        }
+        LogProblemRows(
+            "ContainerPriceXpImporter unmatched rows",
+            unmatchedRows);
 
-        if (ambiguousRows.Count > 0)
-        {
-            Debug.LogWarning(
-                "ContainerPriceXpImporter ambiguous rows:\n- " +
-                string.Join("\n- ", ambiguousRows));
-        }
+        LogProblemRows(
+            "ContainerPriceXpImporter ambiguous rows",
+            ambiguousRows);
 
-        string action = applyChanges ? "Import complete" : "Preview complete";
+        LogProblemRows(
+            "ContainerPriceXpImporter invalid rows",
+            invalidRows);
+
+        string action = applyChanges
+            ? "Import complete"
+            : "Preview complete";
 
         EditorUtility.DisplayDialog(
-            "Container Price and XP",
+            "Container Price, XP and Rank",
             $"{action}.\n\n" +
             $"Rows read: {rows.Count}\n" +
             $"Matched: {matched}\n" +
@@ -234,7 +243,7 @@ public class ContainerPriceXpImporterWindow : EditorWindow
             $"Ambiguous: {ambiguous}\n" +
             $"Invalid rows: {invalid}\n\n" +
             (applyChanges
-                ? "Only price and earned XP were modified."
+                ? "Only price, earned XP and required rank were modified."
                 : "No assets were modified."),
             "OK");
     }
@@ -280,7 +289,9 @@ public class ContainerPriceXpImporterWindow : EditorWindow
         };
     }
 
-    private static int ScoreCandidate(CaseData candidate, BalanceRow row)
+    private static int ScoreCandidate(
+        CaseData candidate,
+        BalanceRow row)
     {
         string candidateObjectName = Normalize(candidate.name);
         string candidateDisplayName = Normalize(candidate.caseName);
@@ -309,8 +320,6 @@ public class ContainerPriceXpImporterWindow : EditorWindow
         if (candidateObjectName == rowSourceName)
             score += 180;
 
-        // Weapon cases normally have no CollectionData source, so exact case
-        // names are their strongest match.
         if (row.containerType == CaseContainerType.WeaponCase &&
             candidateDisplayName == rowSourceName)
         {
@@ -353,7 +362,8 @@ public class ContainerPriceXpImporterWindow : EditorWindow
         if (string.IsNullOrWhiteSpace(csv))
             return rows;
 
-        string[] lines = csv.Replace("\r\n", "\n").Replace('\r', '\n')
+        string[] lines = csv.Replace("\r\n", "\n")
+            .Replace('\r', '\n')
             .Split('\n');
 
         for (int i = 1; i < lines.Length; i++)
@@ -363,9 +373,9 @@ public class ContainerPriceXpImporterWindow : EditorWindow
 
             List<string> columns = ParseCsvLine(lines[i]);
 
-            if (columns.Count < 6)
+            if (columns.Count < 7)
             {
-                rows.Add(BalanceRow.Invalid($"Line {i + 1}"));
+                rows.Add(BalanceRow.Invalid($"Line {i + 1}: not enough columns"));
                 continue;
             }
 
@@ -391,6 +401,10 @@ public class ContainerPriceXpImporterWindow : EditorWindow
                 CultureInfo.InvariantCulture,
                 out int xpReward);
 
+            bool rankValid = TryParsePlayerRank(
+                columns[6],
+                out PlayerRank requiredRank);
+
             rows.Add(
                 new BalanceRow
                 {
@@ -400,15 +414,43 @@ public class ContainerPriceXpImporterWindow : EditorWindow
                     shopCategory = shopCategory,
                     priceGold = priceGold,
                     xpReward = xpReward,
+                    requiredRank = requiredRank,
                     valid = typeValid &&
                             categoryValid &&
                             priceValid &&
                             xpValid &&
+                            rankValid &&
                             !string.IsNullOrWhiteSpace(columns[0])
                 });
         }
 
         return rows;
+    }
+
+    private static bool TryParsePlayerRank(
+        string value,
+        out PlayerRank rank)
+    {
+        string normalizedInput = NormalizeRank(value);
+
+        Array values = Enum.GetValues(typeof(PlayerRank));
+
+        for (int i = 0; i < values.Length; i++)
+        {
+            PlayerRank candidate = (PlayerRank)values.GetValue(i);
+
+            if (NormalizeRank(candidate.ToString()) == normalizedInput ||
+                NormalizeRank(
+                    PlayerProgressUtility.GetRankDisplayName(candidate)) ==
+                normalizedInput)
+            {
+                rank = candidate;
+                return true;
+            }
+        }
+
+        rank = default;
+        return false;
     }
 
     private static List<string> ParseCsvLine(string line)
@@ -473,6 +515,36 @@ public class ContainerPriceXpImporterWindow : EditorWindow
         return builder.ToString();
     }
 
+    private static string NormalizeRank(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "";
+
+        StringBuilder builder = new StringBuilder();
+        string lowered = value.Trim().ToLowerInvariant();
+
+        for (int i = 0; i < lowered.Length; i++)
+        {
+            char character = lowered[i];
+
+            if (char.IsLetterOrDigit(character))
+                builder.Append(character);
+        }
+
+        return builder.ToString();
+    }
+
+    private static void LogProblemRows(
+        string title,
+        List<string> rows)
+    {
+        if (rows == null || rows.Count == 0)
+            return;
+
+        Debug.LogWarning(
+            title + ":\n- " + string.Join("\n- ", rows));
+    }
+
     private sealed class MatchResult
     {
         public CaseData caseData;
@@ -487,6 +559,7 @@ public class ContainerPriceXpImporterWindow : EditorWindow
         public CaseShopCategory shopCategory;
         public float priceGold;
         public int xpReward;
+        public PlayerRank requiredRank;
         public bool valid;
 
         public string DisplayIdentity =>
