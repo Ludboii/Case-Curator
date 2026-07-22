@@ -1,3 +1,4 @@
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +15,12 @@ public class CaseInspectDropCardUI : MonoBehaviour
     public TMP_Text skinNameText;
     public TMP_Text rarityText;
     public TMP_Text foundStateText;
+
+    [Header("Completion Text Colors")]
+    public Color foundColor = new Color(1f, 0.82f, 0.10f, 1f);
+    public Color notFoundColor = new Color(0.62f, 0.62f, 0.62f, 1f);
+    public Color requirementCompleteColor = new Color(0.30f, 0.92f, 0.20f, 1f);
+    public Color requirementIncompleteColor = new Color(1f, 0.25f, 0.22f, 1f);
 
     [Header("Button")]
     public Button button;
@@ -78,6 +85,7 @@ public class CaseInspectDropCardUI : MonoBehaviour
             rarityText.color = rarityColor;
             rarityText.raycastTarget = false;
         }
+
         UpdateFoundStateText();
 
         if (button != null)
@@ -87,12 +95,14 @@ public class CaseInspectDropCardUI : MonoBehaviour
         }
     }
 
-    public void SetupRareSpecialEntry(CaseInspectUI inspectOwner, int possibleCount, Sprite placeholderSprite)
+    public void SetupRareSpecialEntry(
+        CaseInspectUI inspectOwner,
+        int possibleCount,
+        Sprite placeholderSprite)
     {
         skin = null;
         owner = inspectOwner;
         isRareSpecialEntry = true;
-
         gameObject.SetActive(true);
 
         Color rarityColor = RarityColorUtility.GetColor(Rarity.RareSpecial);
@@ -143,23 +153,23 @@ public class CaseInspectDropCardUI : MonoBehaviour
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(OnClicked);
         }
+
         if (foundStateText != null)
-{
-    foundStateText.raycastTarget = false;
+        {
+            foundStateText.raycastTarget = false;
+            foundStateText.richText = true;
+            foundStateText.color = Color.white;
 
-    if (ContainerProgressManager.Instance != null && owner != null)
-    {
-        bool foundRare = ContainerProgressManager.Instance.HasFoundRareSpecial(owner.CurrentCase);
+            bool foundRare =
+                ContainerProgressManager.Instance != null &&
+                owner != null &&
+                ContainerProgressManager.Instance.HasFoundRareSpecial(
+                    owner.CurrentCase);
 
-        foundStateText.text = foundRare ? "Found" : "Not Found";
-        foundStateText.color = foundRare ? Color.green : Color.gray;
-    }
-    else
-    {
-        foundStateText.text = "Not Found";
-        foundStateText.color = Color.gray;
-    }
-}
+            foundStateText.text = Colorize(
+                foundRare ? "Found" : "Not Found",
+                foundRare ? foundColor : notFoundColor);
+        }
     }
 
     private void OnClicked()
@@ -177,40 +187,114 @@ public class CaseInspectDropCardUI : MonoBehaviour
             owner.OpenSkinInfo(skin);
     }
 
-private void UpdateFoundStateText()
-{
-    if (foundStateText == null)
-        return;
-
-    foundStateText.raycastTarget = false;
-
-    if (skin == null)
+    private void UpdateFoundStateText()
     {
-        foundStateText.text = "";
-        return;
+        if (foundStateText == null)
+            return;
+
+        foundStateText.raycastTarget = false;
+        foundStateText.richText = true;
+        foundStateText.color = Color.white;
+
+        if (skin == null)
+        {
+            foundStateText.text = "";
+            return;
+        }
+
+        ContainerProgressManager progress =
+            ContainerProgressManager.Instance;
+
+        CaseData sourceCase = owner != null ? owner.CurrentCase : null;
+
+        if (progress == null || sourceCase == null)
+        {
+            foundStateText.text = Colorize("Not Found", notFoundColor);
+            return;
+        }
+
+        bool found = progress.HasFoundSkin(sourceCase, skin);
+        StringBuilder builder = new StringBuilder();
+
+        builder.Append(
+            Colorize(
+                found ? "Found" : "Not Found",
+                found ? foundColor : notFoundColor));
+
+        // Rare Special items only participate in Bronze Completion.
+        if (skin.rarity == Rarity.RareSpecial)
+        {
+            foundStateText.text = builder.ToString();
+            return;
+        }
+
+        // After Bronze, expose each skin's best discovered wear so the player
+        // can see exactly what remains for Silver Completion.
+        if (progress.IsBronzeComplete(sourceCase))
+        {
+            int bestWearIndex =
+                progress.GetBestFoundWearIndex(sourceCase, skin);
+
+            bool bestWearComplete =
+                progress.HasFoundBestWear(sourceCase, skin);
+
+            string bestWearText = bestWearIndex >= 0
+                ? $"Highest: {ContainerProgressManager.GetWearDisplayName(bestWearIndex)}"
+                : "Highest: Unknown";
+
+            builder.Append('\n');
+            builder.Append(
+                Colorize(
+                    bestWearText,
+                    bestWearComplete
+                        ? requirementCompleteColor
+                        : requirementIncompleteColor));
+        }
+
+        // After Silver, expose the per-skin threshold used by Gold.
+        if (progress.IsSilverComplete(sourceCase))
+        {
+            float threshold =
+                ContainerProgressManager.GetTopQuarterFloatThreshold(skin);
+
+            bool topQuarterComplete =
+                progress.HasFoundTopQuarterFloat(sourceCase, skin);
+
+            builder.Append('\n');
+            builder.Append(
+                Colorize(
+                    $"Float ≤ {threshold:0.######}",
+                    topQuarterComplete
+                        ? requirementCompleteColor
+                        : requirementIncompleteColor));
+        }
+
+        // Once Gold is complete, show the final StatTrak requirement on cases
+        // where Diamond Completion is possible.
+        if (progress.IsGoldComplete(sourceCase) &&
+            progress.CanCompleteDiamond(sourceCase))
+        {
+            bool diamondSkinComplete =
+                progress.HasFoundTopQuarterFloatStatTrak(sourceCase, skin);
+
+            builder.Append('\n');
+            builder.Append(
+                Colorize(
+                    "StatTrak Top 25%",
+                    diamondSkinComplete
+                        ? requirementCompleteColor
+                        : requirementIncompleteColor));
+        }
+
+        foundStateText.text = builder.ToString();
     }
 
-    if (ContainerProgressManager.Instance == null)
+    private static string Colorize(string text, Color color)
     {
-        foundStateText.text = "Not Found";
-        foundStateText.color = Color.gray;
-        return;
+        return $"<color=#{ColorUtility.ToHtmlStringRGB(color)}>{text}</color>";
     }
 
-    bool found = ContainerProgressManager.Instance.HasFoundSkin(owner.CurrentCase, skin);
-
-    if (found)
-    {
-        foundStateText.text = "Found";
-        foundStateText.color = Color.green;
-    }
-    else
-    {
-        foundStateText.text = "Not Found";
-        foundStateText.color = Color.gray;
-    }
-}
-    private string GetRarityDisplayName(Rarity rarity)
+    private static string GetRarityDisplayName(Rarity rarity)
     {
         switch (rarity)
         {
