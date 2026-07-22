@@ -140,14 +140,20 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
         builder.AppendLine("Wear range:");
         builder.Append($"{skin.minFloat:0.00} - {skin.maxFloat:0.00}");
 
-        bool hasObservedRange =
-            sourceCase != null &&
-            ContainerProgressManager.Instance != null &&
-            ContainerProgressManager.Instance.TryGetObservedFloatRange(
-                sourceCase,
-                skin,
-                out double lowestFound,
-                out double highestFound);
+        double lowestFound = 0d;
+        double highestFound = 0d;
+        bool hasObservedRange = false;
+
+        if (sourceCase != null &&
+            ContainerProgressManager.Instance != null)
+        {
+            hasObservedRange =
+                ContainerProgressManager.Instance.TryGetObservedFloatRange(
+                    sourceCase,
+                    skin,
+                    out lowestFound,
+                    out highestFound);
+        }
 
         builder.AppendLine();
         builder.AppendLine();
