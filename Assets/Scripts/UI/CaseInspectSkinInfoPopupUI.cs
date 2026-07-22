@@ -21,9 +21,21 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
     public TMP_Text wearRangeText;
     public TMP_Text sourceText;
 
+    [Header("Price Table Layout")]
+    [Range(0f, 100f)] public float wearLabelPosition = 0f;
+    [Range(0f, 100f)] public float normalColumnPosition = 24f;
+    [Range(0f, 100f)] public float premiumColumnPosition = 68f;
+
+    [Header("Discovered Price Colors")]
+    public Color normalFoundPriceColor = new Color(0.25f, 1f, 0.35f, 1f);
+    public Color premiumFoundPriceColor = new Color(1f, 0.25f, 0.82f, 1f);
+    public Color undiscoveredPriceColor = Color.white;
+
     [Header("Buttons")]
     public Button closeButton;
     public Button okButton;
+
+    private CaseData currentSourceCase;
 
     private void Awake()
     {
@@ -47,6 +59,8 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
 
     public void Open(SkinData skin, CaseData sourceCase)
     {
+        currentSourceCase = sourceCase;
+
         if (skin == null)
         {
             Close();
@@ -72,17 +86,30 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
         }
 
         if (priceText != null)
-            priceText.text = BuildPriceText(skin);
+        {
+            priceText.richText = true;
+            priceText.alignment = TextAlignmentOptions.TopLeft;
+            priceText.text = BuildPriceText(skin, sourceCase);
+        }
 
         if (wearRangeText != null)
-            wearRangeText.text = $"Wear range:\n{skin.minFloat:0.00} - {skin.maxFloat:0.00}";
+        {
+            wearRangeText.text =
+                $"Wear range:\n{skin.minFloat:0.00} - {skin.maxFloat:0.00}";
+        }
 
         if (sourceText != null)
-            sourceText.text = sourceCase != null ? sourceCase.caseName : "Unknown source";
+        {
+            sourceText.text = sourceCase != null
+                ? sourceCase.caseName
+                : "Unknown source";
+        }
     }
 
     public void Close()
     {
+        currentSourceCase = null;
+
         if (root != null)
             root.SetActive(false);
     }
@@ -104,91 +131,272 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
             topBarImage.color = topBarColor;
     }
 
-private string BuildPriceText(SkinData skin)
-{
-    if (skin == null)
-        return "";
-
-    if (skin.isVanilla)
-        return BuildVanillaPriceText(skin);
-
-    string leftTitle = "Normal";
-    WearPrices leftPrices = skin.exteriorPrices;
-
-    if (skin.canBeStatTrak)
+    private string BuildPriceText(SkinData skin, CaseData sourceCase)
     {
-        return BuildTwoColumnPriceText(
-            leftTitle,
-            leftPrices,
-            "StatTrak",
-            skin.statTrakExteriorPrices);
+        if (skin == null)
+            return "";
+
+        if (skin.isVanilla)
+            return BuildVanillaPriceText(skin, sourceCase);
+
+        WearPrices normalPrices = skin.exteriorPrices;
+        bool hasPremium = TryGetPremiumColumn(
+            skin,
+            sourceCase,
+            out string premiumTitle,
+            out WearPrices premiumPrices,
+            out ContainerItemVariant premiumVariant);
+
+        return hasPremium
+            ? BuildTwoColumnPriceText(
+                skin,
+                sourceCase,
+                normalPrices,
+                premiumTitle,
+                premiumPrices,
+                premiumVariant)
+            : BuildSingleColumnPriceText(skin, sourceCase, normalPrices);
     }
 
-    if (skin.canBeSouvenir)
+    private string BuildVanillaPriceText(SkinData skin, CaseData sourceCase)
     {
-        return BuildTwoColumnPriceText(
-            leftTitle,
-            leftPrices,
-            "Souvenir",
-            skin.souvenirExteriorPrices);
+        bool hasPremium =
+            skin.canBeStatTrak && skin.vanillaStatTrakPrice > 0f;
+
+        StringBuilder builder = new StringBuilder();
+
+        if (hasPremium)
+        {
+            AppendAt(builder, normalColumnPosition, "<b>Normal</b>");
+            AppendAt(builder, premiumColumnPosition, "<b>StatTrak</b>");
+            builder.AppendLine();
+
+            AppendAt(
+                builder,
+                normalColumnPosition,
+                FormatDiscoveredPrice(
+                    skin.vanillaPrice,
+                    IsPriceDiscovered(
+                        sourceCase,
+                        skin,
+                        0,
+                        ContainerItemVariant.Normal),
+                    normalFoundPriceColor));
+
+            AppendAt(
+                builder,
+                premiumColumnPosition,
+                FormatDiscoveredPrice(
+                    skin.vanillaStatTrakPrice,
+                    IsPriceDiscovered(
+                        sourceCase,
+                        skin,
+                        0,
+                        ContainerItemVariant.StatTrak),
+                    premiumFoundPriceColor));
+        }
+        else
+        {
+            AppendAt(builder, normalColumnPosition, "<b>Vanilla</b>");
+            builder.AppendLine();
+
+            AppendAt(
+                builder,
+                normalColumnPosition,
+                FormatDiscoveredPrice(
+                    skin.vanillaPrice,
+                    IsPriceDiscovered(
+                        sourceCase,
+                        skin,
+                        0,
+                        ContainerItemVariant.Normal),
+                    normalFoundPriceColor));
+        }
+
+        return builder.ToString();
     }
 
-    return BuildSingleColumnPriceText(leftTitle, leftPrices);
-}
-
-private string BuildVanillaPriceText(SkinData skin)
-{
-    string normalPrice = FormatPrice(skin.vanillaPrice);
-    string statTrakPrice = FormatPrice(skin.vanillaStatTrakPrice);
-
-    if (skin.canBeStatTrak && skin.vanillaStatTrakPrice > 0f)
+    private string BuildTwoColumnPriceText(
+        SkinData skin,
+        CaseData sourceCase,
+        WearPrices normalPrices,
+        string premiumTitle,
+        WearPrices premiumPrices,
+        ContainerItemVariant premiumVariant)
     {
-        return
-            $"Vanilla        Vanilla StatTrak\n" +
-            $"{normalPrice,-14}{statTrakPrice}";
+        StringBuilder builder = new StringBuilder();
+
+        AppendAt(builder, normalColumnPosition, "<b>Normal</b>");
+        AppendAt(builder, premiumColumnPosition, $"<b>{premiumTitle}</b>");
+        builder.AppendLine();
+
+        for (int wearIndex = 0; wearIndex < 5; wearIndex++)
+        {
+            AppendAt(builder, wearLabelPosition, GetWearAbbreviation(wearIndex));
+
+            AppendAt(
+                builder,
+                normalColumnPosition,
+                FormatDiscoveredPrice(
+                    normalPrices.Get(wearIndex),
+                    IsPriceDiscovered(
+                        sourceCase,
+                        skin,
+                        wearIndex,
+                        ContainerItemVariant.Normal),
+                    normalFoundPriceColor));
+
+            AppendAt(
+                builder,
+                premiumColumnPosition,
+                FormatDiscoveredPrice(
+                    premiumPrices.Get(wearIndex),
+                    IsPriceDiscovered(
+                        sourceCase,
+                        skin,
+                        wearIndex,
+                        premiumVariant),
+                    premiumFoundPriceColor));
+
+            if (wearIndex < 4)
+                builder.AppendLine();
+        }
+
+        return builder.ToString();
     }
 
-    return
-        $"Vanilla\n" +
-        $"{normalPrice}";
-}
-
-private string BuildTwoColumnPriceText(
-    string leftTitle,
-    WearPrices leftPrices,
-    string rightTitle,
-    WearPrices rightPrices)
-{
-    return
-        $"{leftTitle,-18}{rightTitle}\n" +
-        $"FN  {FormatPrice(leftPrices.factoryNew),-14}FN  {FormatPrice(rightPrices.factoryNew)}\n" +
-        $"MW  {FormatPrice(leftPrices.minimalWear),-14}MW  {FormatPrice(rightPrices.minimalWear)}\n" +
-        $"FT  {FormatPrice(leftPrices.fieldTested),-14}FT  {FormatPrice(rightPrices.fieldTested)}\n" +
-        $"WW  {FormatPrice(leftPrices.wellWorn),-14}WW  {FormatPrice(rightPrices.wellWorn)}\n" +
-        $"BS  {FormatPrice(leftPrices.battleScarred),-14}BS  {FormatPrice(rightPrices.battleScarred)}";
-}
-
-private string BuildSingleColumnPriceText(string title, WearPrices prices)
-{
-    return
-        $"{title}\n" +
-        $"FN  {FormatPrice(prices.factoryNew)}\n" +
-        $"MW  {FormatPrice(prices.minimalWear)}\n" +
-        $"FT  {FormatPrice(prices.fieldTested)}\n" +
-        $"WW  {FormatPrice(prices.wellWorn)}\n" +
-        $"BS  {FormatPrice(prices.battleScarred)}";
-}
-
-    private void AppendWearPrices(StringBuilder builder, WearPrices prices)
+    private string BuildSingleColumnPriceText(
+        SkinData skin,
+        CaseData sourceCase,
+        WearPrices prices)
     {
-        builder.AppendLine($"FN  {FormatPrice(prices.factoryNew)}");
-        builder.AppendLine($"MW  {FormatPrice(prices.minimalWear)}");
-        builder.AppendLine($"FT  {FormatPrice(prices.fieldTested)}");
-        builder.AppendLine($"WW  {FormatPrice(prices.wellWorn)}");
-        builder.AppendLine($"BS  {FormatPrice(prices.battleScarred)}");
+        StringBuilder builder = new StringBuilder();
+        AppendAt(builder, normalColumnPosition, "<b>Normal</b>");
+        builder.AppendLine();
+
+        for (int wearIndex = 0; wearIndex < 5; wearIndex++)
+        {
+            AppendAt(builder, wearLabelPosition, GetWearAbbreviation(wearIndex));
+
+            AppendAt(
+                builder,
+                normalColumnPosition,
+                FormatDiscoveredPrice(
+                    prices.Get(wearIndex),
+                    IsPriceDiscovered(
+                        sourceCase,
+                        skin,
+                        wearIndex,
+                        ContainerItemVariant.Normal),
+                    normalFoundPriceColor));
+
+            if (wearIndex < 4)
+                builder.AppendLine();
+        }
+
+        return builder.ToString();
     }
 
-    private string FormatPrice(float value)
+    private bool TryGetPremiumColumn(
+        SkinData skin,
+        CaseData sourceCase,
+        out string title,
+        out WearPrices prices,
+        out ContainerItemVariant variant)
+    {
+        bool souvenirSource = sourceCase != null &&
+            (sourceCase.containerType == CaseContainerType.SouvenirPackage ||
+             sourceCase.forceSouvenirDrops);
+
+        if (souvenirSource && skin.canBeSouvenir)
+        {
+            title = "Souvenir";
+            prices = skin.souvenirExteriorPrices;
+            variant = ContainerItemVariant.Souvenir;
+            return true;
+        }
+
+        bool statTrakSource = sourceCase != null &&
+            sourceCase.allowStatTrak &&
+            skin.canBeStatTrak;
+
+        if (statTrakSource ||
+            (sourceCase == null && skin.canBeStatTrak))
+        {
+            title = "StatTrak";
+            prices = skin.statTrakExteriorPrices;
+            variant = ContainerItemVariant.StatTrak;
+            return true;
+        }
+
+        if (skin.canBeSouvenir)
+        {
+            title = "Souvenir";
+            prices = skin.souvenirExteriorPrices;
+            variant = ContainerItemVariant.Souvenir;
+            return true;
+        }
+
+        title = "";
+        prices = default;
+        variant = ContainerItemVariant.Normal;
+        return false;
+    }
+
+    private bool IsPriceDiscovered(
+        CaseData sourceCase,
+        SkinData skin,
+        int wearIndex,
+        ContainerItemVariant variant)
+    {
+        return sourceCase != null &&
+               ContainerProgressManager.Instance != null &&
+               ContainerProgressManager.Instance.HasDiscoveredPrice(
+                   sourceCase,
+                   skin,
+                   wearIndex,
+                   variant);
+    }
+
+    private string FormatDiscoveredPrice(
+        float value,
+        bool discovered,
+        Color discoveredColor)
+    {
+        string price = FormatPrice(value);
+
+        if (value <= 0f)
+            return price;
+
+        Color color = discovered
+            ? discoveredColor
+            : undiscoveredPriceColor;
+
+        return $"<color=#{ColorUtility.ToHtmlStringRGB(color)}>{price}</color>";
+    }
+
+    private static void AppendAt(
+        StringBuilder builder,
+        float positionPercent,
+        string text)
+    {
+        builder.Append($"<pos={Mathf.Clamp(positionPercent, 0f, 100f):0.##}%>");
+        builder.Append(text);
+    }
+
+    private static string GetWearAbbreviation(int wearIndex)
+    {
+        switch (wearIndex)
+        {
+            case 0: return "FN";
+            case 1: return "MW";
+            case 2: return "FT";
+            case 3: return "WW";
+            default: return "BS";
+        }
+    }
+
+    private static string FormatPrice(float value)
     {
         if (value <= 0f)
             return "-";
