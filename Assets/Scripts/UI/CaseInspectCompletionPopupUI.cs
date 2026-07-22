@@ -134,7 +134,7 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
         {
             silverExplanationText.text =
                 "<color=#D6DEE5>SILVER COMPLETION</color>\n" +
-                "Open every normal skin in its best possible wear. " +
+                "Open every normal skin in its highest possible wear quality. " +
                 "Rare Special items are not required.\n" +
                 $"Progress: {bestWearCount} / {normalTarget}\n" +
                 $"Reward: 40x {containerName}.";
@@ -144,9 +144,10 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
         {
             goldExplanationText.text =
                 "<color=#FFD12A>GOLD COMPLETION</color>\n" +
-                "Open every normal skin with a float in the best 25% of " +
-                "that skin's available float range. StatTrak and Souvenir " +
-                "items also count. Rare Special items are not required.\n" +
+                "Open every normal skin with a float in the best 25% of that " +
+                "skin's highest possible wear quality. Normal, StatTrak and " +
+                "Souvenir items can satisfy this requirement. Rare Special " +
+                "items are not required.\n" +
                 $"Progress: {topQuarterCount} / {normalTarget}\n" +
                 "Reward: 20-40 Present Shards from the current Museum band + " +
                 "25% discount on this container.";
@@ -157,8 +158,8 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
             diamondExplanationText.text = diamondAvailable
                 ? "<color=#67E8FF>DIAMOND COMPLETION</color>\n" +
                   "Open every normal skin as StatTrak with a float in the best " +
-                  "25% of that skin's available float range. Rare Special " +
-                  "items are not required.\n" +
+                  "25% of that skin's highest possible wear quality. Rare " +
+                  "Special items are not required.\n" +
                   $"Progress: {topQuarterStatTrakCount} / {normalTarget}\n" +
                   "Reward: +0.05% Museum Points when donating + " +
                   "+0.025% Museum idle Gold income."
