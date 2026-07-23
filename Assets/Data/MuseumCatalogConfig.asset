@@ -15,8 +15,8 @@ MonoBehaviour:
   defaultWingId: 
   wings:
   - wingId: 
-    displayName: FirearmsWing
-    description: weapons that shoot
+    displayName: Arsenal Wing
+    description: 
     icon: {fileID: 0}
     sortOrder: 0
     includeInCompletion: 0
@@ -24,71 +24,161 @@ MonoBehaviour:
     categories:
     - categoryId: 
       displayName: Pistols
-      description: tiny guns
+      description: 
       icon: {fileID: 0}
       sortOrder: 0
       includeInCompletion: 0
       unlockDefinition: {fileID: 0}
       filter:
-        filterMode: 0
-        weaponNames: []
-        includeNormal: 0
-        includeStatTrak: 0
-        includeSouvenir: 0
+        filterMode: 1
+        weaponNames:
+        - CZ75-Auto
+        - Desert Eagle
+        - Dual Berettas
+        - Five-Seven
+        - Glock-18
+        - P2000
+        - P250
+        - R8 Revolver
+        - Tec-9
+        - USP-S
+        includeNormal: 1
+        includeStatTrak: 1
+        includeSouvenir: 1
         includeVanilla: 0
     - categoryId: 
       displayName: SMGs
-      description: bigger guns
+      description: 
       icon: {fileID: 0}
       sortOrder: 0
       includeInCompletion: 0
       unlockDefinition: {fileID: 0}
       filter:
-        filterMode: 0
-        weaponNames: []
-        includeNormal: 0
-        includeStatTrak: 0
-        includeSouvenir: 0
+        filterMode: 1
+        weaponNames:
+        - MAC-10
+        - MP5-SD
+        - MP7
+        - MP9
+        - P90
+        - PP-Bizon
+        - UMP-45
+        includeNormal: 1
+        includeStatTrak: 1
+        includeSouvenir: 1
         includeVanilla: 0
     - categoryId: 
       displayName: Heavy
-      description: big guns
+      description: 
       icon: {fileID: 0}
       sortOrder: 0
       includeInCompletion: 0
       unlockDefinition: {fileID: 0}
       filter:
-        filterMode: 0
-        weaponNames: []
-        includeNormal: 0
-        includeStatTrak: 0
-        includeSouvenir: 0
+        filterMode: 1
+        weaponNames:
+        - MAG-7
+        - Nova
+        - Sawed-Off
+        - XM1014
+        - M249
+        - Negev
+        includeNormal: 1
+        includeStatTrak: 1
+        includeSouvenir: 1
         includeVanilla: 0
     - categoryId: 
-      displayName: AssaultRifles
-      description: Main rifles
+      displayName: Assault Rifles
+      description: 
       icon: {fileID: 0}
       sortOrder: 0
       includeInCompletion: 0
       unlockDefinition: {fileID: 0}
       filter:
-        filterMode: 0
-        weaponNames: []
-        includeNormal: 0
-        includeStatTrak: 0
-        includeSouvenir: 0
+        filterMode: 1
+        weaponNames:
+        - AK-47
+        - AUG
+        - FAMAS
+        - Galil AR
+        - M4A1-S
+        - M4A4
+        - SG 553
+        includeNormal: 1
+        includeStatTrak: 1
+        includeSouvenir: 1
         includeVanilla: 0
     - categoryId: 
-      displayName: SniperRifles
-      description: Rifles with scopes
+      displayName: Sniper Rifles
+      description: 
       icon: {fileID: 0}
       sortOrder: 0
       includeInCompletion: 0
       unlockDefinition: {fileID: 0}
       filter:
-        filterMode: 0
-        weaponNames: []
-        includeNormal: 0
+        filterMode: 1
+        weaponNames:
+        - AWP
+        - G3SG1
+        - SCAR-20
+        - SSG 08
+        includeNormal: 1
+        includeStatTrak: 1
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: 
+      displayName: Knives
+      description: 
+      icon: {fileID: 0}
+      sortOrder: 0
+      includeInCompletion: 0
+      unlockDefinition: {fileID: 0}
+      filter:
+        filterMode: 1
+        weaponNames:
+        - Bayonet
+        - Bowie Knife
+        - Butterfly Knife
+        - Classic Knife
+        - Falchion Knife
+        - Flip Knife
+        - Gut Knife
+        - Huntsman Knife
+        - Karambit
+        - Kukri Knife
+        - M9 Bayonet
+        - Navaja Knife
+        - Nomad Knife
+        - Paracord Knife
+        - Shadow Daggers
+        - Skeleton Knife
+        - Stiletto Knife
+        - Survival Knife
+        - Talon Knife
+        - Ursus Knife
+        includeNormal: 1
+        includeStatTrak: 1
+        includeSouvenir: 0
+        includeVanilla: 1
+    - categoryId: 
+      displayName: Gloves
+      description: 
+      icon: {fileID: 0}
+      sortOrder: 0
+      includeInCompletion: 0
+      unlockDefinition: {fileID: 0}
+      filter:
+        filterMode: 1
+        weaponNames:
+        - Bloodhound Gloves
+        - Driver Gloves
+        - Hand Wraps
+        - Hydra Gloves
+        - Moto Gloves
+        - Specialist Gloves
+        - Sport Gloves
+        - Broken Fang Gloves
+        includeNormal: 1
         includeStatTrak: 0
         includeSouvenir: 0
         includeVanilla: 0
