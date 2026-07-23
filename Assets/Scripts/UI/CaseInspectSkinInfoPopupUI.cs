@@ -100,7 +100,7 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
         {
             wearRangeText.richText = true;
             wearRangeText.alignment = TextAlignmentOptions.TopLeft;
-            wearRangeText.enableWordWrapping = false;
+            wearRangeText.textWrappingMode = TextWrappingModes.Normal;
             wearRangeText.text = BuildWearAndDiscoveryText(skin, sourceCase);
         }
 

@@ -789,7 +789,7 @@ public class ContainerProgressManager : MonoBehaviour
         highestWearUpperBound = Mathf.Max(minimum, highestWearUpperBound);
 
         return minimum +
-               (highestWearUpperBound - minimum) * 0.25f;
+               (highestWearUpperBound - minimum) * 0.5f;
     }
 
     public static int GetBestPossibleWearIndex(SkinData skin)
