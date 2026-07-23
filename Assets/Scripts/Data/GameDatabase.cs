@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +14,13 @@ public class GameDatabase : ScriptableObject
 
     [Header("Progression")]
     public UpgradeCatalog upgradeCatalog;
+
+    [Header("Museum")]
+    public MuseumBalanceData museumBalance;
+    public MuseumCatalogConfig museumCatalog;
+
+    public List<MuseumMilestoneData> museumMilestones =
+        new List<MuseumMilestoneData>();
 
     public SkinData GetSkinByApiId(string apiId)
     {
@@ -52,5 +60,45 @@ public class GameDatabase : ScriptableObject
         return upgradeCatalog != null
             ? upgradeCatalog.GetUpgradeById(upgradeId)
             : null;
+    }
+
+    public MuseumMilestoneData GetMuseumMilestoneById(string milestoneId)
+    {
+        if (string.IsNullOrWhiteSpace(milestoneId) ||
+            museumMilestones == null)
+        {
+            return null;
+        }
+
+        for (int i = 0; i < museumMilestones.Count; i++)
+        {
+            MuseumMilestoneData milestone = museumMilestones[i];
+
+            if (milestone != null &&
+                string.Equals(
+                    milestone.milestoneId,
+                    milestoneId,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return milestone;
+            }
+        }
+
+        return null;
+    }
+
+    private void OnValidate()
+    {
+        if (allSkins == null)
+            allSkins = new List<SkinData>();
+
+        if (allCases == null)
+            allCases = new List<CaseData>();
+
+        if (allCollections == null)
+            allCollections = new List<CollectionData>();
+
+        if (museumMilestones == null)
+            museumMilestones = new List<MuseumMilestoneData>();
     }
 }
