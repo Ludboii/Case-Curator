@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -48,13 +49,20 @@ public class MainPanelController : MonoBehaviour
     [Header("Startup")]
     public GameObject startupPanel;
 
+    [Header("Legacy Cleanup")]
+    [Tooltip(
+        "Disables any remaining MainTabController component at runtime so two " +
+        "navigation systems cannot fight over panels and button colours.")]
+    public bool disableLegacyMainTabController = true;
+
     private readonly List<GameObject> allPanels = new List<GameObject>();
-    private Button selectedSidebarButton;
 
     private void Awake()
     {
+        DisableLegacyNavigationControllers();
         BuildPanelList();
         SetupButtonListeners();
+        PrepareButtonVisuals();
     }
 
     private void Start()
@@ -63,13 +71,41 @@ public class MainPanelController : MonoBehaviour
             ? startupPanel
             : caseShopPanel;
 
-        ShowOnly(firstPanel);
-        RefreshSidebarSelectionForPanel(firstPanel);
+        ShowPanel(firstPanel, GetSidebarButtonForPanel(firstPanel));
     }
 
     private void OnDestroy()
     {
         RemoveButtonListeners();
+    }
+
+    private void DisableLegacyNavigationControllers()
+    {
+        if (!disableLegacyMainTabController)
+            return;
+
+        MonoBehaviour[] behaviours =
+            FindObjectsByType<MonoBehaviour>(
+                FindObjectsInactive.Include,
+                FindObjectsSortMode.None);
+
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            MonoBehaviour behaviour = behaviours[i];
+
+            if (behaviour == null || behaviour == this)
+                continue;
+
+            if (behaviour.GetType().Name != "MainTabController")
+                continue;
+
+            behaviour.enabled = false;
+            Debug.LogWarning(
+                "MainPanelController disabled the legacy MainTabController. " +
+                "Remove that component from MainContent after confirming the " +
+                "new navigation works.",
+                behaviour);
+        }
     }
 
     private void BuildPanelList()
@@ -143,85 +179,79 @@ public class MainPanelController : MonoBehaviour
             button.onClick.RemoveListener(action);
     }
 
-    public void ShowCaseShop()
+    private void PrepareButtonVisuals()
     {
-        ShowOnly(caseShopPanel);
-        SetSelectedSidebarButton(caseShopButton);
+        PrepareButton(caseShopButton);
+        PrepareButton(inventoryButton);
+        PrepareButton(museumButton);
+        PrepareButton(minigamesButton);
+        PrepareButton(questsButton);
+        PrepareButton(upgradesButton);
+        PrepareButton(statsButton);
+        PrepareButton(settingsButton);
+        PrepareButton(debugButton);
+
+        SetSelectedSidebarButton(null);
     }
 
-    public void ShowInventoryMode()
+    private static void PrepareButton(Button button)
     {
-        ShowOnly(inventoryModePanel);
-        SetSelectedSidebarButton(inventoryButton);
+        if (button == null)
+            return;
+
+        // The controller directly sets the authored Image colour. Disabling the
+        // Selectable transition prevents Unity's EventSystem focus state from
+        // tinting the last clicked button green/black after another tab opens.
+        button.transition = Selectable.Transition.None;
     }
 
-    public void ShowSkinInventory()
-    {
-        ShowOnly(skinInventoryPanel);
-        SetSelectedSidebarButton(inventoryButton);
-    }
+    public void ShowCaseShop() =>
+        ShowPanel(caseShopPanel, caseShopButton);
 
-    public void ShowCaseInventory()
-    {
-        ShowOnly(caseInventoryPanel);
-        SetSelectedSidebarButton(inventoryButton);
-    }
+    public void ShowInventoryMode() =>
+        ShowPanel(inventoryModePanel, inventoryButton);
 
-    public void ShowMuseum()
-    {
-        ShowOnly(museumPanel);
-        SetSelectedSidebarButton(museumButton);
-    }
+    public void ShowSkinInventory() =>
+        ShowPanel(skinInventoryPanel, inventoryButton);
 
-    public void ShowTradeups()
-    {
-        ShowOnly(tradeupsPanel);
+    public void ShowCaseInventory() =>
+        ShowPanel(caseInventoryPanel, inventoryButton);
 
-        // Tradeups currently opens from inventory rather than a dedicated
-        // sidebar tab, so Inventory remains the selected sidebar section.
-        SetSelectedSidebarButton(inventoryButton);
-    }
+    public void ShowMuseum() =>
+        ShowPanel(museumPanel, museumButton);
 
-    public void ShowQuests()
-    {
-        ShowOnly(questsPanel);
-        SetSelectedSidebarButton(questsButton);
-    }
+    public void ShowTradeups() =>
+        ShowPanel(tradeupsPanel, inventoryButton);
 
-    public void ShowUpgrades()
-    {
-        ShowOnly(upgradesPanel);
-        SetSelectedSidebarButton(upgradesButton);
-    }
+    public void ShowQuests() =>
+        ShowPanel(questsPanel, questsButton);
 
-    public void ShowMinigames()
-    {
-        ShowOnly(minigamesPanel);
-        SetSelectedSidebarButton(minigamesButton);
-    }
+    public void ShowUpgrades() =>
+        ShowPanel(upgradesPanel, upgradesButton);
 
-    public void ShowStats()
-    {
-        ShowOnly(statsPanel);
-        SetSelectedSidebarButton(statsButton);
-    }
+    public void ShowMinigames() =>
+        ShowPanel(minigamesPanel, minigamesButton);
 
-    public void ShowSettings()
-    {
-        ShowOnly(settingsPanel);
-        SetSelectedSidebarButton(settingsButton);
-    }
+    public void ShowStats() =>
+        ShowPanel(statsPanel, statsButton);
 
-    public void ShowDebug()
+    public void ShowSettings() =>
+        ShowPanel(settingsPanel, settingsButton);
+
+    public void ShowDebug() =>
+        ShowPanel(debugPanel, debugButton);
+
+    private void ShowPanel(GameObject panelToShow, Button sidebarButton)
     {
-        ShowOnly(debugPanel);
-        SetSelectedSidebarButton(debugButton);
+        ShowOnly(panelToShow);
+        SetSelectedSidebarButton(sidebarButton);
+
+        if (EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(null);
     }
 
     public void ShowOnly(GameObject panelToShow)
     {
-        // Rebuild in case a panel reference was assigned after Awake while
-        // editing the scene or prefab instance.
         BuildPanelList();
 
         for (int i = 0; i < allPanels.Count; i++)
@@ -231,39 +261,61 @@ public class MainPanelController : MonoBehaviour
             if (panel != null)
                 panel.SetActive(panel == panelToShow);
         }
+
+        // A wrong Inspector reference is easier to diagnose with an explicit
+        // error than with two overlapping panels.
+        if (debugPanel != null &&
+            panelToShow != debugPanel &&
+            debugPanel.activeSelf)
+        {
+            debugPanel.SetActive(false);
+            Debug.LogError(
+                "MainPanelController had to force-hide Debug Panel. Check that " +
+                "Debug Panel references Panel_Debug itself, not its child " +
+                "MuseumDebugTester.",
+                this);
+        }
     }
 
-    private void RefreshSidebarSelectionForPanel(GameObject panel)
+    private Button GetSidebarButtonForPanel(GameObject panel)
     {
         if (panel == caseShopPanel)
-            SetSelectedSidebarButton(caseShopButton);
-        else if (panel == inventoryModePanel ||
-                 panel == skinInventoryPanel ||
-                 panel == caseInventoryPanel ||
-                 panel == tradeupsPanel)
-            SetSelectedSidebarButton(inventoryButton);
-        else if (panel == museumPanel)
-            SetSelectedSidebarButton(museumButton);
-        else if (panel == minigamesPanel)
-            SetSelectedSidebarButton(minigamesButton);
-        else if (panel == questsPanel)
-            SetSelectedSidebarButton(questsButton);
-        else if (panel == upgradesPanel)
-            SetSelectedSidebarButton(upgradesButton);
-        else if (panel == statsPanel)
-            SetSelectedSidebarButton(statsButton);
-        else if (panel == settingsPanel)
-            SetSelectedSidebarButton(settingsButton);
-        else if (panel == debugPanel)
-            SetSelectedSidebarButton(debugButton);
-        else
-            SetSelectedSidebarButton(null);
+            return caseShopButton;
+
+        if (panel == inventoryModePanel ||
+            panel == skinInventoryPanel ||
+            panel == caseInventoryPanel ||
+            panel == tradeupsPanel)
+        {
+            return inventoryButton;
+        }
+
+        if (panel == museumPanel)
+            return museumButton;
+
+        if (panel == minigamesPanel)
+            return minigamesButton;
+
+        if (panel == questsPanel)
+            return questsButton;
+
+        if (panel == upgradesPanel)
+            return upgradesButton;
+
+        if (panel == statsPanel)
+            return statsButton;
+
+        if (panel == settingsPanel)
+            return settingsButton;
+
+        if (panel == debugPanel)
+            return debugButton;
+
+        return null;
     }
 
     private void SetSelectedSidebarButton(Button selected)
     {
-        selectedSidebarButton = selected;
-
         ApplyButtonVisual(caseShopButton, selected == caseShopButton);
         ApplyButtonVisual(inventoryButton, selected == inventoryButton);
         ApplyButtonVisual(museumButton, selected == museumButton);
@@ -277,28 +329,11 @@ public class MainPanelController : MonoBehaviour
 
     private void ApplyButtonVisual(Button button, bool selected)
     {
-        if (button == null)
+        if (button == null || button.targetGraphic == null)
             return;
 
-        Color target = selected
+        button.targetGraphic.color = selected
             ? selectedButtonColor
             : normalButtonColor;
-
-        Graphic targetGraphic = button.targetGraphic;
-
-        if (targetGraphic != null)
-            targetGraphic.color = target;
-
-        // Keep every Selectable state visually consistent with the controller's
-        // current selected/unselected colour. This prevents EventSystem focus
-        // from leaving a stale highlighted tab behind.
-        ColorBlock colors = button.colors;
-        colors.normalColor = target;
-        colors.highlightedColor = target;
-        colors.pressedColor = target * 0.9f;
-        colors.selectedColor = target;
-        colors.disabledColor = target;
-        colors.colorMultiplier = 1f;
-        button.colors = colors;
     }
 }
