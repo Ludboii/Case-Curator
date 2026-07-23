@@ -38,6 +38,9 @@ public static class MuseumDonationKeyUtility
 
     public static MuseumWearTier GetWearTier(int wearIndex)
     {
+        if (wearIndex < 0)
+            return MuseumWearTier.FactoryNew;
+
         switch (wearIndex)
         {
             case 0: return MuseumWearTier.FactoryNew;
