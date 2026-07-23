@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b60d4d9f392a5174a8c4c43180926ef7, type: 3}
+  m_Name: MuseumCatalogConfig
+  m_EditorClassIdentifier: Assembly-CSharp::MuseumCatalogConfig
+  defaultWingId: 
+  wings:
+  - wingId: 
+    displayName: FirearmsWing
+    description: weapons that shoot
+    icon: {fileID: 0}
+    sortOrder: 0
+    includeInCompletion: 0
+    unlockDefinition: {fileID: 0}
+    categories:
+    - categoryId: 
+      displayName: Pistols
+      description: tiny guns
+      icon: {fileID: 0}
+      sortOrder: 0
+      includeInCompletion: 0
+      unlockDefinition: {fileID: 0}
+      filter:
+        filterMode: 0
+        weaponNames: []
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 0
+        includeVanilla: 0
+    - categoryId: 
+      displayName: SMGs
+      description: bigger guns
+      icon: {fileID: 0}
+      sortOrder: 0
+      includeInCompletion: 0
+      unlockDefinition: {fileID: 0}
+      filter:
+        filterMode: 0
+        weaponNames: []
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 0
+        includeVanilla: 0
+    - categoryId: 
+      displayName: Heavy
+      description: big guns
+      icon: {fileID: 0}
+      sortOrder: 0
+      includeInCompletion: 0
+      unlockDefinition: {fileID: 0}
+      filter:
+        filterMode: 0
+        weaponNames: []
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 0
+        includeVanilla: 0
+    - categoryId: 
+      displayName: AssaultRifles
+      description: Main rifles
+      icon: {fileID: 0}
+      sortOrder: 0
+      includeInCompletion: 0
+      unlockDefinition: {fileID: 0}
+      filter:
+        filterMode: 0
+        weaponNames: []
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 0
+        includeVanilla: 0
+    - categoryId: 
+      displayName: SniperRifles
+      description: Rifles with scopes
+      icon: {fileID: 0}
+      sortOrder: 0
+      includeInCompletion: 0
+      unlockDefinition: {fileID: 0}
+      filter:
+        filterMode: 0
+        weaponNames: []
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 0
+        includeVanilla: 0

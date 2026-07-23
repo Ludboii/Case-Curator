@@ -27,6 +27,10 @@ public Button questsButton;
 public Button upgradesButton;
 public Button statsButton;
 public Button settingsButton;
+
+[Header("Debug")]
+public GameObject debugPanel;
+public Button debugButton;
   
     [Header("Inventory Mode Buttons")]
     public Button skinsInventoryButton;

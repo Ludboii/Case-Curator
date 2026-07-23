@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5318a1de24320dd4a86550e4246a43d0, type: 3}
+  m_Name: MuseumBalanceData
+  m_EditorClassIdentifier: Assembly-CSharp::MuseumBalanceData
+  oneDonationPerSlot: 1
+  includeNormalSlots: 1
+  includeStatTrakSlots: 1
+  includeSouvenirSlots: 1
+  includeVanillaSlots: 1
+  rarityPointRules:
+  - rarity: 0
+    baseMuseumPoints: 3
+  - rarity: 1
+    baseMuseumPoints: 6
+  - rarity: 2
+    baseMuseumPoints: 12
+  - rarity: 3
+    baseMuseumPoints: 24
+  - rarity: 4
+    baseMuseumPoints: 48
+  - rarity: 5
+    baseMuseumPoints: 96
+  - rarity: 6
+    baseMuseumPoints: 192
+  defaultBaseMuseumPoints: 0
+  wearPointRules:
+  - wear: 0
+    pointMultiplier: 2
+  - wear: 1
+    pointMultiplier: 1.5
+  - wear: 2
+    pointMultiplier: 1.2
+  - wear: 3
+    pointMultiplier: 1
+  - wear: 3
+    pointMultiplier: 0.75
+  variantPointRules:
+  - variant: 0
+    pointMultiplier: 1
+  - variant: 1
+    pointMultiplier: 1.5
+  - variant: 2
+    pointMultiplier: 1.75
+  vanillaPointMultiplier: 1
+  rareSpecialPointMultiplier: 1
+  idleIncome:
+    goldPerMuseumPointPerHour: 1
+    maximumOfflineHours: 8
+    unclaimedGoldCapacity: 0
+    minimumCalculationIntervalSeconds: 30

@@ -2209,3 +2209,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d8341446569b84245bb89b58d040e288, type: 2}
   - {fileID: 11400000, guid: 0a4a33f205d4051448eba4faadf98646, type: 2}
   upgradeCatalog: {fileID: 11400000, guid: 5d2770f8edc828041821ea130f521b70, type: 2}
+  museumBalance: {fileID: 11400000, guid: 7ff4a6c362c2d5741a4f2b772a8581e8, type: 2}
+  museumCatalog: {fileID: 11400000, guid: 862a34b45de64ce41923c05a97798a27, type: 2}
+  museumMilestones: []

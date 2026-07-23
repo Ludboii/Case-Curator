@@ -57,7 +57,7 @@ MonoBehaviour:
   fadeOverrides: []
   exteriorPrices:
     factoryNew: 21.3
-    minimalWear: 3.1
+    minimalWear: 6.19
     fieldTested: 1.4
     wellWorn: 2.52
     battleScarred: 2.22
