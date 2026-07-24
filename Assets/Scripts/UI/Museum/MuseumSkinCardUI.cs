@@ -23,8 +23,25 @@ public class MuseumSkinCardUI : MonoBehaviour
     private MuseumSkinEntry entry;
     private MuseumPanelUI owner;
 
+    private void Awake()
+    {
+        ResolveProgressBar();
+    }
+
+    private void Reset()
+    {
+        ResolveProgressBar();
+    }
+
+    private void OnValidate()
+    {
+        ResolveProgressBar();
+    }
+
     public void Setup(MuseumSkinEntry museumEntry, MuseumPanelUI panel)
     {
+        ResolveProgressBar();
+
         entry = museumEntry;
         owner = panel;
         SkinData skin = entry != null ? entry.skin : null;
@@ -82,6 +99,12 @@ public class MuseumSkinCardUI : MonoBehaviour
             button.onClick.AddListener(HandleClicked);
             button.interactable = entry != null && skin != null;
         }
+    }
+
+    private void ResolveProgressBar()
+    {
+        if (progressBar == null)
+            progressBar = GetComponentInChildren<MuseumProgressBarUI>(true);
     }
 
     private void HandleClicked()
