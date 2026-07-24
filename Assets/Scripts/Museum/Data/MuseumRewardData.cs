@@ -37,7 +37,14 @@ public class MuseumRewardData : ScriptableObject
     [Min(0)] public int diamonds;
     [Min(0)] public int xp;
 
-    [Header("Containers / Presents")]
+    [Header("Museum Presents")]
+    [Tooltip(
+        "Real fragment and full-present rewards granted by MuseumPresentService. " +
+        "100 fragments assemble into one present by default.")]
+    public List<MuseumPresentRewardEntry> presentRewards =
+        new List<MuseumPresentRewardEntry>();
+
+    [Header("Containers")]
     public List<MuseumContainerReward> containerRewards =
         new List<MuseumContainerReward>();
 
@@ -52,6 +59,17 @@ public class MuseumRewardData : ScriptableObject
         {
             if (gold > 0f || diamonds > 0 || xp > 0)
                 return true;
+
+            if (presentRewards != null)
+            {
+                for (int i = 0; i < presentRewards.Count; i++)
+                {
+                    MuseumPresentRewardEntry reward = presentRewards[i];
+
+                    if (reward != null && reward.HasReward)
+                        return true;
+                }
+            }
 
             if (containerRewards == null)
                 return false;
@@ -79,6 +97,20 @@ public class MuseumRewardData : ScriptableObject
         gold = Mathf.Max(0f, gold);
         diamonds = Mathf.Max(0, diamonds);
         xp = Mathf.Max(0, xp);
+
+        if (presentRewards == null)
+            presentRewards = new List<MuseumPresentRewardEntry>();
+
+        for (int i = 0; i < presentRewards.Count; i++)
+        {
+            MuseumPresentRewardEntry reward = presentRewards[i];
+
+            if (reward == null)
+                continue;
+
+            reward.fragments = Mathf.Max(0, reward.fragments);
+            reward.presents = Mathf.Max(0, reward.presents);
+        }
 
         if (containerRewards == null)
             containerRewards = new List<MuseumContainerReward>();
