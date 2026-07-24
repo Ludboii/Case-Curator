@@ -61,17 +61,28 @@ public class MuseumExhibitSlotUI : MonoBehaviour
 
         int ownedCount = candidates != null ? candidates.Count : 0;
         MuseumDonationCandidate firstSelectable = FindFirstSelectable(candidates);
+        bool hasOwnedMatch = ownedCount > 0;
 
         if (stateText != null)
-            stateText.text = slot.donated ? "V" : unlocked ? "X" : "L";
+        {
+            stateText.text = slot.donated
+                ? "V"
+                : !unlocked
+                    ? "L"
+                    : hasOwnedMatch
+                        ? "READY"
+                        : "X";
+        }
 
         if (ownedCountText != null)
         {
             ownedCountText.text = slot.donated
                 ? "Collected"
-                : ownedCount > 0
-                    ? $"Owned: {ownedCount}"
-                    : "Owned: 0";
+                : hasOwnedMatch
+                    ? ownedCount == 1
+                        ? "1 matching item"
+                        : $"{ownedCount} matching items"
+                    : "Not owned";
         }
 
         if (pointsText != null)
@@ -87,7 +98,7 @@ public class MuseumExhibitSlotUI : MonoBehaviour
                 ? completedColor
                 : !unlocked
                     ? lockedColor
-                    : ownedCount > 0
+                    : hasOwnedMatch
                         ? availableColor
                         : missingColor;
         }
@@ -96,7 +107,7 @@ public class MuseumExhibitSlotUI : MonoBehaviour
         {
             button.onClick.RemoveListener(HandleClicked);
             button.onClick.AddListener(HandleClicked);
-            button.interactable = !slot.donated && unlocked;
+            button.interactable = !slot.donated && unlocked && hasOwnedMatch;
         }
     }
 
