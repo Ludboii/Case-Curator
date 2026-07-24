@@ -6,8 +6,7 @@ using UnityEngine;
 
 /// <summary>
 /// Creates or updates the persistent ScriptableObject assets for the approved
-/// 80-step / 5,000,000 MP M4 staircase. Re-running the normal command preserves
-/// manually edited reward payloads while updating thresholds and presentation.
+/// 80-step / 5,000,000 MP Museum staircase.
 /// </summary>
 public static class MuseumMilestone80Generator
 {
@@ -17,12 +16,21 @@ public static class MuseumMilestone80Generator
         RootFolder + "/Milestones";
     private const string RewardFolder =
         RootFolder + "/Rewards";
+    private const string PresentConfigPath =
+        "Assets/Data/Museum/MuseumPresentConfig.asset";
 
     [MenuItem(
         "Tools/Case Curator/Museum/Generate or Update 80-Step Staircase")]
     public static void GeneratePreservingRewardPayloads()
     {
-        Generate(false);
+        Generate(false, false);
+    }
+
+    [MenuItem(
+        "Tools/Case Curator/Museum/Apply M4.5 Present Rewards")]
+    public static void ApplyM45PresentRewards()
+    {
+        Generate(false, true);
     }
 
     [MenuItem(
@@ -31,17 +39,19 @@ public static class MuseumMilestone80Generator
     {
         bool confirmed = EditorUtility.DisplayDialog(
             "Reset Museum Milestone Rewards",
-            "This updates all 80 milestones and replaces the Gold, Diamond and " +
-            "XP payloads on the generated reward assets. Container references " +
-            "are preserved. Continue?",
+            "This updates all 80 milestones and replaces the generated Gold, " +
+            "Diamond, XP, fragment and full-present payloads. Container " +
+            "references are preserved. Continue?",
             "Reset Rewards",
             "Cancel");
 
         if (confirmed)
-            Generate(true);
+            Generate(true, true);
     }
 
-    private static void Generate(bool overwriteRewardPayloads)
+    private static void Generate(
+        bool overwriteCurrencyPayloads,
+        bool overwritePresentPayloads)
     {
         GameDatabase database = FindTargetDatabase();
 
@@ -53,6 +63,9 @@ public static class MuseumMilestone80Generator
         EnsureFolder("Assets/Data/Museum", "Milestones80");
         EnsureFolder(RootFolder, "Milestones");
         EnsureFolder(RootFolder, "Rewards");
+
+        MuseumPresentConfig presentConfig =
+            GetOrCreatePresentConfig();
 
         List<MuseumMilestoneData> generated =
             new List<MuseumMilestoneData>(
@@ -72,7 +85,8 @@ public static class MuseumMilestone80Generator
                 MuseumRewardData reward =
                     GetOrCreateReward(
                         definition,
-                        overwriteRewardPayloads);
+                        overwriteCurrencyPayloads,
+                        overwritePresentPayloads);
 
                 MuseumMilestoneData milestone =
                     GetOrCreateMilestone(definition);
@@ -86,6 +100,7 @@ public static class MuseumMilestone80Generator
                 "Assign Museum Milestone Staircase");
 
             database.museumMilestones = generated;
+            database.museumPresentConfig = presentConfig;
             EditorUtility.SetDirty(database);
         }
         finally
@@ -99,14 +114,52 @@ public static class MuseumMilestone80Generator
         Debug.Log(
             $"Generated {generated.Count} Museum milestone assets and assigned " +
             $"them to {AssetDatabase.GetAssetPath(database)}. " +
-            $"Final step: {MuseumMilestone80Defaults.FinalMuseumPoints:N0} MP. " +
-            $"Passive diamonds unlock at step " +
-            $"{MuseumMilestone80Defaults.PassiveDiamondUnlockStep}.");
+            "All upgrade-token placeholder rewards were removed. " +
+            "M4.5 fragment and present rewards are ready.");
+    }
+
+    private static MuseumPresentConfig GetOrCreatePresentConfig()
+    {
+        MuseumPresentConfig config =
+            AssetDatabase.LoadAssetAtPath<MuseumPresentConfig>(
+                PresentConfigPath);
+
+        if (config == null)
+        {
+            config = ScriptableObject.CreateInstance<MuseumPresentConfig>();
+            config.tiers = new List<MuseumPresentTierConfig>();
+
+            for (int i = 0; i < MuseumPresentUtility.AllTiers.Length; i++)
+            {
+                config.tiers.Add(
+                    MuseumPresentConfig.CreateFallbackTier(
+                        MuseumPresentUtility.AllTiers[i]));
+            }
+
+            AssetDatabase.CreateAsset(config, PresentConfigPath);
+        }
+        else if (config.tiers == null || config.tiers.Count == 0)
+        {
+            Undo.RecordObject(config, "Populate Museum Present Config");
+            config.tiers = new List<MuseumPresentTierConfig>();
+
+            for (int i = 0; i < MuseumPresentUtility.AllTiers.Length; i++)
+            {
+                config.tiers.Add(
+                    MuseumPresentConfig.CreateFallbackTier(
+                        MuseumPresentUtility.AllTiers[i]));
+            }
+
+            EditorUtility.SetDirty(config);
+        }
+
+        return config;
     }
 
     private static MuseumRewardData GetOrCreateReward(
         MuseumMilestone80Definition definition,
-        bool overwritePayload)
+        bool overwriteCurrencyPayload,
+        bool overwritePresentPayload)
     {
         string path =
             $"{RewardFolder}/MuseumReward_{definition.step:00}.asset";
@@ -135,8 +188,14 @@ public static class MuseumMilestone80Generator
         reward.description =
             BuildRewardDescription(definition);
 
-        if (created || overwritePayload)
-            ApplyDefaultPayload(reward, definition);
+        if (created || overwriteCurrencyPayload)
+            ApplyDefaultCurrencyPayload(reward, definition);
+
+        if (created || overwritePresentPayload)
+            ApplyDefaultPresentPayload(reward, definition);
+
+        if (reward.containerRewards == null)
+            reward.containerRewards = new List<MuseumContainerReward>();
 
         EditorUtility.SetDirty(reward);
         return reward;
@@ -194,7 +253,7 @@ public static class MuseumMilestone80Generator
         EditorUtility.SetDirty(milestone);
     }
 
-    private static void ApplyDefaultPayload(
+    private static void ApplyDefaultCurrencyPayload(
         MuseumRewardData reward,
         MuseumMilestone80Definition definition)
     {
@@ -218,13 +277,95 @@ public static class MuseumMilestone80Generator
                         typeMultiplier))
                 : 0;
 
-        // Step 75 unlocks a future passive diamond system rather than granting
-        // recurring diamonds during M4. The finale includes a small one-time
-        // premium-currency reward that remains editable in its reward asset.
         reward.diamonds = definition.milestoneType ==
                           MuseumMilestoneType.Finale
             ? 10
             : 0;
+    }
+
+    private static void ApplyDefaultPresentPayload(
+        MuseumRewardData reward,
+        MuseumMilestone80Definition definition)
+    {
+        if (reward.presentRewards == null)
+        {
+            reward.presentRewards =
+                new List<MuseumPresentRewardEntry>();
+        }
+        else
+        {
+            reward.presentRewards.Clear();
+        }
+
+        string summary = definition.rewardSummary ?? "";
+        string lower = summary.ToLowerInvariant();
+        MuseumPresentTier fallbackTier;
+
+        if (!MuseumPresentUtility.TryParseTier(
+                definition.presentTier,
+                out fallbackTier))
+        {
+            fallbackTier = MuseumPresentTier.Dusty;
+        }
+
+        MuseumPresentTier rewardTier =
+            ResolveRewardTier(lower, fallbackTier);
+
+        int fragments = 0;
+        int presents = 0;
+
+        if (lower.Contains("fragment"))
+        {
+            fragments = lower.Contains("large")
+                ? 40
+                : lower.Contains("first") || lower.Contains("small")
+                    ? 10
+                    : 20;
+        }
+
+        if (lower.Contains("3x") && lower.Contains("present"))
+            presents = 3;
+        else if (lower.Contains("full") && lower.Contains("present"))
+            presents = 1;
+
+        if (fragments <= 0 && presents <= 0)
+            return;
+
+        reward.presentRewards.Add(new MuseumPresentRewardEntry
+        {
+            tier = rewardTier,
+            fragments = fragments,
+            presents = presents
+        });
+    }
+
+    private static MuseumPresentTier ResolveRewardTier(
+        string lowerSummary,
+        MuseumPresentTier fallback)
+    {
+        if (ContainsTierReward(lowerSummary, "global elite"))
+            return MuseumPresentTier.GlobalElite;
+        if (ContainsTierReward(lowerSummary, "diamond"))
+            return MuseumPresentTier.Diamond;
+        if (ContainsTierReward(lowerSummary, "silver"))
+            return MuseumPresentTier.Silver;
+        if (ContainsTierReward(lowerSummary, "bronze"))
+            return MuseumPresentTier.Bronze;
+        if (ContainsTierReward(lowerSummary, "dusty"))
+            return MuseumPresentTier.Dusty;
+        if (ContainsTierReward(lowerSummary, "gold"))
+            return MuseumPresentTier.Gold;
+
+        return fallback;
+    }
+
+    private static bool ContainsTierReward(
+        string summary,
+        string tierName)
+    {
+        return summary.Contains(tierName + " fragment") ||
+               summary.Contains(tierName + " present") ||
+               summary.Contains("full " + tierName + " present");
     }
 
     private static bool HasOneTimeGoldReward(string summary)
