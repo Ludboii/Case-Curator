@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4948d8aa42358c0489a8e68a6eb831fd, type: 3}
+  m_Name: MuseumMilestone_30
+  m_EditorClassIdentifier: Assembly-CSharp::MuseumMilestoneData
+  milestoneId: museum-step-30
+  stairNumber: 30
+  displayName: Collector Hall Major Milestone
+  description: Large claim plaque and major Museum progression moment.
+  icon: {fileID: 0}
+  majorMilestone: 1
+  band: 2
+  milestoneType: 1
+  rewardSummary: Full Silver Present + Rare Vault Stage 3 milestone eligibility
+  presentTier: Silver
+  requiredMuseumPoints: 118000
+  additionalRequirement: {fileID: 0}
+  reward: {fileID: 11400000, guid: 6e66cb1e357c5c346933c3f0fc2d0e23, type: 2}
+  unlockedPlaqueId: museum-plaque-step-30
+  announcedFeatureUnlock: 0
+  unlocksPassiveMuseumGold: 0
+  unlocksPassiveDiamonds: 0
+  announcedSystemId: 

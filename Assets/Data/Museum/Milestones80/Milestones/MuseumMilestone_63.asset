@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4948d8aa42358c0489a8e68a6eb831fd, type: 3}
+  m_Name: MuseumMilestone_63
+  m_EditorClassIdentifier: Assembly-CSharp::MuseumMilestoneData
+  milestoneId: museum-step-63
+  stairNumber: 63
+  displayName: "Mythic Gallery \u2014 Step 63"
+  description: Small claim plaque.
+  icon: {fileID: 0}
+  majorMilestone: 0
+  band: 4
+  milestoneType: 0
+  rewardSummary: Large Diamond fragment bundle + Trophy Room boost-cap increase
+  presentTier: Diamond
+  requiredMuseumPoints: 1840000
+  additionalRequirement: {fileID: 0}
+  reward: {fileID: 11400000, guid: 915d04582221fca4494203ef92e4b8fc, type: 2}
+  unlockedPlaqueId: museum-plaque-step-63
+  announcedFeatureUnlock: 0
+  unlocksPassiveMuseumGold: 0
+  unlocksPassiveDiamonds: 0
+  announcedSystemId: 

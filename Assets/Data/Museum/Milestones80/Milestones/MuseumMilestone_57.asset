@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4948d8aa42358c0489a8e68a6eb831fd, type: 3}
+  m_Name: MuseumMilestone_57
+  m_EditorClassIdentifier: Assembly-CSharp::MuseumMilestoneData
+  milestoneId: museum-step-57
+  stairNumber: 57
+  displayName: "Mythic Gallery \u2014 Step 57"
+  description: Small claim plaque.
+  icon: {fileID: 0}
+  majorMilestone: 0
+  band: 4
+  milestoneType: 0
+  rewardSummary: Gold + XP
+  presentTier: Diamond
+  requiredMuseumPoints: 1180000
+  additionalRequirement: {fileID: 0}
+  reward: {fileID: 11400000, guid: f0a7f6bff31086640af9984bad25cf43, type: 2}
+  unlockedPlaqueId: museum-plaque-step-57
+  announcedFeatureUnlock: 0
+  unlocksPassiveMuseumGold: 0
+  unlocksPassiveDiamonds: 0
+  announcedSystemId: 

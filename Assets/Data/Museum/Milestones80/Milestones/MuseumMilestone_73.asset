@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4948d8aa42358c0489a8e68a6eb831fd, type: 3}
+  m_Name: MuseumMilestone_73
+  m_EditorClassIdentifier: Assembly-CSharp::MuseumMilestoneData
+  milestoneId: museum-step-73
+  stairNumber: 73
+  displayName: "Global Exhibit \u2014 Step 73"
+  description: Small claim plaque.
+  icon: {fileID: 0}
+  majorMilestone: 0
+  band: 5
+  milestoneType: 0
+  rewardSummary: Global Elite fragments + Gold + XP
+  presentTier: Global Elite
+  requiredMuseumPoints: 3310000
+  additionalRequirement: {fileID: 0}
+  reward: {fileID: 11400000, guid: 563d9be5432261541979a34c329e9c2f, type: 2}
+  unlockedPlaqueId: museum-plaque-step-73
+  announcedFeatureUnlock: 0
+  unlocksPassiveMuseumGold: 0
+  unlocksPassiveDiamonds: 0
+  announcedSystemId: 

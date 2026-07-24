@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4948d8aa42358c0489a8e68a6eb831fd, type: 3}
+  m_Name: MuseumMilestone_20
+  m_EditorClassIdentifier: Assembly-CSharp::MuseumMilestoneData
+  milestoneId: museum-step-20
+  stairNumber: 20
+  displayName: Starter Archive Income Node
+  description: Large claim plaque and major Museum progression moment.
+  icon: {fileID: 0}
+  majorMilestone: 1
+  band: 1
+  milestoneType: 2
+  rewardSummary: Passive Museum Gold income node + Bronze Present fragments
+  presentTier: Bronze
+  requiredMuseumPoints: 33500
+  additionalRequirement: {fileID: 0}
+  reward: {fileID: 11400000, guid: b2e858bdf8020e042a761c116be3d7db, type: 2}
+  unlockedPlaqueId: museum-plaque-step-20
+  announcedFeatureUnlock: 0
+  unlocksPassiveMuseumGold: 1
+  unlocksPassiveDiamonds: 0
+  announcedSystemId: 

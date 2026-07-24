@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24d7cff09e1a0d34785f0cc8403165d4, type: 3}
+  m_Name: MuseumReward_26
+  m_EditorClassIdentifier: Assembly-CSharp::MuseumRewardData
+  rewardId: museum-reward-step-26
+  displayName: Museum Step 26 Reward
+  description: 'Silver Present fragments + Gold
+
+
+    Small claim plaque.'
+  icon: {fileID: 0}
+  gold: 250
+  diamonds: 0
+  xp: 0
+  presentRewards:
+  - tier: 2
+    fragments: 20
+    presents: 0
+  containerRewards: []

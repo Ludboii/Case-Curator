@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4948d8aa42358c0489a8e68a6eb831fd, type: 3}
+  m_Name: MuseumMilestone_06
+  m_EditorClassIdentifier: Assembly-CSharp::MuseumMilestoneData
+  milestoneId: museum-step-06
+  stairNumber: 6
+  displayName: "Dusty Lobby \u2014 Step 6"
+  description: Small claim plaque.
+  icon: {fileID: 0}
+  majorMilestone: 0
+  band: 0
+  milestoneType: 0
+  rewardSummary: Dusty Present fragments + Gold
+  presentTier: Dusty
+  requiredMuseumPoints: 1800
+  additionalRequirement: {fileID: 0}
+  reward: {fileID: 11400000, guid: 6e08fd5b412c5c342b6fca12c64d6223, type: 2}
+  unlockedPlaqueId: museum-plaque-step-06
+  announcedFeatureUnlock: 0
+  unlocksPassiveMuseumGold: 0
+  unlocksPassiveDiamonds: 0
+  announcedSystemId: 

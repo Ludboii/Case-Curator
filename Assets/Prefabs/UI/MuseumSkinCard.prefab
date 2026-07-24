@@ -458,8 +458,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -131}
-  m_SizeDelta: {x: 140.6121, y: 36.7871}
+  m_AnchoredPosition: {x: 0.4329, y: -131}
+  m_SizeDelta: {x: 288.6653, y: 36.7871}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6544493009384392756
 CanvasRenderer:
@@ -648,6 +648,8 @@ MonoBehaviour:
   progressBar: {fileID: 6446248045106730695}
   discoveredIndicator: {fileID: 5841333288678435138}
   discoveredTextColor: {r: 1, g: 0.8873908, b: 0, a: 1}
+  readyTextColor: {r: 1, g: 0.9, b: 0.25, a: 1}
+  protectedTextColor: {r: 1, g: 0.65, b: 0.25, a: 1}
   missingTextColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &5344352304970203214
 GameObject:

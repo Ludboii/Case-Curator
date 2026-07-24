@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e70e50040c78d1f4784cc6b36b3f2181, type: 3}
+  m_Name: MuseumPresentConfig
+  m_EditorClassIdentifier: Assembly-CSharp::MuseumPresentConfig
+  tiers:
+  - tier: 0
+    displayName: Dusty
+    icon: {fileID: 0}
+    fragmentsPerPresent: 100
+    minimumGold: 25
+    maximumGold: 60
+    minimumXP: 5
+    maximumXP: 15
+    minimumDiamonds: 0
+    maximumDiamonds: 0
+  - tier: 1
+    displayName: Bronze
+    icon: {fileID: 0}
+    fragmentsPerPresent: 100
+    minimumGold: 60
+    maximumGold: 140
+    minimumXP: 15
+    maximumXP: 35
+    minimumDiamonds: 0
+    maximumDiamonds: 0
+  - tier: 2
+    displayName: Silver
+    icon: {fileID: 0}
+    fragmentsPerPresent: 100
+    minimumGold: 150
+    maximumGold: 350
+    minimumXP: 35
+    maximumXP: 80
+    minimumDiamonds: 0
+    maximumDiamonds: 0
+  - tier: 3
+    displayName: Gold
+    icon: {fileID: 0}
+    fragmentsPerPresent: 100
+    minimumGold: 400
+    maximumGold: 900
+    minimumXP: 90
+    maximumXP: 180
+    minimumDiamonds: 0
+    maximumDiamonds: 1
+  - tier: 4
+    displayName: Diamond
+    icon: {fileID: 0}
+    fragmentsPerPresent: 100
+    minimumGold: 1000
+    maximumGold: 2200
+    minimumXP: 200
+    maximumXP: 450
+    minimumDiamonds: 1
+    maximumDiamonds: 3
+  - tier: 5
+    displayName: Global Elite
+    icon: {fileID: 0}
+    fragmentsPerPresent: 100
+    minimumGold: 2500
+    maximumGold: 6000
+    minimumXP: 500
+    maximumXP: 1100
+    minimumDiamonds: 3
+    maximumDiamonds: 7
