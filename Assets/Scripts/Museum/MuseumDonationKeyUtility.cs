@@ -21,11 +21,11 @@ public static class MuseumDonationKeyUtility
 
     public static int GetWearIndex(InventoryItem item)
     {
-        if (item == null || item.isVanilla ||
-            (item.skin != null && item.skin.isVanilla))
-        {
+        // SkinData is the authoritative source. InventoryItem.isVanilla is a
+        // legacy mirror and older knife-generation paths can mark every knife
+        // item vanilla, including finishes such as Stained.
+        if (item == null || (item.skin != null && item.skin.isVanilla))
             return -1;
-        }
 
         return WearUtility.GetWearIndex((float)item.floatValue);
     }
@@ -56,7 +56,7 @@ public static class MuseumDonationKeyUtility
         if (item == null || item.skin == null)
             return "";
 
-        bool vanilla = item.isVanilla || item.skin.isVanilla;
+        bool vanilla = item.skin.isVanilla;
 
         return Build(
             item.skin,
