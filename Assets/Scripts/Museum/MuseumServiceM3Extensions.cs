@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// M3 query and instance-ID command surface layered on MuseumService without
-/// duplicating its authoritative save mutation code.
+/// M3 query and instance-ID command surface layered on MuseumService.
 /// </summary>
 public static class MuseumServiceM3Extensions
 {
@@ -19,8 +18,17 @@ public static class MuseumServiceM3Extensions
                 "Museum or inventory services are unavailable.");
         }
 
-        InventoryItem item =
-            InventoryManager.Instance.GetItemByInstanceId(instanceId);
+        InventoryItem item = InventoryManager.Instance.GetItemByInstanceId(instanceId);
+
+        if (item != null && item.skin != null)
+        {
+            // Repair the legacy mirror before the authoritative service evaluates
+            // the item. Some knife-generation paths marked all knife finishes as
+            // vanilla, which made finishes such as Karambit | Stained impossible
+            // to match against their wear-based Museum slots.
+            item.isVanilla = item.skin.isVanilla;
+        }
+
         MuseumDonationPreview preview = service.PreviewDonation(item);
 
         if (preview == null || !preview.canDonate)
@@ -65,30 +73,26 @@ public static class MuseumServiceM3Extensions
         this MuseumService service,
         MuseumSlotEntry slot)
     {
-        List<MuseumDonationCandidate> candidates =
-            new List<MuseumDonationCandidate>();
+        List<MuseumDonationCandidate> candidates = new List<MuseumDonationCandidate>();
 
-        if (service == null ||
-            slot == null ||
-            slot.skin == null ||
+        if (service == null || slot == null || slot.skin == null ||
             InventoryManager.Instance == null)
         {
             return candidates;
         }
 
-        List<InventoryItem> inventory =
-            InventoryManager.Instance.GetItemsCopy();
+        List<InventoryItem> inventory = InventoryManager.Instance.GetItemsCopy();
         List<InventoryItem> comparable = new List<InventoryItem>();
 
         for (int i = 0; i < inventory.Count; i++)
         {
             InventoryItem item = inventory[i];
 
-            if (item != null &&
-                IsSameSkinAndVariant(item, slot.skin, slot.variant))
-            {
+            if (item != null && item.skin != null)
+                item.isVanilla = item.skin.isVanilla;
+
+            if (item != null && IsSameSkinAndVariant(item, slot.skin, slot.variant))
                 comparable.Add(item);
-            }
         }
 
         for (int i = 0; i < inventory.Count; i++)
@@ -98,8 +102,7 @@ public static class MuseumServiceM3Extensions
             if (!MatchesSlot(item, slot))
                 continue;
 
-            MuseumDonationPreview preview =
-                service.PreviewDonation(item.instanceId);
+            MuseumDonationPreview preview = service.PreviewDonation(item.instanceId);
             MuseumDonationCandidate candidate = new MuseumDonationCandidate
             {
                 instanceId = item.instanceId,
@@ -131,48 +134,31 @@ public static class MuseumServiceM3Extensions
         if (snapshot == null || snapshot.wings == null)
             return null;
 
-        for (int wingIndex = 0; wingIndex < snapshot.wings.Count; wingIndex++)
+        for (int wi = 0; wi < snapshot.wings.Count; wi++)
         {
-            MuseumWingEntry wing = snapshot.wings[wingIndex];
+            MuseumWingEntry wing = snapshot.wings[wi];
+            if (wing == null || wing.categories == null) continue;
 
-            if (wing == null || wing.categories == null)
-                continue;
-
-            for (int categoryIndex = 0;
-                 categoryIndex < wing.categories.Count;
-                 categoryIndex++)
+            for (int ci = 0; ci < wing.categories.Count; ci++)
             {
-                MuseumCategoryEntry category = wing.categories[categoryIndex];
+                MuseumCategoryEntry category = wing.categories[ci];
+                if (category == null || category.weapons == null) continue;
 
-                if (category == null || category.weapons == null)
-                    continue;
-
-                for (int weaponIndex = 0;
-                     weaponIndex < category.weapons.Count;
-                     weaponIndex++)
+                for (int wei = 0; wei < category.weapons.Count; wei++)
                 {
-                    MuseumWeaponEntry weapon = category.weapons[weaponIndex];
+                    MuseumWeaponEntry weapon = category.weapons[wei];
+                    if (weapon == null || weapon.skins == null) continue;
 
-                    if (weapon == null || weapon.skins == null)
-                        continue;
-
-                    for (int skinIndex = 0;
-                         skinIndex < weapon.skins.Count;
-                         skinIndex++)
+                    for (int si = 0; si < weapon.skins.Count; si++)
                     {
-                        MuseumSkinEntry skin = weapon.skins[skinIndex];
+                        MuseumSkinEntry skin = weapon.skins[si];
+                        if (skin == null || skin.slots == null) continue;
 
-                        if (skin == null || skin.slots == null)
-                            continue;
-
-                        for (int slotIndex = 0;
-                             slotIndex < skin.slots.Count;
-                             slotIndex++)
+                        for (int sli = 0; sli < skin.slots.Count; sli++)
                         {
-                            MuseumSlotEntry slot = skin.slots[slotIndex];
+                            MuseumSlotEntry slot = skin.slots[sli];
 
-                            if (slot != null &&
-                                string.Equals(
+                            if (slot != null && string.Equals(
                                     slot.donationKey,
                                     donationKey,
                                     StringComparison.Ordinal))
@@ -210,48 +196,31 @@ public static class MuseumServiceM3Extensions
         if (snapshot == null || snapshot.wings == null)
             return result;
 
-        for (int wingIndex = 0; wingIndex < snapshot.wings.Count; wingIndex++)
+        for (int wi = 0; wi < snapshot.wings.Count; wi++)
         {
-            MuseumWingEntry wing = snapshot.wings[wingIndex];
+            MuseumWingEntry wing = snapshot.wings[wi];
+            if (wing == null || wing.categories == null) continue;
 
-            if (wing == null || wing.categories == null)
-                continue;
-
-            for (int categoryIndex = 0;
-                 categoryIndex < wing.categories.Count;
-                 categoryIndex++)
+            for (int ci = 0; ci < wing.categories.Count; ci++)
             {
-                MuseumCategoryEntry category = wing.categories[categoryIndex];
+                MuseumCategoryEntry category = wing.categories[ci];
+                if (category == null || category.weapons == null) continue;
 
-                if (category == null || category.weapons == null)
-                    continue;
-
-                for (int weaponIndex = 0;
-                     weaponIndex < category.weapons.Count;
-                     weaponIndex++)
+                for (int wei = 0; wei < category.weapons.Count; wei++)
                 {
-                    MuseumWeaponEntry weapon = category.weapons[weaponIndex];
+                    MuseumWeaponEntry weapon = category.weapons[wei];
+                    if (weapon == null || weapon.skins == null) continue;
 
-                    if (weapon == null || weapon.skins == null)
-                        continue;
-
-                    for (int skinIndex = 0;
-                         skinIndex < weapon.skins.Count;
-                         skinIndex++)
+                    for (int si = 0; si < weapon.skins.Count; si++)
                     {
-                        MuseumSkinEntry skin = weapon.skins[skinIndex];
+                        MuseumSkinEntry skin = weapon.skins[si];
+                        if (skin == null || skin.slots == null) continue;
 
-                        if (skin == null || skin.slots == null)
-                            continue;
-
-                        for (int slotIndex = 0;
-                             slotIndex < skin.slots.Count;
-                             slotIndex++)
+                        for (int sli = 0; sli < skin.slots.Count; sli++)
                         {
-                            MuseumSlotEntry slot = skin.slots[slotIndex];
+                            MuseumSlotEntry slot = skin.slots[sli];
 
-                            if (slot == null ||
-                                !string.Equals(
+                            if (slot == null || !string.Equals(
                                     slot.donationKey,
                                     targetSlot.donationKey,
                                     StringComparison.Ordinal))
@@ -264,11 +233,9 @@ public static class MuseumServiceM3Extensions
                             result.skin = skin;
                             result.slot = slot;
 
-                            bool wingUnlocked =
-                                wing.config == null ||
+                            bool wingUnlocked = wing.config == null ||
                                 wing.config.unlockDefinition == null ||
-                                UnlockEvaluator.IsUnlocked(
-                                    wing.config.unlockDefinition);
+                                UnlockEvaluator.IsUnlocked(wing.config.unlockDefinition);
 
                             if (!wingUnlocked)
                             {
@@ -277,17 +244,14 @@ public static class MuseumServiceM3Extensions
                                 return result;
                             }
 
-                            bool categoryUnlocked =
-                                category.config == null ||
+                            bool categoryUnlocked = category.config == null ||
                                 category.config.unlockDefinition == null ||
-                                UnlockEvaluator.IsUnlocked(
-                                    category.config.unlockDefinition);
+                                UnlockEvaluator.IsUnlocked(category.config.unlockDefinition);
 
                             if (!categoryUnlocked)
                             {
                                 result.isUnlocked = false;
                                 result.reason = $"{category.DisplayName} is locked.";
-                                return result;
                             }
 
                             return result;
@@ -318,72 +282,48 @@ public static class MuseumServiceM3Extensions
         for (int i = 0; i < comparable.Count; i++)
         {
             InventoryItem other = comparable[i];
-
-            if (other == null)
-                continue;
+            if (other == null) continue;
 
             ownedCopies++;
             highestValue = Mathf.Max(highestValue, other.marketValue);
 
-            bool vanilla = other.isVanilla ||
-                           (other.skin != null && other.skin.isVanilla);
-
+            bool vanilla = other.skin != null && other.skin.isVanilla;
             if (!vanilla && other.floatValue >= 0d)
                 bestFloat = Math.Min(bestFloat, other.floatValue);
         }
 
         if (ownedCopies <= 1)
-        {
-            AddWarning(
-                candidate,
-                MuseumDonationWarningType.OnlyOwnedCopy,
-                "This is your only owned copy of this skin and variant.",
-                true);
-        }
+            AddWarning(candidate, MuseumDonationWarningType.OnlyOwnedCopy,
+                "This is your only owned copy of this skin and variant.", true);
 
-        bool itemVanilla = item.isVanilla || item.skin.isVanilla;
+        bool itemVanilla = item.skin != null && item.skin.isVanilla;
 
-        if (!itemVanilla &&
-            bestFloat < double.MaxValue &&
+        if (!itemVanilla && bestFloat < double.MaxValue &&
             Math.Abs(item.floatValue - bestFloat) <= 0.0000001d)
         {
-            AddWarning(
-                candidate,
-                MuseumDonationWarningType.BestFloatOwned,
-                "This is your best-float owned copy of this skin and variant.",
-                true);
+            AddWarning(candidate, MuseumDonationWarningType.BestFloatOwned,
+                "This is your best-float owned copy of this skin and variant.", true);
         }
 
-        if (Mathf.Abs(item.marketValue - highestValue) <= 0.0001f &&
-            highestValue > 0f)
+        if (Mathf.Abs(item.marketValue - highestValue) <= 0.0001f && highestValue > 0f)
         {
-            AddWarning(
-                candidate,
-                MuseumDonationWarningType.HighestValueOwned,
-                "This is your highest-value owned copy of this skin and variant.",
-                true);
+            AddWarning(candidate, MuseumDonationWarningType.HighestValueOwned,
+                "This is your highest-value owned copy of this skin and variant.", true);
         }
 
         if ((int)item.patternTier > 0)
         {
-            AddWarning(
-                candidate,
-                MuseumDonationWarningType.RarePattern,
-                $"This item has pattern tier {item.patternTier}.",
-                true);
+            AddWarning(candidate, MuseumDonationWarningType.RarePattern,
+                $"This item has pattern tier {item.patternTier}.", true);
         }
 
         MuseumBalanceData balance = service != null ? service.Balance : null;
 
-        if (balance != null &&
-            balance.marketValueBonus != null &&
+        if (balance != null && balance.marketValueBonus != null &&
             item.marketValue >= balance.marketValueBonus.minimumMarketValue)
         {
-            AddWarning(
-                candidate,
-                MuseumDonationWarningType.HighMarketValue,
-                $"High-value item: {item.marketValue:0.##} Gold. " +
-                "Its Museum reward includes a capped market-value bonus.",
+            AddWarning(candidate, MuseumDonationWarningType.HighMarketValue,
+                $"High-value item: {item.marketValue:0.##} Gold. Its Museum reward includes a capped market-value bonus.",
                 item.marketValue >= 1000f);
         }
     }
@@ -406,36 +346,23 @@ public static class MuseumServiceM3Extensions
         MuseumDonationCandidate a,
         MuseumDonationCandidate b)
     {
-        if (ReferenceEquals(a, b))
-            return 0;
+        if (ReferenceEquals(a, b)) return 0;
+        if (a == null) return 1;
+        if (b == null) return -1;
 
-        if (a == null)
-            return 1;
+        int selectable = b.selectable.CompareTo(a.selectable);
+        if (selectable != 0) return selectable;
 
-        if (b == null)
-            return -1;
+        int warnings = a.WarningCount.CompareTo(b.WarningCount);
+        if (warnings != 0) return warnings;
 
-        int selectableCompare = b.selectable.CompareTo(a.selectable);
-
-        if (selectableCompare != 0)
-            return selectableCompare;
-
-        int warningCompare = a.WarningCount.CompareTo(b.WarningCount);
-
-        if (warningCompare != 0)
-            return warningCompare;
-
-        int valueCompare = a.MarketValue.CompareTo(b.MarketValue);
-
-        if (valueCompare != 0)
-            return valueCompare;
+        int value = a.MarketValue.CompareTo(b.MarketValue);
+        if (value != 0) return value;
 
         return a.AcquisitionSequence.CompareTo(b.AcquisitionSequence);
     }
 
-    private static bool MatchesSlot(
-        InventoryItem item,
-        MuseumSlotEntry slot)
+    private static bool MatchesSlot(InventoryItem item, MuseumSlotEntry slot)
     {
         if (item == null || item.skin == null || slot == null || slot.skin == null)
             return false;
@@ -443,7 +370,7 @@ public static class MuseumServiceM3Extensions
         if (!IsSameSkin(item.skin, slot.skin))
             return false;
 
-        bool vanilla = item.isVanilla || item.skin.isVanilla;
+        bool vanilla = item.skin.isVanilla;
 
         if (vanilla != slot.isVanilla)
             return false;
@@ -451,10 +378,7 @@ public static class MuseumServiceM3Extensions
         if (MuseumDonationKeyUtility.GetVariant(item) != slot.variant)
             return false;
 
-        int wearIndex = vanilla
-            ? -1
-            : MuseumDonationKeyUtility.GetWearIndex(item);
-
+        int wearIndex = vanilla ? -1 : MuseumDonationKeyUtility.GetWearIndex(item);
         return wearIndex == slot.wearIndex;
     }
 
@@ -463,19 +387,15 @@ public static class MuseumServiceM3Extensions
         SkinData skin,
         MuseumDonationVariant variant)
     {
-        return item != null &&
-               item.skin != null &&
+        return item != null && item.skin != null &&
                IsSameSkin(item.skin, skin) &&
                MuseumDonationKeyUtility.GetVariant(item) == variant;
     }
 
     private static bool IsSameSkin(SkinData a, SkinData b)
     {
-        if (ReferenceEquals(a, b))
-            return true;
-
-        if (a == null || b == null)
-            return false;
+        if (ReferenceEquals(a, b)) return true;
+        if (a == null || b == null) return false;
 
         return !string.IsNullOrWhiteSpace(a.apiId) &&
                !string.IsNullOrWhiteSpace(b.apiId) &&
