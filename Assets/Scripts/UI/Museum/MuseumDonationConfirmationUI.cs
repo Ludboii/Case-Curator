@@ -159,7 +159,21 @@ public class MuseumDonationConfirmationUI : MonoBehaviour
         Close();
 
         if (owner != null)
+        {
             owner.HandleDonationCompleted(result, donatedKey);
+
+            // MuseumService raises OnMuseumChanged while Donate is still running.
+            // That refresh can rebuild the browser before the confirmation callback
+            // executes and can leave the player on a parent category. Resolve the
+            // newly rebuilt exhibit by the stable donation key and explicitly reopen
+            // that exact skin after the donation workflow has finished.
+            MuseumSkinEntry refreshedSkin = FindSkinByDonationKey(
+                service.GetCatalogSnapshot(false),
+                donatedKey);
+
+            if (refreshedSkin != null)
+                owner.OpenSkin(refreshedSkin);
+        }
     }
 
     private void ShowError(string message)
@@ -243,6 +257,74 @@ public class MuseumDonationConfirmationUI : MonoBehaviour
         }
 
         return builder.ToString();
+    }
+
+    private static MuseumSkinEntry FindSkinByDonationKey(
+        MuseumCatalogSnapshot snapshot,
+        string donationKey)
+    {
+        if (snapshot == null ||
+            snapshot.wings == null ||
+            string.IsNullOrWhiteSpace(donationKey))
+        {
+            return null;
+        }
+
+        for (int wingIndex = 0; wingIndex < snapshot.wings.Count; wingIndex++)
+        {
+            MuseumWingEntry wing = snapshot.wings[wingIndex];
+
+            if (wing == null || wing.categories == null)
+                continue;
+
+            for (int categoryIndex = 0;
+                 categoryIndex < wing.categories.Count;
+                 categoryIndex++)
+            {
+                MuseumCategoryEntry category = wing.categories[categoryIndex];
+
+                if (category == null || category.weapons == null)
+                    continue;
+
+                for (int weaponIndex = 0;
+                     weaponIndex < category.weapons.Count;
+                     weaponIndex++)
+                {
+                    MuseumWeaponEntry weapon = category.weapons[weaponIndex];
+
+                    if (weapon == null || weapon.skins == null)
+                        continue;
+
+                    for (int skinIndex = 0;
+                         skinIndex < weapon.skins.Count;
+                         skinIndex++)
+                    {
+                        MuseumSkinEntry skin = weapon.skins[skinIndex];
+
+                        if (skin == null || skin.slots == null)
+                            continue;
+
+                        for (int slotIndex = 0;
+                             slotIndex < skin.slots.Count;
+                             slotIndex++)
+                        {
+                            MuseumSlotEntry candidateSlot = skin.slots[slotIndex];
+
+                            if (candidateSlot != null &&
+                                string.Equals(
+                                    candidateSlot.donationKey,
+                                    donationKey,
+                                    System.StringComparison.Ordinal))
+                            {
+                                return skin;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     private void OnDestroy()
