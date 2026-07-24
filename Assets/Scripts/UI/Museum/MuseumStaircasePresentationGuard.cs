@@ -3,12 +3,18 @@ using UnityEngine;
 /// <summary>
 /// Keeps the M4 staircase overlay closed until its launcher opens it and keeps
 /// the entrance card visible only while the Museum wing/entrance view is active.
-/// Attach this component to the persistent MuseumPanelUI object, not to either
-/// object that it hides.
+/// Attach this component to the same object as MuseumPanelUI.
 /// </summary>
 public class MuseumStaircasePresentationGuard : MonoBehaviour
 {
+    [Header("Museum")]
+    [SerializeField] private MuseumPanelUI museumPanel;
     [SerializeField] private GameObject museumWingView;
+    [SerializeField] private GameObject museumCategoryView;
+    [SerializeField] private GameObject museumWeaponView;
+    [SerializeField] private GameObject museumSkinView;
+
+    [Header("Staircase")]
     [SerializeField] private GameObject staircaseRoot;
     [SerializeField] private GameObject staircaseCard;
 
@@ -19,54 +25,92 @@ public class MuseumStaircasePresentationGuard : MonoBehaviour
 
     private bool lastWingVisible;
     private bool initialized;
+    private bool restoringEntrance;
 
     private void Awake()
     {
         ResolveReferences();
-        ValidateReferences();
 
-        // The staircase is an overlay. It must never begin open merely because
-        // its scene object was left active while building the hierarchy.
-        if (CanSafelyControl(staircaseRoot))
+        if (staircaseRoot != null)
             staircaseRoot.SetActive(false);
 
+        EnsureNormalMuseumViewVisible();
+        RefreshCardVisibility(true);
+    }
+
+    private void Start()
+    {
+        ResolveReferences();
+        EnsureNormalMuseumViewVisible();
         RefreshCardVisibility(true);
     }
 
     private void OnEnable()
     {
         ResolveReferences();
-        ValidateReferences();
 
-        if (!initialized && CanSafelyControl(staircaseRoot))
+        if (!initialized && staircaseRoot != null)
             staircaseRoot.SetActive(false);
 
+        EnsureNormalMuseumViewVisible();
         RefreshCardVisibility(true);
-    }
-
-    private void OnValidate()
-    {
-        ResolveReferences();
-        ValidateReferences();
     }
 
     private void LateUpdate()
     {
+        EnsureNormalMuseumViewVisible();
         RefreshCardVisibility(false);
     }
 
     public void RefreshNow()
     {
         ResolveReferences();
-        ValidateReferences();
+        EnsureNormalMuseumViewVisible();
         RefreshCardVisibility(true);
+    }
+
+    private void EnsureNormalMuseumViewVisible()
+    {
+        if (restoringEntrance || !gameObject.activeInHierarchy)
+            return;
+
+        bool staircaseOpen =
+            staircaseRoot != null && staircaseRoot.activeInHierarchy;
+
+        if (staircaseOpen)
+            return;
+
+        bool anyNormalViewActive =
+            IsActive(museumWingView) ||
+            IsActive(museumCategoryView) ||
+            IsActive(museumWeaponView) ||
+            IsActive(museumSkinView);
+
+        if (anyNormalViewActive)
+            return;
+
+        restoringEntrance = true;
+
+        try
+        {
+            if (museumPanel != null)
+            {
+                museumPanel.ShowEntrance();
+            }
+            else if (museumWingView != null)
+            {
+                museumWingView.SetActive(true);
+            }
+        }
+        finally
+        {
+            restoringEntrance = false;
+        }
     }
 
     private void RefreshCardVisibility(bool force)
     {
-        bool wingVisible =
-            museumWingView != null &&
-            museumWingView.activeInHierarchy;
+        bool wingVisible = IsActive(museumWingView);
 
         if (!force && initialized && wingVisible == lastWingVisible)
             return;
@@ -74,36 +118,46 @@ public class MuseumStaircasePresentationGuard : MonoBehaviour
         initialized = true;
         lastWingVisible = wingVisible;
 
-        // A card placed under WingView already inherits WingView visibility.
-        // Keep its own active state enabled instead of turning it off while the
-        // parent is hidden, which avoids it remaining disabled when WingView is
-        // shown again. Only explicitly control cards outside WingView.
-        if (!CanSafelyControl(staircaseCard))
+        if (staircaseCard == null)
             return;
 
-        bool cardIsChildOfWing =
+        // When the card is already inside WingView, the parent controls its
+        // visibility. Never disable an ancestor or the WingView itself.
+        if (staircaseCard == museumWingView ||
+            IsAncestor(staircaseCard.transform, museumWingView != null
+                ? museumWingView.transform
+                : null))
+        {
+            return;
+        }
+
+        bool cardInsideWing =
             museumWingView != null &&
             staircaseCard.transform.IsChildOf(museumWingView.transform);
 
-        bool shouldBeActive = cardIsChildOfWing ? true : wingVisible;
-
-        if (staircaseCard.activeSelf != shouldBeActive)
-            staircaseCard.SetActive(shouldBeActive);
+        if (!cardInsideWing && staircaseCard.activeSelf != wingVisible)
+            staircaseCard.SetActive(wingVisible);
     }
 
     private void ResolveReferences()
     {
+        if (museumPanel == null)
+            museumPanel = GetComponent<MuseumPanelUI>();
+
         if (!autoResolveByName)
             return;
 
         if (museumWingView == null)
-        {
-            museumWingView = FindChildObject(
-                transform,
-                "WingView",
-                "MuseumWingView",
-                "Wing View");
-        }
+            museumWingView = FindChildObject(transform, "WingView");
+
+        if (museumCategoryView == null)
+            museumCategoryView = FindChildObject(transform, "CategoryView");
+
+        if (museumWeaponView == null)
+            museumWeaponView = FindChildObject(transform, "WeaponView");
+
+        if (museumSkinView == null)
+            museumSkinView = FindChildObject(transform, "SkinView");
 
         if (staircaseRoot == null)
         {
@@ -132,52 +186,17 @@ public class MuseumStaircasePresentationGuard : MonoBehaviour
         }
     }
 
-    private void ValidateReferences()
+    private static bool IsActive(GameObject value)
     {
-        // Never permit a bad Inspector assignment to disable WingView or the
-        // entire Museum panel. These mistakes are easy when dragging objects.
-        if (staircaseCard == museumWingView ||
-            staircaseCard == gameObject ||
-            IsAncestorOf(staircaseCard, museumWingView))
-        {
-            Debug.LogWarning(
-                "MuseumStaircasePresentationGuard: Staircase Card was assigned " +
-                "to WingView, Panel_Museum, or one of their ancestors. The bad " +
-                "reference was cleared. Assign the actual MuseumStaircaseCard.",
-                this);
-            staircaseCard = null;
-        }
-
-        if (staircaseRoot == museumWingView ||
-            staircaseRoot == gameObject ||
-            IsAncestorOf(staircaseRoot, museumWingView))
-        {
-            Debug.LogWarning(
-                "MuseumStaircasePresentationGuard: Staircase Root was assigned " +
-                "to WingView, Panel_Museum, or one of their ancestors. The bad " +
-                "reference was cleared. Assign MuseumStaircaseRoot.",
-                this);
-            staircaseRoot = null;
-        }
+        return value != null && value.activeInHierarchy;
     }
 
-    private bool CanSafelyControl(GameObject target)
+    private static bool IsAncestor(Transform possibleAncestor, Transform child)
     {
-        if (target == null || target == gameObject || target == museumWingView)
+        if (possibleAncestor == null || child == null)
             return false;
 
-        return !IsAncestorOf(target, museumWingView);
-    }
-
-    private static bool IsAncestorOf(
-        GameObject possibleAncestor,
-        GameObject possibleChild)
-    {
-        if (possibleAncestor == null || possibleChild == null)
-            return false;
-
-        return possibleChild.transform.IsChildOf(
-            possibleAncestor.transform);
+        return child.IsChildOf(possibleAncestor);
     }
 
     private static GameObject FindChildObject(
@@ -190,15 +209,11 @@ public class MuseumStaircasePresentationGuard : MonoBehaviour
         Transform[] children =
             parent.GetComponentsInChildren<Transform>(true);
 
-        for (int nameIndex = 0;
-             nameIndex < names.Length;
-             nameIndex++)
+        for (int nameIndex = 0; nameIndex < names.Length; nameIndex++)
         {
             string expected = names[nameIndex];
 
-            for (int childIndex = 0;
-                 childIndex < children.Length;
-                 childIndex++)
+            for (int childIndex = 0; childIndex < children.Length; childIndex++)
             {
                 Transform child = children[childIndex];
 
@@ -213,9 +228,7 @@ public class MuseumStaircasePresentationGuard : MonoBehaviour
             }
         }
 
-        for (int childIndex = 0;
-             childIndex < children.Length;
-             childIndex++)
+        for (int childIndex = 0; childIndex < children.Length; childIndex++)
         {
             Transform child = children[childIndex];
 
@@ -224,12 +237,9 @@ public class MuseumStaircasePresentationGuard : MonoBehaviour
 
             string childName = child.name.ToLowerInvariant();
 
-            for (int nameIndex = 0;
-                 nameIndex < names.Length;
-                 nameIndex++)
+            for (int nameIndex = 0; nameIndex < names.Length; nameIndex++)
             {
-                string expected =
-                    names[nameIndex].ToLowerInvariant();
+                string expected = names[nameIndex].ToLowerInvariant();
 
                 if (childName.Contains(expected))
                     return child.gameObject;
