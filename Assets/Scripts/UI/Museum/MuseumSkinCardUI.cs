@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -99,12 +100,87 @@ public class MuseumSkinCardUI : MonoBehaviour
             button.onClick.AddListener(HandleClicked);
             button.interactable = entry != null && skin != null;
         }
+
+        ApplyRarityThenNameSiblingOrder();
     }
 
     private void ResolveProgressBar()
     {
         if (progressBar == null)
             progressBar = GetComponentInChildren<MuseumProgressBarUI>(true);
+    }
+
+    /// <summary>
+    /// Orders cards within the current weapon view by highest rarity first,
+    /// then alphabetically by finish name within the same rarity.
+    /// </summary>
+    private void ApplyRarityThenNameSiblingOrder()
+    {
+        if (transform.parent == null || entry == null || entry.skin == null)
+            return;
+
+        MuseumSkinCardUI[] cards =
+            transform.parent.GetComponentsInChildren<MuseumSkinCardUI>(true);
+
+        int targetIndex = 0;
+
+        for (int i = 0; i < cards.Length; i++)
+        {
+            MuseumSkinCardUI other = cards[i];
+
+            if (other == null ||
+                other == this ||
+                other.entry == null ||
+                other.entry.skin == null)
+            {
+                continue;
+            }
+
+            if (CompareEntries(other.entry, entry) < 0)
+                targetIndex++;
+        }
+
+        transform.SetSiblingIndex(targetIndex);
+    }
+
+    private static int CompareEntries(
+        MuseumSkinEntry a,
+        MuseumSkinEntry b)
+    {
+        SkinData aSkin = a != null ? a.skin : null;
+        SkinData bSkin = b != null ? b.skin : null;
+
+        if (ReferenceEquals(aSkin, bSkin))
+            return 0;
+
+        if (aSkin == null)
+            return 1;
+
+        if (bSkin == null)
+            return -1;
+
+        // Rarity enum values are ordered from lower to higher rarity, so the
+        // comparison is reversed to place the highest rarity first.
+        int rarityCompare = ((int)bSkin.rarity).CompareTo((int)aSkin.rarity);
+
+        if (rarityCompare != 0)
+            return rarityCompare;
+
+        return string.Compare(
+            GetAlphabeticalName(aSkin),
+            GetAlphabeticalName(bSkin),
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string GetAlphabeticalName(SkinData skin)
+    {
+        if (skin == null)
+            return "";
+
+        if (skin.isVanilla || string.IsNullOrWhiteSpace(skin.skinName))
+            return "Vanilla";
+
+        return skin.skinName.Trim();
     }
 
     private void HandleClicked()
