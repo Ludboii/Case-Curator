@@ -16,6 +16,7 @@ public class MuseumStaircaseLauncherUI : MonoBehaviour
     [SerializeField] private TMP_Text summaryText;
 
     private MuseumService museumService;
+    private MuseumPresentService presentService;
     private bool subscribedMilestones;
     private bool subscribedMuseum;
 
@@ -41,11 +42,9 @@ public class MuseumStaircaseLauncherUI : MonoBehaviour
     {
         ResolveViewReferences();
 
-        // Do not dynamically create MuseumMilestoneService from Awake/OnEnable.
-        // UI objects can initialise before SaveManager, which caused the service
-        // to warn that GameDatabase could not be resolved even though the database
-        // was correctly assigned. Start/OpenStaircase resolves it after managers
-        // have completed Awake.
+        // Runtime services are intentionally not created from Awake when the
+        // SaveManager might not exist yet. Start and OpenStaircase run after
+        // scene managers have completed Awake.
         if (SaveManager.Instance != null)
         {
             ResolveRuntimeServices();
@@ -140,13 +139,19 @@ public class MuseumStaircaseLauncherUI : MonoBehaviour
             staircaseButton = GetComponent<Button>();
 
         if (staircaseUI == null)
-            staircaseUI = FindObjectOfType<MuseumStaircaseUI>(true);
+        {
+            staircaseUI = FindFirstObjectByType<MuseumStaircaseUI>(
+                FindObjectsInactive.Include);
+        }
     }
 
     private void ResolveRuntimeServices()
     {
         if (milestoneService == null)
             milestoneService = MuseumMilestoneService.GetOrCreate();
+
+        if (presentService == null)
+            presentService = MuseumPresentService.GetOrCreate();
 
         if (museumService == null)
             museumService = MuseumService.Instance;
