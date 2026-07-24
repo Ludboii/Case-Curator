@@ -46,6 +46,49 @@ public class MuseumVariantPointRule
 }
 
 [Serializable]
+public class MuseumRarityWearPointRule
+{
+    public Rarity rarity;
+
+    [Min(0f)] public double battleScarred = 1d;
+    [Min(0f)] public double wellWorn = 1d;
+    [Min(0f)] public double fieldTested = 1d;
+    [Min(0f)] public double minimalWear = 1d;
+    [Min(0f)] public double factoryNew = 1d;
+
+    public double GetPoints(MuseumWearTier wear)
+    {
+        switch (wear)
+        {
+            case MuseumWearTier.FactoryNew: return Math.Max(0d, factoryNew);
+            case MuseumWearTier.MinimalWear: return Math.Max(0d, minimalWear);
+            case MuseumWearTier.FieldTested: return Math.Max(0d, fieldTested);
+            case MuseumWearTier.WellWorn: return Math.Max(0d, wellWorn);
+            default: return Math.Max(0d, battleScarred);
+        }
+    }
+}
+
+[Serializable]
+public class MuseumMarketValueBonusSettings
+{
+    [Tooltip("Adds a separate Museum Point bonus for unusually valuable donated items.")]
+    public bool enabled = true;
+
+    [Tooltip("No market-value bonus is awarded below this value.")]
+    [Min(0f)] public double minimumMarketValue = 100d;
+
+    [Tooltip("Market values at or above this value receive the maximum bonus.")]
+    [Min(0f)] public double maximumMarketValue = 10000d;
+
+    [Tooltip("Bonus awarded at Minimum Market Value. 100 Gold -> 25 MP by default.")]
+    [Min(0f)] public double bonusAtMinimumValue = 25d;
+
+    [Tooltip("Maximum value bonus. 10,000 Gold -> 100 MP by default.")]
+    [Min(0f)] public double maximumBonusPoints = 100d;
+}
+
+[Serializable]
 public class MuseumIdleIncomeSettings
 {
     [Tooltip(
@@ -73,8 +116,7 @@ public class MuseumIdleIncomeSettings
 
 /// <summary>
 /// Authoritative tuning asset for Museum donation points and passive income.
-/// The Museum uses one permanent slot per SkinData + wear + variant. Market
-/// value is intentionally not part of the base point formula.
+/// One permanent slot exists per SkinData + wear + variant.
 /// </summary>
 [CreateAssetMenu(
     fileName = "MuseumBalanceData",
@@ -82,39 +124,27 @@ public class MuseumIdleIncomeSettings
 public class MuseumBalanceData : ScriptableObject
 {
     [Header("Donation Slot Rules")]
-    [Tooltip(
-        "Case Curator's Museum design allows one donation per exact SkinData + " +
-        "wear + variant slot. Keep enabled unless the design is intentionally " +
-        "changed later.")]
     public bool oneDonationPerSlot = true;
-
     public bool includeNormalSlots = true;
     public bool includeStatTrakSlots = true;
     public bool includeSouvenirSlots = true;
     public bool includeVanillaSlots = true;
 
-    [Header("Point Rules")]
+    [Header("Rarity + Wear Point Matrix")]
     [Tooltip(
-        "Base points by rarity. Missing rarities use Default Base Museum Points.")]
-    public List<MuseumRarityPointRule> rarityPointRules =
-        new List<MuseumRarityPointRule>();
+        "Optional overrides for the built-in Case Curator rarity/wear matrix. " +
+        "Missing rarities use the built-in defaults.")]
+    public List<MuseumRarityWearPointRule> rarityWearPointRules =
+        new List<MuseumRarityWearPointRule>();
 
-    [Min(0f)]
-    public double defaultBaseMuseumPoints = 1d;
-
+    [Header("Variant Multipliers")]
     [Tooltip(
-        "Multipliers for Factory New through Battle-Scarred Museum slots. " +
-        "Missing wear entries use a multiplier of 1.")]
-    public List<MuseumWearPointRule> wearPointRules =
-        new List<MuseumWearPointRule>();
-
-    [Tooltip(
-        "Normal, StatTrak and Souvenir multipliers. Missing variants use a " +
-        "multiplier of 1.")]
+        "Optional overrides. Missing values default to Normal x1.00, StatTrak " +
+        "x1.50 and Souvenir x1.50.")]
     public List<MuseumVariantPointRule> variantPointRules =
         new List<MuseumVariantPointRule>();
 
-    [Tooltip("Additional multiplier applied to vanilla Rare Special slots.")]
+    [Tooltip("Additional multiplier applied to vanilla slots.")]
     [Min(0f)]
     public double vanillaPointMultiplier = 1d;
 
@@ -122,40 +152,42 @@ public class MuseumBalanceData : ScriptableObject
     [Min(0f)]
     public double rareSpecialPointMultiplier = 1d;
 
+    [Header("Market Value Bonus")]
+    public MuseumMarketValueBonusSettings marketValueBonus =
+        new MuseumMarketValueBonusSettings();
+
+    [Header("Legacy Point Fields")]
+    [Tooltip("Retained so existing assets deserialize safely. M3 uses the matrix above.")]
+    public List<MuseumRarityPointRule> rarityPointRules =
+        new List<MuseumRarityPointRule>();
+
+    public List<MuseumWearPointRule> wearPointRules =
+        new List<MuseumWearPointRule>();
+
+    [Min(0f)]
+    public double defaultBaseMuseumPoints = 1d;
+
     [Header("Passive Income")]
     public MuseumIdleIncomeSettings idleIncome =
         new MuseumIdleIncomeSettings();
 
-    public double GetBasePoints(Rarity rarity)
+    public double GetRarityWearPoints(
+        Rarity rarity,
+        MuseumWearTier wear,
+        bool isVanilla)
     {
-        if (rarityPointRules != null)
+        if (rarityWearPointRules != null)
         {
-            for (int i = 0; i < rarityPointRules.Count; i++)
+            for (int i = 0; i < rarityWearPointRules.Count; i++)
             {
-                MuseumRarityPointRule rule = rarityPointRules[i];
+                MuseumRarityWearPointRule rule = rarityWearPointRules[i];
 
                 if (rule != null && rule.rarity == rarity)
-                    return Math.Max(0d, rule.baseMuseumPoints);
+                    return rule.GetPoints(wear);
             }
         }
 
-        return Math.Max(0d, defaultBaseMuseumPoints);
-    }
-
-    public double GetWearMultiplier(MuseumWearTier wear)
-    {
-        if (wearPointRules != null)
-        {
-            for (int i = 0; i < wearPointRules.Count; i++)
-            {
-                MuseumWearPointRule rule = wearPointRules[i];
-
-                if (rule != null && rule.wear == wear)
-                    return Math.Max(0d, rule.pointMultiplier);
-            }
-        }
-
-        return 1d;
+        return GetDefaultRarityWearPoints(rarity, wear, isVanilla);
     }
 
     public double GetVariantMultiplier(MuseumDonationVariant variant)
@@ -171,7 +203,49 @@ public class MuseumBalanceData : ScriptableObject
             }
         }
 
-        return 1d;
+        switch (variant)
+        {
+            case MuseumDonationVariant.StatTrak: return 1.5d;
+            case MuseumDonationVariant.Souvenir: return 1.5d;
+            default: return 1d;
+        }
+    }
+
+    public double CalculateMarketValueBonus(double marketValue)
+    {
+        if (marketValueBonus == null || !marketValueBonus.enabled)
+            return 0d;
+
+        double minimumValue = Math.Max(0d, marketValueBonus.minimumMarketValue);
+        double maximumValue = Math.Max(minimumValue, marketValueBonus.maximumMarketValue);
+        double minimumBonus = Math.Max(0d, marketValueBonus.bonusAtMinimumValue);
+        double maximumBonus = Math.Max(minimumBonus, marketValueBonus.maximumBonusPoints);
+
+        if (marketValue < minimumValue || minimumValue <= 0d)
+            return 0d;
+
+        if (marketValue >= maximumValue || maximumValue <= minimumValue)
+            return maximumBonus;
+
+        // Logarithmic interpolation keeps the reward increasing while its
+        // effective percentage diminishes: 100 Gold -> 25 MP, 10,000 -> 100 MP.
+        double denominator = Math.Log10(maximumValue / minimumValue);
+
+        if (denominator <= 0d)
+            return maximumBonus;
+
+        double progress = Math.Log10(marketValue / minimumValue) / denominator;
+        progress = Math.Max(0d, Math.Min(1d, progress));
+
+        return minimumBonus + (maximumBonus - minimumBonus) * progress;
+    }
+
+    public double GetEffectiveMarketBonusRate(double marketValue)
+    {
+        if (marketValue <= 0d)
+            return 0d;
+
+        return CalculateMarketValueBonus(marketValue) / marketValue;
     }
 
     public double CalculateBaseSlotPoints(
@@ -181,8 +255,7 @@ public class MuseumBalanceData : ScriptableObject
         bool isVanilla)
     {
         double points =
-            GetBasePoints(rarity) *
-            GetWearMultiplier(wear) *
+            GetRarityWearPoints(rarity, wear, isVanilla) *
             GetVariantMultiplier(variant);
 
         if (rarity == Rarity.RareSpecial)
@@ -194,27 +267,99 @@ public class MuseumBalanceData : ScriptableObject
         return Math.Max(0d, points);
     }
 
+    // Compatibility methods retained for older callers and inspectors.
+    public double GetBasePoints(Rarity rarity)
+    {
+        return GetRarityWearPoints(rarity, MuseumWearTier.FactoryNew, false);
+    }
+
+    public double GetWearMultiplier(MuseumWearTier wear)
+    {
+        return 1d;
+    }
+
+    private static double GetDefaultRarityWearPoints(
+        Rarity rarity,
+        MuseumWearTier wear,
+        bool isVanilla)
+    {
+        if (isVanilla)
+            wear = MuseumWearTier.FactoryNew;
+
+        switch (rarity)
+        {
+            case Rarity.Consumer:
+                return PickWear(wear, 1d, 1d, 2d, 3d, 4d);
+            case Rarity.Industrial:
+                return PickWear(wear, 2d, 3d, 4d, 6d, 8d);
+            case Rarity.MilSpec:
+                return PickWear(wear, 3d, 4d, 6d, 9d, 12d);
+            case Rarity.Restricted:
+                return PickWear(wear, 6d, 8d, 12d, 18d, 24d);
+            case Rarity.Classified:
+                return PickWear(wear, 12d, 16d, 24d, 36d, 48d);
+            case Rarity.Covert:
+                return PickWear(wear, 25d, 35d, 50d, 75d, 85d);
+            case Rarity.RareSpecial:
+                return PickWear(wear, 50d, 70d, 85d, 110d, 150d);
+            default:
+                return 1d;
+        }
+    }
+
+    private static double PickWear(
+        MuseumWearTier wear,
+        double battleScarred,
+        double wellWorn,
+        double fieldTested,
+        double minimalWear,
+        double factoryNew)
+    {
+        switch (wear)
+        {
+            case MuseumWearTier.FactoryNew: return factoryNew;
+            case MuseumWearTier.MinimalWear: return minimalWear;
+            case MuseumWearTier.FieldTested: return fieldTested;
+            case MuseumWearTier.WellWorn: return wellWorn;
+            default: return battleScarred;
+        }
+    }
+
     private void OnValidate()
     {
+        if (rarityWearPointRules == null)
+            rarityWearPointRules = new List<MuseumRarityWearPointRule>();
+
+        if (variantPointRules == null)
+            variantPointRules = new List<MuseumVariantPointRule>();
+
         if (rarityPointRules == null)
             rarityPointRules = new List<MuseumRarityPointRule>();
 
         if (wearPointRules == null)
             wearPointRules = new List<MuseumWearPointRule>();
 
-        if (variantPointRules == null)
-            variantPointRules = new List<MuseumVariantPointRule>();
+        if (marketValueBonus == null)
+            marketValueBonus = new MuseumMarketValueBonusSettings();
 
         if (idleIncome == null)
             idleIncome = new MuseumIdleIncomeSettings();
 
-        defaultBaseMuseumPoints =
-            Math.Max(0d, defaultBaseMuseumPoints);
+        defaultBaseMuseumPoints = Math.Max(0d, defaultBaseMuseumPoints);
+        vanillaPointMultiplier = Math.Max(0d, vanillaPointMultiplier);
+        rareSpecialPointMultiplier = Math.Max(0d, rareSpecialPointMultiplier);
 
-        vanillaPointMultiplier =
-            Math.Max(0d, vanillaPointMultiplier);
-
-        rareSpecialPointMultiplier =
-            Math.Max(0d, rareSpecialPointMultiplier);
+        marketValueBonus.minimumMarketValue =
+            Math.Max(0d, marketValueBonus.minimumMarketValue);
+        marketValueBonus.maximumMarketValue =
+            Math.Max(
+                marketValueBonus.minimumMarketValue,
+                marketValueBonus.maximumMarketValue);
+        marketValueBonus.bonusAtMinimumValue =
+            Math.Max(0d, marketValueBonus.bonusAtMinimumValue);
+        marketValueBonus.maximumBonusPoints =
+            Math.Max(
+                marketValueBonus.bonusAtMinimumValue,
+                marketValueBonus.maximumBonusPoints);
     }
 }
