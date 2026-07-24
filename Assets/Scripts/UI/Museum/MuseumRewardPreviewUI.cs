@@ -126,6 +126,34 @@ public class MuseumRewardPreviewUI : MonoBehaviour
             if (reward.xp > 0)
                 builder.AppendLine($"+{reward.xp:N0} XP");
 
+            if (reward.presentRewards != null)
+            {
+                for (int i = 0; i < reward.presentRewards.Count; i++)
+                {
+                    MuseumPresentRewardEntry entry =
+                        reward.presentRewards[i];
+
+                    if (entry == null || !entry.HasReward)
+                        continue;
+
+                    string tierName =
+                        MuseumPresentUtility.GetTierDisplayName(entry.tier);
+
+                    if (entry.fragments > 0)
+                    {
+                        builder.AppendLine(
+                            $"+{entry.fragments:N0} {tierName} fragments");
+                    }
+
+                    if (entry.presents > 0)
+                    {
+                        builder.AppendLine(
+                            $"+{entry.presents:N0} {tierName} Present" +
+                            (entry.presents == 1 ? "" : "s"));
+                    }
+                }
+            }
+
             if (reward.containerRewards != null)
             {
                 for (int i = 0; i < reward.containerRewards.Count; i++)
