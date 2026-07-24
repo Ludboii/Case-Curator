@@ -11,8 +11,13 @@ public class MuseumDonationSelectionUI : MonoBehaviour
     [SerializeField] private GameObject root;
     [SerializeField] private TMP_Text headerText;
     [SerializeField] private TMP_Text slotText;
-    [SerializeField] private Transform content;
+
+    [Header("Scrollable Candidate List")]
+    [SerializeField] private ScrollRect scrollRect;
+    [SerializeField] private RectTransform viewport;
+    [SerializeField] private RectTransform content;
     [SerializeField] private MuseumDonationItemCardUI cardPrefab;
+
     [SerializeField] private TMP_Text selectedDetailsText;
     [SerializeField] private TMP_Text emptyStateText;
     [SerializeField] private Button continueButton;
@@ -35,6 +40,9 @@ public class MuseumDonationSelectionUI : MonoBehaviour
         if (root == null)
             root = gameObject;
 
+        ResolveScrollReferences();
+        ConfigureScrollRect();
+
         if (continueButton != null)
         {
             continueButton.onClick.RemoveListener(Continue);
@@ -46,6 +54,18 @@ public class MuseumDonationSelectionUI : MonoBehaviour
             cancelButton.onClick.RemoveListener(Close);
             cancelButton.onClick.AddListener(Close);
         }
+    }
+
+    private void Reset()
+    {
+        ResolveScrollReferences();
+        ConfigureScrollRect();
+    }
+
+    private void OnValidate()
+    {
+        ResolveScrollReferences();
+        ConfigureScrollRect();
     }
 
     public void Open(
@@ -60,6 +80,9 @@ public class MuseumDonationSelectionUI : MonoBehaviour
 
         if (root == null)
             root = gameObject;
+
+        ResolveScrollReferences();
+        ConfigureScrollRect();
 
         root.SetActive(true);
         ClearCards();
@@ -92,18 +115,14 @@ public class MuseumDonationSelectionUI : MonoBehaviour
 
         if (emptyStateText != null)
         {
-            emptyStateText.gameObject.SetActive(candidates == null || candidates.Count == 0);
+            emptyStateText.gameObject.SetActive(
+                candidates == null || candidates.Count == 0);
             emptyStateText.text =
                 "You do not own an item matching this exact wear and variant.";
         }
 
         RefreshSelection();
-
-        if (content is RectTransform rect)
-        {
-            Canvas.ForceUpdateCanvases();
-            LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
-        }
+        RebuildScrollableContent();
     }
 
     public void SelectCandidate(MuseumDonationCandidate candidate)
@@ -144,8 +163,10 @@ public class MuseumDonationSelectionUI : MonoBehaviour
         }
 
         if (continueButton != null)
+        {
             continueButton.interactable =
                 selectedCandidate != null && selectedCandidate.selectable;
+        }
 
         if (selectedDetailsText != null)
         {
@@ -153,6 +174,87 @@ public class MuseumDonationSelectionUI : MonoBehaviour
                 ? $"Selected value: {selectedCandidate.MarketValue:0.##} Gold\n" +
                   $"Reward: {selectedCandidate.preview.MuseumPoints:0.##} MP"
                 : "Select one eligible inventory item.";
+        }
+    }
+
+    private void RebuildScrollableContent()
+    {
+        if (content == null)
+            return;
+
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(content);
+
+        float preferredHeight = LayoutUtility.GetPreferredHeight(content);
+
+        if (preferredHeight > 0f)
+        {
+            content.SetSizeWithCurrentAnchors(
+                RectTransform.Axis.Vertical,
+                preferredHeight);
+        }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(content);
+        Canvas.ForceUpdateCanvases();
+
+        if (scrollRect != null)
+        {
+            scrollRect.StopMovement();
+            scrollRect.verticalNormalizedPosition = 1f;
+        }
+    }
+
+    private void ResolveScrollReferences()
+    {
+        if (scrollRect == null)
+            scrollRect = GetComponentInChildren<ScrollRect>(true);
+
+        if (content == null && scrollRect != null)
+            content = scrollRect.content;
+
+        if (viewport == null && scrollRect != null)
+            viewport = scrollRect.viewport;
+
+        if (content == null)
+        {
+            Transform found = transform.Find("ScrollView/Viewport/Content");
+
+            if (found != null)
+                content = found as RectTransform;
+        }
+    }
+
+    private void ConfigureScrollRect()
+    {
+        if (scrollRect == null)
+            return;
+
+        if (content != null)
+            scrollRect.content = content;
+
+        if (viewport != null)
+            scrollRect.viewport = viewport;
+
+        scrollRect.horizontal = false;
+        scrollRect.vertical = true;
+        scrollRect.movementType = ScrollRect.MovementType.Clamped;
+        scrollRect.inertia = true;
+        scrollRect.scrollSensitivity = 25f;
+
+        if (content != null)
+        {
+            content.anchorMin = new Vector2(0f, 1f);
+            content.anchorMax = new Vector2(1f, 1f);
+            content.pivot = new Vector2(0.5f, 1f);
+            content.anchoredPosition = Vector2.zero;
+
+            ContentSizeFitter fitter = content.GetComponent<ContentSizeFitter>();
+
+            if (fitter == null)
+                fitter = content.gameObject.AddComponent<ContentSizeFitter>();
+
+            fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
         }
     }
 
