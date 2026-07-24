@@ -1,8 +1,9 @@
 using System;
 
 /// <summary>
-/// Pure Museum point calculation. It has no inventory, save, UI or random
-/// dependencies, which keeps donation balancing deterministic and testable.
+/// Pure Museum point calculation. M3 uses the rarity/wear matrix, variant
+/// multiplier, optional Rare Special/vanilla modifiers, and the capped
+/// logarithmic market-value bonus. Low-float bonuses are intentionally omitted.
 /// </summary>
 public sealed class MuseumPointCalculator
 {
@@ -28,32 +29,37 @@ public sealed class MuseumPointCalculator
         MuseumDonationVariant variant =
             MuseumDonationKeyUtility.GetVariant(item);
 
-        breakdown.basePoints =
-            balance.GetBasePoints(item.skin.rarity);
-
-        breakdown.wearMultiplier = vanilla
-            ? 1d
-            : balance.GetWearMultiplier(wear);
-
+        breakdown.rarityWearPoints =
+            balance.GetRarityWearPoints(item.skin.rarity, wear, vanilla);
+        breakdown.basePoints = breakdown.rarityWearPoints;
+        breakdown.wearMultiplier = 1d;
         breakdown.variantMultiplier =
             balance.GetVariantMultiplier(variant);
-
         breakdown.rareSpecialMultiplier =
             item.skin.rarity == Rarity.RareSpecial
                 ? Math.Max(0d, balance.rareSpecialPointMultiplier)
                 : 1d;
-
         breakdown.vanillaMultiplier = vanilla
             ? Math.Max(0d, balance.vanillaPointMultiplier)
             : 1d;
 
-        breakdown.totalPoints = Math.Max(
+        breakdown.pointsBeforeMarketBonus = Math.Max(
             0d,
-            breakdown.basePoints *
-            breakdown.wearMultiplier *
+            breakdown.rarityWearPoints *
             breakdown.variantMultiplier *
             breakdown.rareSpecialMultiplier *
             breakdown.vanillaMultiplier);
+
+        double marketValue = Math.Max(0d, item.marketValue);
+        breakdown.marketValueBonus =
+            balance.CalculateMarketValueBonus(marketValue);
+        breakdown.marketValueBonusRate =
+            balance.GetEffectiveMarketBonusRate(marketValue);
+
+        breakdown.totalPoints = Math.Max(
+            0d,
+            breakdown.pointsBeforeMarketBonus +
+            breakdown.marketValueBonus);
 
         return breakdown;
     }
