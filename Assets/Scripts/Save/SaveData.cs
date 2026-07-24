@@ -240,8 +240,6 @@ public class TradeupHistorySaveData
 
     public double averageInputFloat;
     public float totalInputMarketValue;
-    public float totalOutputMarketValue;
-    public float bestOutputMarketValue;
 
     public string outputSkinApiId;
     public string outputInstanceId;
