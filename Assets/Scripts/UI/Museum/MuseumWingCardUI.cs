@@ -52,7 +52,13 @@ public class MuseumWingCardUI : MonoBehaviour
 
         if (iconImage != null)
         {
-            Sprite icon = config != null ? config.icon : null;
+            // Use an explicitly configured wing icon when one exists. Otherwise
+            // derive a representative image from the first available category,
+            // weapon and skin contained by the generated wing.
+            Sprite icon = config != null && config.icon != null
+                ? config.icon
+                : GetRepresentativeIcon(entry);
+
             iconImage.sprite = icon;
             iconImage.enabled = icon != null;
             iconImage.preserveAspect = true;
@@ -81,6 +87,46 @@ public class MuseumWingCardUI : MonoBehaviour
             button.onClick.AddListener(HandleClicked);
             button.interactable = unlocked && entry != null;
         }
+    }
+
+    private static Sprite GetRepresentativeIcon(MuseumWingEntry wing)
+    {
+        if (wing == null || wing.categories == null)
+            return null;
+
+        for (int categoryIndex = 0;
+             categoryIndex < wing.categories.Count;
+             categoryIndex++)
+        {
+            MuseumCategoryEntry category = wing.categories[categoryIndex];
+
+            if (category == null || category.weapons == null)
+                continue;
+
+            for (int weaponIndex = 0;
+                 weaponIndex < category.weapons.Count;
+                 weaponIndex++)
+            {
+                MuseumWeaponEntry weapon = category.weapons[weaponIndex];
+
+                if (weapon == null || weapon.skins == null)
+                    continue;
+
+                for (int skinIndex = 0;
+                     skinIndex < weapon.skins.Count;
+                     skinIndex++)
+                {
+                    SkinData skin = weapon.skins[skinIndex] != null
+                        ? weapon.skins[skinIndex].skin
+                        : null;
+
+                    if (skin != null && skin.icon != null)
+                        return skin.icon;
+                }
+            }
+        }
+
+        return null;
     }
 
     private void ResolveProgressBar()
