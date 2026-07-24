@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,6 +19,10 @@ public class MuseumSkinCardUI : MonoBehaviour
     [Header("State Colors")]
     [SerializeField] private Color discoveredTextColor =
         new Color(0.35f, 1f, 0.35f, 1f);
+    [SerializeField] private Color readyTextColor =
+        new Color(1f, 0.9f, 0.25f, 1f);
+    [SerializeField] private Color protectedTextColor =
+        new Color(1f, 0.65f, 0.25f, 1f);
     [SerializeField] private Color missingTextColor =
         new Color(0.75f, 0.75f, 0.75f, 1f);
 
@@ -75,13 +80,31 @@ public class MuseumSkinCardUI : MonoBehaviour
         }
 
         bool discovered = entry != null && entry.DonatedSlots > 0;
+        GetDonationAvailability(out int readyCount, out int protectedCount);
 
         if (foundStateText != null)
         {
-            foundStateText.text = discovered ? "Discovered" : "Missing";
-            foundStateText.color = discovered
-                ? discoveredTextColor
-                : missingTextColor;
+            if (readyCount > 0)
+            {
+                foundStateText.text = readyCount == 1
+                    ? "1 ready to donate"
+                    : $"{readyCount} ready to donate";
+                foundStateText.color = readyTextColor;
+            }
+            else if (protectedCount > 0)
+            {
+                foundStateText.text = protectedCount == 1
+                    ? "Owned - protected"
+                    : $"{protectedCount} owned - protected";
+                foundStateText.color = protectedTextColor;
+            }
+            else
+            {
+                foundStateText.text = discovered ? "Discovered" : "Missing";
+                foundStateText.color = discovered
+                    ? discoveredTextColor
+                    : missingTextColor;
+            }
         }
 
         if (discoveredIndicator != null)
@@ -102,6 +125,74 @@ public class MuseumSkinCardUI : MonoBehaviour
         }
 
         ApplyRarityThenNameSiblingOrder();
+    }
+
+    /// <summary>
+    /// Counts inventory instances that currently match one of this exhibit's
+    /// unfilled exact slots. Eligible items are separated from owned copies that
+    /// are blocked by protection rules such as Favorite or Trophy Room use.
+    /// </summary>
+    private void GetDonationAvailability(
+        out int readyCount,
+        out int protectedCount)
+    {
+        readyCount = 0;
+        protectedCount = 0;
+
+        MuseumService service = owner != null ? owner.Service : null;
+
+        if (entry == null ||
+            entry.slots == null ||
+            service == null ||
+            InventoryManager.Instance == null)
+        {
+            return;
+        }
+
+        HashSet<string> openDonationKeys =
+            new HashSet<string>(StringComparer.Ordinal);
+
+        for (int i = 0; i < entry.slots.Count; i++)
+        {
+            MuseumSlotEntry slot = entry.slots[i];
+
+            if (slot != null &&
+                !slot.donated &&
+                !string.IsNullOrWhiteSpace(slot.donationKey))
+            {
+                openDonationKeys.Add(slot.donationKey);
+            }
+        }
+
+        if (openDonationKeys.Count == 0)
+            return;
+
+        List<InventoryItem> inventory =
+            InventoryManager.Instance.GetItemsCopy();
+
+        for (int i = 0; i < inventory.Count; i++)
+        {
+            InventoryItem item = inventory[i];
+
+            if (item == null || string.IsNullOrWhiteSpace(item.instanceId))
+                continue;
+
+            string donationKey = MuseumDonationKeyUtility.Build(item);
+
+            if (string.IsNullOrWhiteSpace(donationKey) ||
+                !openDonationKeys.Contains(donationKey))
+            {
+                continue;
+            }
+
+            MuseumDonationPreview preview =
+                service.PreviewDonation(item.instanceId);
+
+            if (preview != null && preview.canDonate)
+                readyCount++;
+            else
+                protectedCount++;
+        }
     }
 
     private void ResolveProgressBar()
