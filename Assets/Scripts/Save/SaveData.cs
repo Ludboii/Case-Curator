@@ -110,8 +110,35 @@ public class MuseumStateSaveData
     public List<string> unlockedPlaqueIds =
         new List<string>();
 
+    public MuseumPresentStateSaveData presents =
+        new MuseumPresentStateSaveData();
+
     public GiftDeskSaveData giftDesk = new GiftDeskSaveData();
     public TrophyRoomSaveData trophyRoom = new TrophyRoomSaveData();
+}
+
+[Serializable]
+public class MuseumPresentStateSaveData
+{
+    public List<MuseumPresentTierBalanceSaveData> tierBalances =
+        new List<MuseumPresentTierBalanceSaveData>();
+
+    // Prevents a claimed milestone from granting its fragment/present payload
+    // more than once. This also makes M4.5 retroactive for milestones claimed
+    // before the present system was added.
+    public List<string> processedMilestoneRewardIds =
+        new List<string>();
+
+    public int totalPresentsOpened;
+}
+
+[Serializable]
+public class MuseumPresentTierBalanceSaveData
+{
+    public MuseumPresentTier tier;
+    public int fragments;
+    public int presents;
+    public int presentsOpened;
 }
 
 [Serializable]
@@ -213,6 +240,8 @@ public class TradeupHistorySaveData
 
     public double averageInputFloat;
     public float totalInputMarketValue;
+    public float totalOutputMarketValue;
+    public float bestOutputMarketValue;
 
     public string outputSkinApiId;
     public string outputInstanceId;
