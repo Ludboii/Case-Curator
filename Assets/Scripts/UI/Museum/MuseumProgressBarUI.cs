@@ -5,12 +5,22 @@ using UnityEngine.UI;
 
 /// <summary>
 /// Small reusable progress presenter used by Museum wing, category, weapon and
-/// skin cards. It supports an optional Image fill and TMP label.
+/// skin cards. It displays a solid horizontal fill from left to right and an
+/// optional completed / total TMP label.
 /// </summary>
 public class MuseumProgressBarUI : MonoBehaviour
 {
     [SerializeField] private Image fillImage;
     [SerializeField] private TMP_Text progressText;
+
+    [Header("Fill Appearance")]
+    [Tooltip("Color used by the solid progress fill.")]
+    [SerializeField] private Color fillColor = new Color(0.2f, 0.85f, 0.2f, 1f);
+
+    [Tooltip(
+        "Removes the assigned sprite from the fill Image so transparent borders " +
+        "or circular artwork cannot create gaps in the progress bar.")]
+    [SerializeField] private bool useSolidFill = true;
 
     [Tooltip(
         "When enabled, append the percentage after the completed / total count.")]
@@ -21,21 +31,25 @@ public class MuseumProgressBarUI : MonoBehaviour
     private void Awake()
     {
         ResolveReferences();
+        ConfigureFillImage();
     }
 
     private void Reset()
     {
         ResolveReferences();
+        ConfigureFillImage();
     }
 
     private void OnValidate()
     {
         ResolveReferences();
+        ConfigureFillImage();
     }
 
     public void SetProgress(int completed, int total)
     {
         ResolveReferences();
+        ConfigureFillImage();
 
         completed = Mathf.Max(0, completed);
         total = Mathf.Max(0, total);
@@ -68,6 +82,24 @@ public class MuseumProgressBarUI : MonoBehaviour
 
             missingTextWarningLogged = true;
         }
+    }
+
+    private void ConfigureFillImage()
+    {
+        if (fillImage == null)
+            return;
+
+        if (useSolidFill)
+            fillImage.sprite = null;
+
+        fillImage.type = Image.Type.Filled;
+        fillImage.fillMethod = Image.FillMethod.Horizontal;
+        fillImage.fillOrigin = (int)Image.OriginHorizontal.Left;
+        fillImage.fillClockwise = true;
+        fillImage.fillCenter = true;
+        fillImage.preserveAspect = false;
+        fillImage.color = fillColor;
+        fillImage.raycastTarget = false;
     }
 
     private void ResolveReferences()
