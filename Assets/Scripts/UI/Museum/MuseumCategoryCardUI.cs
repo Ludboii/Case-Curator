@@ -16,8 +16,25 @@ public class MuseumCategoryCardUI : MonoBehaviour
     private MuseumCategoryEntry entry;
     private MuseumPanelUI owner;
 
+    private void Awake()
+    {
+        ResolveProgressBar();
+    }
+
+    private void Reset()
+    {
+        ResolveProgressBar();
+    }
+
+    private void OnValidate()
+    {
+        ResolveProgressBar();
+    }
+
     public void Setup(MuseumCategoryEntry museumEntry, MuseumPanelUI panel)
     {
+        ResolveProgressBar();
+
         entry = museumEntry;
         owner = panel;
 
@@ -64,6 +81,12 @@ public class MuseumCategoryCardUI : MonoBehaviour
             button.onClick.AddListener(HandleClicked);
             button.interactable = unlocked && entry != null;
         }
+    }
+
+    private void ResolveProgressBar()
+    {
+        if (progressBar == null)
+            progressBar = GetComponentInChildren<MuseumProgressBarUI>(true);
     }
 
     private void HandleClicked()
