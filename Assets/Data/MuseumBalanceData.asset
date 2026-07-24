@@ -17,6 +17,22 @@ MonoBehaviour:
   includeStatTrakSlots: 1
   includeSouvenirSlots: 1
   includeVanillaSlots: 1
+  rarityWearPointRules: []
+  variantPointRules:
+  - variant: 0
+    pointMultiplier: 1
+  - variant: 1
+    pointMultiplier: 1.5
+  - variant: 2
+    pointMultiplier: 1.75
+  vanillaPointMultiplier: 1
+  rareSpecialPointMultiplier: 1
+  marketValueBonus:
+    enabled: 1
+    minimumMarketValue: 500
+    maximumMarketValue: 50000
+    bonusAtMinimumValue: 10
+    maximumBonusPoints: 200
   rarityPointRules:
   - rarity: 0
     baseMuseumPoints: 3
@@ -32,7 +48,6 @@ MonoBehaviour:
     baseMuseumPoints: 96
   - rarity: 6
     baseMuseumPoints: 192
-  defaultBaseMuseumPoints: 0
   wearPointRules:
   - wear: 0
     pointMultiplier: 2
@@ -44,15 +59,7 @@ MonoBehaviour:
     pointMultiplier: 1
   - wear: 3
     pointMultiplier: 0.75
-  variantPointRules:
-  - variant: 0
-    pointMultiplier: 1
-  - variant: 1
-    pointMultiplier: 1.5
-  - variant: 2
-    pointMultiplier: 1.75
-  vanillaPointMultiplier: 1
-  rareSpecialPointMultiplier: 1
+  defaultBaseMuseumPoints: 0
   idleIncome:
     goldPerMuseumPointPerHour: 1
     maximumOfflineHours: 8
