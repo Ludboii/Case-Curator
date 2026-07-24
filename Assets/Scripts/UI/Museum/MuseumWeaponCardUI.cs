@@ -14,8 +14,25 @@ public class MuseumWeaponCardUI : MonoBehaviour
     private MuseumWeaponEntry entry;
     private MuseumPanelUI owner;
 
+    private void Awake()
+    {
+        ResolveProgressBar();
+    }
+
+    private void Reset()
+    {
+        ResolveProgressBar();
+    }
+
+    private void OnValidate()
+    {
+        ResolveProgressBar();
+    }
+
     public void Setup(MuseumWeaponEntry museumEntry, MuseumPanelUI panel)
     {
+        ResolveProgressBar();
+
         entry = museumEntry;
         owner = panel;
 
@@ -51,6 +68,12 @@ public class MuseumWeaponCardUI : MonoBehaviour
             button.onClick.AddListener(HandleClicked);
             button.interactable = entry != null;
         }
+    }
+
+    private void ResolveProgressBar()
+    {
+        if (progressBar == null)
+            progressBar = GetComponentInChildren<MuseumProgressBarUI>(true);
     }
 
     private void HandleClicked()
