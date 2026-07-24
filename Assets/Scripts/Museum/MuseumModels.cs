@@ -13,18 +13,68 @@ public enum MuseumDonationFailureReason
     TrophyRoomItem = 7,
     VariantDisabled = 8,
     SlotAlreadyFilled = 9,
-    InventoryTransactionFailed = 10
+    InventoryTransactionFailed = 10,
+    SlotUnavailable = 11,
+    SlotLocked = 12,
+    ItemDoesNotMatchSlot = 13
+}
+
+public enum MuseumDonationWarningType
+{
+    OnlyOwnedCopy = 0,
+    BestFloatOwned = 1,
+    HighestValueOwned = 2,
+    RarePattern = 3,
+    HighMarketValue = 4
 }
 
 [Serializable]
 public sealed class MuseumPointBreakdown
 {
+    // Legacy fields retained for existing UI and serialized compatibility.
     public double basePoints;
     public double wearMultiplier = 1d;
+
+    public double rarityWearPoints;
     public double variantMultiplier = 1d;
     public double rareSpecialMultiplier = 1d;
     public double vanillaMultiplier = 1d;
+    public double pointsBeforeMarketBonus;
+    public double marketValueBonus;
+    public double marketValueBonusRate;
     public double totalPoints;
+}
+
+public sealed class MuseumSlotUnlockState
+{
+    public bool isUnlocked = true;
+    public string reason = "";
+    public MuseumWingEntry wing;
+    public MuseumCategoryEntry category;
+    public MuseumSkinEntry skin;
+    public MuseumSlotEntry slot;
+}
+
+public sealed class MuseumDonationWarning
+{
+    public MuseumDonationWarningType type;
+    public string message;
+    public bool severe;
+}
+
+public sealed class MuseumDonationCandidate
+{
+    public string instanceId;
+    public InventoryItem item;
+    public MuseumDonationPreview preview;
+    public bool selectable;
+    public string blockedReason;
+    public List<MuseumDonationWarning> warnings =
+        new List<MuseumDonationWarning>();
+
+    public int WarningCount => warnings != null ? warnings.Count : 0;
+    public float MarketValue => item != null ? item.marketValue : 0f;
+    public long AcquisitionSequence => item != null ? item.acquisitionSequence : 0L;
 }
 
 public sealed class MuseumDonationPreview
