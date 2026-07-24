@@ -21,7 +21,7 @@ public class MuseumStaircaseLauncherUI : MonoBehaviour
 
     private void Awake()
     {
-        ResolveReferences();
+        ResolveViewReferences();
 
         if (staircaseButton != null)
         {
@@ -30,11 +30,28 @@ public class MuseumStaircaseLauncherUI : MonoBehaviour
         }
     }
 
-    private void OnEnable()
+    private void Start()
     {
-        ResolveReferences();
+        ResolveRuntimeServices();
         Subscribe();
         Refresh();
+    }
+
+    private void OnEnable()
+    {
+        ResolveViewReferences();
+
+        // Do not dynamically create MuseumMilestoneService from Awake/OnEnable.
+        // UI objects can initialise before SaveManager, which caused the service
+        // to warn that GameDatabase could not be resolved even though the database
+        // was correctly assigned. Start/OpenStaircase resolves it after managers
+        // have completed Awake.
+        if (SaveManager.Instance != null)
+        {
+            ResolveRuntimeServices();
+            Subscribe();
+            Refresh();
+        }
     }
 
     private void OnDisable()
@@ -52,7 +69,9 @@ public class MuseumStaircaseLauncherUI : MonoBehaviour
 
     public void OpenStaircase()
     {
-        ResolveReferences();
+        ResolveViewReferences();
+        ResolveRuntimeServices();
+        Subscribe();
 
         if (staircaseUI == null)
         {
@@ -67,7 +86,7 @@ public class MuseumStaircaseLauncherUI : MonoBehaviour
 
     public void Refresh()
     {
-        ResolveReferences();
+        ResolveViewReferences();
 
         int claimable = milestoneService != null
             ? milestoneService.GetClaimableCount()
@@ -90,7 +109,9 @@ public class MuseumStaircaseLauncherUI : MonoBehaviour
 
             if (next == null || next.data == null)
             {
-                summaryText.text = "Museum Staircase complete";
+                summaryText.text = milestoneService == null
+                    ? "Milestone Staircase"
+                    : "Museum Staircase complete";
             }
             else if (next.IsClaimable)
             {
@@ -113,14 +134,17 @@ public class MuseumStaircaseLauncherUI : MonoBehaviour
             staircaseUI.Refresh(false);
     }
 
-    private void ResolveReferences()
+    private void ResolveViewReferences()
     {
         if (staircaseButton == null)
             staircaseButton = GetComponent<Button>();
 
         if (staircaseUI == null)
             staircaseUI = FindObjectOfType<MuseumStaircaseUI>(true);
+    }
 
+    private void ResolveRuntimeServices()
+    {
         if (milestoneService == null)
             milestoneService = MuseumMilestoneService.GetOrCreate();
 
