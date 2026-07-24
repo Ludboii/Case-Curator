@@ -52,7 +52,14 @@ public class MuseumCategoryCardUI : MonoBehaviour
 
         if (iconImage != null)
         {
-            Sprite icon = config != null ? config.icon : null;
+            // Respect a deliberately assigned category icon. When no icon has
+            // been configured, use the first available skin icon from the
+            // first weapon in this category so generated categories are never
+            // left as empty black cards.
+            Sprite icon = config != null && config.icon != null
+                ? config.icon
+                : GetRepresentativeIcon(entry);
+
             iconImage.sprite = icon;
             iconImage.enabled = icon != null;
             iconImage.preserveAspect = true;
@@ -81,6 +88,36 @@ public class MuseumCategoryCardUI : MonoBehaviour
             button.onClick.AddListener(HandleClicked);
             button.interactable = unlocked && entry != null;
         }
+    }
+
+    private static Sprite GetRepresentativeIcon(MuseumCategoryEntry category)
+    {
+        if (category == null || category.weapons == null)
+            return null;
+
+        for (int weaponIndex = 0;
+             weaponIndex < category.weapons.Count;
+             weaponIndex++)
+        {
+            MuseumWeaponEntry weapon = category.weapons[weaponIndex];
+
+            if (weapon == null || weapon.skins == null)
+                continue;
+
+            for (int skinIndex = 0;
+                 skinIndex < weapon.skins.Count;
+                 skinIndex++)
+            {
+                SkinData skin = weapon.skins[skinIndex] != null
+                    ? weapon.skins[skinIndex].skin
+                    : null;
+
+                if (skin != null && skin.icon != null)
+                    return skin.icon;
+            }
+        }
+
+        return null;
     }
 
     private void ResolveProgressBar()
