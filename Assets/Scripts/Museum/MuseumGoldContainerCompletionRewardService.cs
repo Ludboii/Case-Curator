@@ -101,17 +101,36 @@ public class MuseumGoldContainerCompletionRewardService : MonoBehaviour
         if (presentService == null || presentState == null)
             return;
 
+        ContainerProgressSaveData progressSnapshot =
+            ContainerProgressManager.Instance.ExportSaveData();
+
+        if (progressSnapshot == null ||
+            progressSnapshot.progressEntries == null)
+        {
+            return;
+        }
+
         HashSet<string> processed = BuildProcessedSet(
             presentState.processedMilestoneRewardIds);
-        List<CaseData> containers = SaveManager.Instance.database.allCases;
         bool changed = false;
 
-        if (containers == null)
-            return;
-
-        for (int i = 0; i < containers.Count; i++)
+        // Only inspect containers that already have progress. Calling
+        // IsGoldComplete for every database container would create empty
+        // progress records for unopened cases.
+        for (int i = 0; i < progressSnapshot.progressEntries.Count; i++)
         {
-            CaseData container = containers[i];
+            ContainerProgressData progress =
+                progressSnapshot.progressEntries[i];
+
+            if (progress == null ||
+                string.IsNullOrWhiteSpace(progress.containerId))
+            {
+                continue;
+            }
+
+            CaseData container =
+                SaveManager.Instance.database.GetCaseByApiId(
+                    progress.containerId);
 
             if (container == null || string.IsNullOrWhiteSpace(container.apiId))
                 continue;
