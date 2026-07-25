@@ -1,16 +1,13 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
 /// Awards 20-40 fragments of the player's current Museum band when a container
-/// first reaches Gold completion. Rewards are one-time per stable CaseData apiId
-/// and existing Gold completions are handled retroactively.
+/// first reaches Gold completion. The existing goldRewardClaimed field is used
+/// as the one-time authority, so the reward integrates with container progress.
 /// </summary>
 public class MuseumGoldContainerCompletionRewardService : MonoBehaviour
 {
-    private const string RewardIdPrefix = "gold-container-completion:";
-
     public static MuseumGoldContainerCompletionRewardService Instance
     {
         get;
@@ -27,6 +24,7 @@ public class MuseumGoldContainerCompletionRewardService : MonoBehaviour
 
     private bool subscribed;
     private bool initialized;
+    private bool processing;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
@@ -86,94 +84,101 @@ public class MuseumGoldContainerCompletionRewardService : MonoBehaviour
 
     public void ProcessGoldCompletions()
     {
-        if (SaveManager.Instance == null ||
+        if (processing ||
+            SaveManager.Instance == null ||
             SaveManager.Instance.database == null ||
             ContainerProgressManager.Instance == null)
         {
             return;
         }
 
-        MuseumPresentService presentService =
-            MuseumPresentService.GetOrCreate();
-        MuseumPresentStateSaveData presentState =
-            EnsurePresentState();
+        processing = true;
 
-        if (presentService == null || presentState == null)
-            return;
-
-        ContainerProgressSaveData progressSnapshot =
-            ContainerProgressManager.Instance.ExportSaveData();
-
-        if (progressSnapshot == null ||
-            progressSnapshot.progressEntries == null)
+        try
         {
-            return;
-        }
+            MuseumPresentService presentService =
+                MuseumPresentService.GetOrCreate();
+            ContainerProgressSaveData progressSnapshot =
+                ContainerProgressManager.Instance.ExportSaveData();
 
-        HashSet<string> processed = BuildProcessedSet(
-            presentState.processedMilestoneRewardIds);
-        bool changed = false;
-
-        // Only inspect containers that already have progress. Calling
-        // IsGoldComplete for every database container would create empty
-        // progress records for unopened cases.
-        for (int i = 0; i < progressSnapshot.progressEntries.Count; i++)
-        {
-            ContainerProgressData progress =
-                progressSnapshot.progressEntries[i];
-
-            if (progress == null ||
-                string.IsNullOrWhiteSpace(progress.containerId))
+            if (presentService == null ||
+                progressSnapshot == null ||
+                progressSnapshot.progressEntries == null)
             {
-                continue;
+                return;
             }
 
-            CaseData container =
-                SaveManager.Instance.database.GetCaseByApiId(
-                    progress.containerId);
+            bool changed = false;
 
-            if (container == null || string.IsNullOrWhiteSpace(container.apiId))
-                continue;
-
-            string rewardId = RewardIdPrefix + container.apiId.Trim();
-
-            if (processed.Contains(rewardId) ||
-                !ContainerProgressManager.Instance.IsGoldComplete(container))
+            // Only inspect containers that already have progress. Calling
+            // IsGoldComplete for every database container would create empty
+            // progress records for unopened cases.
+            for (int i = 0; i < progressSnapshot.progressEntries.Count; i++)
             {
-                continue;
-            }
+                ContainerProgressData savedProgress =
+                    progressSnapshot.progressEntries[i];
 
-            MuseumPresentTier tier = ResolveCurrentMuseumTier();
-            int amount = UnityEngine.Random.Range(
-                minimumFragments,
-                maximumFragments + 1);
-
-            // Notify immediately so the Present Desk and entrance badge refresh.
-            presentService.AddFragments(tier, amount, true);
-            presentState.processedMilestoneRewardIds.Add(rewardId);
-            processed.Add(rewardId);
-            changed = true;
-
-            MuseumGoldContainerCompletionReward reward =
-                new MuseumGoldContainerCompletionReward
+                if (savedProgress == null ||
+                    savedProgress.goldRewardClaimed ||
+                    string.IsNullOrWhiteSpace(savedProgress.containerId))
                 {
-                    container = container,
-                    tier = tier,
-                    fragments = amount,
-                    message =
-                        $"Gold completion: {container.caseName}\n" +
-                        $"+{amount:N0} " +
-                        $"{MuseumPresentUtility.GetTierDisplayName(tier)} fragments"
-                };
+                    continue;
+                }
 
-            OnGoldCompletionRewardGranted?.Invoke(reward);
+                CaseData container =
+                    SaveManager.Instance.database.GetCaseByApiId(
+                        savedProgress.containerId);
 
-            if (verboseLogging)
-                Debug.Log(reward.message, this);
-        }
+                if (container == null ||
+                    !ContainerProgressManager.Instance.IsGoldComplete(container))
+                {
+                    continue;
+                }
 
-        if (changed)
+                ContainerProgressData liveProgress =
+                    ContainerProgressManager.Instance.GetProgress(container);
+
+                if (liveProgress == null || liveProgress.goldRewardClaimed)
+                    continue;
+
+                MuseumPresentTier tier = ResolveCurrentMuseumTier();
+                int amount = UnityEngine.Random.Range(
+                    minimumFragments,
+                    maximumFragments + 1);
+
+                // Mark before raising the progress event to make re-entry safe.
+                liveProgress.goldRewardClaimed = true;
+                presentService.AddFragments(tier, amount, true);
+                changed = true;
+
+                MuseumGoldContainerCompletionReward reward =
+                    new MuseumGoldContainerCompletionReward
+                    {
+                        container = container,
+                        tier = tier,
+                        fragments = amount,
+                        message =
+                            $"Gold completion: {container.caseName}\n" +
+                            $"+{amount:N0} " +
+                            $"{MuseumPresentUtility.GetTierDisplayName(tier)} fragments"
+                    };
+
+                OnGoldCompletionRewardGranted?.Invoke(reward);
+
+                if (verboseLogging)
+                    Debug.Log(reward.message, this);
+            }
+
+            if (!changed)
+                return;
+
+            ContainerProgressManager.Instance.SaveProgress();
             SaveManager.Instance.MarkDirty();
+        }
+        finally
+        {
+            processing = false;
+        }
     }
 
     private void TryInitialize()
@@ -233,45 +238,5 @@ public class MuseumGoldContainerCompletionRewardService : MonoBehaviour
             return MuseumPresentTier.Bronze;
 
         return MuseumPresentTier.Dusty;
-    }
-
-    private static MuseumPresentStateSaveData EnsurePresentState()
-    {
-        if (SaveManager.Instance == null || SaveManager.Instance.Museum == null)
-            return null;
-
-        if (SaveManager.Instance.Museum.presents == null)
-        {
-            SaveManager.Instance.Museum.presents =
-                new MuseumPresentStateSaveData();
-        }
-
-        MuseumPresentStateSaveData state =
-            SaveManager.Instance.Museum.presents;
-
-        if (state.processedMilestoneRewardIds == null)
-        {
-            state.processedMilestoneRewardIds =
-                new List<string>();
-        }
-
-        return state;
-    }
-
-    private static HashSet<string> BuildProcessedSet(List<string> source)
-    {
-        HashSet<string> result =
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        if (source == null)
-            return result;
-
-        for (int i = 0; i < source.Count; i++)
-        {
-            if (!string.IsNullOrWhiteSpace(source[i]))
-                result.Add(source[i].Trim());
-        }
-
-        return result;
     }
 }
