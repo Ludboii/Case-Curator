@@ -1,9 +1,11 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Displays M5 visitor income and sends explicit claim commands to the service.
+/// Displays Museum visitor income, its M5.1 upgrade effects and explicit claim
+/// controls. Currency mutation remains owned by MuseumIdleIncomeService.
 /// </summary>
 public sealed class MuseumIdleIncomePopupUI : MonoBehaviour
 {
@@ -14,6 +16,7 @@ public sealed class MuseumIdleIncomePopupUI : MonoBehaviour
     [SerializeField] private TMP_Text titleText;
     [SerializeField] private TMP_Text nodeText;
     [SerializeField] private TMP_Text offlineText;
+    [SerializeField] private TMP_Text upgradeText;
     [SerializeField] private TMP_Text statusText;
     [SerializeField] private TMP_Text resultText;
 
@@ -132,8 +135,17 @@ public sealed class MuseumIdleIncomePopupUI : MonoBehaviour
         if (offlineText != null)
         {
             offlineText.text = snapshot.maximumOfflineHours > 0d
-                ? $"Offline cap: {snapshot.maximumOfflineHours:0.#} hours"
+                ? $"Offline cap: {FormatHours(snapshot.maximumOfflineHours)}"
                 : "Offline cap: unlimited";
+        }
+
+        if (upgradeText != null)
+        {
+            upgradeText.text =
+                $"Income upgrade: x{snapshot.incomeMultiplier:0.##}\n" +
+                $"Offline upgrade: +{snapshot.offlineHoursUpgradeBonus:0.#}h\n" +
+                $"Gold cap upgrade: x{snapshot.goldCapacityMultiplier:0.##}\n" +
+                $"Diamond cap upgrade: x{snapshot.diamondCapacityMultiplier:0.##}";
         }
 
         if (goldRateText != null)
@@ -146,7 +158,8 @@ public sealed class MuseumIdleIncomePopupUI : MonoBehaviour
         if (goldStoredText != null)
         {
             goldStoredText.text = snapshot.goldCapacity > 0d
-                ? $"{snapshot.unclaimedGold:N2} / {snapshot.goldCapacity:N0} Gold stored"
+                ? $"{snapshot.unclaimedGold:N2} / " +
+                  $"{snapshot.goldCapacity:N0} Gold stored"
                 : $"{snapshot.unclaimedGold:N2} Gold stored";
         }
 
@@ -197,21 +210,24 @@ public sealed class MuseumIdleIncomePopupUI : MonoBehaviour
     {
         Claim(service != null
             ? service.ClaimGold()
-            : MuseumIdleIncomeClaimResult.Empty("Museum income is unavailable."));
+            : MuseumIdleIncomeClaimResult.Empty(
+                "Museum income is unavailable."));
     }
 
     private void ClaimDiamonds()
     {
         Claim(service != null
             ? service.ClaimDiamonds()
-            : MuseumIdleIncomeClaimResult.Empty("Museum income is unavailable."));
+            : MuseumIdleIncomeClaimResult.Empty(
+                "Museum income is unavailable."));
     }
 
     private void ClaimAll()
     {
         Claim(service != null
             ? service.ClaimAll()
-            : MuseumIdleIncomeClaimResult.Empty("Museum income is unavailable."));
+            : MuseumIdleIncomeClaimResult.Empty(
+                "Museum income is unavailable."));
     }
 
     private void Claim(MuseumIdleIncomeClaimResult result)
@@ -251,9 +267,26 @@ public sealed class MuseumIdleIncomePopupUI : MonoBehaviour
         if (statusText != null)
             statusText.text = "Museum income service is unavailable.";
 
-        SetButton(claimGoldButton, claimGoldButtonText, false, "UNAVAILABLE");
-        SetButton(claimDiamondButton, claimDiamondButtonText, false, "UNAVAILABLE");
-        SetButton(claimAllButton, claimAllButtonText, false, "UNAVAILABLE");
+        if (upgradeText != null)
+            upgradeText.text = "Museum upgrades unavailable";
+
+        SetButton(
+            claimGoldButton,
+            claimGoldButtonText,
+            false,
+            "UNAVAILABLE");
+
+        SetButton(
+            claimDiamondButton,
+            claimDiamondButtonText,
+            false,
+            "UNAVAILABLE");
+
+        SetButton(
+            claimAllButton,
+            claimAllButtonText,
+            false,
+            "UNAVAILABLE");
     }
 
     private void SetResult(string message)
@@ -262,21 +295,44 @@ public sealed class MuseumIdleIncomePopupUI : MonoBehaviour
             return;
 
         resultText.text = message ?? "";
-        resultText.gameObject.SetActive(!string.IsNullOrWhiteSpace(resultText.text));
+        resultText.gameObject.SetActive(
+            !string.IsNullOrWhiteSpace(resultText.text));
     }
 
     private static string GetStatus(MuseumIdleIncomeSnapshot snapshot)
     {
         if (snapshot.goldAtCapacity && snapshot.diamondsAtCapacity)
-            return "Gold and Diamond storage are full. Claim to resume generation.";
+        {
+            return "Gold and Diamond storage are full. " +
+                   "Claim to resume generation.";
+        }
+
         if (snapshot.goldAtCapacity)
-            return "Visitor Gold storage is full. Claim to resume generation.";
+        {
+            return "Visitor Gold storage is full. " +
+                   "Claim to resume generation.";
+        }
+
         if (snapshot.diamondsAtCapacity)
-            return "Diamond storage is full. Claim to resume generation.";
+        {
+            return "Diamond storage is full. " +
+                   "Claim to resume generation.";
+        }
+
         if (!snapshot.goldUnlocked)
             return "Passive Museum income has not been unlocked.";
 
         return "Income continues while the game is closed.";
+    }
+
+    private static string FormatHours(double hours)
+    {
+        double rounded = Math.Round(hours, 1);
+        string unit = Math.Abs(rounded - 1d) < 0.0001d
+            ? "hour"
+            : "hours";
+
+        return $"{rounded:0.#} {unit}";
     }
 
     private static void SetButton(
