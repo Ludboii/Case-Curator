@@ -59,6 +59,11 @@ public class MuseumWeaponCardUI : MonoBehaviour
                 readyCount,
                 protectedCount);
 
+        bool sharedProgressText =
+            progressBar != null &&
+            donationStateText != null &&
+            donationStateText == progressBar.ProgressText;
+
         if (skinCountText != null)
         {
             string baseText = $"{skinCount} skins";
@@ -68,10 +73,13 @@ public class MuseumWeaponCardUI : MonoBehaviour
                 : baseText;
         }
 
-        ApplyDonationIndicator(
-            donationStatus,
-            readyCount,
-            protectedCount);
+        if (!sharedProgressText)
+        {
+            ApplyDonationIndicator(
+                donationStatus,
+                readyCount,
+                protectedCount);
+        }
 
         if (iconImage != null)
         {
@@ -85,7 +93,8 @@ public class MuseumWeaponCardUI : MonoBehaviour
         {
             progressBar.SetProgress(
                 entry != null ? entry.donatedSlots : 0,
-                entry != null ? entry.totalSlots : 0);
+                entry != null ? entry.totalSlots : 0,
+                sharedProgressText ? donationStatus : null);
         }
 
         if (button != null)
