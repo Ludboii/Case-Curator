@@ -2,9 +2,8 @@ using TMPro;
 using UnityEngine;
 
 /// <summary>
-/// Optional M4.5 notice shown on the Staircase screen when a claimed milestone
-/// grants fragments or full presents. Use a separate TMP label from the normal
-/// milestone claim-result text so neither system overwrites the other.
+/// Optional M4.5 notice shown when a milestone or Gold container completion
+/// grants Museum Present fragments or full presents.
 /// </summary>
 public class MuseumPresentGrantNoticeUI : MonoBehaviour
 {
@@ -12,6 +11,7 @@ public class MuseumPresentGrantNoticeUI : MonoBehaviour
     [SerializeField] private GameObject noticeRoot;
 
     private MuseumPresentService service;
+    private MuseumGoldContainerCompletionRewardService completionService;
     private bool subscribed;
 
     private void Awake()
@@ -25,6 +25,8 @@ public class MuseumPresentGrantNoticeUI : MonoBehaviour
     private void OnEnable()
     {
         service = MuseumPresentService.GetOrCreate();
+        completionService =
+            MuseumGoldContainerCompletionRewardService.GetOrCreate();
         Subscribe();
     }
 
@@ -49,10 +51,27 @@ public class MuseumPresentGrantNoticeUI : MonoBehaviour
 
     private void HandleGranted(MuseumPresentGrantSummary summary)
     {
-        if (summary == null || !summary.HasRewards || noticeText == null)
+        if (summary == null || !summary.HasRewards)
             return;
 
-        noticeText.text = string.Join("\n", summary.rewardLines);
+        Show(string.Join("\n", summary.rewardLines));
+    }
+
+    private void HandleGoldCompletionGranted(
+        MuseumGoldContainerCompletionReward reward)
+    {
+        if (reward == null)
+            return;
+
+        Show(reward.message);
+    }
+
+    private void Show(string message)
+    {
+        if (noticeText == null)
+            return;
+
+        noticeText.text = message ?? "";
 
         if (noticeRoot != null)
             noticeRoot.SetActive(true);
@@ -60,17 +79,34 @@ public class MuseumPresentGrantNoticeUI : MonoBehaviour
 
     private void Subscribe()
     {
-        if (service == null || subscribed)
+        if (subscribed)
             return;
 
-        service.OnMilestonePresentRewardGranted += HandleGranted;
+        if (service != null)
+            service.OnMilestonePresentRewardGranted += HandleGranted;
+
+        if (completionService != null)
+        {
+            completionService.OnGoldCompletionRewardGranted +=
+                HandleGoldCompletionGranted;
+        }
+
         subscribed = true;
     }
 
     private void Unsubscribe()
     {
-        if (service != null && subscribed)
+        if (!subscribed)
+            return;
+
+        if (service != null)
             service.OnMilestonePresentRewardGranted -= HandleGranted;
+
+        if (completionService != null)
+        {
+            completionService.OnGoldCompletionRewardGranted -=
+                HandleGoldCompletionGranted;
+        }
 
         subscribed = false;
     }
