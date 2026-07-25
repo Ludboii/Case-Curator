@@ -19,7 +19,8 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
         public int goldNodeCount;
         public double goldNodeWeight;
 
-        public double incomeMultiplier;
+        public double goldIncomeMultiplier;
+        public double diamondIncomeMultiplier;
         public double offlineHoursUpgradeBonus;
         public double goldCapacityMultiplier;
         public double diamondCapacityMultiplier;
@@ -153,7 +154,8 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
             claimedGoldNodeCount = current.goldNodeCount,
             claimedGoldNodeWeight = current.goldNodeWeight,
 
-            incomeMultiplier = current.incomeMultiplier,
+            goldIncomeMultiplier = current.goldIncomeMultiplier,
+            diamondIncomeMultiplier = current.diamondIncomeMultiplier,
             offlineHoursUpgradeBonus =
                 current.offlineHoursUpgradeBonus,
             goldCapacityMultiplier =
@@ -413,8 +415,8 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
 
         state.lastIdleGoldCalculationUtcTicks = nowTicks;
 
-        // Capture rates only after the elapsed interval is settled. This is what
-        // prevents a newly purchased upgrade from multiplying earlier time.
+        // Capture rates only after the elapsed interval is settled. This prevents
+        // a newly purchased upgrade from multiplying already elapsed time.
         rateContext = CaptureCurrentContext();
 
         SaveManager.Instance.MarkDirty();
@@ -520,7 +522,8 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
         MuseumStateSaveData state = GetState();
         RateContext context = new RateContext
         {
-            incomeMultiplier = 1d,
+            goldIncomeMultiplier = 1d,
+            diamondIncomeMultiplier = 1d,
             goldCapacityMultiplier = 1d,
             diamondCapacityMultiplier = 1d
         };
@@ -586,9 +589,13 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
             }
         }
 
-        context.incomeMultiplier = Math.Max(
+        context.goldIncomeMultiplier = Math.Max(
             1d,
-            MuseumIdleIncomeUpgradeUtility.GetIncomeMultiplier(database));
+            MuseumIdleIncomeUpgradeUtility.GetGoldIncomeMultiplier(database));
+
+        context.diamondIncomeMultiplier = Math.Max(
+            1d,
+            MuseumIdleIncomeUpgradeUtility.GetDiamondIncomeMultiplier(database));
 
         context.offlineHoursUpgradeBonus = Math.Max(
             0d,
@@ -608,12 +615,12 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
             ? context.museumPoints *
               Math.Max(0d, settings.goldPerMuseumPointPerHour) *
               context.goldNodeWeight *
-              context.incomeMultiplier
+              context.goldIncomeMultiplier
             : 0d;
 
         context.diamondsPerHour = context.diamondsUnlocked
             ? Math.Max(0d, settings.diamondsPerHour) *
-              context.incomeMultiplier
+              context.diamondIncomeMultiplier
             : 0d;
 
         double baseGoldCapacity =
@@ -642,7 +649,7 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
 
         if (configuredOfflineHours <= 0d)
         {
-            // Zero remains the existing explicit unlimited setting.
+            // Zero remains the explicit unlimited setting.
             context.maximumOfflineHours = 0d;
         }
         else
@@ -652,8 +659,6 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
                 staircaseOfflineHoursBonus +
                 context.offlineHoursUpgradeBonus;
 
-            // Preserve deliberately configured values above the design cap while
-            // keeping ordinary progression at the intended 24-hour maximum.
             context.maximumOfflineHours = configuredOfflineHours >
                                           DesignedMaximumOfflineHours
                 ? upgradedOfflineHours
@@ -794,9 +799,8 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
 
     private void HandleUpgradeStateChanged()
     {
-        // UpgradeService has already written the new level. AccumulateTo still
-        // uses the old cached context for elapsed time, then captures the new
-        // upgrade effects for all future generation.
+        // UpgradeService has already written the new level. AccumulateTo uses the
+        // old cached context for elapsed time, then captures new effects.
         ProcessElapsedTimeNow(true);
         OnIdleIncomeChanged?.Invoke();
     }
