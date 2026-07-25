@@ -17,22 +17,19 @@ public static class MuseumPresentDropPoolUtility
                 return WeightForQuality(
                     quality,
                     CaseQuality.Consumer, 6f,
-                    CaseQuality.Industrial, 3f,
-                    CaseQuality.MilSpec, 1f);
+                    CaseQuality.Industrial, 3f);
 
             case MuseumPresentTier.Bronze:
                 return WeightForQuality(
                     quality,
                     CaseQuality.Industrial, 5f,
-                    CaseQuality.MilSpec, 3f,
-                    CaseQuality.Restricted, 1f);
+                    CaseQuality.MilSpec, 3f);
 
             case MuseumPresentTier.Silver:
                 return WeightForQuality(
                     quality,
                     CaseQuality.MilSpec, 5f,
-                    CaseQuality.Restricted, 3f,
-                    CaseQuality.Classified, 1f);
+                    CaseQuality.Restricted, 3f);
 
             case MuseumPresentTier.Gold:
                 return WeightForQuality(
@@ -45,13 +42,11 @@ public static class MuseumPresentDropPoolUtility
                 return WeightForQuality(
                     quality,
                     CaseQuality.Classified, 5f,
-                    CaseQuality.Covert, 3f,
-                    CaseQuality.Gold, 1f);
+                    CaseQuality.Covert, 3f);
 
             case MuseumPresentTier.GlobalElite:
                 return WeightForQuality(
                     quality,
-                    CaseQuality.Classified, 1f,
                     CaseQuality.Covert, 4f,
                     CaseQuality.Gold, 2f);
 
@@ -132,6 +127,21 @@ public static class MuseumPresentDropPoolUtility
         }
 
         return lastValid;
+    }
+
+    private static float WeightForQuality(
+        CaseQuality actual,
+        CaseQuality first,
+        float firstWeight,
+        CaseQuality second,
+        float secondWeight)
+    {
+        if (actual == first)
+            return firstWeight;
+        if (actual == second)
+            return secondWeight;
+
+        return 0f;
     }
 
     private static float WeightForQuality(
