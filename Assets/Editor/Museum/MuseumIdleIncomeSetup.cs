@@ -48,7 +48,7 @@ public static class MuseumIdleIncomeSetup
         settings.unclaimedGoldCapacity = 2500d;
         settings.diamondsPerHour = 0.05d;
         settings.unclaimedDiamondCapacity = 3d;
-        settings.maximumOfflineHours = 8f;
+        settings.maximumOfflineHours = 1f;
         settings.minimumCalculationIntervalSeconds = 30f;
         settings.milestoneModifiers = BuildModifiers();
 
@@ -61,9 +61,10 @@ public static class MuseumIdleIncomeSetup
 
         Debug.Log(
             "Applied M5 Museum idle-income defaults. Visitor Gold begins when " +
-            "Step 10 is claimed, Step 38 increases Gold capacity, Step 40 uses " +
-            "a large income-node weight, Step 75 unlocks passive Diamonds, and " +
-            "Step 80 uses the largest income-node weight.",
+            "Step 10 is claimed, the base offline cap is 1 hour, Step 38 " +
+            "increases Gold capacity, Step 40 uses a large income-node weight, " +
+            "Step 75 unlocks passive Diamonds, and Step 80 uses the largest " +
+            "income-node weight.",
             balance);
     }
 
