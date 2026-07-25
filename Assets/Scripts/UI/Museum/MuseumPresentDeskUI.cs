@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 /// <summary>
 /// Phase M4.5 screen for viewing fragments, assembling presents and opening
-/// them. Reward generation remains inside MuseumPresentService.
+/// them. Every opening grants an openable CaseData container plus the tier's
+/// random Gold, XP and possible Diamond reward.
 /// </summary>
 public class MuseumPresentDeskUI : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class MuseumPresentDeskUI : MonoBehaviour
         new List<MuseumPresentTierCardUI>();
 
     private MuseumPresentService service;
+    private MuseumPresentOpeningService openingService;
     private bool subscribed;
 
     public bool IsOpen => root != null && root.activeSelf;
@@ -51,6 +53,7 @@ public class MuseumPresentDeskUI : MonoBehaviour
     {
         ResolveReferences();
         service = MuseumPresentService.GetOrCreate();
+        openingService = MuseumPresentOpeningService.GetOrCreate();
         Subscribe();
 
         if (root == null)
@@ -74,22 +77,12 @@ public class MuseumPresentDeskUI : MonoBehaviour
         if (service == null)
             service = MuseumPresentService.GetOrCreate();
 
+        if (openingService == null)
+            openingService = MuseumPresentOpeningService.GetOrCreate();
+
         service.ProcessClaimedMilestoneRewards();
         BuildCards();
-
-        if (headerText != null)
-        {
-            int totalPresents = 0;
-
-            for (int i = 0; i < MuseumPresentUtility.AllTiers.Length; i++)
-            {
-                totalPresents +=
-                    service.GetPresents(MuseumPresentUtility.AllTiers[i]);
-            }
-
-            headerText.text =
-                $"Museum Present Desk — {totalPresents:N0} presents ready";
-        }
+        RefreshHeader();
     }
 
     public void Assemble(MuseumPresentTier tier)
@@ -106,10 +99,10 @@ public class MuseumPresentDeskUI : MonoBehaviour
 
     public void OpenPresent(MuseumPresentTier tier)
     {
-        if (service == null)
-            service = MuseumPresentService.GetOrCreate();
+        if (openingService == null)
+            openingService = MuseumPresentOpeningService.GetOrCreate();
 
-        MuseumPresentOpenResult result = service.OpenPresent(tier);
+        MuseumPresentOpenResult result = openingService.OpenPresent(tier);
         ShowResult(result != null ? result.message : "Present opening failed.");
         RefreshCardsOnly();
     }
@@ -144,19 +137,24 @@ public class MuseumPresentDeskUI : MonoBehaviour
                 cards[i].Refresh();
         }
 
-        if (headerText != null && service != null)
+        RefreshHeader();
+    }
+
+    private void RefreshHeader()
+    {
+        if (headerText == null || service == null)
+            return;
+
+        int totalPresents = 0;
+
+        for (int i = 0; i < MuseumPresentUtility.AllTiers.Length; i++)
         {
-            int totalPresents = 0;
-
-            for (int i = 0; i < MuseumPresentUtility.AllTiers.Length; i++)
-            {
-                totalPresents +=
-                    service.GetPresents(MuseumPresentUtility.AllTiers[i]);
-            }
-
-            headerText.text =
-                $"Museum Present Desk — {totalPresents:N0} presents ready";
+            totalPresents +=
+                service.GetPresents(MuseumPresentUtility.AllTiers[i]);
         }
+
+        headerText.text =
+            $"Museum Present Desk — {totalPresents:N0} presents ready";
     }
 
     private void ConfigureContent()
