@@ -1,10 +1,11 @@
 #if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 /// <summary>
-/// Creates or updates the four M5.1 Museum idle-income UpgradeData assets,
+/// Creates or updates the five M5.1 Museum idle-income UpgradeData assets,
 /// their Staircase unlock definitions and their UpgradeCatalog registrations.
 /// Re-running the command is safe and preserves assigned icons.
 /// </summary>
@@ -15,6 +16,14 @@ public static class MuseumIdleIncomeUpgradeSetup
 
     private const string UnlockFolder =
         RootFolder + "/Unlocks";
+
+    private static readonly float[] IncomeEffects =
+    {
+        1.05f, 1.10f, 1.15f, 1.20f, 1.25f, 1.30f,
+        1.40f, 1.50f, 1.60f, 1.70f, 1.80f, 1.90f,
+        2.00f, 2.15f, 2.30f, 2.50f, 2.75f, 3.00f,
+        3.25f, 3.50f, 4.00f, 4.50f, 5.00f
+    };
 
     [MenuItem(
         "Tools/Case Curator/Museum/Apply M5.1 Idle Income Upgrades")]
@@ -34,11 +43,21 @@ public static class MuseumIdleIncomeUpgradeSetup
             return;
         }
 
+        if (database.museumBalance == null)
+        {
+            EditorUtility.DisplayDialog(
+                "Museum Balance Missing",
+                "Assign MuseumBalanceData on the selected GameDatabase first.",
+                "OK");
+            return;
+        }
+
         bool confirmed = EditorUtility.DisplayDialog(
             "Apply M5.1 Idle Income Upgrades",
-            "This creates or updates four Museum idle-income upgrades and " +
-            "registers them in the assigned UpgradeCatalog. Existing purchased " +
-            "levels remain stored by stable upgrade ID.",
+            "This creates or updates five Museum idle-income upgrades, " +
+            "registers them in the assigned UpgradeCatalog and sets the base " +
+            "offline duration to 1 hour. Existing purchased levels remain " +
+            "stored by stable upgrade ID.",
             "Apply",
             "Cancel");
 
@@ -55,33 +74,54 @@ public static class MuseumIdleIncomeUpgradeSetup
             "museum-visitor-income-upgrades",
             "Museum Visitor Income Upgrades",
             "museum-step-10",
-            "Claim Museum Staircase Step 10 to unlock visitor-income upgrades.");
+            "Claim Museum Staircase Step 10 to unlock Gold visitor-income, " +
+            "offline-duration and Gold-storage upgrades.");
 
-        UnlockDefinition diamondCapacityUnlock = GetOrCreateUnlock(
+        UnlockDefinition diamondIncomeUnlock = GetOrCreateUnlock(
             UnlockFolder + "/Unlock_MuseumDiamondCapacity.asset",
-            "museum-diamond-capacity-upgrades",
-            "Diamond Endowment Capacity Upgrades",
+            "museum-diamond-endowment-upgrades",
+            "Diamond Endowment Upgrades",
             "museum-step-75",
-            "Claim Museum Staircase Step 75 to unlock Diamond storage upgrades.");
+            "Claim Museum Staircase Step 75 to unlock Diamond income and " +
+            "Diamond-storage upgrades.");
 
-        UpgradeData incomeMultiplier = GetOrCreateUpgrade(
-            RootFolder + "/Upgrade_MuseumIncomeMultiplier.asset",
-            MuseumIdleIncomeUpgradeUtility.IncomeMultiplierId,
-            "Museum Visitor Income",
-            "Multiplies both visitor Gold generation and passive Diamond " +
-            "generation. Staircase income nodes still determine the base rate.",
+        UpgradeData goldIncome = GetOrCreateUpgrade(
+            RootFolder + "/Upgrade_MuseumGoldIncomeMultiplier.asset",
+            MuseumIdleIncomeUpgradeUtility.GoldIncomeMultiplierId,
+            "Museum Gold Visitor Income",
+            "Multiplies visitor Gold generation. Staircase income nodes still " +
+            "determine the base rate.",
             100,
             1f,
             visitorIncomeUnlock,
-            BuildIncomeMultiplierLevels());
+            BuildIncomeMultiplierLevels(
+                "Gold Visitor Income",
+                UpgradeCurrency.Gold,
+                BuildGoldIncomeCosts(),
+                "Visitor Gold generation"));
+
+        UpgradeData diamondIncome = GetOrCreateUpgrade(
+            RootFolder + "/Upgrade_MuseumDiamondIncomeMultiplier.asset",
+            MuseumIdleIncomeUpgradeUtility.DiamondIncomeMultiplierId,
+            "Diamond Endowment Income",
+            "Multiplies passive Diamond generation after the Diamond Endowment " +
+            "has been unlocked at Museum Staircase Step 75.",
+            110,
+            1f,
+            diamondIncomeUnlock,
+            BuildIncomeMultiplierLevels(
+                "Diamond Endowment Income",
+                UpgradeCurrency.Diamonds,
+                BuildDiamondIncomeCosts(),
+                "Passive Diamond generation"));
 
         UpgradeData offlineHours = GetOrCreateUpgrade(
             RootFolder + "/Upgrade_MuseumOfflineHours.asset",
             MuseumIdleIncomeUpgradeUtility.OfflineHoursId,
             "Museum Offline Duration",
-            "Adds eligible offline-generation hours. Normal progression is " +
-            "capped at 24 total offline hours.",
-            110,
+            "Extends the shared eligible offline-generation duration for both " +
+            "Gold and Diamonds from the 1-hour base up to 24 hours.",
+            120,
             0f,
             visitorIncomeUnlock,
             BuildOfflineLevels());
@@ -92,10 +132,18 @@ public static class MuseumIdleIncomeUpgradeSetup
             "Museum Gold Storage",
             "Multiplies the maximum unclaimed visitor Gold that can be stored " +
             "before Gold generation pauses.",
-            120,
+            130,
             1f,
             visitorIncomeUnlock,
-            BuildGoldCapacityLevels());
+            BuildCapacityLevels(
+                "Gold Storage",
+                "Unclaimed Museum Gold capacity",
+                UpgradeCurrency.Gold,
+                new float[]
+                {
+                    1500f, 4000f, 10000f, 25000f,
+                    60000f, 150000f, 400000f, 1000000f
+                }));
 
         UpgradeData diamondCapacity = GetOrCreateUpgrade(
             RootFolder + "/Upgrade_MuseumDiamondCapacity.asset",
@@ -103,28 +151,47 @@ public static class MuseumIdleIncomeUpgradeSetup
             "Diamond Endowment Storage",
             "Multiplies the maximum unclaimed passive Diamonds that can be " +
             "stored before Diamond generation pauses.",
-            130,
+            140,
             1f,
-            diamondCapacityUnlock,
-            BuildDiamondCapacityLevels());
+            diamondIncomeUnlock,
+            BuildCapacityLevels(
+                "Diamond Storage",
+                "Unclaimed passive Diamond capacity",
+                UpgradeCurrency.Diamonds,
+                new float[] { 1f, 2f, 4f, 7f, 11f, 16f, 24f, 36f }));
 
-        RegisterUpgrade(database.upgradeCatalog, incomeMultiplier);
+        RegisterUpgrade(database.upgradeCatalog, goldIncome);
+        RegisterUpgrade(database.upgradeCatalog, diamondIncome);
         RegisterUpgrade(database.upgradeCatalog, offlineHours);
         RegisterUpgrade(database.upgradeCatalog, goldCapacity);
         RegisterUpgrade(database.upgradeCatalog, diamondCapacity);
+
+        RemoveUpgradeById(
+            database.upgradeCatalog,
+            MuseumIdleIncomeUpgradeUtility.LegacySharedIncomeMultiplierId);
+
+        if (database.museumBalance.idleIncome == null)
+            database.museumBalance.idleIncome = new MuseumIdleIncomeSettings();
+
+        Undo.RecordObject(
+            database.museumBalance,
+            "Set Museum base offline duration");
+
+        database.museumBalance.idleIncome.maximumOfflineHours = 1f;
+        EditorUtility.SetDirty(database.museumBalance);
 
         EditorUtility.SetDirty(database.upgradeCatalog);
         database.upgradeCatalog.RebuildLookup();
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        Selection.activeObject = incomeMultiplier;
-        EditorGUIUtility.PingObject(incomeMultiplier);
+        Selection.activeObject = goldIncome;
+        EditorGUIUtility.PingObject(goldIncome);
 
         Debug.Log(
-            "Applied M5.1 Museum idle-income upgrades: shared income " +
-            "multiplier, offline duration, Gold storage and Diamond storage. " +
-            "Upgrade IDs are stable and existing save levels are preserved.",
+            "Applied M5.1 Museum idle-income upgrades: separate Gold and " +
+            "Diamond income multipliers, shared offline duration, separate " +
+            "Gold and Diamond storage, and a 1-hour base offline cap.",
             database.upgradeCatalog);
     }
 
@@ -200,23 +267,102 @@ public static class MuseumIdleIncomeUpgradeSetup
         return upgrade;
     }
 
-    private static List<UpgradeLevelData> BuildIncomeMultiplierLevels()
+    private static List<UpgradeLevelData> BuildIncomeMultiplierLevels(
+        string levelPrefix,
+        UpgradeCurrency currency,
+        float[] costs,
+        string effectDescription)
     {
+        List<UpgradeLevelData> result =
+            new List<UpgradeLevelData>(IncomeEffects.Length);
+
+        for (int i = 0; i < IncomeEffects.Length; i++)
+        {
+            float effect = IncomeEffects[i];
+            float cost = costs != null && i < costs.Length
+                ? costs[i]
+                : 0f;
+
+            result.Add(Level(
+                $"{levelPrefix} {ToRoman(i + 1)}",
+                $"{effectDescription} x{effect:0.##}.",
+                currency,
+                cost,
+                effect));
+        }
+
+        return result;
+    }
+
+    private static float[] BuildGoldIncomeCosts()
+    {
+        return new float[]
+        {
+            500f, 900f, 1500f, 2500f, 4000f, 6500f,
+            10000f, 16000f, 25000f, 40000f, 65000f, 100000f,
+            160000f, 250000f, 400000f, 650000f, 1000000f,
+            1600000f, 2500000f, 4000000f, 6500000f,
+            10000000f, 16000000f
+        };
+    }
+
+    private static float[] BuildDiamondIncomeCosts()
+    {
+        return new float[]
+        {
+            1f, 2f, 3f, 4f, 5f, 6f,
+            8f, 10f, 12f, 15f, 18f, 22f,
+            27f, 33f, 40f, 48f, 58f, 70f,
+            85f, 100f, 120f, 145f, 175f
+        };
+    }
+
+    private static List<UpgradeLevelData> BuildOfflineLevels()
+    {
+        // Base duration is 1 hour. Nine +1-hour levels reach 10 hours.
+        // Seven +2-hour levels are required to reach the requested 24 hours.
+        float[] bonusHours =
+        {
+            1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f,
+            11f, 13f, 15f, 17f, 19f, 21f, 23f
+        };
+
         float[] costs =
         {
-            500f, 1500f, 4000f, 10000f,
-            25000f, 60000f, 150000f, 400000f
+            1000f, 2000f, 3500f, 6000f, 10000f, 16000f,
+            25000f, 40000f, 65000f, 100000f, 160000f,
+            250000f, 400000f, 650000f, 1000000f, 1600000f
         };
 
+        List<UpgradeLevelData> result =
+            new List<UpgradeLevelData>(bonusHours.Length);
+
+        for (int i = 0; i < bonusHours.Length; i++)
+        {
+            float totalHours = 1f + bonusHours[i];
+
+            result.Add(Level(
+                $"Offline Duration {ToRoman(i + 1)}",
+                $"Shared Gold and Diamond offline cap: " +
+                $"{totalHours:0} hours total.",
+                UpgradeCurrency.Gold,
+                costs[i],
+                bonusHours[i]));
+        }
+
+        return result;
+    }
+
+    private static List<UpgradeLevelData> BuildCapacityLevels(
+        string levelPrefix,
+        string effectDescription,
+        UpgradeCurrency currency,
+        float[] costs)
+    {
         float[] effects =
         {
-            1.10f, 1.20f, 1.35f, 1.50f,
-            1.75f, 2.00f, 2.50f, 3.00f
-        };
-
-        string[] numerals =
-        {
-            "I", "II", "III", "IV", "V", "VI", "VII", "VIII"
+            1.5f, 2.0f, 2.5f, 3.0f,
+            3.5f, 4.0f, 4.5f, 5.0f
         };
 
         List<UpgradeLevelData> result =
@@ -225,108 +371,14 @@ public static class MuseumIdleIncomeUpgradeSetup
         for (int i = 0; i < effects.Length; i++)
         {
             result.Add(Level(
-                $"Museum Income {numerals[i]}",
-                $"Visitor Gold and passive Diamond generation x{effects[i]:0.##}.",
-                UpgradeCurrency.Gold,
+                $"{levelPrefix} {ToRoman(i + 1)}",
+                $"{effectDescription} x{effects[i]:0.##}.",
+                currency,
                 costs[i],
                 effects[i]));
         }
 
         return result;
-    }
-
-    private static List<UpgradeLevelData> BuildOfflineLevels()
-    {
-        return new List<UpgradeLevelData>
-        {
-            Level(
-                "Offline Duration I",
-                "+2 offline hours.",
-                UpgradeCurrency.Gold,
-                2000f,
-                2f),
-            Level(
-                "Offline Duration II",
-                "+6 offline hours total from this upgrade.",
-                UpgradeCurrency.Gold,
-                10000f,
-                6f),
-            Level(
-                "Offline Duration III",
-                "+12 offline hours total from this upgrade.",
-                UpgradeCurrency.Gold,
-                50000f,
-                12f),
-            Level(
-                "Offline Duration IV",
-                "+20 offline hours total from this upgrade, up to the " +
-                "24-hour Museum limit.",
-                UpgradeCurrency.Gold,
-                250000f,
-                20f)
-        };
-    }
-
-    private static List<UpgradeLevelData> BuildGoldCapacityLevels()
-    {
-        return new List<UpgradeLevelData>
-        {
-            Level(
-                "Gold Storage I",
-                "Unclaimed Museum Gold capacity x1.5.",
-                UpgradeCurrency.Gold,
-                1500f,
-                1.5f),
-            Level(
-                "Gold Storage II",
-                "Unclaimed Museum Gold capacity x2.",
-                UpgradeCurrency.Gold,
-                7500f,
-                2f),
-            Level(
-                "Gold Storage III",
-                "Unclaimed Museum Gold capacity x3.",
-                UpgradeCurrency.Gold,
-                30000f,
-                3f),
-            Level(
-                "Gold Storage IV",
-                "Unclaimed Museum Gold capacity x5.",
-                UpgradeCurrency.Gold,
-                120000f,
-                5f)
-        };
-    }
-
-    private static List<UpgradeLevelData> BuildDiamondCapacityLevels()
-    {
-        return new List<UpgradeLevelData>
-        {
-            Level(
-                "Diamond Storage I",
-                "Unclaimed passive Diamond capacity x1.5.",
-                UpgradeCurrency.Diamonds,
-                1f,
-                1.5f),
-            Level(
-                "Diamond Storage II",
-                "Unclaimed passive Diamond capacity x2.",
-                UpgradeCurrency.Diamonds,
-                2f,
-                2f),
-            Level(
-                "Diamond Storage III",
-                "Unclaimed passive Diamond capacity x3.",
-                UpgradeCurrency.Diamonds,
-                4f,
-                3f),
-            Level(
-                "Diamond Storage IV",
-                "Unclaimed passive Diamond capacity x5.",
-                UpgradeCurrency.Diamonds,
-                8f,
-                5f)
-        };
     }
 
     private static UpgradeLevelData Level(
@@ -344,6 +396,37 @@ public static class MuseumIdleIncomeUpgradeSetup
             cost = Mathf.Max(0f, cost),
             effectValue = effect
         };
+    }
+
+    private static string ToRoman(int value)
+    {
+        if (value <= 0)
+            return value.ToString();
+
+        int[] values =
+        {
+            1000, 900, 500, 400, 100, 90, 50, 40,
+            10, 9, 5, 4, 1
+        };
+
+        string[] symbols =
+        {
+            "M", "CM", "D", "CD", "C", "XC", "L", "XL",
+            "X", "IX", "V", "IV", "I"
+        };
+
+        string result = "";
+
+        for (int i = 0; i < values.Length; i++)
+        {
+            while (value >= values[i])
+            {
+                result += symbols[i];
+                value -= values[i];
+            }
+        }
+
+        return result;
     }
 
     private static void RegisterUpgrade(
@@ -377,7 +460,7 @@ public static class MuseumIdleIncomeUpgradeSetup
                 string.Equals(
                     existing.upgradeId,
                     upgrade.upgradeId,
-                    System.StringComparison.OrdinalIgnoreCase))
+                    StringComparison.OrdinalIgnoreCase))
             {
                 element.objectReferenceValue = upgrade;
                 serializedCatalog.ApplyModifiedProperties();
@@ -388,6 +471,47 @@ public static class MuseumIdleIncomeUpgradeSetup
         int index = upgrades.arraySize;
         upgrades.InsertArrayElementAtIndex(index);
         upgrades.GetArrayElementAtIndex(index).objectReferenceValue = upgrade;
+        serializedCatalog.ApplyModifiedProperties();
+    }
+
+    private static void RemoveUpgradeById(
+        UpgradeCatalog catalog,
+        string upgradeId)
+    {
+        if (catalog == null || string.IsNullOrWhiteSpace(upgradeId))
+            return;
+
+        SerializedObject serializedCatalog =
+            new SerializedObject(catalog);
+
+        SerializedProperty upgrades =
+            serializedCatalog.FindProperty("upgrades");
+
+        if (upgrades == null)
+            return;
+
+        for (int i = upgrades.arraySize - 1; i >= 0; i--)
+        {
+            UpgradeData existing =
+                upgrades.GetArrayElementAtIndex(i).objectReferenceValue
+                as UpgradeData;
+
+            if (existing == null ||
+                !string.Equals(
+                    existing.upgradeId,
+                    upgradeId,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            int sizeBefore = upgrades.arraySize;
+            upgrades.DeleteArrayElementAtIndex(i);
+
+            if (upgrades.arraySize == sizeBefore)
+                upgrades.DeleteArrayElementAtIndex(i);
+        }
+
         serializedCatalog.ApplyModifiedProperties();
     }
 
