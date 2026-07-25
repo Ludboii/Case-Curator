@@ -129,7 +129,8 @@ public class MuseumGoldContainerCompletionRewardService : MonoBehaviour
                 minimumFragments,
                 maximumFragments + 1);
 
-            presentService.AddFragments(tier, amount, false);
+            // Notify immediately so the Present Desk and entrance badge refresh.
+            presentService.AddFragments(tier, amount, true);
             presentState.processedMilestoneRewardIds.Add(rewardId);
             processed.Add(rewardId);
             changed = true;
@@ -152,11 +153,8 @@ public class MuseumGoldContainerCompletionRewardService : MonoBehaviour
                 Debug.Log(reward.message, this);
         }
 
-        if (!changed)
-            return;
-
-        SaveManager.Instance.MarkDirty();
-        presentService.NotifyStateChanged();
+        if (changed)
+            SaveManager.Instance.MarkDirty();
     }
 
     private void TryInitialize()
