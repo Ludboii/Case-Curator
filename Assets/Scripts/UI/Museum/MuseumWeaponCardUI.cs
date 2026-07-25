@@ -9,29 +9,36 @@ public class MuseumWeaponCardUI : MonoBehaviour
     [SerializeField] private Image iconImage;
     [SerializeField] private TMP_Text titleText;
     [SerializeField] private TMP_Text skinCountText;
+    [SerializeField] private TMP_Text donationStateText;
     [SerializeField] private MuseumProgressBarUI progressBar;
+
+    [Header("Donation Indicator Colors")]
+    [SerializeField] private Color readyTextColor =
+        new Color(1f, 0.9f, 0.25f, 1f);
+    [SerializeField] private Color protectedTextColor =
+        new Color(1f, 0.65f, 0.25f, 1f);
 
     private MuseumWeaponEntry entry;
     private MuseumPanelUI owner;
 
     private void Awake()
     {
-        ResolveProgressBar();
+        ResolveReferences();
     }
 
     private void Reset()
     {
-        ResolveProgressBar();
+        ResolveReferences();
     }
 
     private void OnValidate()
     {
-        ResolveProgressBar();
+        ResolveReferences();
     }
 
     public void Setup(MuseumWeaponEntry museumEntry, MuseumPanelUI panel)
     {
-        ResolveProgressBar();
+        ResolveReferences();
 
         entry = museumEntry;
         owner = panel;
@@ -39,13 +46,32 @@ public class MuseumWeaponCardUI : MonoBehaviour
         if (titleText != null)
             titleText.text = entry != null ? entry.weaponName : "Weapon";
 
+        int skinCount = entry != null && entry.skins != null
+            ? entry.skins.Count
+            : 0;
+        MuseumDonationAvailabilityUtility.Count(
+            entry,
+            owner != null ? owner.Service : null,
+            out int readyCount,
+            out int protectedCount);
+        string donationStatus =
+            MuseumDonationAvailabilityUtility.GetStatusText(
+                readyCount,
+                protectedCount);
+
         if (skinCountText != null)
         {
-            int count = entry != null && entry.skins != null
-                ? entry.skins.Count
-                : 0;
-            skinCountText.text = $"{count} skins";
+            string baseText = $"{skinCount} skins";
+            skinCountText.text = donationStateText == null &&
+                                 !string.IsNullOrWhiteSpace(donationStatus)
+                ? baseText + "\n" + donationStatus
+                : baseText;
         }
+
+        ApplyDonationIndicator(
+            donationStatus,
+            readyCount,
+            protectedCount);
 
         if (iconImage != null)
         {
@@ -70,10 +96,51 @@ public class MuseumWeaponCardUI : MonoBehaviour
         }
     }
 
-    private void ResolveProgressBar()
+    private void ApplyDonationIndicator(
+        string status,
+        int readyCount,
+        int protectedCount)
+    {
+        if (donationStateText == null)
+            return;
+
+        donationStateText.text = status;
+        donationStateText.gameObject.SetActive(
+            !string.IsNullOrWhiteSpace(status));
+
+        if (readyCount > 0)
+            donationStateText.color = readyTextColor;
+        else if (protectedCount > 0)
+            donationStateText.color = protectedTextColor;
+    }
+
+    private void ResolveReferences()
     {
         if (progressBar == null)
             progressBar = GetComponentInChildren<MuseumProgressBarUI>(true);
+
+        if (donationStateText != null)
+            return;
+
+        TMP_Text[] texts = GetComponentsInChildren<TMP_Text>(true);
+
+        for (int i = 0; i < texts.Length; i++)
+        {
+            TMP_Text text = texts[i];
+
+            if (text == null)
+                continue;
+
+            string objectName = text.gameObject.name.ToLowerInvariant();
+
+            if (objectName.Contains("donation") ||
+                objectName.Contains("ready") ||
+                objectName.Contains("indicator"))
+            {
+                donationStateText = text;
+                break;
+            }
+        }
     }
 
     private void HandleClicked()
