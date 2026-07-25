@@ -1,13 +1,27 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
-/// Counts inventory instances that match open Museum donation slots. The real
-/// MuseumService preview remains authoritative, so Favorite/Trophy Room copies
-/// are reported as protected rather than ready.
+/// Counts inventory instances that match open Museum donation slots. Inventory
+/// keys and donation previews are cached once per frame, so building a complete
+/// category or weapon view does not rescan the full inventory for every card.
 /// </summary>
 public static class MuseumDonationAvailabilityUtility
 {
+    private struct AvailabilityCount
+    {
+        public int ready;
+        public int protectedCount;
+    }
+
+    private static readonly Dictionary<string, AvailabilityCount>
+        availabilityByDonationKey =
+            new Dictionary<string, AvailabilityCount>(StringComparer.Ordinal);
+
+    private static MuseumService cachedService;
+    private static int cachedFrame = -1;
+
     public static void Count(
         MuseumSkinEntry skin,
         MuseumService service,
@@ -88,6 +102,17 @@ public static class MuseumDonationAvailabilityUtility
         return "";
     }
 
+    /// <summary>
+    /// Explicit invalidation hook for callers that mutate inventory and rebuild
+    /// Museum UI again within the same rendered frame.
+    /// </summary>
+    public static void InvalidateCache()
+    {
+        cachedFrame = -1;
+        cachedService = null;
+        availabilityByDonationKey.Clear();
+    }
+
     private static void AddOpenKeys(
         MuseumSkinEntry skin,
         HashSet<string> keys)
@@ -125,6 +150,36 @@ public static class MuseumDonationAvailabilityUtility
             return;
         }
 
+        EnsureAvailabilityCache(service);
+
+        foreach (string key in openDonationKeys)
+        {
+            if (!availabilityByDonationKey.TryGetValue(
+                    key,
+                    out AvailabilityCount count))
+            {
+                continue;
+            }
+
+            readyCount += count.ready;
+            protectedCount += count.protectedCount;
+        }
+    }
+
+    private static void EnsureAvailabilityCache(MuseumService service)
+    {
+        int frame = Time.frameCount;
+
+        if (cachedFrame == frame && ReferenceEquals(cachedService, service))
+            return;
+
+        cachedFrame = frame;
+        cachedService = service;
+        availabilityByDonationKey.Clear();
+
+        if (InventoryManager.Instance == null || service == null)
+            return;
+
         List<InventoryItem> inventory =
             InventoryManager.Instance.GetItemsCopy();
 
@@ -137,19 +192,22 @@ public static class MuseumDonationAvailabilityUtility
 
             string donationKey = MuseumDonationKeyUtility.Build(item);
 
-            if (string.IsNullOrWhiteSpace(donationKey) ||
-                !openDonationKeys.Contains(donationKey))
-            {
+            if (string.IsNullOrWhiteSpace(donationKey))
                 continue;
-            }
+
+            availabilityByDonationKey.TryGetValue(
+                donationKey,
+                out AvailabilityCount count);
 
             MuseumDonationPreview preview =
                 service.PreviewDonation(item.instanceId);
 
             if (preview != null && preview.canDonate)
-                readyCount++;
+                count.ready++;
             else
-                protectedCount++;
+                count.protectedCount++;
+
+            availabilityByDonationKey[donationKey] = count;
         }
     }
 }
