@@ -26,6 +26,15 @@ public class MuseumProgressBarUI : MonoBehaviour
     private RectTransform fillRect;
     private bool missingTextWarningLogged;
 
+    public TMP_Text ProgressText
+    {
+        get
+        {
+            ResolveReferences();
+            return progressText;
+        }
+    }
+
     private void Awake()
     {
         ResolveReferences();
@@ -47,6 +56,11 @@ public class MuseumProgressBarUI : MonoBehaviour
 
     public void SetProgress(int completed, int total)
     {
+        SetProgress(completed, total, null);
+    }
+
+    public void SetProgress(int completed, int total, string statusText)
+    {
         ResolveReferences();
         EnsureSeparateFillImage();
 
@@ -64,10 +78,14 @@ public class MuseumProgressBarUI : MonoBehaviour
 
         if (progressText != null)
         {
-            progressText.text = showPercentage
+            string countText = showPercentage
                 ? $"{completed} / {total} ({progress01 * 100f:0.#}%)"
                 : $"{completed} / {total}";
 
+            progressText.text = string.IsNullOrWhiteSpace(statusText)
+                ? countText
+                : countText + "\n" + statusText;
+            progressText.gameObject.SetActive(true);
             missingTextWarningLogged = false;
         }
         else if (Application.isPlaying && !missingTextWarningLogged)
