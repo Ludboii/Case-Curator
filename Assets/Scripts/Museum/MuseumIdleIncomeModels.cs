@@ -10,7 +10,8 @@ public sealed class MuseumIdleIncomeSnapshot
     public int claimedGoldNodeCount;
     public double claimedGoldNodeWeight;
 
-    public double incomeMultiplier = 1d;
+    public double goldIncomeMultiplier = 1d;
+    public double diamondIncomeMultiplier = 1d;
     public double offlineHoursUpgradeBonus;
     public double goldCapacityMultiplier = 1d;
     public double diamondCapacityMultiplier = 1d;
