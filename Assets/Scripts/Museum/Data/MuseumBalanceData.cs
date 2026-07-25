@@ -22,27 +22,21 @@ public enum MuseumDonationVariant
 public class MuseumRarityPointRule
 {
     public Rarity rarity;
-
-    [Min(0f)]
-    public double baseMuseumPoints = 1d;
+    [Min(0f)] public double baseMuseumPoints = 1d;
 }
 
 [Serializable]
 public class MuseumWearPointRule
 {
     public MuseumWearTier wear;
-
-    [Min(0f)]
-    public double pointMultiplier = 1d;
+    [Min(0f)] public double pointMultiplier = 1d;
 }
 
 [Serializable]
 public class MuseumVariantPointRule
 {
     public MuseumDonationVariant variant;
-
-    [Min(0f)]
-    public double pointMultiplier = 1d;
+    [Min(0f)] public double pointMultiplier = 1d;
 }
 
 [Serializable]
@@ -89,29 +83,90 @@ public class MuseumMarketValueBonusSettings
 }
 
 [Serializable]
+public class MuseumIdleMilestoneModifier
+{
+    [Tooltip("Stable Museum milestone ID, for example museum-step-40.")]
+    public string milestoneId;
+
+    [Tooltip(
+        "Gold-income node weight added when this milestone is claimed. Normal " +
+        "nodes use 1, the large step-40 node uses 2 and the finale uses 3.")]
+    [Min(0f)] public float goldNodeWeight;
+
+    [Tooltip(
+        "Additive multiplier bonus to the base unclaimed-Gold capacity. A value " +
+        "of 0.5 raises the capacity by 50%.")]
+    [Min(0f)] public float goldCapacityMultiplierBonus;
+
+    [Tooltip("Extra eligible offline hours added while this milestone is claimed.")]
+    [Min(0f)] public float offlineHoursBonus;
+}
+
+[Serializable]
 public class MuseumIdleIncomeSettings
 {
+    [Header("Visitor Gold")]
     [Tooltip(
-        "Gold generated per Museum Point per real-world hour. Leave at zero " +
-        "until passive Museum income is enabled and balanced.")]
-    [Min(0f)]
-    public double goldPerMuseumPointPerHour;
+        "Gold generated per Museum Point per real-world hour, before claimed " +
+        "income-node weight is applied.")]
+    [Min(0f)] public double goldPerMuseumPointPerHour = 0.000005d;
 
+    [Tooltip(
+        "Base maximum unclaimed Museum Gold. Zero removes the Museum-specific " +
+        "Gold capacity.")]
+    [Min(0f)] public double unclaimedGoldCapacity = 2500d;
+
+    [Header("Diamond Endowment")]
+    [Tooltip(
+        "Diamonds generated per real-world hour after the passive-diamond " +
+        "milestone has been claimed.")]
+    [Min(0f)] public double diamondsPerHour = 0.05d;
+
+    [Tooltip(
+        "Maximum fractional unclaimed diamonds. Whole diamonds are granted on " +
+        "claim; the remaining fraction stays stored.")]
+    [Min(0f)] public double unclaimedDiamondCapacity = 3d;
+
+    [Header("Time Rules")]
     [Tooltip("Maximum offline duration eligible for Museum income.")]
-    [Min(0f)]
-    public float maximumOfflineHours = 8f;
+    [Min(0f)] public float maximumOfflineHours = 8f;
 
     [Tooltip(
-        "Maximum unclaimed Museum Gold before passive generation pauses. " +
-        "Zero means no Museum-specific cap.")]
-    [Min(0f)]
-    public float unclaimedGoldCapacity;
+        "Smallest elapsed time used by the income calculator. This prevents " +
+        "excessive save-state updates from tiny time differences.")]
+    [Min(0f)] public float minimumCalculationIntervalSeconds = 30f;
 
+    [Header("Milestone Modifiers")]
     [Tooltip(
-        "Smallest elapsed time used by the future income calculator. This " +
-        "prevents excessive recalculation from tiny time differences.")]
-    [Min(0f)]
-    public float minimumCalculationIntervalSeconds = 30f;
+        "Optional data-driven node weights, capacity bonuses and offline-hour " +
+        "bonuses keyed by stable Museum milestone ID.")]
+    public List<MuseumIdleMilestoneModifier> milestoneModifiers =
+        new List<MuseumIdleMilestoneModifier>();
+
+    public MuseumIdleMilestoneModifier GetModifier(string milestoneId)
+    {
+        if (string.IsNullOrWhiteSpace(milestoneId) ||
+            milestoneModifiers == null)
+        {
+            return null;
+        }
+
+        for (int i = 0; i < milestoneModifiers.Count; i++)
+        {
+            MuseumIdleMilestoneModifier modifier = milestoneModifiers[i];
+
+            if (modifier != null &&
+                string.Equals(
+                    modifier.milestoneId,
+                    milestoneId,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return modifier;
+            }
+        }
+
+        return null;
+    }
 }
 
 /// <summary>
@@ -145,12 +200,10 @@ public class MuseumBalanceData : ScriptableObject
         new List<MuseumVariantPointRule>();
 
     [Tooltip("Additional multiplier applied to vanilla slots.")]
-    [Min(0f)]
-    public double vanillaPointMultiplier = 1d;
+    [Min(0f)] public double vanillaPointMultiplier = 1d;
 
     [Tooltip("Additional multiplier applied to knife and glove slots.")]
-    [Min(0f)]
-    public double rareSpecialPointMultiplier = 1d;
+    [Min(0f)] public double rareSpecialPointMultiplier = 1d;
 
     [Header("Market Value Bonus")]
     public MuseumMarketValueBonusSettings marketValueBonus =
@@ -164,8 +217,7 @@ public class MuseumBalanceData : ScriptableObject
     public List<MuseumWearPointRule> wearPointRules =
         new List<MuseumWearPointRule>();
 
-    [Min(0f)]
-    public double defaultBaseMuseumPoints = 1d;
+    [Min(0f)] public double defaultBaseMuseumPoints = 1d;
 
     [Header("Passive Income")]
     public MuseumIdleIncomeSettings idleIncome =
@@ -227,8 +279,6 @@ public class MuseumBalanceData : ScriptableObject
         if (marketValue >= maximumValue || maximumValue <= minimumValue)
             return maximumBonus;
 
-        // Logarithmic interpolation keeps the reward increasing while its
-        // effective percentage diminishes: 100 Gold -> 25 MP, 10,000 -> 100 MP.
         double denominator = Math.Log10(maximumValue / minimumValue);
 
         if (denominator <= 0d)
@@ -242,10 +292,9 @@ public class MuseumBalanceData : ScriptableObject
 
     public double GetEffectiveMarketBonusRate(double marketValue)
     {
-        if (marketValue <= 0d)
-            return 0d;
-
-        return CalculateMarketValueBonus(marketValue) / marketValue;
+        return marketValue > 0d
+            ? CalculateMarketValueBonus(marketValue) / marketValue
+            : 0d;
     }
 
     public double CalculateBaseSlotPoints(
@@ -345,6 +394,12 @@ public class MuseumBalanceData : ScriptableObject
         if (idleIncome == null)
             idleIncome = new MuseumIdleIncomeSettings();
 
+        if (idleIncome.milestoneModifiers == null)
+        {
+            idleIncome.milestoneModifiers =
+                new List<MuseumIdleMilestoneModifier>();
+        }
+
         defaultBaseMuseumPoints = Math.Max(0d, defaultBaseMuseumPoints);
         vanillaPointMultiplier = Math.Max(0d, vanillaPointMultiplier);
         rareSpecialPointMultiplier = Math.Max(0d, rareSpecialPointMultiplier);
@@ -361,5 +416,41 @@ public class MuseumBalanceData : ScriptableObject
             Math.Max(
                 marketValueBonus.bonusAtMinimumValue,
                 marketValueBonus.maximumBonusPoints);
+
+        idleIncome.goldPerMuseumPointPerHour =
+            Math.Max(0d, idleIncome.goldPerMuseumPointPerHour);
+        idleIncome.unclaimedGoldCapacity =
+            Math.Max(0d, idleIncome.unclaimedGoldCapacity);
+        idleIncome.diamondsPerHour =
+            Math.Max(0d, idleIncome.diamondsPerHour);
+        idleIncome.unclaimedDiamondCapacity =
+            Math.Max(0d, idleIncome.unclaimedDiamondCapacity);
+        idleIncome.maximumOfflineHours =
+            Mathf.Max(0f, idleIncome.maximumOfflineHours);
+        idleIncome.minimumCalculationIntervalSeconds =
+            Mathf.Max(0f, idleIncome.minimumCalculationIntervalSeconds);
+
+        for (int i = idleIncome.milestoneModifiers.Count - 1; i >= 0; i--)
+        {
+            MuseumIdleMilestoneModifier modifier =
+                idleIncome.milestoneModifiers[i];
+
+            if (modifier == null)
+            {
+                idleIncome.milestoneModifiers.RemoveAt(i);
+                continue;
+            }
+
+            modifier.milestoneId =
+                modifier.milestoneId != null
+                    ? modifier.milestoneId.Trim()
+                    : "";
+            modifier.goldNodeWeight =
+                Mathf.Max(0f, modifier.goldNodeWeight);
+            modifier.goldCapacityMultiplierBonus =
+                Mathf.Max(0f, modifier.goldCapacityMultiplierBonus);
+            modifier.offlineHoursBonus =
+                Mathf.Max(0f, modifier.offlineHoursBonus);
+        }
     }
 }
