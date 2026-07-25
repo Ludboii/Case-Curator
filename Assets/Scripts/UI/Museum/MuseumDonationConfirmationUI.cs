@@ -162,17 +162,17 @@ public class MuseumDonationConfirmationUI : MonoBehaviour
         {
             owner.HandleDonationCompleted(result, donatedKey);
 
-            // MuseumService raises OnMuseumChanged while Donate is still running.
-            // That refresh can rebuild the browser before the confirmation callback
-            // executes and can leave the player on a parent category. Resolve the
-            // newly rebuilt exhibit by the stable donation key and explicitly reopen
-            // that exact skin after the donation workflow has finished.
-            MuseumSkinEntry refreshedSkin = FindSkinByDonationKey(
+            // Restore the entire browser path, not only the skin popup. This is
+            // important for knives and other non-default categories: after the
+            // popup closes the player must still be in Knives/Kukri rather than
+            // the first generated category such as Assault Rifles.
+            RestoreBrowserPathByDonationKey(
+                owner,
                 service.GetCatalogSnapshot(false),
                 donatedKey);
 
-            if (refreshedSkin != null)
-                owner.OpenSkin(refreshedSkin);
+            owner.ShowMuseumMessage(
+                $"+{result.museumPointsAwarded:0.##} Museum Points");
         }
     }
 
@@ -259,15 +259,17 @@ public class MuseumDonationConfirmationUI : MonoBehaviour
         return builder.ToString();
     }
 
-    private static MuseumSkinEntry FindSkinByDonationKey(
+    private static bool RestoreBrowserPathByDonationKey(
+        MuseumPanelUI panel,
         MuseumCatalogSnapshot snapshot,
         string donationKey)
     {
-        if (snapshot == null ||
+        if (panel == null ||
+            snapshot == null ||
             snapshot.wings == null ||
             string.IsNullOrWhiteSpace(donationKey))
         {
-            return null;
+            return false;
         }
 
         for (int wingIndex = 0; wingIndex < snapshot.wings.Count; wingIndex++)
@@ -301,30 +303,44 @@ public class MuseumDonationConfirmationUI : MonoBehaviour
                     {
                         MuseumSkinEntry skin = weapon.skins[skinIndex];
 
-                        if (skin == null || skin.slots == null)
+                        if (!ContainsDonationKey(skin, donationKey))
                             continue;
 
-                        for (int slotIndex = 0;
-                             slotIndex < skin.slots.Count;
-                             slotIndex++)
-                        {
-                            MuseumSlotEntry candidateSlot = skin.slots[slotIndex];
-
-                            if (candidateSlot != null &&
-                                string.Equals(
-                                    candidateSlot.donationKey,
-                                    donationKey,
-                                    System.StringComparison.Ordinal))
-                            {
-                                return skin;
-                            }
-                        }
+                        panel.OpenWing(wing);
+                        panel.OpenCategory(category);
+                        panel.OpenWeapon(weapon);
+                        panel.OpenSkin(skin);
+                        return true;
                     }
                 }
             }
         }
 
-        return null;
+        return false;
+    }
+
+    private static bool ContainsDonationKey(
+        MuseumSkinEntry skin,
+        string donationKey)
+    {
+        if (skin == null || skin.slots == null)
+            return false;
+
+        for (int i = 0; i < skin.slots.Count; i++)
+        {
+            MuseumSlotEntry candidateSlot = skin.slots[i];
+
+            if (candidateSlot != null &&
+                string.Equals(
+                    candidateSlot.donationKey,
+                    donationKey,
+                    System.StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void OnDestroy()
