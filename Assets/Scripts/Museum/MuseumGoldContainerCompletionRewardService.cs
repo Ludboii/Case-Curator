@@ -197,10 +197,23 @@ public class MuseumGoldContainerCompletionRewardService : MonoBehaviour
             milestoneService != null
                 ? milestoneService.GetCurrentReachedMilestone()
                 : null;
+        int step = current != null ? current.Step : 0;
 
-        return current != null && current.data != null
-            ? MuseumPresentUtility.FromMilestoneBand(current.data.band)
-            : MuseumPresentTier.Dusty;
+        // Band-ending steps immediately move the player into the next Museum
+        // band, even though that transition plaque visually belongs to the band
+        // that was just completed.
+        if (step >= 70)
+            return MuseumPresentTier.GlobalElite;
+        if (step >= 55)
+            return MuseumPresentTier.Diamond;
+        if (step >= 40)
+            return MuseumPresentTier.Gold;
+        if (step >= 25)
+            return MuseumPresentTier.Silver;
+        if (step >= 10)
+            return MuseumPresentTier.Bronze;
+
+        return MuseumPresentTier.Dusty;
     }
 
     private static MuseumPresentStateSaveData EnsurePresentState()
