@@ -2,8 +2,8 @@ using System;
 
 /// <summary>
 /// Stable IDs and read-only effect lookup for M5.1 Museum idle-income upgrades.
-/// Upgrade levels remain owned by UpgradeService and SaveData; the Museum service
-/// only reads their current absolute effect values.
+/// M7 Trophy focus multipliers are composed here so the authoritative idle-income
+/// service keeps its existing historical-rate settlement behaviour.
 /// </summary>
 public static class MuseumIdleIncomeUpgradeUtility
 {
@@ -27,16 +27,28 @@ public static class MuseumIdleIncomeUpgradeUtility
 
     public static double GetGoldIncomeMultiplier(GameDatabase database)
     {
-        return Math.Max(
+        double upgrade = Math.Max(
             0d,
             GetEffect(database, GoldIncomeMultiplierId, 1d));
+
+        double trophy = TrophyRoomService.Instance != null
+            ? TrophyRoomService.Instance.GetMuseumGoldIncomeMultiplier()
+            : 1d;
+
+        return upgrade * Math.Max(1d, trophy);
     }
 
     public static double GetDiamondIncomeMultiplier(GameDatabase database)
     {
-        return Math.Max(
+        double upgrade = Math.Max(
             0d,
             GetEffect(database, DiamondIncomeMultiplierId, 1d));
+
+        double trophy = TrophyRoomService.Instance != null
+            ? TrophyRoomService.Instance.GetMuseumDiamondIncomeMultiplier()
+            : 1d;
+
+        return upgrade * Math.Max(1d, trophy);
     }
 
     public static double GetOfflineHoursBonus(GameDatabase database)
