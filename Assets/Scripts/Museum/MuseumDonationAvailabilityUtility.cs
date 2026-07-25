@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Counts inventory instances that match open Museum donation slots. Inventory
-/// keys and donation previews are cached once per frame, so building a complete
-/// category or weapon view does not rescan the full inventory for every card.
+/// Counts inventory instances that match open Museum donation slots. The cache
+/// is built once per rendered frame and performs only the lightweight checks
+/// required by card indicators. Full MuseumDonationPreview creation is reserved
+/// for the actual donation-selection flow.
 /// </summary>
 public static class MuseumDonationAvailabilityUtility
 {
@@ -18,6 +19,9 @@ public static class MuseumDonationAvailabilityUtility
     private static readonly Dictionary<string, AvailabilityCount>
         availabilityByDonationKey =
             new Dictionary<string, AvailabilityCount>(StringComparer.Ordinal);
+
+    private static readonly HashSet<string> trophyRoomInstanceIds =
+        new HashSet<string>(StringComparer.Ordinal);
 
     private static MuseumService cachedService;
     private static int cachedFrame = -1;
@@ -102,15 +106,12 @@ public static class MuseumDonationAvailabilityUtility
         return "";
     }
 
-    /// <summary>
-    /// Explicit invalidation hook for callers that mutate inventory and rebuild
-    /// Museum UI again within the same rendered frame.
-    /// </summary>
     public static void InvalidateCache()
     {
         cachedFrame = -1;
         cachedService = null;
         availabilityByDonationKey.Clear();
+        trophyRoomInstanceIds.Clear();
     }
 
     private static void AddOpenKeys(
@@ -176,6 +177,7 @@ public static class MuseumDonationAvailabilityUtility
         cachedFrame = frame;
         cachedService = service;
         availabilityByDonationKey.Clear();
+        RebuildTrophyRoomIndex();
 
         if (InventoryManager.Instance == null || service == null)
             return;
@@ -187,8 +189,12 @@ public static class MuseumDonationAvailabilityUtility
         {
             InventoryItem item = inventory[i];
 
-            if (item == null || string.IsNullOrWhiteSpace(item.instanceId))
+            if (item == null ||
+                item.skin == null ||
+                string.IsNullOrWhiteSpace(item.instanceId))
+            {
                 continue;
+            }
 
             string donationKey = MuseumDonationKeyUtility.Build(item);
 
@@ -199,15 +205,46 @@ public static class MuseumDonationAvailabilityUtility
                 donationKey,
                 out AvailabilityCount count);
 
-            MuseumDonationPreview preview =
-                service.PreviewDonation(item.instanceId);
+            // Card indicators only need to distinguish usable copies from the
+            // two protection rules that block otherwise matching inventory.
+            // Slot validity and already-donated state are handled by the open
+            // donation-key set supplied by the generated Museum catalog.
+            bool protectedItem =
+                item.favorite || trophyRoomInstanceIds.Contains(item.instanceId);
 
-            if (preview != null && preview.canDonate)
-                count.ready++;
-            else
+            if (protectedItem)
                 count.protectedCount++;
+            else
+                count.ready++;
 
             availabilityByDonationKey[donationKey] = count;
+        }
+    }
+
+    private static void RebuildTrophyRoomIndex()
+    {
+        trophyRoomInstanceIds.Clear();
+
+        if (SaveManager.Instance == null ||
+            SaveManager.Instance.Museum == null ||
+            SaveManager.Instance.Museum.trophyRoom == null ||
+            SaveManager.Instance.Museum.trophyRoom.displayedItems == null)
+        {
+            return;
+        }
+
+        List<TrophyDisplaySlotSaveData> displayed =
+            SaveManager.Instance.Museum.trophyRoom.displayedItems;
+
+        for (int i = 0; i < displayed.Count; i++)
+        {
+            TrophyDisplaySlotSaveData slot = displayed[i];
+
+            if (slot != null &&
+                !string.IsNullOrWhiteSpace(slot.inventoryItemInstanceId))
+            {
+                trophyRoomInstanceIds.Add(slot.inventoryItemInstanceId);
+            }
         }
     }
 }
