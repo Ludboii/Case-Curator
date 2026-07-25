@@ -9,31 +9,38 @@ public class MuseumCategoryCardUI : MonoBehaviour
     [SerializeField] private Image iconImage;
     [SerializeField] private TMP_Text titleText;
     [SerializeField] private TMP_Text descriptionText;
+    [SerializeField] private TMP_Text donationStateText;
     [SerializeField] private MuseumProgressBarUI progressBar;
     [SerializeField] private GameObject lockedRoot;
     [SerializeField] private TMP_Text lockedText;
+
+    [Header("Donation Indicator Colors")]
+    [SerializeField] private Color readyTextColor =
+        new Color(1f, 0.9f, 0.25f, 1f);
+    [SerializeField] private Color protectedTextColor =
+        new Color(1f, 0.65f, 0.25f, 1f);
 
     private MuseumCategoryEntry entry;
     private MuseumPanelUI owner;
 
     private void Awake()
     {
-        ResolveProgressBar();
+        ResolveReferences();
     }
 
     private void Reset()
     {
-        ResolveProgressBar();
+        ResolveReferences();
     }
 
     private void OnValidate()
     {
-        ResolveProgressBar();
+        ResolveReferences();
     }
 
     public void Setup(MuseumCategoryEntry museumEntry, MuseumPanelUI panel)
     {
-        ResolveProgressBar();
+        ResolveReferences();
 
         entry = museumEntry;
         owner = panel;
@@ -43,19 +50,34 @@ public class MuseumCategoryCardUI : MonoBehaviour
         if (titleText != null)
             titleText.text = entry != null ? entry.DisplayName : "Category";
 
+        string description = config != null ? config.description : "";
+        MuseumDonationAvailabilityUtility.Count(
+            entry,
+            owner != null ? owner.Service : null,
+            out int readyCount,
+            out int protectedCount);
+        string donationStatus =
+            MuseumDonationAvailabilityUtility.GetStatusText(
+                readyCount,
+                protectedCount);
+
         if (descriptionText != null)
         {
-            descriptionText.text = config != null
-                ? config.description
-                : "";
+            descriptionText.text = donationStateText == null &&
+                                   !string.IsNullOrWhiteSpace(donationStatus)
+                ? string.IsNullOrWhiteSpace(description)
+                    ? donationStatus
+                    : description + "\n" + donationStatus
+                : description;
         }
+
+        ApplyDonationIndicator(
+            donationStatus,
+            readyCount,
+            protectedCount);
 
         if (iconImage != null)
         {
-            // Respect a deliberately assigned category icon. When no icon has
-            // been configured, use the first available skin icon from the
-            // first weapon in this category so generated categories are never
-            // left as empty black cards.
             Sprite icon = config != null && config.icon != null
                 ? config.icon
                 : GetRepresentativeIcon(entry);
@@ -90,6 +112,24 @@ public class MuseumCategoryCardUI : MonoBehaviour
         }
     }
 
+    private void ApplyDonationIndicator(
+        string status,
+        int readyCount,
+        int protectedCount)
+    {
+        if (donationStateText == null)
+            return;
+
+        donationStateText.text = status;
+        donationStateText.gameObject.SetActive(
+            !string.IsNullOrWhiteSpace(status));
+
+        if (readyCount > 0)
+            donationStateText.color = readyTextColor;
+        else if (protectedCount > 0)
+            donationStateText.color = protectedTextColor;
+    }
+
     private static Sprite GetRepresentativeIcon(MuseumCategoryEntry category)
     {
         if (category == null || category.weapons == null)
@@ -120,10 +160,33 @@ public class MuseumCategoryCardUI : MonoBehaviour
         return null;
     }
 
-    private void ResolveProgressBar()
+    private void ResolveReferences()
     {
         if (progressBar == null)
             progressBar = GetComponentInChildren<MuseumProgressBarUI>(true);
+
+        if (donationStateText != null)
+            return;
+
+        TMP_Text[] texts = GetComponentsInChildren<TMP_Text>(true);
+
+        for (int i = 0; i < texts.Length; i++)
+        {
+            TMP_Text text = texts[i];
+
+            if (text == null)
+                continue;
+
+            string objectName = text.gameObject.name.ToLowerInvariant();
+
+            if (objectName.Contains("donation") ||
+                objectName.Contains("ready") ||
+                objectName.Contains("indicator"))
+            {
+                donationStateText = text;
+                break;
+            }
+        }
     }
 
     private void HandleClicked()
