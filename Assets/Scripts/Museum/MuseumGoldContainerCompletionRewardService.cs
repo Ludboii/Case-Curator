@@ -2,9 +2,9 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// Awards 20-40 fragments of the player's current Museum band when a container
-/// first reaches Gold completion. The existing goldRewardClaimed field is used
-/// as the one-time authority, so the reward integrates with container progress.
+/// Grants the manually claimed Gold container-completion reward: 20-40
+/// fragments from the player's current Museum band. Completion alone never
+/// grants or marks this reward as claimed.
 /// </summary>
 public class MuseumGoldContainerCompletionRewardService : MonoBehaviour
 {
@@ -22,15 +22,7 @@ public class MuseumGoldContainerCompletionRewardService : MonoBehaviour
     public event Action<MuseumGoldContainerCompletionReward>
         OnGoldCompletionRewardGranted;
 
-    private bool subscribed;
-    private bool initialized;
     private bool processing;
-
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    private static void Bootstrap()
-    {
-        GetOrCreate();
-    }
 
     public static MuseumGoldContainerCompletionRewardService GetOrCreate()
     {
@@ -57,160 +49,105 @@ public class MuseumGoldContainerCompletionRewardService : MonoBehaviour
         }
 
         Instance = this;
+        minimumFragments = Mathf.Max(0, minimumFragments);
         maximumFragments = Mathf.Max(minimumFragments, maximumFragments);
 
         if (persistBetweenScenes)
             DontDestroyOnLoad(gameObject);
     }
 
-    private void Start()
-    {
-        TryInitialize();
-    }
-
-    private void Update()
-    {
-        if (!initialized)
-            TryInitialize();
-    }
-
     private void OnDestroy()
     {
-        Unsubscribe();
-
         if (Instance == this)
             Instance = null;
     }
 
-    public void ProcessGoldCompletions()
+    public bool CanClaim(CaseData container)
     {
-        if (processing ||
-            SaveManager.Instance == null ||
-            SaveManager.Instance.database == null ||
+        if (container == null ||
             ContainerProgressManager.Instance == null)
         {
-            return;
+            return false;
         }
+
+        ContainerProgressData progress =
+            ContainerProgressManager.Instance.GetProgress(container);
+
+        return progress != null &&
+               !progress.goldRewardClaimed &&
+               ContainerProgressManager.Instance.IsGoldComplete(container);
+    }
+
+    public bool TryClaim(
+        CaseData container,
+        out MuseumGoldContainerCompletionReward reward)
+    {
+        reward = null;
+
+        if (processing ||
+            container == null ||
+            SaveManager.Instance == null ||
+            ContainerProgressManager.Instance == null)
+        {
+            return false;
+        }
+
+        ContainerProgressData progress =
+            ContainerProgressManager.Instance.GetProgress(container);
+
+        if (progress == null ||
+            progress.goldRewardClaimed ||
+            !ContainerProgressManager.Instance.IsGoldComplete(container))
+        {
+            return false;
+        }
+
+        MuseumPresentService presentService =
+            MuseumPresentService.GetOrCreate();
+
+        if (presentService == null)
+            return false;
 
         processing = true;
 
         try
         {
-            MuseumPresentService presentService =
-                MuseumPresentService.GetOrCreate();
-            ContainerProgressSaveData progressSnapshot =
-                ContainerProgressManager.Instance.ExportSaveData();
+            MuseumPresentTier tier = ResolveCurrentMuseumTier();
+            int amount = UnityEngine.Random.Range(
+                minimumFragments,
+                maximumFragments + 1);
 
-            if (presentService == null ||
-                progressSnapshot == null ||
-                progressSnapshot.progressEntries == null)
+            // Mark the reward before raising save/UI events so a re-entrant
+            // button press cannot grant it twice.
+            progress.goldRewardClaimed = true;
+            presentService.AddFragments(tier, amount, true);
+
+            reward = new MuseumGoldContainerCompletionReward
             {
-                return;
-            }
-
-            bool changed = false;
-
-            // Only inspect containers that already have progress. Calling
-            // IsGoldComplete for every database container would create empty
-            // progress records for unopened cases.
-            for (int i = 0; i < progressSnapshot.progressEntries.Count; i++)
-            {
-                ContainerProgressData savedProgress =
-                    progressSnapshot.progressEntries[i];
-
-                if (savedProgress == null ||
-                    savedProgress.goldRewardClaimed ||
-                    string.IsNullOrWhiteSpace(savedProgress.containerId))
-                {
-                    continue;
-                }
-
-                CaseData container =
-                    SaveManager.Instance.database.GetCaseByApiId(
-                        savedProgress.containerId);
-
-                if (container == null ||
-                    !ContainerProgressManager.Instance.IsGoldComplete(container))
-                {
-                    continue;
-                }
-
-                ContainerProgressData liveProgress =
-                    ContainerProgressManager.Instance.GetProgress(container);
-
-                if (liveProgress == null || liveProgress.goldRewardClaimed)
-                    continue;
-
-                MuseumPresentTier tier = ResolveCurrentMuseumTier();
-                int amount = UnityEngine.Random.Range(
-                    minimumFragments,
-                    maximumFragments + 1);
-
-                // Mark before raising the progress event to make re-entry safe.
-                liveProgress.goldRewardClaimed = true;
-                presentService.AddFragments(tier, amount, true);
-                changed = true;
-
-                MuseumGoldContainerCompletionReward reward =
-                    new MuseumGoldContainerCompletionReward
-                    {
-                        container = container,
-                        tier = tier,
-                        fragments = amount,
-                        message =
-                            $"Gold completion: {container.caseName}\n" +
-                            $"+{amount:N0} " +
-                            $"{MuseumPresentUtility.GetTierDisplayName(tier)} fragments"
-                    };
-
-                OnGoldCompletionRewardGranted?.Invoke(reward);
-
-                if (verboseLogging)
-                    Debug.Log(reward.message, this);
-            }
-
-            if (!changed)
-                return;
+                container = container,
+                tier = tier,
+                fragments = amount,
+                message =
+                    $"Gold completion reward: {container.caseName}\n" +
+                    $"+{amount:N0} " +
+                    $"{MuseumPresentUtility.GetTierDisplayName(tier)} fragments"
+            };
 
             ContainerProgressManager.Instance.SaveProgress();
             SaveManager.Instance.MarkDirty();
+            SaveManager.Instance.SaveGame();
+
+            OnGoldCompletionRewardGranted?.Invoke(reward);
+
+            if (verboseLogging)
+                Debug.Log(reward.message, this);
+
+            return true;
         }
         finally
         {
             processing = false;
         }
-    }
-
-    private void TryInitialize()
-    {
-        if (initialized ||
-            SaveManager.Instance == null ||
-            ContainerProgressManager.Instance == null)
-        {
-            return;
-        }
-
-        ContainerProgressManager.Instance.OnContainerProgressChanged +=
-            HandleContainerProgressChanged;
-        subscribed = true;
-        initialized = true;
-        ProcessGoldCompletions();
-    }
-
-    private void HandleContainerProgressChanged()
-    {
-        ProcessGoldCompletions();
-    }
-
-    private void Unsubscribe()
-    {
-        if (ContainerProgressManager.Instance != null && subscribed)
-        {
-            ContainerProgressManager.Instance.OnContainerProgressChanged -=
-                HandleContainerProgressChanged;
-        }
-
-        subscribed = false;
     }
 
     private static MuseumPresentTier ResolveCurrentMuseumTier()
