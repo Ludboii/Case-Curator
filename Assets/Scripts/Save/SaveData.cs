@@ -96,8 +96,14 @@ public class UpgradeLevelSaveData
 public class MuseumStateSaveData
 {
     public double museumPoints;
-    public float unclaimedIdleGold;
+
+    // M5 Museum idle income. Fractional values are retained so low rates do not
+    // lose progress between claims or save/load cycles.
+    public double unclaimedIdleGold;
+    public double unclaimedIdleDiamonds;
     public long lastIdleGoldCalculationUtcTicks;
+    public double lifetimeIdleGoldClaimed;
+    public int lifetimeIdleDiamondsClaimed;
 
     // Donations are aggregated by donationKey to prevent the save from
     // growing by one full record for every donated item.
