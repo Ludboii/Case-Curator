@@ -21,7 +21,7 @@ MonoBehaviour:
   forceSouvenirDrops: 0
   priceInGold: 8.5
   isPremium: 0
-  quality: 2
+  quality: 0
   requiredRank: 1
   xpRewardOnOpen: 7
   shopCategory: 1

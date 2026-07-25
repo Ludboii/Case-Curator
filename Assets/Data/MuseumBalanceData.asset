@@ -61,7 +61,54 @@ MonoBehaviour:
     pointMultiplier: 0.75
   defaultBaseMuseumPoints: 0
   idleIncome:
-    goldPerMuseumPointPerHour: 1
-    maximumOfflineHours: 8
-    unclaimedGoldCapacity: 0
-    minimumCalculationIntervalSeconds: 30
+    goldPerMuseumPointPerHour: 100
+    unclaimedGoldCapacity: 500000
+    diamondsPerHour: 0.05
+    unclaimedDiamondCapacity: 5
+    maximumOfflineHours: 1
+    minimumCalculationIntervalSeconds: 1
+    milestoneModifiers:
+    - milestoneId: museum-step-10
+      goldNodeWeight: 1
+      goldCapacityMultiplierBonus: 0
+      offlineHoursBonus: 0
+    - milestoneId: museum-step-20
+      goldNodeWeight: 1
+      goldCapacityMultiplierBonus: 0
+      offlineHoursBonus: 0
+    - milestoneId: museum-step-25
+      goldNodeWeight: 1
+      goldCapacityMultiplierBonus: 0
+      offlineHoursBonus: 0
+    - milestoneId: museum-step-35
+      goldNodeWeight: 1
+      goldCapacityMultiplierBonus: 0
+      offlineHoursBonus: 0
+    - milestoneId: museum-step-38
+      goldNodeWeight: 0
+      goldCapacityMultiplierBonus: 0.5
+      offlineHoursBonus: 0
+    - milestoneId: museum-step-40
+      goldNodeWeight: 2
+      goldCapacityMultiplierBonus: 0
+      offlineHoursBonus: 0
+    - milestoneId: museum-step-50
+      goldNodeWeight: 1
+      goldCapacityMultiplierBonus: 0
+      offlineHoursBonus: 0
+    - milestoneId: museum-step-55
+      goldNodeWeight: 1
+      goldCapacityMultiplierBonus: 0
+      offlineHoursBonus: 0
+    - milestoneId: museum-step-65
+      goldNodeWeight: 1
+      goldCapacityMultiplierBonus: 0
+      offlineHoursBonus: 0
+    - milestoneId: museum-step-70
+      goldNodeWeight: 1
+      goldCapacityMultiplierBonus: 0
+      offlineHoursBonus: 0
+    - milestoneId: museum-step-80
+      goldNodeWeight: 3
+      goldCapacityMultiplierBonus: 0
+      offlineHoursBonus: 0

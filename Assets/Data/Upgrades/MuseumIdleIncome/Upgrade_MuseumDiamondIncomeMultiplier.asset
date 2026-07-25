@@ -1,0 +1,164 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff1fafda9512383479c4f566a1b73a80, type: 3}
+  m_Name: Upgrade_MuseumDiamondIncomeMultiplier
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
+  upgradeId: museum-idle-diamond-income-multiplier
+  displayName: Diamond Endowment Income
+  description: Multiplies passive Diamond generation after the Diamond Endowment
+    has been unlocked at Museum Staircase Step 75.
+  icon: {fileID: 0}
+  category: 3
+  sortOrder: 110
+  hiddenUntilUnlocked: 0
+  unlockDefinition: {fileID: 11400000, guid: cd88288124c6e604ca8334aff123ee3b, type: 2}
+  effectType: 0
+  defaultEffectValue: 1
+  levels:
+  - levelName: Diamond Endowment Income I
+    description: Passive Diamond generation x1.05.
+    currency: 1
+    cost: 1
+    additionalRequirement: {fileID: 0}
+    effectValue: 1.05
+  - levelName: Diamond Endowment Income II
+    description: Passive Diamond generation x1.1.
+    currency: 1
+    cost: 2
+    additionalRequirement: {fileID: 0}
+    effectValue: 1.1
+  - levelName: Diamond Endowment Income III
+    description: Passive Diamond generation x1.15.
+    currency: 1
+    cost: 3
+    additionalRequirement: {fileID: 0}
+    effectValue: 1.15
+  - levelName: Diamond Endowment Income IV
+    description: Passive Diamond generation x1.2.
+    currency: 1
+    cost: 4
+    additionalRequirement: {fileID: 0}
+    effectValue: 1.2
+  - levelName: Diamond Endowment Income V
+    description: Passive Diamond generation x1.25.
+    currency: 1
+    cost: 5
+    additionalRequirement: {fileID: 0}
+    effectValue: 1.25
+  - levelName: Diamond Endowment Income VI
+    description: Passive Diamond generation x1.3.
+    currency: 1
+    cost: 6
+    additionalRequirement: {fileID: 0}
+    effectValue: 1.3
+  - levelName: Diamond Endowment Income VII
+    description: Passive Diamond generation x1.4.
+    currency: 1
+    cost: 8
+    additionalRequirement: {fileID: 0}
+    effectValue: 1.4
+  - levelName: Diamond Endowment Income VIII
+    description: Passive Diamond generation x1.5.
+    currency: 1
+    cost: 10
+    additionalRequirement: {fileID: 0}
+    effectValue: 1.5
+  - levelName: Diamond Endowment Income IX
+    description: Passive Diamond generation x1.6.
+    currency: 1
+    cost: 12
+    additionalRequirement: {fileID: 0}
+    effectValue: 1.6
+  - levelName: Diamond Endowment Income X
+    description: Passive Diamond generation x1.7.
+    currency: 1
+    cost: 15
+    additionalRequirement: {fileID: 0}
+    effectValue: 1.7
+  - levelName: Diamond Endowment Income XI
+    description: Passive Diamond generation x1.8.
+    currency: 1
+    cost: 18
+    additionalRequirement: {fileID: 0}
+    effectValue: 1.8
+  - levelName: Diamond Endowment Income XII
+    description: Passive Diamond generation x1.9.
+    currency: 1
+    cost: 22
+    additionalRequirement: {fileID: 0}
+    effectValue: 1.9
+  - levelName: Diamond Endowment Income XIII
+    description: Passive Diamond generation x2.
+    currency: 1
+    cost: 27
+    additionalRequirement: {fileID: 0}
+    effectValue: 2
+  - levelName: Diamond Endowment Income XIV
+    description: Passive Diamond generation x2.15.
+    currency: 1
+    cost: 33
+    additionalRequirement: {fileID: 0}
+    effectValue: 2.15
+  - levelName: Diamond Endowment Income XV
+    description: Passive Diamond generation x2.3.
+    currency: 1
+    cost: 40
+    additionalRequirement: {fileID: 0}
+    effectValue: 2.3
+  - levelName: Diamond Endowment Income XVI
+    description: Passive Diamond generation x2.5.
+    currency: 1
+    cost: 48
+    additionalRequirement: {fileID: 0}
+    effectValue: 2.5
+  - levelName: Diamond Endowment Income XVII
+    description: Passive Diamond generation x2.75.
+    currency: 1
+    cost: 58
+    additionalRequirement: {fileID: 0}
+    effectValue: 2.75
+  - levelName: Diamond Endowment Income XVIII
+    description: Passive Diamond generation x3.
+    currency: 1
+    cost: 70
+    additionalRequirement: {fileID: 0}
+    effectValue: 3
+  - levelName: Diamond Endowment Income XIX
+    description: Passive Diamond generation x3.25.
+    currency: 1
+    cost: 85
+    additionalRequirement: {fileID: 0}
+    effectValue: 3.25
+  - levelName: Diamond Endowment Income XX
+    description: Passive Diamond generation x3.5.
+    currency: 1
+    cost: 100
+    additionalRequirement: {fileID: 0}
+    effectValue: 3.5
+  - levelName: Diamond Endowment Income XXI
+    description: Passive Diamond generation x4.
+    currency: 1
+    cost: 120
+    additionalRequirement: {fileID: 0}
+    effectValue: 4
+  - levelName: Diamond Endowment Income XXII
+    description: Passive Diamond generation x4.5.
+    currency: 1
+    cost: 145
+    additionalRequirement: {fileID: 0}
+    effectValue: 4.5
+  - levelName: Diamond Endowment Income XXIII
+    description: Passive Diamond generation x5.
+    currency: 1
+    cost: 175
+    additionalRequirement: {fileID: 0}
+    effectValue: 5

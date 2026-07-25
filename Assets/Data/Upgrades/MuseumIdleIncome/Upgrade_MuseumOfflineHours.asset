@@ -1,0 +1,122 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff1fafda9512383479c4f566a1b73a80, type: 3}
+  m_Name: Upgrade_MuseumOfflineHours
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
+  upgradeId: museum-idle-offline-hours
+  displayName: Museum Offline Duration
+  description: Extends the shared eligible offline-generation duration for both Gold
+    and Diamonds from the 1-hour base up to 24 hours.
+  icon: {fileID: 0}
+  category: 3
+  sortOrder: 120
+  hiddenUntilUnlocked: 0
+  unlockDefinition: {fileID: 11400000, guid: 77c13f9f951ac9840b4de394fc50fa39, type: 2}
+  effectType: 0
+  defaultEffectValue: 0
+  levels:
+  - levelName: Offline Duration I
+    description: 'Shared Gold and Diamond offline cap: 2 hours total.'
+    currency: 0
+    cost: 1000
+    additionalRequirement: {fileID: 0}
+    effectValue: 1
+  - levelName: Offline Duration II
+    description: 'Shared Gold and Diamond offline cap: 3 hours total.'
+    currency: 0
+    cost: 2000
+    additionalRequirement: {fileID: 0}
+    effectValue: 2
+  - levelName: Offline Duration III
+    description: 'Shared Gold and Diamond offline cap: 4 hours total.'
+    currency: 0
+    cost: 3500
+    additionalRequirement: {fileID: 0}
+    effectValue: 3
+  - levelName: Offline Duration IV
+    description: 'Shared Gold and Diamond offline cap: 5 hours total.'
+    currency: 0
+    cost: 6000
+    additionalRequirement: {fileID: 0}
+    effectValue: 4
+  - levelName: Offline Duration V
+    description: 'Shared Gold and Diamond offline cap: 6 hours total.'
+    currency: 0
+    cost: 10000
+    additionalRequirement: {fileID: 0}
+    effectValue: 5
+  - levelName: Offline Duration VI
+    description: 'Shared Gold and Diamond offline cap: 7 hours total.'
+    currency: 0
+    cost: 16000
+    additionalRequirement: {fileID: 0}
+    effectValue: 6
+  - levelName: Offline Duration VII
+    description: 'Shared Gold and Diamond offline cap: 8 hours total.'
+    currency: 0
+    cost: 25000
+    additionalRequirement: {fileID: 0}
+    effectValue: 7
+  - levelName: Offline Duration VIII
+    description: 'Shared Gold and Diamond offline cap: 9 hours total.'
+    currency: 0
+    cost: 40000
+    additionalRequirement: {fileID: 0}
+    effectValue: 8
+  - levelName: Offline Duration IX
+    description: 'Shared Gold and Diamond offline cap: 10 hours total.'
+    currency: 0
+    cost: 65000
+    additionalRequirement: {fileID: 0}
+    effectValue: 9
+  - levelName: Offline Duration X
+    description: 'Shared Gold and Diamond offline cap: 12 hours total.'
+    currency: 0
+    cost: 100000
+    additionalRequirement: {fileID: 0}
+    effectValue: 11
+  - levelName: Offline Duration XI
+    description: 'Shared Gold and Diamond offline cap: 14 hours total.'
+    currency: 0
+    cost: 160000
+    additionalRequirement: {fileID: 0}
+    effectValue: 13
+  - levelName: Offline Duration XII
+    description: 'Shared Gold and Diamond offline cap: 16 hours total.'
+    currency: 0
+    cost: 250000
+    additionalRequirement: {fileID: 0}
+    effectValue: 15
+  - levelName: Offline Duration XIII
+    description: 'Shared Gold and Diamond offline cap: 18 hours total.'
+    currency: 0
+    cost: 400000
+    additionalRequirement: {fileID: 0}
+    effectValue: 17
+  - levelName: Offline Duration XIV
+    description: 'Shared Gold and Diamond offline cap: 20 hours total.'
+    currency: 0
+    cost: 650000
+    additionalRequirement: {fileID: 0}
+    effectValue: 19
+  - levelName: Offline Duration XV
+    description: 'Shared Gold and Diamond offline cap: 22 hours total.'
+    currency: 0
+    cost: 1000000
+    additionalRequirement: {fileID: 0}
+    effectValue: 21
+  - levelName: Offline Duration XVI
+    description: 'Shared Gold and Diamond offline cap: 24 hours total.'
+    currency: 0
+    cost: 1600000
+    additionalRequirement: {fileID: 0}
+    effectValue: 23

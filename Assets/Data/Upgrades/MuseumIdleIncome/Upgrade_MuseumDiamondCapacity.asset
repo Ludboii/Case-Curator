@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff1fafda9512383479c4f566a1b73a80, type: 3}
+  m_Name: Upgrade_MuseumDiamondCapacity
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
+  upgradeId: museum-idle-diamond-capacity
+  displayName: Diamond Endowment Storage
+  description: Multiplies the maximum unclaimed passive Diamonds that can be stored
+    before Diamond generation pauses.
+  icon: {fileID: 0}
+  category: 3
+  sortOrder: 140
+  hiddenUntilUnlocked: 0
+  unlockDefinition: {fileID: 11400000, guid: cd88288124c6e604ca8334aff123ee3b, type: 2}
+  effectType: 0
+  defaultEffectValue: 1
+  levels:
+  - levelName: Diamond Storage I
+    description: Unclaimed passive Diamond capacity x1.5.
+    currency: 1
+    cost: 1
+    additionalRequirement: {fileID: 0}
+    effectValue: 1.5
+  - levelName: Diamond Storage II
+    description: Unclaimed passive Diamond capacity x2.
+    currency: 1
+    cost: 2
+    additionalRequirement: {fileID: 0}
+    effectValue: 2
+  - levelName: Diamond Storage III
+    description: Unclaimed passive Diamond capacity x2.5.
+    currency: 1
+    cost: 4
+    additionalRequirement: {fileID: 0}
+    effectValue: 2.5
+  - levelName: Diamond Storage IV
+    description: Unclaimed passive Diamond capacity x3.
+    currency: 1
+    cost: 7
+    additionalRequirement: {fileID: 0}
+    effectValue: 3
+  - levelName: Diamond Storage V
+    description: Unclaimed passive Diamond capacity x3.5.
+    currency: 1
+    cost: 11
+    additionalRequirement: {fileID: 0}
+    effectValue: 3.5
+  - levelName: Diamond Storage VI
+    description: Unclaimed passive Diamond capacity x4.
+    currency: 1
+    cost: 16
+    additionalRequirement: {fileID: 0}
+    effectValue: 4
+  - levelName: Diamond Storage VII
+    description: Unclaimed passive Diamond capacity x4.5.
+    currency: 1
+    cost: 24
+    additionalRequirement: {fileID: 0}
+    effectValue: 4.5
+  - levelName: Diamond Storage VIII
+    description: Unclaimed passive Diamond capacity x5.
+    currency: 1
+    cost: 36
+    additionalRequirement: {fileID: 0}
+    effectValue: 5
