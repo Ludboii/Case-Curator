@@ -27,6 +27,15 @@ public sealed class TrophyRoomService : MonoBehaviour
     private bool initialized;
     private bool rebuilding;
 
+    public TrophyRoomBalanceData Balance
+    {
+        get
+        {
+            GameDatabase active = ResolveDatabase();
+            return active != null ? active.trophyRoomBalance : null;
+        }
+    }
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
     {
@@ -78,7 +87,12 @@ public sealed class TrophyRoomService : MonoBehaviour
         TrophyRoomSaveData current = GetState();
 
         if (!ReferenceEquals(observedState, current))
+        {
+            SettleTimeSensitiveSystems();
             BindState(current, true);
+            RefreshTimeSensitiveSystems();
+            OnTrophyRoomChanged?.Invoke();
+        }
 
         ResolveUpgradeSubscription();
     }
@@ -102,7 +116,7 @@ public sealed class TrophyRoomService : MonoBehaviour
             totalWeightedPower = GetTotalWeightedPower()
         };
 
-        snapshot.activeBonusFraction = GetFocusBonusFraction(
+        snapshot.activeBonusFraction = EvaluateFocusBonusFraction(
             snapshot.focus,
             snapshot.totalWeightedPower);
 
@@ -115,14 +129,16 @@ public sealed class TrophyRoomService : MonoBehaviour
                 ? EvaluateItem(item, slot)
                 : null;
 
+            double multiplier = Balance != null
+                ? Balance.GetPedestalMultiplier(slot)
+                : slot < 5 ? 1d : slot < 10 ? 1.2d : 1.5d;
+
             snapshot.slots.Add(new TrophyRoomSlotSnapshot
             {
                 slotIndex = slot,
                 unlocked = slot < snapshot.unlockedSlotCount,
                 occupied = item != null,
-                pedestalMultiplier = GetBalance() != null
-                    ? GetBalance().GetPedestalMultiplier(slot)
-                    : slot < 5 ? 1d : slot < 10 ? 1.2d : 1.5d,
+                pedestalMultiplier = multiplier,
                 item = item,
                 power = power
             });
@@ -211,7 +227,7 @@ public sealed class TrophyRoomService : MonoBehaviour
     {
         return TrophyPowerCalculator.Evaluate(
             item,
-            GetBalance(),
+            Balance,
             zeroBasedSlotIndex);
     }
 
@@ -223,10 +239,8 @@ public sealed class TrophyRoomService : MonoBehaviour
 
         foreach (KeyValuePair<int, InventoryItem> pair in displayedBySlot)
         {
-            if (pair.Value == null)
-                continue;
-
-            total += EvaluateItem(pair.Value, pair.Key).finalContribution;
+            if (pair.Value != null)
+                total += EvaluateItem(pair.Value, pair.Key).finalContribution;
         }
 
         return Math.Max(0, total);
@@ -234,7 +248,16 @@ public sealed class TrophyRoomService : MonoBehaviour
 
     public double GetFocusBonusFraction(TrophyRoomFocus focus)
     {
-        return GetFocusBonusFraction(focus, GetTotalWeightedPower());
+        return EvaluateFocusBonusFraction(focus, GetTotalWeightedPower());
+    }
+
+    public double EvaluateFocusBonusFraction(
+        TrophyRoomFocus focus,
+        double totalPower)
+    {
+        return Balance != null
+            ? Balance.EvaluateFocusBonus(focus, totalPower)
+            : 0d;
     }
 
     public double GetMuseumGoldIncomeMultiplier()
@@ -318,32 +341,26 @@ public sealed class TrophyRoomService : MonoBehaviour
 
         SettleTimeSensitiveSystems();
 
-        bool inventoryChanged;
-
         if (existingRecord != null && existingItem != null)
         {
-            inventoryChanged = InventoryManager.Instance.TryExecuteTransaction(
+            bool completed = InventoryManager.Instance.TryExecuteTransaction(
                 new[] { selectedItem.instanceId },
                 new List<InventoryItem> { existingItem },
                 out InventoryTransactionResult transaction);
 
-            if (!inventoryChanged)
+            if (!completed)
             {
                 return TrophyRoomOperationResult.Failed(
-                    transaction != null
-                        ? transaction.message
+                    transaction != null &&
+                    !string.IsNullOrWhiteSpace(transaction.errorMessage)
+                        ? transaction.errorMessage
                         : "The Trophy Room replacement transaction failed.");
             }
         }
-        else
+        else if (!InventoryManager.Instance.RemoveItem(selectedItem))
         {
-            inventoryChanged = InventoryManager.Instance.RemoveItem(selectedItem);
-
-            if (!inventoryChanged)
-            {
-                return TrophyRoomOperationResult.Failed(
-                    "The selected item could not be moved into Trophy storage.");
-            }
+            return TrophyRoomOperationResult.Failed(
+                "The selected item could not be moved into Trophy storage.");
         }
 
         if (existingRecord == null)
@@ -363,19 +380,17 @@ public sealed class TrophyRoomService : MonoBehaviour
         MarkChanged();
         RefreshTimeSensitiveSystems();
 
+        InventoryItem placed = GetDisplayedItem(zeroBasedSlotIndex);
         TrophyPowerBreakdown power = EvaluateItem(
-            GetDisplayedItem(zeroBasedSlotIndex),
+            placed,
             zeroBasedSlotIndex);
 
-        string message =
+        return TrophyRoomOperationResult.Completed(
             $"Placed {SkinDisplayUtility.GetDisplayName(selectedItem.skin)} on " +
             $"Pedestal {zeroBasedSlotIndex + 1}. " +
-            $"Contribution: {power.finalContribution:N0} Trophy Power.";
-
-        return TrophyRoomOperationResult.Completed(
-            message,
+            $"Contribution: {power.finalContribution:N0} Trophy Power.",
             zeroBasedSlotIndex,
-            GetDisplayedItem(zeroBasedSlotIndex));
+            placed);
     }
 
     public TrophyRoomOperationResult RemoveFromPedestal(
@@ -453,6 +468,7 @@ public sealed class TrophyRoomService : MonoBehaviour
         initialized = true;
         BindState(GetState(), true);
         ResolveUpgradeSubscription();
+        RefreshTimeSensitiveSystems();
     }
 
     private void EnsureCurrentState()
@@ -642,22 +658,6 @@ public sealed class TrophyRoomService : MonoBehaviour
         }
 
         return null;
-    }
-
-    private double GetFocusBonusFraction(
-        TrophyRoomFocus focus,
-        double totalPower)
-    {
-        TrophyRoomBalanceData balance = GetBalance();
-        return balance != null
-            ? balance.EvaluateFocusBonus(focus, totalPower)
-            : 0d;
-    }
-
-    private TrophyRoomBalanceData GetBalance()
-    {
-        GameDatabase active = ResolveDatabase();
-        return active != null ? active.trophyRoomBalance : null;
     }
 
     private GameDatabase ResolveDatabase()
