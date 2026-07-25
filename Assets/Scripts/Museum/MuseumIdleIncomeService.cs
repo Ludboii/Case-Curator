@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Authoritative M5 service for passive Museum Gold and the late-game Diamond
-/// Endowment. Income is calculated from UTC time, respects offline and storage
-/// caps, persists fractional progress and only grants currency through an
-/// explicit player claim.
+/// Authoritative M5/M5.1 service for passive Museum Gold and the late-game
+/// Diamond Endowment. Income is calculated from UTC time, stored in the Museum
+/// and only transferred to player currency through an explicit claim.
 /// </summary>
 public sealed class MuseumIdleIncomeService : MonoBehaviour
 {
+    private const double DesignedMaximumOfflineHours = 24d;
+
     private struct RateContext
     {
         public bool goldUnlocked;
@@ -17,6 +18,12 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
         public double museumPoints;
         public int goldNodeCount;
         public double goldNodeWeight;
+
+        public double incomeMultiplier;
+        public double offlineHoursUpgradeBonus;
+        public double goldCapacityMultiplier;
+        public double diamondCapacityMultiplier;
+
         public double goldPerHour;
         public double diamondsPerHour;
         public double goldCapacity;
@@ -35,6 +42,7 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
 
     private MuseumMilestoneService milestoneService;
     private MuseumService museumService;
+    private UpgradeService upgradeService;
     private MuseumStateSaveData observedState;
     private RateContext rateContext;
 
@@ -42,6 +50,7 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
     private bool subscribedToSaveManager;
     private bool subscribedToMilestones;
     private bool subscribedToMuseum;
+    private bool subscribedToUpgrades;
     private bool processing;
     private float nextCalculationTime;
 
@@ -101,18 +110,14 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
 
     private void OnApplicationPause(bool paused)
     {
-        if (!initialized)
-            return;
-
-        ProcessElapsedTimeNow(true);
+        if (initialized)
+            ProcessElapsedTimeNow(true);
     }
 
     private void OnApplicationFocus(bool hasFocus)
     {
-        if (!initialized)
-            return;
-
-        ProcessElapsedTimeNow(true);
+        if (initialized)
+            ProcessElapsedTimeNow(true);
     }
 
     private void OnDestroy()
@@ -123,7 +128,8 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
             Instance = null;
     }
 
-    public MuseumIdleIncomeSnapshot GetSnapshot(bool processElapsedTime = true)
+    public MuseumIdleIncomeSnapshot GetSnapshot(
+        bool processElapsedTime = true)
     {
         if (!initialized)
             TryInitialize();
@@ -146,6 +152,15 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
             museumPoints = current.museumPoints,
             claimedGoldNodeCount = current.goldNodeCount,
             claimedGoldNodeWeight = current.goldNodeWeight,
+
+            incomeMultiplier = current.incomeMultiplier,
+            offlineHoursUpgradeBonus =
+                current.offlineHoursUpgradeBonus,
+            goldCapacityMultiplier =
+                current.goldCapacityMultiplier,
+            diamondCapacityMultiplier =
+                current.diamondCapacityMultiplier,
+
             goldPerHour = current.goldPerHour,
             diamondsPerHour = current.diamondsPerHour,
             unclaimedGold = state.unclaimedIdleGold,
@@ -153,12 +168,16 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
             goldCapacity = current.goldCapacity,
             diamondCapacity = current.diamondCapacity,
             maximumOfflineHours = current.maximumOfflineHours,
+
             goldAtCapacity =
                 current.goldCapacity > 0d &&
-                state.unclaimedIdleGold + 0.0001d >= current.goldCapacity,
+                state.unclaimedIdleGold + 0.0001d >=
+                current.goldCapacity,
+
             diamondsAtCapacity =
                 current.diamondCapacity > 0d &&
-                state.unclaimedIdleDiamonds + 0.0001d >= current.diamondCapacity
+                state.unclaimedIdleDiamonds + 0.0001d >=
+                current.diamondCapacity
         };
     }
 
@@ -236,13 +255,13 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
         ProcessElapsedTimeNow(true);
     }
 
-    [ContextMenu("Debug/Simulate 1 Hour")]
+    [ContextMenu("Simulate 1 Hour (Debug)")]
     private void SimulateOneHour()
     {
         SimulateElapsedHoursForTesting(1d);
     }
 
-    [ContextMenu("Debug/Simulate 8 Hours")]
+    [ContextMenu("Simulate 8 Hours (Debug)")]
     private void SimulateEightHours()
     {
         SimulateElapsedHoursForTesting(8d);
@@ -275,7 +294,9 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
 
         if (observedState.lastIdleGoldCalculationUtcTicks <= 0)
         {
-            observedState.lastIdleGoldCalculationUtcTicks = DateTime.UtcNow.Ticks;
+            observedState.lastIdleGoldCalculationUtcTicks =
+                DateTime.UtcNow.Ticks;
+
             SaveManager.Instance.MarkDirty();
         }
         else
@@ -295,7 +316,9 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
 
         if (observedState.lastIdleGoldCalculationUtcTicks <= 0)
         {
-            observedState.lastIdleGoldCalculationUtcTicks = DateTime.UtcNow.Ticks;
+            observedState.lastIdleGoldCalculationUtcTicks =
+                DateTime.UtcNow.Ticks;
+
             SaveManager.Instance.MarkDirty();
         }
         else
@@ -335,7 +358,8 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
             return true;
         }
 
-        long elapsedTicks = nowTicks - state.lastIdleGoldCalculationUtcTicks;
+        long elapsedTicks =
+            nowTicks - state.lastIdleGoldCalculationUtcTicks;
 
         if (elapsedTicks < 0)
         {
@@ -346,9 +370,12 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
             return true;
         }
 
-        double elapsedSeconds = elapsedTicks / (double)TimeSpan.TicksPerSecond;
-        double minimumSeconds =
-            Math.Max(0d, settings.minimumCalculationIntervalSeconds);
+        double elapsedSeconds =
+            elapsedTicks / (double)TimeSpan.TicksPerSecond;
+
+        double minimumSeconds = Math.Max(
+            0d,
+            settings.minimumCalculationIntervalSeconds);
 
         if (!force && elapsedSeconds + 0.0001d < minimumSeconds)
         {
@@ -366,32 +393,37 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
         double goldBefore = state.unclaimedIdleGold;
         double diamondsBefore = state.unclaimedIdleDiamonds;
 
-        if (rateContext.goldUnlocked && rateContext.goldPerHour > 0d)
+        if (rateContext.goldUnlocked &&
+            rateContext.goldPerHour > 0d)
         {
-            double generated = rateContext.goldPerHour * eligibleHours;
             state.unclaimedIdleGold = AddWithCapacity(
                 state.unclaimedIdleGold,
-                generated,
+                rateContext.goldPerHour * eligibleHours,
                 rateContext.goldCapacity);
         }
 
-        if (rateContext.diamondsUnlocked && rateContext.diamondsPerHour > 0d)
+        if (rateContext.diamondsUnlocked &&
+            rateContext.diamondsPerHour > 0d)
         {
-            double generated = rateContext.diamondsPerHour * eligibleHours;
             state.unclaimedIdleDiamonds = AddWithCapacity(
                 state.unclaimedIdleDiamonds,
-                generated,
+                rateContext.diamondsPerHour * eligibleHours,
                 rateContext.diamondCapacity);
         }
 
         state.lastIdleGoldCalculationUtcTicks = nowTicks;
+
+        // Capture rates only after the elapsed interval is settled. This is what
+        // prevents a newly purchased upgrade from multiplying earlier time.
         rateContext = CaptureCurrentContext();
+
         SaveManager.Instance.MarkDirty();
         ScheduleNextCalculation();
 
         bool changed =
             Math.Abs(state.unclaimedIdleGold - goldBefore) > 0.0000001d ||
-            Math.Abs(state.unclaimedIdleDiamonds - diamondsBefore) > 0.0000001d;
+            Math.Abs(state.unclaimedIdleDiamonds - diamondsBefore) >
+            0.0000001d;
 
         if (changed)
         {
@@ -402,8 +434,8 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
                 Debug.Log(
                     $"Museum idle income: +" +
                     $"{state.unclaimedIdleGold - goldBefore:0.####} Gold, +" +
-                    $"{state.unclaimedIdleDiamonds - diamondsBefore:0.####} Diamonds " +
-                    $"over {eligibleHours:0.###} eligible hours.",
+                    $"{state.unclaimedIdleDiamonds - diamondsBefore:0.####} " +
+                    $"Diamonds over {eligibleHours:0.###} eligible hours.",
                     this);
             }
         }
@@ -433,6 +465,7 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
         double gold = claimGold
             ? Math.Max(0d, state.unclaimedIdleGold)
             : 0d;
+
         int diamonds = claimDiamonds
             ? Math.Max(
                 0,
@@ -450,14 +483,17 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
         {
             state.unclaimedIdleGold = 0d;
             state.lifetimeIdleGoldClaimed += gold;
+
             SaveManager.Instance.AddGold(
                 (float)Math.Min(gold, float.MaxValue));
         }
 
         if (diamonds > 0)
         {
-            state.unclaimedIdleDiamonds =
-                Math.Max(0d, state.unclaimedIdleDiamonds - diamonds);
+            state.unclaimedIdleDiamonds = Math.Max(
+                0d,
+                state.unclaimedIdleDiamonds - diamonds);
+
             state.lifetimeIdleDiamondsClaimed += diamonds;
             SaveManager.Instance.AddDiamonds(diamonds);
         }
@@ -482,7 +518,12 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
     {
         MuseumIdleIncomeSettings settings = GetSettings();
         MuseumStateSaveData state = GetState();
-        RateContext context = new RateContext();
+        RateContext context = new RateContext
+        {
+            incomeMultiplier = 1d,
+            goldCapacityMultiplier = 1d,
+            diamondCapacityMultiplier = 1d
+        };
 
         if (settings == null || state == null)
             return context;
@@ -493,8 +534,8 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
             state.claimedMilestoneIds ?? new List<string>(),
             StringComparer.OrdinalIgnoreCase);
 
-        double capacityMultiplierBonus = 0d;
-        double offlineHoursBonus = 0d;
+        double staircaseCapacityMultiplierBonus = 0d;
+        double staircaseOfflineHoursBonus = 0d;
 
         if (milestoneService == null)
             milestoneService = MuseumMilestoneService.GetOrCreate();
@@ -522,10 +563,13 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
 
                 if (modifier != null)
                 {
-                    capacityMultiplierBonus +=
-                        Math.Max(0d, modifier.goldCapacityMultiplierBonus);
-                    offlineHoursBonus +=
-                        Math.Max(0d, modifier.offlineHoursBonus);
+                    staircaseCapacityMultiplierBonus += Math.Max(
+                        0d,
+                        modifier.goldCapacityMultiplierBonus);
+
+                    staircaseOfflineHoursBonus += Math.Max(
+                        0d,
+                        modifier.offlineHoursBonus);
                 }
 
                 if (milestone.unlocksPassiveMuseumGold)
@@ -542,25 +586,81 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
             }
         }
 
+        context.incomeMultiplier = Math.Max(
+            1d,
+            MuseumIdleIncomeUpgradeUtility.GetIncomeMultiplier(database));
+
+        context.offlineHoursUpgradeBonus = Math.Max(
+            0d,
+            MuseumIdleIncomeUpgradeUtility.GetOfflineHoursBonus(database));
+
+        context.goldCapacityMultiplier = Math.Max(
+            1d,
+            MuseumIdleIncomeUpgradeUtility.GetGoldCapacityMultiplier(database));
+
+        context.diamondCapacityMultiplier = Math.Max(
+            1d,
+            MuseumIdleIncomeUpgradeUtility.GetDiamondCapacityMultiplier(database));
+
         context.goldUnlocked = context.goldNodeWeight > 0d;
+
         context.goldPerHour = context.goldUnlocked
             ? context.museumPoints *
               Math.Max(0d, settings.goldPerMuseumPointPerHour) *
-              context.goldNodeWeight
+              context.goldNodeWeight *
+              context.incomeMultiplier
             : 0d;
+
         context.diamondsPerHour = context.diamondsUnlocked
-            ? Math.Max(0d, settings.diamondsPerHour)
+            ? Math.Max(0d, settings.diamondsPerHour) *
+              context.incomeMultiplier
             : 0d;
 
         double baseGoldCapacity =
             Math.Max(0d, settings.unclaimedGoldCapacity);
+
+        double staircaseCapacityMultiplier = Math.Max(
+            1d,
+            1d + staircaseCapacityMultiplierBonus);
+
         context.goldCapacity = baseGoldCapacity > 0d
-            ? baseGoldCapacity * Math.Max(1d, 1d + capacityMultiplierBonus)
+            ? baseGoldCapacity *
+              staircaseCapacityMultiplier *
+              context.goldCapacityMultiplier
             : 0d;
-        context.diamondCapacity =
+
+        double baseDiamondCapacity =
             Math.Max(0d, settings.unclaimedDiamondCapacity);
-        context.maximumOfflineHours =
-            Math.Max(0d, settings.maximumOfflineHours + offlineHoursBonus);
+
+        context.diamondCapacity = baseDiamondCapacity > 0d
+            ? baseDiamondCapacity *
+              context.diamondCapacityMultiplier
+            : 0d;
+
+        double configuredOfflineHours =
+            Math.Max(0d, settings.maximumOfflineHours);
+
+        if (configuredOfflineHours <= 0d)
+        {
+            // Zero remains the existing explicit unlimited setting.
+            context.maximumOfflineHours = 0d;
+        }
+        else
+        {
+            double upgradedOfflineHours =
+                configuredOfflineHours +
+                staircaseOfflineHoursBonus +
+                context.offlineHoursUpgradeBonus;
+
+            // Preserve deliberately configured values above the design cap while
+            // keeping ordinary progression at the intended 24-hour maximum.
+            context.maximumOfflineHours = configuredOfflineHours >
+                                          DesignedMaximumOfflineHours
+                ? upgradedOfflineHours
+                : Math.Min(
+                    DesignedMaximumOfflineHours,
+                    upgradedOfflineHours);
+        }
 
         return context;
     }
@@ -589,7 +689,9 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
 
         if (!subscribedToMilestones && milestoneService != null)
         {
-            milestoneService.OnMilestonesChanged += HandleProgressionChanged;
+            milestoneService.OnMilestonesChanged +=
+                HandleProgressionChanged;
+
             subscribedToMilestones = true;
         }
 
@@ -605,13 +707,30 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
             museumService.OnMuseumChanged += HandleProgressionChanged;
             subscribedToMuseum = true;
         }
+
+        if (upgradeService == null)
+        {
+            upgradeService = UpgradeService.Instance != null
+                ? UpgradeService.Instance
+                : FindFirstObjectByType<UpgradeService>();
+        }
+
+        if (!subscribedToUpgrades && upgradeService != null)
+        {
+            upgradeService.OnUpgradeStateChanged +=
+                HandleUpgradeStateChanged;
+
+            subscribedToUpgrades = true;
+        }
     }
 
     private void Subscribe()
     {
         if (!subscribedToSaveManager && SaveManager.Instance != null)
         {
-            SaveManager.Instance.OnProgressChanged += HandleSaveProgressChanged;
+            SaveManager.Instance.OnProgressChanged +=
+                HandleSaveProgressChanged;
+
             subscribedToSaveManager = true;
         }
 
@@ -622,22 +741,32 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
     {
         if (subscribedToSaveManager && SaveManager.Instance != null)
         {
-            SaveManager.Instance.OnProgressChanged -= HandleSaveProgressChanged;
+            SaveManager.Instance.OnProgressChanged -=
+                HandleSaveProgressChanged;
         }
 
         if (subscribedToMilestones && milestoneService != null)
         {
-            milestoneService.OnMilestonesChanged -= HandleProgressionChanged;
+            milestoneService.OnMilestonesChanged -=
+                HandleProgressionChanged;
         }
 
         if (subscribedToMuseum && museumService != null)
         {
-            museumService.OnMuseumChanged -= HandleProgressionChanged;
+            museumService.OnMuseumChanged -=
+                HandleProgressionChanged;
+        }
+
+        if (subscribedToUpgrades && upgradeService != null)
+        {
+            upgradeService.OnUpgradeStateChanged -=
+                HandleUpgradeStateChanged;
         }
 
         subscribedToSaveManager = false;
         subscribedToMilestones = false;
         subscribedToMuseum = false;
+        subscribedToUpgrades = false;
     }
 
     private void HandleSaveProgressChanged()
@@ -657,9 +786,17 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
 
     private void HandleProgressionChanged()
     {
-        // The stored RateContext represents the rates before the event. This
-        // accounts for elapsed time using the old MP/node state, then captures
-        // the new state for future generation.
+        // The stored context represents the previous MP/node state. Settle the
+        // elapsed interval first, then AccumulateTo captures the new rates.
+        ProcessElapsedTimeNow(true);
+        OnIdleIncomeChanged?.Invoke();
+    }
+
+    private void HandleUpgradeStateChanged()
+    {
+        // UpgradeService has already written the new level. AccumulateTo still
+        // uses the old cached context for elapsed time, then captures the new
+        // upgrade effects for all future generation.
         ProcessElapsedTimeNow(true);
         OnIdleIncomeChanged?.Invoke();
     }
@@ -667,8 +804,11 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
     private void ScheduleNextCalculation()
     {
         MuseumIdleIncomeSettings settings = GetSettings();
+
         float interval = settings != null
-            ? Mathf.Max(1f, settings.minimumCalculationIntervalSeconds)
+            ? Mathf.Max(
+                1f,
+                settings.minimumCalculationIntervalSeconds)
             : 30f;
 
         nextCalculationTime = Time.unscaledTime + interval;
@@ -681,11 +821,17 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
 
         state.museumPoints = Math.Max(0d, state.museumPoints);
         state.unclaimedIdleGold = Math.Max(0d, state.unclaimedIdleGold);
-        state.unclaimedIdleDiamonds = Math.Max(0d, state.unclaimedIdleDiamonds);
-        state.lifetimeIdleGoldClaimed =
-            Math.Max(0d, state.lifetimeIdleGoldClaimed);
-        state.lifetimeIdleDiamondsClaimed =
-            Math.Max(0, state.lifetimeIdleDiamondsClaimed);
+        state.unclaimedIdleDiamonds = Math.Max(
+            0d,
+            state.unclaimedIdleDiamonds);
+
+        state.lifetimeIdleGoldClaimed = Math.Max(
+            0d,
+            state.lifetimeIdleGoldClaimed);
+
+        state.lifetimeIdleDiamondsClaimed = Math.Max(
+            0,
+            state.lifetimeIdleDiamondsClaimed);
 
         if (state.claimedMilestoneIds == null)
             state.claimedMilestoneIds = new List<string>();
@@ -696,10 +842,18 @@ public sealed class MuseumIdleIncomeService : MonoBehaviour
         double addition,
         double capacity)
     {
-        double value = Math.Max(0d, current) + Math.Max(0d, addition);
-        return capacity > 0d
-            ? Math.Min(value, capacity)
-            : value;
+        double safeCurrent = Math.Max(0d, current);
+        double safeAddition = Math.Max(0d, addition);
+
+        if (capacity <= 0d)
+            return safeCurrent + safeAddition;
+
+        // Never delete already-earned income if balance data or an upgrade is
+        // changed to a lower cap during development.
+        if (safeCurrent >= capacity)
+            return safeCurrent;
+
+        return Math.Min(safeCurrent + safeAddition, capacity);
     }
 
     private static string BuildClaimMessage(
