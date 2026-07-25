@@ -7,8 +7,11 @@ using System;
 /// </summary>
 public static class MuseumIdleIncomeUpgradeUtility
 {
-    public const string IncomeMultiplierId =
-        "museum-idle-income-multiplier";
+    public const string GoldIncomeMultiplierId =
+        "museum-idle-gold-income-multiplier";
+
+    public const string DiamondIncomeMultiplierId =
+        "museum-idle-diamond-income-multiplier";
 
     public const string OfflineHoursId =
         "museum-idle-offline-hours";
@@ -19,11 +22,21 @@ public static class MuseumIdleIncomeUpgradeUtility
     public const string DiamondCapacityId =
         "museum-idle-diamond-capacity";
 
-    public static double GetIncomeMultiplier(GameDatabase database)
+    public const string LegacySharedIncomeMultiplierId =
+        "museum-idle-income-multiplier";
+
+    public static double GetGoldIncomeMultiplier(GameDatabase database)
     {
         return Math.Max(
             0d,
-            GetEffect(database, IncomeMultiplierId, 1d));
+            GetEffect(database, GoldIncomeMultiplierId, 1d));
+    }
+
+    public static double GetDiamondIncomeMultiplier(GameDatabase database)
+    {
+        return Math.Max(
+            0d,
+            GetEffect(database, DiamondIncomeMultiplierId, 1d));
     }
 
     public static double GetOfflineHoursBonus(GameDatabase database)
