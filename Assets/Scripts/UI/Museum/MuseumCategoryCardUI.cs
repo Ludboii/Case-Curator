@@ -61,6 +61,11 @@ public class MuseumCategoryCardUI : MonoBehaviour
                 readyCount,
                 protectedCount);
 
+        bool sharedProgressText =
+            progressBar != null &&
+            donationStateText != null &&
+            donationStateText == progressBar.ProgressText;
+
         if (descriptionText != null)
         {
             descriptionText.text = donationStateText == null &&
@@ -71,10 +76,13 @@ public class MuseumCategoryCardUI : MonoBehaviour
                 : description;
         }
 
-        ApplyDonationIndicator(
-            donationStatus,
-            readyCount,
-            protectedCount);
+        if (!sharedProgressText)
+        {
+            ApplyDonationIndicator(
+                donationStatus,
+                readyCount,
+                protectedCount);
+        }
 
         if (iconImage != null)
         {
@@ -91,7 +99,8 @@ public class MuseumCategoryCardUI : MonoBehaviour
         {
             progressBar.SetProgress(
                 entry != null ? entry.donatedSlots : 0,
-                entry != null ? entry.totalSlots : 0);
+                entry != null ? entry.totalSlots : 0,
+                sharedProgressText ? donationStatus : null);
         }
 
         bool unlocked = config == null ||
