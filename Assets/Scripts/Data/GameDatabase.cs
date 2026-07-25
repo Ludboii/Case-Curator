@@ -19,6 +19,7 @@ public class GameDatabase : ScriptableObject
     public MuseumBalanceData museumBalance;
     public MuseumCatalogConfig museumCatalog;
     public MuseumPresentConfig museumPresentConfig;
+    public TrophyRoomBalanceData trophyRoomBalance;
 
     public List<MuseumMilestoneData> museumMilestones =
         new List<MuseumMilestoneData>();
