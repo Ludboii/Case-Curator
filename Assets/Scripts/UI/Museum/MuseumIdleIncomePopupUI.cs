@@ -142,10 +142,11 @@ public sealed class MuseumIdleIncomePopupUI : MonoBehaviour
         if (upgradeText != null)
         {
             upgradeText.text =
-                $"Income upgrade: x{snapshot.incomeMultiplier:0.##}\n" +
-                $"Offline upgrade: +{snapshot.offlineHoursUpgradeBonus:0.#}h\n" +
-                $"Gold cap upgrade: x{snapshot.goldCapacityMultiplier:0.##}\n" +
-                $"Diamond cap upgrade: x{snapshot.diamondCapacityMultiplier:0.##}";
+                $"Gold income: x{snapshot.goldIncomeMultiplier:0.##}\n" +
+                $"Diamond income: x{snapshot.diamondIncomeMultiplier:0.##}\n" +
+                $"Offline duration: +{snapshot.offlineHoursUpgradeBonus:0.#}h\n" +
+                $"Gold storage: x{snapshot.goldCapacityMultiplier:0.##}\n" +
+                $"Diamond storage: x{snapshot.diamondCapacityMultiplier:0.##}";
         }
 
         if (goldRateText != null)
