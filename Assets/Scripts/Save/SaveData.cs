@@ -185,7 +185,11 @@ public class GiftShardBalanceSaveData
 [Serializable]
 public class TrophyRoomSaveData
 {
+    // Legacy cached value retained for existing saves and diagnostics. Runtime
+    // availability is derived from the eleven purchased pedestal upgrades.
     public int unlockedSlots;
+
+    public TrophyRoomFocus focus = TrophyRoomFocus.MuseumGoldIncome;
 
     public List<TrophyDisplaySlotSaveData> displayedItems =
         new List<TrophyDisplaySlotSaveData>();
@@ -195,7 +199,14 @@ public class TrophyRoomSaveData
 public class TrophyDisplaySlotSaveData
 {
     public int slotIndex;
+
+    // Legacy M7 prototype field. During migration, TrophyRoomService resolves
+    // this item from InventoryManager and moves it into storedItem.
     public string inventoryItemInstanceId;
+
+    // A displayed trophy is outside normal inventory capacity and candidate
+    // lists, so its complete item state is persisted here until retrieval.
+    public InventoryItemSaveData storedItem;
 }
 
 /// <summary>
