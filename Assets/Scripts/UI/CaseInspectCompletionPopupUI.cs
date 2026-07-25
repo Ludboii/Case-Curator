@@ -149,8 +149,7 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
                 "Souvenir items can satisfy this requirement. Rare Special " +
                 "items are not required.\n" +
                 $"Progress: {topQuarterCount} / {normalTarget}\n" +
-                "Reward: 20-40 Present Shards from the current Museum band + " +
-                "25% discount on this container.";
+                "Reward: 20-40 Present fragments from the current Museum band.";
         }
 
         if (diamondExplanationText != null)
@@ -225,7 +224,8 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
 
         bool complete = progressManager.IsTierComplete(currentCase, tier);
         bool claimed = progressManager.IsRewardClaimed(currentCase, tier);
-        bool implemented = progressManager.IsRewardImplemented(tier);
+        bool implemented = tier == ContainerCompletionTier.Gold ||
+                           progressManager.IsRewardImplemented(tier);
 
         if (claimed)
         {
@@ -244,7 +244,11 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
             return;
         }
 
-        bool canClaim = progressManager.CanClaimReward(currentCase, tier);
+        bool canClaim = tier == ContainerCompletionTier.Gold
+            ? complete && MuseumGoldContainerCompletionRewardService
+                .GetOrCreate()
+                .CanClaim(currentCase)
+            : progressManager.CanClaimReward(currentCase, tier);
 
         SetButtonState(
             button,
@@ -266,7 +270,17 @@ public class CaseInspectCompletionPopupUI : MonoBehaviour
 
     private void ClaimGoldReward()
     {
-        Claim(ContainerCompletionTier.Gold);
+        if (currentCase == null)
+            return;
+
+        MuseumGoldContainerCompletionRewardService service =
+            MuseumGoldContainerCompletionRewardService.GetOrCreate();
+
+        service.TryClaim(
+            currentCase,
+            out MuseumGoldContainerCompletionReward reward);
+
+        Refresh();
     }
 
     private void ClaimDiamondReward()
