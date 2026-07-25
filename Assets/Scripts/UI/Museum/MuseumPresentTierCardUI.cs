@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -78,7 +79,13 @@ public class MuseumPresentTierCardUI : MonoBehaviour
 
         if (rewardRangeText != null)
         {
+            IReadOnlyList<MuseumPresentContainerDrop> pool =
+                MuseumPresentOpeningService.GetOrCreate()
+                    .GetResolvedPool(tier);
+            int validDrops = CountValidDrops(pool);
+
             rewardRangeText.text =
+                $"Container drop: 1 from {validDrops:N0} possible\n" +
                 $"Gold {config.minimumGold:0.##}–{config.maximumGold:0.##}\n" +
                 $"XP {config.minimumXP:N0}–{config.maximumXP:N0}\n" +
                 $"Diamonds {config.minimumDiamonds:N0}–{config.maximumDiamonds:N0}";
@@ -88,7 +95,31 @@ public class MuseumPresentTierCardUI : MonoBehaviour
             assembleButton.interactable = fragments >= cost;
 
         if (openButton != null)
-            openButton.interactable = presents > 0;
+        {
+            IReadOnlyList<MuseumPresentContainerDrop> pool =
+                MuseumPresentOpeningService.GetOrCreate()
+                    .GetResolvedPool(tier);
+
+            openButton.interactable =
+                presents > 0 && CountValidDrops(pool) > 0;
+        }
+    }
+
+    private static int CountValidDrops(
+        IReadOnlyList<MuseumPresentContainerDrop> pool)
+    {
+        int count = 0;
+
+        if (pool == null)
+            return count;
+
+        for (int i = 0; i < pool.Count; i++)
+        {
+            if (pool[i] != null && pool[i].IsValid)
+                count++;
+        }
+
+        return count;
     }
 
     private void HandleAssemble()
