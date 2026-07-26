@@ -76,9 +76,6 @@ public class InventoryItemCardUI : MonoBehaviour
         if (favoriteIcon != null)
             favoriteGraphics = favoriteIcon.GetComponentsInChildren<Graphic>(true);
 
-        // A card only needs its Button target graphic to receive raycasts.
-        // Disabling raycasts on every text/icon substantially reduces the work
-        // performed by GraphicRaycaster when hundreds of cards are visible.
         Graphic buttonTarget = button != null ? button.targetGraphic : null;
         Graphic[] graphics = GetComponentsInChildren<Graphic>(true);
 
@@ -101,10 +98,6 @@ public class InventoryItemCardUI : MonoBehaviour
             cachedInspectUI = value;
     }
 
-    /// <summary>
-    /// Assigns a custom click handler without rebuilding the Button listener.
-    /// Pass null to restore the normal inventory-card behaviour.
-    /// </summary>
     public void SetExternalClickHandler(
         Action<InventoryItemCardUI> clickHandler)
     {
@@ -204,7 +197,7 @@ public class InventoryItemCardUI : MonoBehaviour
         }
     }
 
-    private string GetPatternBadgeText(InventoryItem item)
+    private static string GetPatternBadgeText(InventoryItem item)
     {
         if (item == null || item.skin == null || item.isVanilla)
             return "";
@@ -212,14 +205,21 @@ public class InventoryItemCardUI : MonoBehaviour
         SkinData skin = item.skin;
         string lowerName = (skin.skinName ?? "").ToLowerInvariant();
 
-        if (lowerName.Contains("black pearl"))
-            return "BLACK PEARL";
-        if (lowerName.Contains("sapphire"))
-            return "SAPPHIRE";
-        if (lowerName.Contains("emerald"))
+        if (skin.patternType == PatternType.Doppler)
+        {
+            if (lowerName.Contains("black pearl"))
+                return "BLACK PEARL";
+            if (lowerName.Contains("sapphire"))
+                return "SAPPHIRE";
+            if (lowerName.Contains("ruby"))
+                return "RUBY";
+        }
+
+        if (skin.patternType == PatternType.GammaDoppler &&
+            lowerName.Contains("emerald"))
+        {
             return "EMERALD";
-        if (lowerName.Contains("ruby"))
-            return "RUBY";
+        }
 
         if (skin.patternType == PatternType.CaseHardened &&
             item.patternTier != PatternTier.None)
