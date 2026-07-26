@@ -17,6 +17,8 @@ public sealed class GoldCompletionCaseDiscountService : MonoBehaviour
     private readonly Dictionary<CaseData, float> basePrices =
         new Dictionary<CaseData, float>();
 
+    private float nextPresentationRefresh;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
     {
@@ -75,6 +77,16 @@ public sealed class GoldCompletionCaseDiscountService : MonoBehaviour
     {
         Subscribe();
         ApplyAllDiscounts();
+        RefreshCompletionPresentation();
+    }
+
+    private void Update()
+    {
+        if (Time.unscaledTime < nextPresentationRefresh)
+            return;
+
+        nextPresentationRefresh = Time.unscaledTime + 0.25f;
+        RefreshCompletionPresentation();
     }
 
     private void OnDestroy()
@@ -92,9 +104,9 @@ public sealed class GoldCompletionCaseDiscountService : MonoBehaviour
             return;
 
         ContainerProgressManager.Instance.OnContainerProgressChanged -=
-            ApplyAllDiscounts;
+            HandleProgressChanged;
         ContainerProgressManager.Instance.OnContainerProgressChanged +=
-            ApplyAllDiscounts;
+            HandleProgressChanged;
     }
 
     private void Unsubscribe()
@@ -102,8 +114,14 @@ public sealed class GoldCompletionCaseDiscountService : MonoBehaviour
         if (ContainerProgressManager.Instance != null)
         {
             ContainerProgressManager.Instance.OnContainerProgressChanged -=
-                ApplyAllDiscounts;
+                HandleProgressChanged;
         }
+    }
+
+    private void HandleProgressChanged()
+    {
+        ApplyAllDiscounts();
+        RefreshCompletionPresentation();
     }
 
     private void CacheDatabasePrices()
@@ -151,6 +169,24 @@ public sealed class GoldCompletionCaseDiscountService : MonoBehaviour
                 ? pair.Value * PriceMultiplier
                 : pair.Value;
         }
+    }
+
+    private static void RefreshCompletionPresentation()
+    {
+        CaseInspectCompletionPopupUI popup =
+            FindFirstObjectByType<CaseInspectCompletionPopupUI>(
+                FindObjectsInactive.Include);
+
+        if (popup == null || popup.goldExplanationText == null)
+            return;
+
+        const string discountLine =
+            "\nPermanent reward: 10% discount on this container in the Case Shop.";
+
+        string text = popup.goldExplanationText.text ?? "";
+
+        if (!text.Contains("10% discount"))
+            popup.goldExplanationText.text = text + discountLine;
     }
 
     private void RestoreAllBasePrices()
