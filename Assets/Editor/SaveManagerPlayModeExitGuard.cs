@@ -3,9 +3,9 @@ using UnityEditor;
 using UnityEngine;
 
 /// <summary>
-/// Unity does not guarantee the same shutdown callback order for every Play Mode
-/// configuration. This guard explicitly flushes dirty SaveManager state before
-/// scene objects and static singletons are torn down when leaving Play Mode.
+/// Flushes dirty SaveManager state before Play Mode teardown, but only after the
+/// persistence bootstrap has established that this runtime session is safe to save.
+/// This prevents an unloaded blank scene state from overwriting existing SaveData.
 /// </summary>
 [InitializeOnLoad]
 public static class SaveManagerPlayModeExitGuard
@@ -20,6 +20,16 @@ public static class SaveManagerPlayModeExitGuard
     {
         if (state != PlayModeStateChange.ExitingPlayMode)
             return;
+
+        if (!SaveManagerSessionBootstrap.InitializationFinished ||
+            !SaveManagerSessionBootstrap.CanSaveCurrentSession)
+        {
+            Debug.LogWarning(
+                "SaveManagerPlayModeExitGuard: Skipped the Play Mode exit save " +
+                "because the current persistence session was not confirmed safe. " +
+                "Existing save files were left untouched.");
+            return;
+        }
 
         SaveManager save = SaveManager.Instance;
 
