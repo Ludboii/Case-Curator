@@ -12,11 +12,69 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52f2babb6164c8644b6e19868729a3d8, type: 3}
   m_Name: TrophyRoomBalance
   m_EditorClassIdentifier: Assembly-CSharp::TrophyRoomBalanceData
-  rarityWeight: 35
-  marketValueWeight: 26
+  rarityWeight: 31
+  marketValueWeight: 29
   variantWeight: 14
-  floatWeight: 25
-  marketValueAtFullScore: 10000
+  floatWeight: 26
+  consumerRarityScore: 0
+  industrialRarityScore: 0.1
+  milSpecRarityScore: 0.3
+  restrictedRarityScore: 0.5
+  classifiedRarityScore: 0.65
+  covertRarityScore: 0.8
+  rareSpecialRarityScore: 1
+  marketValueAtFullScore: 250000
+  marketValueScoreCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.5537169
+      value: 0.3239692
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.644202
+      value: 0.7701692
+      inSlope: 1.7323756
+      outSlope: 1.7323756
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.81358963
+      value: 0.94656354
+      inSlope: 0.33623976
+      outSlope: 0.33623976
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1.0041809
+      value: 1
+      inSlope: 0.5933283
+      outSlope: 0.5933283
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.55632216
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   normalVariantScore: 0
   souvenirVariantScore: 0.8
   statTrakVariantScore: 1
