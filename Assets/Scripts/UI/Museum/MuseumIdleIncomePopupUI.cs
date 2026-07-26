@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Displays Museum visitor income, its M5.1 upgrade effects and explicit claim
-/// controls. Currency mutation remains owned by MuseumIdleIncomeService.
+/// Displays Museum visitor income, upgrade and Trophy modifiers, and explicit
+/// claim controls. Currency mutation remains owned by MuseumIdleIncomeService.
 /// </summary>
 public sealed class MuseumIdleIncomePopupUI : MonoBehaviour
 {
@@ -140,14 +140,7 @@ public sealed class MuseumIdleIncomePopupUI : MonoBehaviour
         }
 
         if (upgradeText != null)
-        {
-            upgradeText.text =
-                $"Gold income: x{snapshot.goldIncomeMultiplier:0.##}\n" +
-                $"Diamond income: x{snapshot.diamondIncomeMultiplier:0.##}\n" +
-                $"Offline duration: +{snapshot.offlineHoursUpgradeBonus:0.#}h\n" +
-                $"Gold storage: x{snapshot.goldCapacityMultiplier:0.##}\n" +
-                $"Diamond storage: x{snapshot.diamondCapacityMultiplier:0.##}";
-        }
+            upgradeText.text = BuildRateBreakdown(snapshot);
 
         if (goldRateText != null)
         {
@@ -205,6 +198,52 @@ public sealed class MuseumIdleIncomePopupUI : MonoBehaviour
 
         if (statusText != null)
             statusText.text = GetStatus(snapshot);
+    }
+
+    private static string BuildRateBreakdown(MuseumIdleIncomeSnapshot snapshot)
+    {
+        GameDatabase database = SaveManager.Instance != null
+            ? SaveManager.Instance.database
+            : null;
+        MuseumIdleIncomeSettings settings = database != null &&
+                                            database.museumBalance != null
+            ? database.museumBalance.idleIncome
+            : null;
+
+        double goldPerMp = settings != null
+            ? Math.Max(0d, settings.goldPerMuseumPointPerHour)
+            : 0d;
+        double baseGold = snapshot.museumPoints * goldPerMp *
+                          Math.Max(0d, snapshot.claimedGoldNodeWeight);
+        double goldUpgrade = MuseumIdleIncomeUpgradeUtility
+            .GetGoldIncomeUpgradeMultiplier(database);
+        double goldTrophy = TrophyRoomFocusUtility
+            .GetMuseumGoldIncomeMultiplier();
+
+        double baseDiamond = settings != null
+            ? Math.Max(0d, settings.diamondsPerHour)
+            : 0d;
+        double diamondUpgrade = MuseumIdleIncomeUpgradeUtility
+            .GetDiamondIncomeUpgradeMultiplier(database);
+        double diamondTrophy = TrophyRoomFocusUtility
+            .GetMuseumDiamondIncomeMultiplier();
+
+        return
+            "GOLD RATE BREAKDOWN\n" +
+            $"Base: {baseGold:N2}/h  " +
+            $"({snapshot.museumPoints:N0} MP × {goldPerMp:0.######} × " +
+            $"node x{snapshot.claimedGoldNodeWeight:0.##})\n" +
+            $"Income upgrade: x{goldUpgrade:0.###}\n" +
+            $"Trophy focus: x{goldTrophy:0.###}\n" +
+            $"Final: {snapshot.goldPerHour:N2}/h\n\n" +
+            "DIAMOND RATE BREAKDOWN\n" +
+            $"Base: {baseDiamond:0.###}/h\n" +
+            $"Income upgrade: x{diamondUpgrade:0.###}\n" +
+            $"Trophy focus: x{diamondTrophy:0.###}\n" +
+            $"Final: {snapshot.diamondsPerHour:0.###}/h\n\n" +
+            $"Offline upgrade: +{snapshot.offlineHoursUpgradeBonus:0.#}h\n" +
+            $"Gold storage: x{snapshot.goldCapacityMultiplier:0.##}\n" +
+            $"Diamond storage: x{snapshot.diamondCapacityMultiplier:0.##}";
     }
 
     private void ClaimGold()
@@ -269,25 +308,15 @@ public sealed class MuseumIdleIncomePopupUI : MonoBehaviour
             statusText.text = "Museum income service is unavailable.";
 
         if (upgradeText != null)
-            upgradeText.text = "Museum upgrades unavailable";
+            upgradeText.text = "Museum income modifiers unavailable";
 
-        SetButton(
-            claimGoldButton,
-            claimGoldButtonText,
-            false,
-            "UNAVAILABLE");
-
+        SetButton(claimGoldButton, claimGoldButtonText, false, "UNAVAILABLE");
         SetButton(
             claimDiamondButton,
             claimDiamondButtonText,
             false,
             "UNAVAILABLE");
-
-        SetButton(
-            claimAllButton,
-            claimAllButtonText,
-            false,
-            "UNAVAILABLE");
+        SetButton(claimAllButton, claimAllButtonText, false, "UNAVAILABLE");
     }
 
     private void SetResult(string message)

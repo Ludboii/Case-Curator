@@ -31,6 +31,16 @@ public sealed class TrophyRoomBalanceData : ScriptableObject
     [Min(0f)] public float variantWeight = 15f;
     [Min(0f)] public float floatWeight = 35f;
 
+    [Header("Rarity Scores")]
+    [Tooltip("Normalised score before the rarityWeight is applied.")]
+    [Range(0f, 1f)] public float consumerRarityScore = 0f;
+    [Range(0f, 1f)] public float industrialRarityScore = 0.15f;
+    [Range(0f, 1f)] public float milSpecRarityScore = 0.35f;
+    [Range(0f, 1f)] public float restrictedRarityScore = 0.55f;
+    [Range(0f, 1f)] public float classifiedRarityScore = 0.75f;
+    [Range(0f, 1f)] public float covertRarityScore = 0.90f;
+    [Range(0f, 1f)] public float rareSpecialRarityScore = 1f;
+
     [Header("Market Value")]
     [Tooltip(
         "Market value that reaches a full market-value score. Values above this " +
@@ -77,6 +87,27 @@ public sealed class TrophyRoomBalanceData : ScriptableObject
     public TrophyFocusBalance museumDiamondIncome = new TrophyFocusBalance();
     public TrophyFocusBalance automatedAcquisitions = new TrophyFocusBalance();
     public TrophyFocusBalance giftRetrievals = new TrophyFocusBalance();
+
+    public double GetRarityScore(Rarity rarity)
+    {
+        switch (rarity)
+        {
+            case Rarity.Industrial:
+                return Math.Max(0d, Math.Min(1d, industrialRarityScore));
+            case Rarity.MilSpec:
+                return Math.Max(0d, Math.Min(1d, milSpecRarityScore));
+            case Rarity.Restricted:
+                return Math.Max(0d, Math.Min(1d, restrictedRarityScore));
+            case Rarity.Classified:
+                return Math.Max(0d, Math.Min(1d, classifiedRarityScore));
+            case Rarity.Covert:
+                return Math.Max(0d, Math.Min(1d, covertRarityScore));
+            case Rarity.RareSpecial:
+                return Math.Max(0d, Math.Min(1d, rareSpecialRarityScore));
+            default:
+                return Math.Max(0d, Math.Min(1d, consumerRarityScore));
+        }
+    }
 
     public double GetPedestalMultiplier(int zeroBasedSlotIndex)
     {
