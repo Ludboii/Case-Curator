@@ -47,6 +47,13 @@ public sealed class TrophyRoomBalanceData : ScriptableObject
         "remain capped so one extremely expensive item cannot dominate the room.")]
     [Min(1f)] public float marketValueAtFullScore = 10000f;
 
+    [Tooltip(
+        "Shapes the normalised logarithmic market-value score. X is the base " +
+        "logarithmic score from 0 to 1; Y is the final market-value score from " +
+        "0 to 1. A straight 0,0 to 1,1 line preserves the original behaviour.")]
+    public AnimationCurve marketValueScoreCurve =
+        AnimationCurve.Linear(0f, 0f, 1f, 1f);
+
     [Header("Variant")]
     [Range(0f, 1f)] public float normalVariantScore;
     [Range(0f, 1f)] public float souvenirVariantScore = 0.8f;
@@ -65,7 +72,9 @@ public sealed class TrophyRoomBalanceData : ScriptableObject
     [Tooltip("X = normalised position above the skin minimum; Y = score.")]
     public AnimationCurve lowRangePositionCurve = new AnimationCurve();
 
-    [Tooltip("X = absolute float value; Y = absolute low-float prestige.")]
+    [Tooltip(
+        "X = effective low-float distance above the skin minimum; Y = prestige. " +
+        "For a 0.06-capped skin, 0.06005 is evaluated as 0.00005.")]
     public AnimationCurve absoluteLowFloatCurve = new AnimationCurve();
 
     [Tooltip("X = distance below the skin maximum; Y = prestige score.")]
@@ -74,7 +83,8 @@ public sealed class TrophyRoomBalanceData : ScriptableObject
     [Tooltip("X = normalised distance below the skin maximum; Y = score.")]
     public AnimationCurve highRangePositionCurve = new AnimationCurve();
 
-    [Tooltip("X = absolute float value; Y = absolute high-float prestige.")]
+    [Tooltip(
+        "X = effective high-float distance below the skin maximum; Y = prestige.")]
     public AnimationCurve absoluteHighFloatCurve = new AnimationCurve();
 
     [Header("Pedestal Multipliers")]
@@ -107,6 +117,18 @@ public sealed class TrophyRoomBalanceData : ScriptableObject
             default:
                 return Math.Max(0d, Math.Min(1d, consumerRarityScore));
         }
+    }
+
+    public double EvaluateMarketValueScore(double logarithmicScore)
+    {
+        double x = Math.Max(0d, Math.Min(1d, logarithmicScore));
+
+        if (marketValueScoreCurve == null || marketValueScoreCurve.length == 0)
+            return x;
+
+        return Math.Max(
+            0d,
+            Math.Min(1d, marketValueScoreCurve.Evaluate((float)x)));
     }
 
     public double GetPedestalMultiplier(int zeroBasedSlotIndex)
@@ -154,6 +176,12 @@ public sealed class TrophyRoomBalanceData : ScriptableObject
         variantWeight = Mathf.Max(0f, variantWeight);
         floatWeight = Mathf.Max(0f, floatWeight);
         marketValueAtFullScore = Mathf.Max(1f, marketValueAtFullScore);
+
+        if (marketValueScoreCurve == null || marketValueScoreCurve.length == 0)
+        {
+            marketValueScoreCurve =
+                AnimationCurve.Linear(0f, 0f, 1f, 1f);
+        }
 
         floorGapWeight = Mathf.Max(0f, floorGapWeight);
         rangePositionWeight = Mathf.Max(0f, rangePositionWeight);
