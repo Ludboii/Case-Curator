@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff1fafda9512383479c4f566a1b73a80, type: 3}
+  m_Name: Upgrade_TrophyPedestal_07
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
+  upgradeId: trophy-room-pedestal-07
+  displayName: Trophy Pedestal VII
+  description: Unlocks Trophy Room Pedestal 7. Requires Global Elite VII.
+  icon: {fileID: 0}
+  category: 5
+  sortOrder: 206
+  hiddenUntilUnlocked: 0
+  unlockDefinition: {fileID: 11400000, guid: 22ac1d50bc630d440b7df931b1eef855, type: 2}
+  effectType: 0
+  defaultEffectValue: 0
+  levels:
+  - levelName: Trophy Pedestal VII
+    description: Unlocks Trophy Room Pedestal 7. Requires Global Elite VII.
+    currency: 0
+    cost: 2000000
+    additionalRequirement: {fileID: 0}
+    effectValue: 7

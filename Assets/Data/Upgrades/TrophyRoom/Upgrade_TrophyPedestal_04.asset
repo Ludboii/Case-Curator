@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff1fafda9512383479c4f566a1b73a80, type: 3}
+  m_Name: Upgrade_TrophyPedestal_04
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
+  upgradeId: trophy-room-pedestal-04
+  displayName: Trophy Pedestal IV
+  description: Unlocks Trophy Room Pedestal 4. Requires Global Elite IV.
+  icon: {fileID: 0}
+  category: 5
+  sortOrder: 203
+  hiddenUntilUnlocked: 0
+  unlockDefinition: {fileID: 11400000, guid: 207d8c153246eb14091acbf2e51e1685, type: 2}
+  effectType: 0
+  defaultEffectValue: 0
+  levels:
+  - levelName: Trophy Pedestal IV
+    description: Unlocks Trophy Room Pedestal 4. Requires Global Elite IV.
+    currency: 0
+    cost: 400000
+    additionalRequirement: {fileID: 0}
+    effectValue: 4
