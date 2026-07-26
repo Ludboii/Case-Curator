@@ -25,29 +25,31 @@ public static class MuseumIdleIncomeUpgradeUtility
     public const string LegacySharedIncomeMultiplierId =
         "museum-idle-income-multiplier";
 
-    public static double GetGoldIncomeMultiplier(GameDatabase database)
+    public static double GetGoldIncomeUpgradeMultiplier(GameDatabase database)
     {
-        double upgrade = Math.Max(
+        return Math.Max(
             0d,
             GetEffect(database, GoldIncomeMultiplierId, 1d));
+    }
 
-        double trophy = TrophyRoomService.Instance != null
-            ? TrophyRoomService.Instance.GetMuseumGoldIncomeMultiplier()
-            : 1d;
+    public static double GetDiamondIncomeUpgradeMultiplier(GameDatabase database)
+    {
+        return Math.Max(
+            0d,
+            GetEffect(database, DiamondIncomeMultiplierId, 1d));
+    }
 
+    public static double GetGoldIncomeMultiplier(GameDatabase database)
+    {
+        double upgrade = GetGoldIncomeUpgradeMultiplier(database);
+        double trophy = TrophyRoomFocusUtility.GetMuseumGoldIncomeMultiplier();
         return upgrade * Math.Max(1d, trophy);
     }
 
     public static double GetDiamondIncomeMultiplier(GameDatabase database)
     {
-        double upgrade = Math.Max(
-            0d,
-            GetEffect(database, DiamondIncomeMultiplierId, 1d));
-
-        double trophy = TrophyRoomService.Instance != null
-            ? TrophyRoomService.Instance.GetMuseumDiamondIncomeMultiplier()
-            : 1d;
-
+        double upgrade = GetDiamondIncomeUpgradeMultiplier(database);
+        double trophy = TrophyRoomFocusUtility.GetMuseumDiamondIncomeMultiplier();
         return upgrade * Math.Max(1d, trophy);
     }
 
