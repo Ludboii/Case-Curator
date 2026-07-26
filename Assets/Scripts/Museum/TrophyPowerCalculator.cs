@@ -3,8 +3,8 @@ using UnityEngine;
 
 /// <summary>
 /// Side-effect-free Trophy Power evaluation. The four main components use the
-/// approved 15/35/15/35 weighting, while float prestige combines cap-relative
-/// and absolute rarity so float-capped skins remain competitive.
+/// approved 15/35/15/35 weighting. Float prestige is evaluated relative to the
+/// skin's permitted float range, so capped skins are judged fairly.
 /// </summary>
 public static class TrophyPowerCalculator
 {
@@ -28,7 +28,8 @@ public static class TrophyPowerCalculator
             : PriceCalculator.GetPrice(item);
         double marketValueScore = GetMarketValueScore(
             marketValue,
-            active != null ? active.marketValueAtFullScore : 10000f);
+            active != null ? active.marketValueAtFullScore : 10000f,
+            active);
         double variantScore = GetVariantScore(item, active);
         double floatScore = GetFloatScore(item, active, result);
 
@@ -89,7 +90,8 @@ public static class TrophyPowerCalculator
 
     private static double GetMarketValueScore(
         double marketValue,
-        double fullScoreValue)
+        double fullScoreValue,
+        TrophyRoomBalanceData balance)
     {
         double safeValue = Math.Max(0d, marketValue);
         double reference = Math.Max(1d, fullScoreValue);
@@ -98,7 +100,12 @@ public static class TrophyPowerCalculator
         if (denominator <= 0d)
             return 0d;
 
-        return Clamp01(Math.Log10(1d + safeValue) / denominator);
+        double logarithmicScore = Clamp01(
+            Math.Log10(1d + safeValue) / denominator);
+
+        return balance != null
+            ? balance.EvaluateMarketValueScore(logarithmicScore)
+            : logarithmicScore;
     }
 
     private static double GetVariantScore(
@@ -154,9 +161,12 @@ public static class TrophyPowerCalculator
             balance != null ? balance.lowRangePositionCurve : null,
             positionFromMinimum,
             DefaultLowRangePositionScore);
+
+        // The effective low float is the distance above this skin's own minimum.
+        // Example: 0.06005 on a 0.06-capped skin is evaluated as 0.00005.
         double absoluteLowScore = EvaluateCurve(
             balance != null ? balance.absoluteLowFloatCurve : null,
-            value,
+            floorGap,
             DefaultAbsoluteLowScore);
 
         double ceilingGapScore = EvaluateCurve(
@@ -167,10 +177,12 @@ public static class TrophyPowerCalculator
             balance != null ? balance.highRangePositionCurve : null,
             positionFromMaximum,
             DefaultLowRangePositionScore);
+
+        // High-float prestige is likewise relative to the skin's own maximum.
         double absoluteHighScore = EvaluateCurve(
             balance != null ? balance.absoluteHighFloatCurve : null,
-            value,
-            DefaultAbsoluteHighScore);
+            ceilingGap,
+            DefaultAbsoluteHighGapScore);
 
         double gapWeight = balance != null ? balance.floorGapWeight : 0.70d;
         double rangeWeight = balance != null
@@ -200,10 +212,7 @@ public static class TrophyPowerCalculator
             balance != null ? balance.highFloatStrength : 0.70d);
         double highPrestige = highBase * highStrength;
 
-        // A skin can only be judged from the side of the range it is actually
-        // closest to. Narrow ranges such as 0.06-0.20 previously produced both a
-        // low and high prestige value at once, which was confusing even though
-        // only the maximum contributed. The midpoint now cleanly selects one side.
+        // Only the nearest side of the permitted range can contribute.
         bool lowSide = positionFromMinimum <= 0.5d;
 
         result.lowFloatPrestige = lowSide ? lowPrestige : 0d;
@@ -253,7 +262,7 @@ public static class TrophyPowerCalculator
         return Interpolate(position, x, y);
     }
 
-    private static double DefaultAbsoluteLowScore(double value)
+    private static double DefaultAbsoluteLowScore(double effectiveFloat)
     {
         double[] x =
         {
@@ -261,14 +270,14 @@ public static class TrophyPowerCalculator
             0.03d, 0.06d, 0.10d
         };
         double[] y = { 1d, 0.98d, 0.90d, 0.65d, 0.35d, 0.10d, 0d };
-        return Interpolate(value, x, y);
+        return Interpolate(effectiveFloat, x, y);
     }
 
-    private static double DefaultAbsoluteHighScore(double value)
+    private static double DefaultAbsoluteHighGapScore(double ceilingGap)
     {
-        double[] x = { 0.70d, 0.85d, 0.93d, 0.97d, 0.99d, 0.999d };
-        double[] y = { 0d, 0.15d, 0.35d, 0.60d, 0.85d, 1d };
-        return Interpolate(value, x, y);
+        // Uses the same cap-relative rarity shape as low floats. The complete
+        // high side is still reduced by highFloatStrength.
+        return DefaultAbsoluteLowScore(ceilingGap);
     }
 
     private static double Interpolate(
