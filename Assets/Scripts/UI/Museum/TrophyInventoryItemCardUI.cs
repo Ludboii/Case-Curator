@@ -11,6 +11,10 @@ public sealed class TrophyInventoryItemCardUI : MonoBehaviour
     [SerializeField] private Button button;
     [SerializeField] private GameObject selectedIndicator;
 
+    private const string NormalVariantColor = "#FFFFFF";
+    private const string StatTrakVariantColor = "#FF8C24";
+    private const string SouvenirVariantColor = "#FFD24A";
+
     private InventoryItem item;
     private TrophySelectionPopupUI owner;
 
@@ -21,6 +25,9 @@ public sealed class TrophyInventoryItemCardUI : MonoBehaviour
             button.onClick.RemoveListener(HandleClicked);
             button.onClick.AddListener(HandleClicked);
         }
+
+        if (detailsText != null)
+            detailsText.richText = true;
     }
 
     private void OnDestroy()
@@ -64,12 +71,21 @@ public sealed class TrophyInventoryItemCardUI : MonoBehaviour
                 string variant = item.statTrak
                     ? "StatTrak"
                     : item.souvenir ? "Souvenir" : "Normal";
+
+                string variantColor = item.statTrak
+                    ? StatTrakVariantColor
+                    : item.souvenir
+                        ? SouvenirVariantColor
+                        : NormalVariantColor;
+
+                string rarityColor = GetRarityColor(item.skin.rarity);
                 string floatText = item.isVanilla || item.floatValue < 0d
                     ? "Vanilla"
                     : $"Float {item.floatValue:0.000000}";
 
                 detailsText.text =
-                    $"{item.skin.rarity} • {variant}\n" +
+                    $"<color={rarityColor}>{item.skin.rarity}</color> • " +
+                    $"<color={variantColor}>{variant}</color>\n" +
                     $"{floatText} • {item.marketValue:N2} Gold";
             }
         }
@@ -86,6 +102,29 @@ public sealed class TrophyInventoryItemCardUI : MonoBehaviour
 
         if (button != null)
             button.interactable = item != null && item.skin != null;
+    }
+
+    private static string GetRarityColor(Rarity rarity)
+    {
+        switch (rarity)
+        {
+            case Rarity.Consumer:
+                return "#B0C3D9";
+            case Rarity.Industrial:
+                return "#5E98D9";
+            case Rarity.MilSpec:
+                return "#4B69FF";
+            case Rarity.Restricted:
+                return "#8847FF";
+            case Rarity.Classified:
+                return "#D32CE6";
+            case Rarity.Covert:
+                return "#EB4B4B";
+            case Rarity.RareSpecial:
+                return "#E4AE39";
+            default:
+                return "#FFFFFF";
+        }
     }
 
     private void HandleClicked()
