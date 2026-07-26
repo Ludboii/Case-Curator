@@ -3,15 +3,18 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Companion for the main Museum sidebar button. The generic navigation action
-/// activates the Museum panel; this component then closes Museum-owned overlays
-/// and resets the browser to the entrance view.
+/// Companion for the main Museum sidebar button. It closes Museum overlays
+/// immediately, then resets the browser after the generic navigation action has
+/// activated the Museum panel.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class MuseumEntranceNavigationButton : MonoBehaviour
 {
     [SerializeField] private Button button;
     [SerializeField] private MuseumPanelUI museumPanel;
+    [SerializeField] private TrophyRoomPanelUI trophyRoomPanel;
+    [SerializeField] private TrophySelectionPopupUI trophySelectionPopup;
+    [SerializeField] private MuseumIdleIncomePopupUI idleIncomePopup;
 
     private Coroutine openRoutine;
 
@@ -34,6 +37,11 @@ public sealed class MuseumEntranceNavigationButton : MonoBehaviour
 
     private void HandleClicked()
     {
+        // Hide overlays before the generic sidebar listener changes panels. This
+        // prevents the previous Trophy selection screen flashing for one frame.
+        ResolveReferences();
+        CloseMuseumOverlays();
+
         if (openRoutine != null)
             StopCoroutine(openRoutine);
 
@@ -42,20 +50,20 @@ public sealed class MuseumEntranceNavigationButton : MonoBehaviour
 
     private IEnumerator OpenEntranceAfterNavigation()
     {
-        // Let the existing sidebar listener activate Panel_Museum first.
         yield return null;
 
-        ResetMuseumOverlays();
         ResolveReferences();
+        CloseMuseumOverlays();
 
         if (museumPanel != null)
             museumPanel.ShowEntrance();
 
-        // Some popup roots are later siblings and can be re-enabled by their own
-        // OnEnable work during the first frame. Repeat the reset at end of frame.
+        // A few overlay components refresh during OnEnable. Reassert the entrance
+        // after the frame has fully settled without leaving the old UI visible.
         yield return new WaitForEndOfFrame();
 
-        ResetMuseumOverlays();
+        ResolveReferences();
+        CloseMuseumOverlays();
 
         if (museumPanel != null)
             museumPanel.ShowEntrance();
@@ -63,40 +71,16 @@ public sealed class MuseumEntranceNavigationButton : MonoBehaviour
         openRoutine = null;
     }
 
-    private static void ResetMuseumOverlays()
+    private void CloseMuseumOverlays()
     {
-        TrophySelectionPopupUI[] trophySelections =
-            FindObjectsByType<TrophySelectionPopupUI>(
-                FindObjectsInactive.Include,
-                FindObjectsSortMode.None);
+        if (trophySelectionPopup != null)
+            trophySelectionPopup.Close();
 
-        for (int i = 0; i < trophySelections.Length; i++)
-        {
-            if (trophySelections[i] != null)
-                trophySelections[i].Close();
-        }
+        if (trophyRoomPanel != null)
+            trophyRoomPanel.Close();
 
-        TrophyRoomPanelUI[] trophyRooms =
-            FindObjectsByType<TrophyRoomPanelUI>(
-                FindObjectsInactive.Include,
-                FindObjectsSortMode.None);
-
-        for (int i = 0; i < trophyRooms.Length; i++)
-        {
-            if (trophyRooms[i] != null)
-                trophyRooms[i].Close();
-        }
-
-        MuseumIdleIncomePopupUI[] incomePopups =
-            FindObjectsByType<MuseumIdleIncomePopupUI>(
-                FindObjectsInactive.Include,
-                FindObjectsSortMode.None);
-
-        for (int i = 0; i < incomePopups.Length; i++)
-        {
-            if (incomePopups[i] != null)
-                incomePopups[i].Close();
-        }
+        if (idleIncomePopup != null)
+            idleIncomePopup.Close();
     }
 
     private void ResolveReferences()
@@ -107,6 +91,24 @@ public sealed class MuseumEntranceNavigationButton : MonoBehaviour
         if (museumPanel == null)
         {
             museumPanel = FindFirstObjectByType<MuseumPanelUI>(
+                FindObjectsInactive.Include);
+        }
+
+        if (trophyRoomPanel == null)
+        {
+            trophyRoomPanel = FindFirstObjectByType<TrophyRoomPanelUI>(
+                FindObjectsInactive.Include);
+        }
+
+        if (trophySelectionPopup == null)
+        {
+            trophySelectionPopup = FindFirstObjectByType<TrophySelectionPopupUI>(
+                FindObjectsInactive.Include);
+        }
+
+        if (idleIncomePopup == null)
+        {
+            idleIncomePopup = FindFirstObjectByType<MuseumIdleIncomePopupUI>(
                 FindObjectsInactive.Include);
         }
     }
