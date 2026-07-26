@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,6 +11,11 @@ using UnityEngine;
 [InitializeOnLoad]
 public static class SaveManagerPlayModeExitGuard
 {
+    private static readonly FieldInfo SaveDirtyField =
+        typeof(SaveManager).GetField(
+            "saveDirty",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
     static SaveManagerPlayModeExitGuard()
     {
         EditorApplication.playModeStateChanged -= HandlePlayModeStateChanged;
@@ -21,20 +27,26 @@ public static class SaveManagerPlayModeExitGuard
         if (state != PlayModeStateChange.ExitingPlayMode)
             return;
 
-        if (!SaveManagerSessionBootstrap.InitializationFinished ||
-            !SaveManagerSessionBootstrap.CanSaveCurrentSession)
-        {
-            Debug.LogWarning(
-                "SaveManagerPlayModeExitGuard: Skipped the Play Mode exit save " +
-                "because the current persistence session was not confirmed safe. " +
-                "Existing save files were left untouched.");
-            return;
-        }
-
         SaveManager save = SaveManager.Instance;
 
         if (save == null)
             save = Object.FindFirstObjectByType<SaveManager>();
+
+        if (!SaveManagerSessionBootstrap.InitializationFinished ||
+            !SaveManagerSessionBootstrap.CanSaveCurrentSession)
+        {
+            // SaveManager.OnApplicationQuit can run after this editor callback.
+            // Clear only the runtime dirty flag so that quit cannot write an
+            // unloaded/unsafe state over the existing main and backup files.
+            if (save != null && SaveDirtyField != null)
+                SaveDirtyField.SetValue(save, false);
+
+            Debug.LogWarning(
+                "SaveManagerPlayModeExitGuard: Blocked the Play Mode exit save " +
+                "because the current persistence session was not confirmed safe. " +
+                "Existing save files were left untouched.");
+            return;
+        }
 
         if (save == null || !save.IsDirty)
             return;
