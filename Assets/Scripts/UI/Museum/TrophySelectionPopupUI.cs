@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -7,6 +8,8 @@ using UnityEngine.UI;
 /// <summary>
 /// Paged Trophy inventory selector. Only one page of cards is instantiated, so
 /// inventories with hundreds of skins do not create a large one-frame UI spike.
+/// The selector also retries after activation because inventory loading and an
+/// inactive popup can otherwise complete in different frames.
 /// </summary>
 public sealed class TrophySelectionPopupUI : MonoBehaviour
 {
@@ -40,14 +43,20 @@ public sealed class TrophySelectionPopupUI : MonoBehaviour
 
     private readonly List<TrophyInventoryItemCardUI> cardPool =
         new List<TrophyInventoryItemCardUI>();
+
     private readonly List<InventoryItem> filteredItems =
         new List<InventoryItem>();
 
     private TrophyRoomService service;
     private TrophyRoomPanelUI owner;
     private InventoryItem selectedItem;
+    private InventoryManager subscribedInventory;
+    private Coroutine deferredRefresh;
     private int slotIndex = -1;
     private int currentPage;
+    private int lastObservedInventoryCount = -1;
+    private string lastObservedSearchText = "";
+    private bool listenersBound;
 
     private TrophyInventorySortMode SortMode =>
         (TrophyInventorySortMode)Mathf.Clamp(
@@ -57,8 +66,131 @@ public sealed class TrophySelectionPopupUI : MonoBehaviour
 
     private void Awake()
     {
+        ResolveReferences();
+        BindListeners();
+    }
+
+    private void OnEnable()
+    {
+        ResolveReferences();
+        BindListeners();
+        SubscribeToInventory();
+
+        if (slotIndex >= 0)
+            QueueDeferredRefresh();
+    }
+
+    private void Update()
+    {
+        if (root == null || !root.activeSelf)
+            return;
+
+        SubscribeToInventory();
+
+        string searchText = GetSearchText();
+        int inventoryCount = InventoryManager.Instance != null
+            ? InventoryManager.Instance.Count
+            : -1;
+
+        // Polling is intentional. It keeps search functional even when an older
+        // prefab lost its TMP_InputField event binding, and catches inventory load
+        // completion when it happens after the popup was opened.
+        if (!string.Equals(
+                searchText,
+                lastObservedSearchText,
+                StringComparison.Ordinal) ||
+            inventoryCount != lastObservedInventoryCount)
+        {
+            lastObservedSearchText = searchText;
+            lastObservedInventoryCount = inventoryCount;
+            currentPage = 0;
+            RebuildFilteredItems();
+        }
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeFromInventory();
+
+        if (deferredRefresh != null)
+        {
+            StopCoroutine(deferredRefresh);
+            deferredRefresh = null;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribeFromInventory();
+        UnbindListeners();
+    }
+
+    public void Open(
+        int zeroBasedSlotIndex,
+        TrophyRoomService trophyService,
+        TrophyRoomPanelUI panel)
+    {
+        service = trophyService != null
+            ? trophyService
+            : TrophyRoomService.GetOrCreate();
+
+        owner = panel;
+        slotIndex = zeroBasedSlotIndex;
+        selectedItem = null;
+        currentPage = 0;
+
+        ResolveReferences();
+
         if (root == null)
             root = gameObject;
+
+        root.SetActive(true);
+        SubscribeToInventory();
+
+        if (titleText != null)
+            titleText.text = $"SELECT TROPHY FOR PEDESTAL {slotIndex + 1}";
+
+        SetResult("");
+        lastObservedSearchText = GetSearchText();
+        lastObservedInventoryCount = InventoryManager.Instance != null
+            ? InventoryManager.Instance.Count
+            : -1;
+
+        RebuildFilteredItems();
+        RefreshPreview();
+        QueueDeferredRefresh();
+    }
+
+    public void Close()
+    {
+        if (root != null)
+            root.SetActive(false);
+    }
+
+    public void SelectItem(InventoryItem item)
+    {
+        selectedItem = item;
+        SetResult("");
+        RefreshPage();
+        RefreshPreview();
+    }
+
+    private void ResolveReferences()
+    {
+        if (root == null)
+            root = gameObject;
+
+        if (searchInput == null)
+            searchInput = GetComponentInChildren<TMP_InputField>(true);
+
+        if (sortDropdown == null)
+            sortDropdown = GetComponentInChildren<TMP_Dropdown>(true);
+    }
+
+    private void BindListeners()
+    {
+        if (listenersBound)
+            return;
 
         BindButton(closeButton, Close);
         BindButton(placeButton, PlaceSelectedItem);
@@ -77,10 +209,15 @@ public sealed class TrophySelectionPopupUI : MonoBehaviour
             sortDropdown.onValueChanged.AddListener(HandleSortChanged);
             BuildSortOptions();
         }
+
+        listenersBound = true;
     }
 
-    private void OnDestroy()
+    private void UnbindListeners()
     {
+        if (!listenersBound)
+            return;
+
         UnbindButton(closeButton, Close);
         UnbindButton(placeButton, PlaceSelectedItem);
         UnbindButton(previousPageButton, PreviousPage);
@@ -91,49 +228,82 @@ public sealed class TrophySelectionPopupUI : MonoBehaviour
 
         if (sortDropdown != null)
             sortDropdown.onValueChanged.RemoveListener(HandleSortChanged);
+
+        listenersBound = false;
     }
 
-    public void Open(
-        int zeroBasedSlotIndex,
-        TrophyRoomService trophyService,
-        TrophyRoomPanelUI panel)
+    private void SubscribeToInventory()
     {
-        service = trophyService;
-        owner = panel;
-        slotIndex = zeroBasedSlotIndex;
-        selectedItem = null;
+        InventoryManager current = InventoryManager.Instance;
+
+        if (ReferenceEquals(subscribedInventory, current))
+            return;
+
+        UnsubscribeFromInventory();
+        subscribedInventory = current;
+
+        if (subscribedInventory != null)
+            subscribedInventory.OnInventoryChanged += HandleInventoryChanged;
+    }
+
+    private void UnsubscribeFromInventory()
+    {
+        if (subscribedInventory != null)
+            subscribedInventory.OnInventoryChanged -= HandleInventoryChanged;
+
+        subscribedInventory = null;
+    }
+
+    private void HandleInventoryChanged()
+    {
+        lastObservedInventoryCount = InventoryManager.Instance != null
+            ? InventoryManager.Instance.Count
+            : -1;
+
         currentPage = 0;
-
-        if (root == null)
-            root = gameObject;
-
-        root.SetActive(true);
-
-        if (titleText != null)
-            titleText.text = $"SELECT TROPHY FOR PEDESTAL {slotIndex + 1}";
-
-        SetResult("");
         RebuildFilteredItems();
         RefreshPreview();
     }
 
-    public void Close()
+    private void QueueDeferredRefresh()
     {
-        if (root != null)
-            root.SetActive(false);
+        if (!isActiveAndEnabled)
+            return;
+
+        if (deferredRefresh != null)
+            StopCoroutine(deferredRefresh);
+
+        deferredRefresh = StartCoroutine(RefreshAfterActivation());
     }
 
-    public void SelectItem(InventoryItem item)
+    private IEnumerator RefreshAfterActivation()
     {
-        selectedItem = item;
-        SetResult("");
-        RefreshPage();
+        // First frame: the popup becomes active. Second frame: load/bootstrap
+        // callbacks and layout work have completed.
+        yield return null;
+        yield return null;
+
+        deferredRefresh = null;
+        service = service != null
+            ? service
+            : TrophyRoomService.GetOrCreate();
+
+        SubscribeToInventory();
+        lastObservedSearchText = GetSearchText();
+        lastObservedInventoryCount = InventoryManager.Instance != null
+            ? InventoryManager.Instance.Count
+            : -1;
+
+        RebuildFilteredItems();
         RefreshPreview();
     }
 
     private void RebuildFilteredItems()
     {
         filteredItems.Clear();
+
+        if (service == null && SaveManager.Instance != null)
+            service = TrophyRoomService.GetOrCreate();
 
         if (service == null)
         {
@@ -142,9 +312,7 @@ public sealed class TrophySelectionPopupUI : MonoBehaviour
         }
 
         List<InventoryItem> source = service.GetSelectionItems(SortMode);
-        string query = searchInput != null && searchInput.text != null
-            ? searchInput.text.Trim()
-            : "";
+        string query = GetSearchText();
 
         for (int i = 0; i < source.Count; i++)
         {
@@ -162,9 +330,15 @@ public sealed class TrophySelectionPopupUI : MonoBehaviour
             filteredItems.Add(item);
         }
 
-        int maximumPage = GetMaximumPage();
-        currentPage = Mathf.Clamp(currentPage, 0, maximumPage);
+        currentPage = Mathf.Clamp(currentPage, 0, GetMaximumPage());
         RefreshPage();
+    }
+
+    private string GetSearchText()
+    {
+        return searchInput != null && searchInput.text != null
+            ? searchInput.text.Trim()
+            : "";
     }
 
     private void RefreshPage()
@@ -216,13 +390,38 @@ public sealed class TrophySelectionPopupUI : MonoBehaviour
         if (nextPageButton != null)
             nextPageButton.interactable = currentPage < pageCount - 1;
 
-        if (emptyText != null)
+        RefreshEmptyState();
+    }
+
+    private void RefreshEmptyState()
+    {
+        if (emptyText == null)
+            return;
+
+        bool empty = filteredItems.Count == 0;
+        emptyText.gameObject.SetActive(empty);
+
+        if (!empty)
         {
-            emptyText.gameObject.SetActive(filteredItems.Count == 0);
-            emptyText.text = filteredItems.Count == 0
-                ? "No inventory items match the current filters."
-                : "";
+            emptyText.text = "";
+            return;
         }
+
+        if (InventoryManager.Instance == null)
+        {
+            emptyText.text = "Inventory is still loading.";
+            return;
+        }
+
+        if (InventoryManager.Instance.Count <= 0)
+        {
+            emptyText.text = "There are no skins in normal inventory.";
+            return;
+        }
+
+        emptyText.text = string.IsNullOrWhiteSpace(GetSearchText())
+            ? "Inventory items are still being prepared."
+            : "No inventory items match the current search.";
     }
 
     private void RefreshPreview()
@@ -264,15 +463,18 @@ public sealed class TrophySelectionPopupUI : MonoBehaviour
         TrophyPowerBreakdown power = service.EvaluateItem(
             selectedItem,
             slotIndex);
+
         TrophyRoomSnapshot room = service.GetSnapshot();
         TrophyRoomSlotSnapshot currentSlot = slotIndex >= 0 &&
                                              slotIndex < room.slots.Count
             ? room.slots[slotIndex]
             : null;
+
         int currentContribution = currentSlot != null &&
                                   currentSlot.power != null
             ? currentSlot.power.finalContribution
             : 0;
+
         int projectedPower = Math.Max(
             0,
             room.totalWeightedPower - currentContribution +
@@ -281,6 +483,7 @@ public sealed class TrophySelectionPopupUI : MonoBehaviour
         string variant = selectedItem.statTrak
             ? "StatTrak"
             : selectedItem.souvenir ? "Souvenir" : "Normal";
+
         string floatText = selectedItem.isVanilla ||
                            selectedItem.floatValue < 0d
             ? "Vanilla"
@@ -314,6 +517,7 @@ public sealed class TrophySelectionPopupUI : MonoBehaviour
                                             SaveManager.Instance.database != null
                 ? SaveManager.Instance.database.trophyRoomBalance
                 : null;
+
             double currentBonus = room.activeBonusFraction;
             double projectedBonus = balance != null
                 ? balance.EvaluateFocusBonus(room.focus, projectedPower)
@@ -322,7 +526,7 @@ public sealed class TrophySelectionPopupUI : MonoBehaviour
             projectedBonusText.text =
                 $"Current room: {room.totalWeightedPower:N0} power\n" +
                 $"Projected room: {projectedPower:N0} power\n\n" +
-                $"Current: " +
+                "Current: " +
                 TrophyRoomPanelUI.FormatFocusBonus(room.focus, currentBonus) +
                 "\nProjected: " +
                 TrophyRoomPanelUI.FormatFocusBonus(room.focus, projectedBonus);
@@ -376,8 +580,9 @@ public sealed class TrophySelectionPopupUI : MonoBehaviour
         int safePageSize = Mathf.Max(10, itemsPerPage);
         return filteredItems.Count <= 0
             ? 0
-            : Mathf.Max(0, Mathf.CeilToInt(
-                filteredItems.Count / (float)safePageSize) - 1);
+            : Mathf.Max(
+                0,
+                Mathf.CeilToInt(filteredItems.Count / (float)safePageSize) - 1);
     }
 
     private void EnsureCardPool()
@@ -392,6 +597,7 @@ public sealed class TrophySelectionPopupUI : MonoBehaviour
             TrophyInventoryItemCardUI card = Instantiate(
                 itemCardPrefab,
                 content);
+
             card.gameObject.SetActive(false);
             cardPool.Add(card);
         }
@@ -399,6 +605,7 @@ public sealed class TrophySelectionPopupUI : MonoBehaviour
 
     private void HandleFilterChanged(string value)
     {
+        lastObservedSearchText = value != null ? value.Trim() : "";
         currentPage = 0;
         RebuildFilteredItems();
     }
@@ -411,6 +618,10 @@ public sealed class TrophySelectionPopupUI : MonoBehaviour
 
     private void BuildSortOptions()
     {
+        if (sortDropdown == null)
+            return;
+
+        int previousValue = sortDropdown.value;
         sortDropdown.ClearOptions();
         sortDropdown.AddOptions(new List<string>
         {
@@ -421,6 +632,10 @@ public sealed class TrophySelectionPopupUI : MonoBehaviour
             "Newest",
             "Weapon"
         });
+
+        sortDropdown.SetValueWithoutNotify(
+            Mathf.Clamp(previousValue, 0, sortDropdown.options.Count - 1));
+        sortDropdown.RefreshShownValue();
     }
 
     private static bool MatchesSearch(
