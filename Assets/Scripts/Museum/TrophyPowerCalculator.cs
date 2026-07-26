@@ -20,7 +20,9 @@ public static class TrophyPowerCalculator
 
         TrophyRoomBalanceData active = balance;
 
-        double rarityScore = GetRarityScore(item.skin.rarity);
+        double rarityScore = active != null
+            ? active.GetRarityScore(item.skin.rarity)
+            : GetDefaultRarityScore(item.skin.rarity);
         double marketValue = item.marketValue > 0f
             ? item.marketValue
             : PriceCalculator.GetPrice(item);
@@ -64,7 +66,7 @@ public static class TrophyPowerCalculator
         return result;
     }
 
-    private static double GetRarityScore(Rarity rarity)
+    private static double GetDefaultRarityScore(Rarity rarity)
     {
         switch (rarity)
         {
@@ -198,17 +200,23 @@ public static class TrophyPowerCalculator
             balance != null ? balance.highFloatStrength : 0.70d);
         double highPrestige = highBase * highStrength;
 
-        result.lowFloatPrestige = lowPrestige;
-        result.highFloatPrestige = highPrestige;
-        result.rangeRelativePrestige = Math.Max(
-            floorGapScore * gapWeight + lowRangeScore * rangeWeight,
-            (ceilingGapScore * gapWeight + highRangeScore * rangeWeight) *
-            highStrength);
-        result.absoluteFloatPrestige = Math.Max(
-            absoluteLowScore,
-            absoluteHighScore * highStrength);
+        // A skin can only be judged from the side of the range it is actually
+        // closest to. Narrow ranges such as 0.06-0.20 previously produced both a
+        // low and high prestige value at once, which was confusing even though
+        // only the maximum contributed. The midpoint now cleanly selects one side.
+        bool lowSide = positionFromMinimum <= 0.5d;
 
-        return Math.Max(lowPrestige, highPrestige);
+        result.lowFloatPrestige = lowSide ? lowPrestige : 0d;
+        result.highFloatPrestige = lowSide ? 0d : highPrestige;
+        result.rangeRelativePrestige = lowSide
+            ? floorGapScore * gapWeight + lowRangeScore * rangeWeight
+            : (ceilingGapScore * gapWeight + highRangeScore * rangeWeight) *
+              highStrength;
+        result.absoluteFloatPrestige = lowSide
+            ? absoluteLowScore
+            : absoluteHighScore * highStrength;
+
+        return lowSide ? lowPrestige : highPrestige;
     }
 
     private static double EvaluateCurve(
