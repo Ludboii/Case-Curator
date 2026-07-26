@@ -116,8 +116,7 @@ public class SkinInspectUI : MonoBehaviour
 
         if (item == null || item.skin == null)
         {
-            Debug.LogWarning(
-                "SkinInspectUI: tried to inspect a null item.");
+            Debug.LogWarning("SkinInspectUI: tried to inspect a null item.");
             return;
         }
 
@@ -141,48 +140,23 @@ public class SkinInspectUI : MonoBehaviour
 
     private void UpdateStickerSlotVisibility(SkinData skin)
     {
-        if (stickerSlotsRoot == null)
-            return;
-
-        stickerSlotsRoot.SetActive(SupportsStickers(skin));
+        if (stickerSlotsRoot != null)
+            stickerSlotsRoot.SetActive(SupportsStickers(skin));
     }
 
     private static bool SupportsStickers(SkinData skin)
     {
-        if (skin == null)
-            return false;
-
-        // Current Rare Special assets are knives or gloves. Neither category
-        // receives weapon-sticker slots.
-        if (skin.rarity == Rarity.RareSpecial)
+        if (skin == null || skin.rarity == Rarity.RareSpecial)
             return false;
 
         string weaponName = (skin.weaponName ?? "").ToLowerInvariant();
-
         string[] nonStickerTerms =
         {
-            "knife",
-            "bayonet",
-            "karambit",
-            "dagger",
-            "glove",
-            "hand wrap",
-            "handwrap",
-            "falchion",
-            "bowie",
-            "huntsman",
-            "butterfly",
-            "navaja",
-            "stiletto",
-            "talon",
-            "ursus",
-            "nomad",
-            "paracord",
-            "survival",
-            "skeleton",
-            "kukri",
-            "gut knife",
-            "flip knife"
+            "knife", "bayonet", "karambit", "dagger", "glove",
+            "hand wrap", "handwrap", "falchion", "bowie", "huntsman",
+            "butterfly", "navaja", "stiletto", "talon", "ursus",
+            "nomad", "paracord", "survival", "skeleton", "kukri",
+            "gut knife", "flip knife"
         };
 
         for (int i = 0; i < nonStickerTerms.Length; i++)
@@ -223,8 +197,7 @@ public class SkinInspectUI : MonoBehaviour
     {
         if (currentItem == null)
         {
-            Debug.LogWarning(
-                "SkinInspectUI: No current item to favorite.");
+            Debug.LogWarning("SkinInspectUI: No current item to favorite.");
             return;
         }
 
@@ -245,12 +218,12 @@ public class SkinInspectUI : MonoBehaviour
         bool hasItem = currentItem != null && currentItem.skin != null;
         favoriteButton.interactable = hasItem;
 
-        if (favoriteButtonText == null)
-            return;
-
-        favoriteButtonText.text = hasItem && currentItem.favorite
-            ? favoriteOnText
-            : favoriteOffText;
+        if (favoriteButtonText != null)
+        {
+            favoriteButtonText.text = hasItem && currentItem.favorite
+                ? favoriteOnText
+                : favoriteOffText;
+        }
     }
 
     private void UpdateMoveButton()
@@ -272,9 +245,7 @@ public class SkinInspectUI : MonoBehaviour
             return;
         }
 
-        int destination =
-            manager.FindNextStorageWithSpace(currentItem.storageIndex);
-
+        int destination = manager.FindNextStorageWithSpace(currentItem.storageIndex);
         bool canMove = destination >= 0;
         moveButton.interactable = canMove;
 
@@ -300,9 +271,7 @@ public class SkinInspectUI : MonoBehaviour
             return;
         }
 
-        Debug.Log(
-            $"Moved inspected item to Storage {destination + 1}.");
-
+        Debug.Log($"Moved inspected item to Storage {destination + 1}.");
         Close();
     }
 
@@ -326,16 +295,14 @@ public class SkinInspectUI : MonoBehaviour
     {
         if (currentItem == null || currentItem.skin == null)
         {
-            Debug.LogWarning(
-                "SkinInspectUI: No item selected to sell.");
+            Debug.LogWarning("SkinInspectUI: No item selected to sell.");
             return;
         }
 
         if (currentItem.favorite)
         {
             Debug.LogWarning(
-                "SkinInspectUI: Cannot sell a favorited item. " +
-                "Unfavorite it first.");
+                "SkinInspectUI: Cannot sell a favorited item. Unfavorite it first.");
             return;
         }
 
@@ -369,8 +336,7 @@ public class SkinInspectUI : MonoBehaviour
         if (currentItem.favorite)
         {
             Debug.LogWarning(
-                "SkinInspectUI: Cannot sell a favorited item. " +
-                "Unfavorite it first.");
+                "SkinInspectUI: Cannot sell a favorited item. Unfavorite it first.");
             return;
         }
 
@@ -389,13 +355,9 @@ public class SkinInspectUI : MonoBehaviour
         }
 
         float sellValue = GetSellValue(currentItem);
-        string soldName =
-            SkinDisplayUtility.GetDisplayName(currentItem.skin);
+        string soldName = SkinDisplayUtility.GetDisplayName(currentItem.skin);
 
-        bool removed =
-            InventoryManager.Instance.RemoveItem(currentItem);
-
-        if (!removed)
+        if (!InventoryManager.Instance.RemoveItem(currentItem))
         {
             Debug.LogWarning(
                 $"SkinInspectUI: Failed to remove sold item: {soldName}");
@@ -403,10 +365,7 @@ public class SkinInspectUI : MonoBehaviour
         }
 
         SaveManager.Instance.AddGold(sellValue);
-
-        Debug.Log(
-            $"Sold {soldName} for {sellValue:0.##} gold.");
-
+        Debug.Log($"Sold {soldName} for {sellValue:0.##} gold.");
         currentItem = null;
         Close();
     }
@@ -416,12 +375,8 @@ public class SkinInspectUI : MonoBehaviour
         if (rarityBackground == null)
             return;
 
-        Color rarityColor =
-            RarityColorUtility.GetColor(skin.rarity);
-
-        Color backgroundColor =
-            Color.Lerp(Color.black, rarityColor, 0.55f);
-
+        Color rarityColor = RarityColorUtility.GetColor(skin.rarity);
+        Color backgroundColor = Color.Lerp(Color.black, rarityColor, 0.55f);
         backgroundColor.a = 1f;
         rarityBackground.color = backgroundColor;
     }
@@ -551,14 +506,24 @@ public class SkinInspectUI : MonoBehaviour
 
         string lowerName = (skin.skinName ?? "").ToLowerInvariant();
 
-        if (lowerName.Contains("ruby"))
-            return rubyGem;
-        if (lowerName.Contains("sapphire"))
-            return sapphireGem;
-        if (lowerName.Contains("emerald"))
+        // Named Doppler gems are only valid for their corresponding Doppler
+        // finish families. This prevents finishes such as Specialist Gloves |
+        // Emerald Web from being mistaken for a Gamma Doppler Emerald gem.
+        if (skin.patternType == PatternType.Doppler)
+        {
+            if (lowerName.Contains("ruby"))
+                return rubyGem;
+            if (lowerName.Contains("sapphire"))
+                return sapphireGem;
+            if (lowerName.Contains("black pearl"))
+                return blackPearlGem;
+        }
+
+        if (skin.patternType == PatternType.GammaDoppler &&
+            lowerName.Contains("emerald"))
+        {
             return emeraldGem;
-        if (lowerName.Contains("black pearl"))
-            return blackPearlGem;
+        }
 
         return null;
     }
