@@ -27,6 +27,6 @@ MonoBehaviour:
   reward: {fileID: 11400000, guid: 6e6a4c899eb5cf945afc7eaeec6004d2, type: 2}
   unlockedPlaqueId: museum-plaque-step-01
   announcedFeatureUnlock: 0
-  unlocksPassiveMuseumGold: 0
+  unlocksPassiveMuseumGold: 1
   unlocksPassiveDiamonds: 0
   announcedSystemId: 
