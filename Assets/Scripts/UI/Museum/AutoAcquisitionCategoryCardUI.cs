@@ -64,7 +64,7 @@ public class AutoAcquisitionCategoryCardUI : MonoBehaviour
         {
             progressText.text = owned
                 ? $"Research: {researched:N0} / {total:N0}"
-                : "ARCHIVE LOCKED";
+                : "ARCHIVE LOCKED — PREVIEW AVAILABLE";
         }
 
         if (licenseButtonText != null)
@@ -78,7 +78,7 @@ public class AutoAcquisitionCategoryCardUI : MonoBehaviour
         SetupButton(licenseButton, HandleLicense);
 
         if (openButton != null)
-            openButton.interactable = owned;
+            openButton.interactable = category != null;
 
         if (licenseButton != null)
             licenseButton.interactable = !owned && category != null;
