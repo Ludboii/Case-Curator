@@ -37,8 +37,13 @@ public class TradeupContractUI : MonoBehaviour
     [SerializeField] private GameObject approvedStamp;
 
     [Header("Typewriter")]
+    [Tooltip("Character delay used only for the ten consumed input names.")]
     [SerializeField, Min(0f)]
     private float characterDelay = 0.025f;
+
+    [Tooltip("Character delay used only for the received/result item name.")]
+    [SerializeField, Min(0f)]
+    private float resultCharacterDelay = 0.06f;
 
     [SerializeField, Min(0f)]
     private float delayBetweenInputNames = 0.08f;
@@ -295,7 +300,8 @@ public class TradeupContractUI : MonoBehaviour
 
             yield return TypeText(
                 targetText,
-                GetContractItemName(consumedInputs[i]));
+                GetContractItemName(consumedInputs[i]),
+                characterDelay);
 
             if (delayBetweenInputNames > 0f)
                 yield return Wait(delayBetweenInputNames);
@@ -308,7 +314,8 @@ public class TradeupContractUI : MonoBehaviour
         {
             yield return TypeText(
                 receivedGoodText,
-                GetContractItemName(outputItem));
+                GetContractItemName(outputItem),
+                resultCharacterDelay);
         }
 
         if (approvedStamp != null)
@@ -340,7 +347,10 @@ public class TradeupContractUI : MonoBehaviour
         }
     }
 
-    private IEnumerator TypeText(TMP_Text targetText, string fullText)
+    private IEnumerator TypeText(
+        TMP_Text targetText,
+        string fullText,
+        float delayPerCharacter)
     {
         if (targetText == null)
             yield break;
@@ -356,8 +366,8 @@ public class TradeupContractUI : MonoBehaviour
         {
             targetText.text = fullText.Substring(0, characterIndex + 1);
 
-            if (characterDelay > 0f)
-                yield return Wait(characterDelay);
+            if (delayPerCharacter > 0f)
+                yield return Wait(delayPerCharacter);
         }
 
         targetText.text = fullText;
