@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -84,8 +85,9 @@ public sealed class MuseumCompletionRewardToastBridge : MonoBehaviour
             return;
         }
 
-        double museumPoints =
-            Mathf.Max(0f, (float)SaveManager.Instance.Museum.museumPoints);
+        double museumPoints = Math.Max(
+            0d,
+            SaveManager.Instance.Museum.museumPoints);
         TMP_Text[] texts = owner.GetComponentsInChildren<TMP_Text>(true);
 
         for (int i = 0; i < texts.Length; i++)
