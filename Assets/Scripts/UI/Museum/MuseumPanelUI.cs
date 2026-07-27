@@ -218,6 +218,12 @@ public class MuseumPanelUI : MonoBehaviour
         if (entry == null)
             return;
 
+        if (IsDirectSkinCategory(entry))
+        {
+            OpenDirectSkinCategory(entry);
+            return;
+        }
+
         CloseAllOverlays();
         ClearResultMessage();
         currentPage = MuseumBrowserPage.Weapons;
@@ -261,6 +267,53 @@ public class MuseumPanelUI : MonoBehaviour
 
         RefreshBackButton();
         RebuildLayout(weaponContent);
+    }
+
+    private void OpenDirectSkinCategory(MuseumCategoryEntry entry)
+    {
+        CloseAllOverlays();
+        ClearResultMessage();
+        currentPage = MuseumBrowserPage.Skins;
+        currentCategory = entry;
+        currentWeapon = null;
+        currentSkin = null;
+
+        string wingName = currentWing != null
+            ? currentWing.DisplayName
+            : "Museum";
+
+        SetActiveView(skinView);
+        SetHeader(
+            entry.DisplayName,
+            $"Museum / {wingName} / {entry.DisplayName}");
+        ClearCards();
+
+        List<MuseumSkinEntry> skins = CollectCategorySkins(entry);
+        int spawned = 0;
+
+        if (skinCardPrefab != null)
+        {
+            for (int i = 0; i < skins.Count; i++)
+            {
+                MuseumSkinEntry skin = skins[i];
+
+                if (skin == null)
+                    continue;
+
+                MuseumSkinCardUI card =
+                    Instantiate(skinCardPrefab, skinContent);
+                card.gameObject.SetActive(true);
+                card.Setup(skin, this);
+                spawnedCards.Add(card.gameObject);
+                spawned++;
+            }
+        }
+
+        ShowEmptyState(
+            spawned == 0,
+            "This collection has no eligible Souvenir skins.");
+        RefreshBackButton();
+        RebuildLayout(skinContent);
     }
 
     public void OpenWeapon(MuseumWeaponEntry entry)
@@ -460,7 +513,10 @@ public class MuseumPanelUI : MonoBehaviour
         switch (currentPage)
         {
             case MuseumBrowserPage.Skins:
-                OpenCategory(currentCategory);
+                if (IsDirectSkinCategory(currentCategory))
+                    OpenWing(currentWing);
+                else
+                    OpenCategory(currentCategory);
                 break;
 
             case MuseumBrowserPage.Weapons:
@@ -523,13 +579,18 @@ public class MuseumPanelUI : MonoBehaviour
         RefreshCurrentLocationAfterCatalogChange(donationKey);
     }
 
-    private void RefreshCurrentLocationAfterCatalogChange(string preferredDonationKey)
+    private void RefreshCurrentLocationAfterCatalogChange(
+        string preferredDonationKey)
     {
         ResolveService();
 
         string wingId = currentWing != null ? currentWing.WingId : "";
-        string categoryId = currentCategory != null ? currentCategory.CategoryId : "";
-        string weaponName = currentWeapon != null ? currentWeapon.weaponName : "";
+        string categoryId = currentCategory != null
+            ? currentCategory.CategoryId
+            : "";
+        string weaponName = currentWeapon != null
+            ? currentWeapon.weaponName
+            : "";
         string skinApiId = currentSkin != null && currentSkin.skin != null
             ? currentSkin.skin.apiId
             : "";
@@ -545,10 +606,13 @@ public class MuseumPanelUI : MonoBehaviour
         MuseumWingEntry refreshedWing = FindWing(wingId);
         MuseumCategoryEntry refreshedCategory =
             FindCategory(refreshedWing, categoryId);
-        MuseumWeaponEntry refreshedWeapon =
-            FindWeapon(refreshedCategory, weaponName);
-        MuseumSkinEntry refreshedSkin =
-            FindSkin(refreshedWeapon, skinApiId, preferredDonationKey);
+        bool directCategory = IsDirectSkinCategory(refreshedCategory);
+        MuseumWeaponEntry refreshedWeapon = directCategory
+            ? null
+            : FindWeapon(refreshedCategory, weaponName);
+        MuseumSkinEntry refreshedSkin = directCategory
+            ? FindSkin(refreshedCategory, skinApiId, preferredDonationKey)
+            : FindSkin(refreshedWeapon, skinApiId, preferredDonationKey);
 
         if (previousPage == MuseumBrowserPage.Wings || refreshedWing == null)
         {
@@ -558,7 +622,8 @@ public class MuseumPanelUI : MonoBehaviour
 
         currentWing = refreshedWing;
 
-        if (previousPage == MuseumBrowserPage.Categories || refreshedCategory == null)
+        if (previousPage == MuseumBrowserPage.Categories ||
+            refreshedCategory == null)
         {
             OpenWing(refreshedWing);
             return;
@@ -566,7 +631,18 @@ public class MuseumPanelUI : MonoBehaviour
 
         currentCategory = refreshedCategory;
 
-        if (previousPage == MuseumBrowserPage.Weapons || refreshedWeapon == null)
+        if (directCategory)
+        {
+            OpenCategory(refreshedCategory);
+
+            if (reopenSkin && refreshedSkin != null)
+                OpenSkin(refreshedSkin);
+
+            return;
+        }
+
+        if (previousPage == MuseumBrowserPage.Weapons ||
+            refreshedWeapon == null)
         {
             OpenCategory(refreshedCategory);
             return;
@@ -660,24 +736,63 @@ public class MuseumPanelUI : MonoBehaviour
         for (int i = 0; i < weapon.skins.Count; i++)
         {
             MuseumSkinEntry skin = weapon.skins[i];
+            MuseumSkinEntry match = MatchSkin(
+                skin,
+                skinApiId,
+                preferredDonationKey);
 
-            if (skin == null || skin.skin == null)
-                continue;
+            if (match != null)
+                return match;
+        }
 
-            if (!string.IsNullOrWhiteSpace(skinApiId) &&
-                string.Equals(
-                    skin.skin.apiId,
-                    skinApiId,
-                    StringComparison.Ordinal))
-            {
-                return skin;
-            }
+        return null;
+    }
 
-            if (!string.IsNullOrWhiteSpace(preferredDonationKey) &&
-                ContainsSlot(skin, preferredDonationKey))
-            {
-                return skin;
-            }
+    private static MuseumSkinEntry FindSkin(
+        MuseumCategoryEntry category,
+        string skinApiId,
+        string preferredDonationKey)
+    {
+        if (category == null || category.weapons == null)
+            return null;
+
+        for (int weaponIndex = 0;
+             weaponIndex < category.weapons.Count;
+             weaponIndex++)
+        {
+            MuseumSkinEntry match = FindSkin(
+                category.weapons[weaponIndex],
+                skinApiId,
+                preferredDonationKey);
+
+            if (match != null)
+                return match;
+        }
+
+        return null;
+    }
+
+    private static MuseumSkinEntry MatchSkin(
+        MuseumSkinEntry skin,
+        string skinApiId,
+        string preferredDonationKey)
+    {
+        if (skin == null || skin.skin == null)
+            return null;
+
+        if (!string.IsNullOrWhiteSpace(skinApiId) &&
+            string.Equals(
+                skin.skin.apiId,
+                skinApiId,
+                StringComparison.Ordinal))
+        {
+            return skin;
+        }
+
+        if (!string.IsNullOrWhiteSpace(preferredDonationKey) &&
+            ContainsSlot(skin, preferredDonationKey))
+        {
+            return skin;
         }
 
         return null;
@@ -717,6 +832,67 @@ public class MuseumPanelUI : MonoBehaviour
         }
 
         return "";
+    }
+
+    private static List<MuseumSkinEntry> CollectCategorySkins(
+        MuseumCategoryEntry category)
+    {
+        List<MuseumSkinEntry> result = new List<MuseumSkinEntry>();
+
+        if (category == null || category.weapons == null)
+            return result;
+
+        for (int weaponIndex = 0;
+             weaponIndex < category.weapons.Count;
+             weaponIndex++)
+        {
+            MuseumWeaponEntry weapon = category.weapons[weaponIndex];
+
+            if (weapon == null || weapon.skins == null)
+                continue;
+
+            for (int skinIndex = 0;
+                 skinIndex < weapon.skins.Count;
+                 skinIndex++)
+            {
+                MuseumSkinEntry skin = weapon.skins[skinIndex];
+
+                if (skin != null)
+                    result.Add(skin);
+            }
+        }
+
+        result.Sort((a, b) =>
+        {
+            int weaponCompare = string.Compare(
+                a != null ? a.weaponName : "",
+                b != null ? b.weaponName : "",
+                StringComparison.OrdinalIgnoreCase);
+
+            if (weaponCompare != 0)
+                return weaponCompare;
+
+            string aName = a != null && a.skin != null
+                ? SkinDisplayUtility.GetDisplayName(a.skin)
+                : "";
+            string bName = b != null && b.skin != null
+                ? SkinDisplayUtility.GetDisplayName(b.skin)
+                : "";
+
+            return string.Compare(
+                aName,
+                bName,
+                StringComparison.OrdinalIgnoreCase);
+        });
+
+        return result;
+    }
+
+    private static bool IsDirectSkinCategory(MuseumCategoryEntry category)
+    {
+        return category != null &&
+               category.config != null &&
+               category.config.openDirectlyToSkins;
     }
 
     private void RefreshHeader()
@@ -901,9 +1077,24 @@ public class MuseumPanelUI : MonoBehaviour
 
             builder.Append(wear < 0 ? "Vanilla" : GetWearAbbreviation(wear));
             builder.Append(": ");
-            AppendVariant(builder, entry, wear, MuseumDonationVariant.Normal, "N");
-            AppendVariant(builder, entry, wear, MuseumDonationVariant.StatTrak, "ST");
-            AppendVariant(builder, entry, wear, MuseumDonationVariant.Souvenir, "SV");
+            AppendVariant(
+                builder,
+                entry,
+                wear,
+                MuseumDonationVariant.Normal,
+                "N");
+            AppendVariant(
+                builder,
+                entry,
+                wear,
+                MuseumDonationVariant.StatTrak,
+                "ST");
+            AppendVariant(
+                builder,
+                entry,
+                wear,
+                MuseumDonationVariant.Souvenir,
+                "SV");
             builder.AppendLine();
         }
 
