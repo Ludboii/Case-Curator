@@ -17,7 +17,8 @@ public sealed class GoldCompletionCaseDiscountService : MonoBehaviour
     private readonly Dictionary<CaseData, float> basePrices =
         new Dictionary<CaseData, float>();
 
-    private float nextPresentationRefresh;
+    private ContainerProgressManager subscribedProgressManager;
+    private float nextRefresh;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
@@ -75,18 +76,16 @@ public sealed class GoldCompletionCaseDiscountService : MonoBehaviour
 
     private void Start()
     {
-        Subscribe();
-        ApplyAllDiscounts();
-        RefreshCompletionPresentation();
+        RefreshNow();
     }
 
     private void Update()
     {
-        if (Time.unscaledTime < nextPresentationRefresh)
+        if (Time.unscaledTime < nextRefresh)
             return;
 
-        nextPresentationRefresh = Time.unscaledTime + 0.25f;
-        RefreshCompletionPresentation();
+        nextRefresh = Time.unscaledTime + 0.25f;
+        RefreshNow();
     }
 
     private void OnDestroy()
@@ -98,24 +97,41 @@ public sealed class GoldCompletionCaseDiscountService : MonoBehaviour
             Instance = null;
     }
 
-    private void Subscribe()
+    private void RefreshNow()
     {
-        if (ContainerProgressManager.Instance == null)
+        EnsureSubscribed();
+        ApplyAllDiscounts();
+        RefreshCompletionPresentation();
+    }
+
+    private void EnsureSubscribed()
+    {
+        ContainerProgressManager current = ContainerProgressManager.Instance;
+
+        if (ReferenceEquals(current, subscribedProgressManager))
             return;
 
-        ContainerProgressManager.Instance.OnContainerProgressChanged -=
+        Unsubscribe();
+        subscribedProgressManager = current;
+
+        if (subscribedProgressManager == null)
+            return;
+
+        subscribedProgressManager.OnContainerProgressChanged -=
             HandleProgressChanged;
-        ContainerProgressManager.Instance.OnContainerProgressChanged +=
+        subscribedProgressManager.OnContainerProgressChanged +=
             HandleProgressChanged;
     }
 
     private void Unsubscribe()
     {
-        if (ContainerProgressManager.Instance != null)
+        if (subscribedProgressManager != null)
         {
-            ContainerProgressManager.Instance.OnContainerProgressChanged -=
+            subscribedProgressManager.OnContainerProgressChanged -=
                 HandleProgressChanged;
         }
+
+        subscribedProgressManager = null;
     }
 
     private void HandleProgressChanged()
@@ -137,8 +153,19 @@ public sealed class GoldCompletionCaseDiscountService : MonoBehaviour
         {
             CaseData caseData = database.allCases[i];
 
-            if (caseData != null && !basePrices.ContainsKey(caseData))
-                basePrices.Add(caseData, Mathf.Max(0f, caseData.priceInGold));
+            if (caseData == null || basePrices.ContainsKey(caseData))
+                continue;
+
+            float currentPrice = Mathf.Max(0f, caseData.priceInGold);
+
+            // With Enter Play Mode Options enabled, a previous runtime mutation
+            // can survive long enough for a recreated service to see the already
+            // discounted value. Recover the original base price in that case.
+            float basePrice = HasGoldDiscount(caseData) && currentPrice > 0f
+                ? currentPrice / PriceMultiplier
+                : currentPrice;
+
+            basePrices.Add(caseData, basePrice);
         }
     }
 
@@ -149,7 +176,10 @@ public sealed class GoldCompletionCaseDiscountService : MonoBehaviour
 
         if (!basePrices.TryGetValue(caseData, out float price))
         {
-            price = Mathf.Max(0f, caseData.priceInGold);
+            float currentPrice = Mathf.Max(0f, caseData.priceInGold);
+            price = HasGoldDiscount(caseData) && currentPrice > 0f
+                ? currentPrice / PriceMultiplier
+                : currentPrice;
             basePrices.Add(caseData, price);
         }
 
@@ -182,7 +212,6 @@ public sealed class GoldCompletionCaseDiscountService : MonoBehaviour
 
         const string discountLine =
             "\nPermanent reward: 10% discount on this container in the Case Shop.";
-
         string text = popup.goldExplanationText.text ?? "";
 
         if (!text.Contains("10% discount"))
