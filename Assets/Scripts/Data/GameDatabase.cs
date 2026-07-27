@@ -89,7 +89,19 @@ public class GameDatabase : ScriptableObject
         return null;
     }
 
+    private void OnEnable()
+    {
+        EnsureCollections();
+        NormalizeCompatibilityRarities();
+    }
+
     private void OnValidate()
+    {
+        EnsureCollections();
+        NormalizeCompatibilityRarities();
+    }
+
+    private void EnsureCollections()
     {
         if (allSkins == null)
             allSkins = new List<SkinData>();
@@ -102,5 +114,43 @@ public class GameDatabase : ScriptableObject
 
         if (museumMilestones == null)
             museumMilestones = new List<MuseumMilestoneData>();
+    }
+
+    /// <summary>
+    /// Contraband is not a separate project rarity yet. The M4A4 | Howl can be
+    /// imported as RareSpecial by external CS data, which incorrectly sends it
+    /// through Rare Special Vault progression. Until Contraband is introduced,
+    /// keep this one compatibility item in the Covert tier everywhere.
+    /// </summary>
+    private void NormalizeCompatibilityRarities()
+    {
+        if (allSkins == null)
+            return;
+
+        for (int i = 0; i < allSkins.Count; i++)
+        {
+            SkinData skin = allSkins[i];
+
+            if (skin == null ||
+                skin.rarity != Rarity.RareSpecial ||
+                !string.Equals(
+                    skin.weaponName,
+                    "M4A4",
+                    StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(
+                    skin.skinName,
+                    "Howl",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            skin.rarity = Rarity.Covert;
+
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+                UnityEditor.EditorUtility.SetDirty(skin);
+#endif
+        }
     }
 }
