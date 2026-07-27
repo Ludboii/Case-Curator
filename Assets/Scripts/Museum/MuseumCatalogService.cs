@@ -3,8 +3,9 @@ using System.Collections.Generic;
 
 /// <summary>
 /// Builds the Museum's Wing -> Category -> Weapon -> Skin -> Slot hierarchy
-/// from GameDatabase.allSkins and MuseumCatalogConfig. No per-skin Museum asset
-/// maintenance is required.
+/// from GameDatabase.allSkins and MuseumCatalogConfig. Categories may present
+/// their generated skins directly, but the runtime data still retains weapon
+/// groupings for completion calculations and lookup.
 /// </summary>
 public sealed class MuseumCatalogService
 {
@@ -52,11 +53,16 @@ public sealed class MuseumCatalogService
             int orderCompare = a.sortOrder.CompareTo(b.sortOrder);
             return orderCompare != 0
                 ? orderCompare
-                : string.Compare(a.DisplayName, b.DisplayName,
+                : string.Compare(
+                    a.DisplayName,
+                    b.DisplayName,
                     StringComparison.OrdinalIgnoreCase);
         });
 
-        HashSet<string> assignedSkinIds =
+        // Exhibit assignment includes the enabled variant set. This allows the
+        // same SkinData to appear once as Normal/StatTrak in Arsenal and once as
+        // Souvenir in Souvenir Hall without double-counting inside either scope.
+        HashSet<string> assignedExhibitIds =
             new HashSet<string>(StringComparer.Ordinal);
 
         for (int wingIndex = 0;
@@ -81,7 +87,7 @@ public sealed class MuseumCatalogService
 
                 MuseumCategoryEntry categoryEntry = BuildCategory(
                     categoryConfig,
-                    assignedSkinIds,
+                    assignedExhibitIds,
                     isSlotDonated,
                     snapshot);
 
@@ -100,7 +106,7 @@ public sealed class MuseumCatalogService
 
     private MuseumCategoryEntry BuildCategory(
         MuseumCategoryConfig categoryConfig,
-        HashSet<string> assignedSkinIds,
+        HashSet<string> assignedExhibitIds,
         Func<string, bool> isSlotDonated,
         MuseumCatalogSnapshot snapshot)
     {
@@ -113,6 +119,9 @@ public sealed class MuseumCatalogService
             new Dictionary<string, MuseumWeaponEntry>(
                 StringComparer.OrdinalIgnoreCase);
 
+        MuseumCatalogFilter filter =
+            categoryConfig != null ? categoryConfig.filter : null;
+
         for (int skinIndex = 0;
              skinIndex < database.allSkins.Count;
              skinIndex++)
@@ -122,20 +131,21 @@ public sealed class MuseumCatalogService
             if (!IsEligibleSkin(skin, categoryConfig))
                 continue;
 
-            string stableSkinId = GetStableSkinId(skin);
-
-            // A skin can only contribute to one configured category. This
-            // prevents accidental overlapping filters from double-counting
-            // Museum completion.
-            if (!assignedSkinIds.Add(stableSkinId))
-                continue;
-
             MuseumSkinEntry skinEntry = BuildSkinEntry(
                 skin,
-                categoryConfig != null ? categoryConfig.filter : null,
+                filter,
                 isSlotDonated);
 
             if (skinEntry.TotalSlots <= 0)
+                continue;
+
+            string assignmentKey = BuildAssignmentKey(skin, filter);
+
+            // One exhibit can only contribute to one configured category for a
+            // given variant scope. This prevents overlapping collection or weapon
+            // filters from duplicating Museum completion, while still allowing
+            // Arsenal and Souvenir Hall to share the underlying SkinData.
+            if (!assignedExhibitIds.Add(assignmentKey))
                 continue;
 
             if (!weapons.TryGetValue(
@@ -159,10 +169,20 @@ public sealed class MuseumCatalogService
         foreach (MuseumWeaponEntry weapon in weapons.Values)
         {
             weapon.skins.Sort((a, b) =>
-                string.Compare(
+            {
+                int weaponCompare = string.Compare(
+                    a != null ? a.weaponName : "",
+                    b != null ? b.weaponName : "",
+                    StringComparison.OrdinalIgnoreCase);
+
+                if (weaponCompare != 0)
+                    return weaponCompare;
+
+                return string.Compare(
                     GetSkinDisplayName(a != null ? a.skin : null),
                     GetSkinDisplayName(b != null ? b.skin : null),
-                    StringComparison.OrdinalIgnoreCase));
+                    StringComparison.OrdinalIgnoreCase);
+            });
 
             categoryEntry.weapons.Add(weapon);
             categoryEntry.totalSlots += weapon.totalSlots;
@@ -335,6 +355,11 @@ public sealed class MuseumCatalogService
                     filter.weaponNames,
                     skin.weaponName);
 
+            case MuseumCatalogFilterMode.ListedCollections:
+                return skin.canBeSouvenir &&
+                       skin.rarity != Rarity.RareSpecial &&
+                       ContainsCollection(filter.collectionIds, skin);
+
             default:
                 return false;
         }
@@ -464,7 +489,9 @@ public sealed class MuseumCatalogService
             int orderCompare = a.sortOrder.CompareTo(b.sortOrder);
             return orderCompare != 0
                 ? orderCompare
-                : string.Compare(a.DisplayName, b.DisplayName,
+                : string.Compare(
+                    a.DisplayName,
+                    b.DisplayName,
                     StringComparison.OrdinalIgnoreCase);
         });
 
@@ -494,6 +521,61 @@ public sealed class MuseumCatalogService
         }
 
         return false;
+    }
+
+    private static bool ContainsCollection(
+        List<string> configuredCollections,
+        SkinData skin)
+    {
+        if (configuredCollections == null ||
+            configuredCollections.Count == 0 ||
+            skin == null)
+        {
+            return false;
+        }
+
+        string apiId = skin.collectionData != null
+            ? skin.collectionData.apiId
+            : "";
+        string dataName = skin.collectionData != null
+            ? skin.collectionData.collectionName
+            : "";
+        string legacyName = skin.collection;
+
+        for (int i = 0; i < configuredCollections.Count; i++)
+        {
+            string configured = configuredCollections[i];
+
+            if (string.IsNullOrWhiteSpace(configured))
+                continue;
+
+            if (string.Equals(configured, apiId, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(configured, dataName, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(configured, legacyName, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static string BuildAssignmentKey(
+        SkinData skin,
+        MuseumCatalogFilter filter)
+    {
+        string stableSkinId = GetStableSkinId(skin);
+        bool normal = filter == null || filter.includeNormal;
+        bool statTrak = filter == null || filter.includeStatTrak;
+        bool souvenir = filter == null || filter.includeSouvenir;
+        bool vanilla = filter == null || filter.includeVanilla;
+
+        return string.Concat(
+            stableSkinId,
+            "|n:", normal ? "1" : "0",
+            "|st:", statTrak ? "1" : "0",
+            "|sv:", souvenir ? "1" : "0",
+            "|v:", vanilla ? "1" : "0");
     }
 
     private static string GetStableSkinId(SkinData skin)
