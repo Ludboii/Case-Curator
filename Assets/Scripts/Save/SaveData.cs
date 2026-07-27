@@ -110,6 +110,12 @@ public class MuseumStateSaveData
     public List<MuseumDonationRecordSaveData> donations =
         new List<MuseumDonationRecordSaveData>();
 
+    // One record per manually claimed skin, weapon or category completion.
+    // Reward keys include the wing ID so Arsenal, Souvenir and Rare Special
+    // completion remain independent.
+    public List<MuseumCompletionRewardClaimSaveData> claimedCompletionRewards =
+        new List<MuseumCompletionRewardClaimSaveData>();
+
     public List<string> claimedMilestoneIds =
         new List<string>();
 
@@ -163,6 +169,18 @@ public class MuseumDonationRecordSaveData
 
     public double bestFloat = -1d;
     public float highestMarketValue;
+}
+
+[Serializable]
+public class MuseumCompletionRewardClaimSaveData
+{
+    public string rewardKey;
+    public MuseumCompletionRewardKind rewardKind;
+    public string wingId;
+    public string categoryId;
+    public string displayName;
+    public double museumPointsAwarded;
+    public long claimedUtcTicks;
 }
 
 [Serializable]
