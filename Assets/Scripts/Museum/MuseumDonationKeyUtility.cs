@@ -56,6 +56,23 @@ public static class MuseumDonationKeyUtility
         if (item == null || item.skin == null)
             return "";
 
+        GameDatabase database = SaveManager.Instance != null
+            ? SaveManager.Instance.database
+            : null;
+
+        // Inventory-derived keys are used by donation candidates and donation
+        // previews. Returning no key here prevents stale UI or an alternate code
+        // path from donating a weapon that has not been unlocked yet. Catalog
+        // generation uses the SkinData overload below, so locked exhibits remain
+        // visible in the Museum browser.
+        if (!MuseumUnlockProgressionUtility.IsSkinUnlocked(
+                item.skin,
+                database,
+                out _))
+        {
+            return "";
+        }
+
         bool vanilla = item.skin.isVanilla;
 
         return Build(
