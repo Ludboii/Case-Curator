@@ -28,12 +28,25 @@ public class MuseumExhibitPopupUI : MonoBehaviour
     [SerializeField] private MuseumExhibitWearRowUI wearRowPrefab;
     [SerializeField] private float rowSpacing = 8f;
 
+    [Header("Bulk Donation")]
+    [Tooltip(
+        "Fills every currently empty wear/variant slot for this skin. " +
+        "Warning-only items are allowed; Favorite, Trophy Room and other " +
+        "hard-blocked items remain protected.")]
+    [SerializeField] private Button bulkDonateButton;
+    [SerializeField] private TMP_Text bulkDonateButtonText;
+    [SerializeField] private TMP_Text bulkDonationStatusText;
+    [SerializeField] private bool requireBulkDonationConfirmation = true;
+    [SerializeField, Min(1f)] private float bulkConfirmationWindowSeconds = 5f;
+
     [SerializeField] private Button closeButton;
 
     private readonly List<GameObject> spawnedRows = new List<GameObject>();
     private MuseumSkinEntry entry;
     private MuseumPanelUI owner;
     private MuseumService service;
+    private MuseumBulkDonationPlan pendingBulkPlan;
+    private float bulkConfirmationExpiresAt;
 
     public bool IsOpen => root != null && root.activeSelf;
     public MuseumSkinEntry Entry => entry;
@@ -42,12 +55,12 @@ public class MuseumExhibitPopupUI : MonoBehaviour
     {
         ResolveReferences();
         ConfigureRowLayout();
+        SetupButtons();
+    }
 
-        if (closeButton != null)
-        {
-            closeButton.onClick.RemoveListener(Close);
-            closeButton.onClick.AddListener(Close);
-        }
+    private void OnDisable()
+    {
+        ClearBulkConfirmation(false);
     }
 
     private void OnValidate()
@@ -65,6 +78,13 @@ public class MuseumExhibitPopupUI : MonoBehaviour
         if (museumEntry == null || museumEntry.skin == null)
             return;
 
+        bool changedSkin = entry == null ||
+                           entry.skin == null ||
+                           !string.Equals(
+                               entry.skin.apiId,
+                               museumEntry.skin.apiId,
+                               StringComparison.Ordinal);
+
         entry = museumEntry;
         owner = panel;
         service = museumService;
@@ -72,6 +92,13 @@ public class MuseumExhibitPopupUI : MonoBehaviour
         ResolveReferences();
         ConfigureRowLayout();
         ApplyHeaderLabels();
+        SetupButtons();
+
+        if (changedSkin)
+        {
+            ClearBulkConfirmation(false);
+            SetBulkStatus("");
+        }
 
         if (root == null)
             root = gameObject;
@@ -108,6 +135,7 @@ public class MuseumExhibitPopupUI : MonoBehaviour
         }
 
         BuildRows();
+        RefreshBulkDonationButton();
     }
 
     public void Refresh(MuseumSkinEntry refreshedEntry)
@@ -118,10 +146,166 @@ public class MuseumExhibitPopupUI : MonoBehaviour
     public void Close()
     {
         ClearRows();
+        ClearBulkConfirmation(false);
         entry = null;
 
         if (root != null)
             root.SetActive(false);
+    }
+
+    public void RequestBulkDonation()
+    {
+        if (entry == null || entry.skin == null || service == null)
+        {
+            SetBulkStatus("Museum donation services are unavailable.");
+            return;
+        }
+
+        if (pendingBulkPlan != null &&
+            Time.unscaledTime > bulkConfirmationExpiresAt)
+        {
+            ClearBulkConfirmation(false);
+        }
+
+        if (pendingBulkPlan == null)
+        {
+            MuseumBulkDonationPlan plan =
+                MuseumBulkDonationUtility.BuildPlan(service, entry);
+
+            if (plan == null || plan.DonationCount <= 0)
+            {
+                SetBulkStatus(
+                    "Nothing can be bulk donated. Filled slots, Favorite items, " +
+                    "Trophy Room items and other hard-blocked items were skipped.");
+                RefreshBulkDonationButton();
+                return;
+            }
+
+            if (requireBulkDonationConfirmation)
+            {
+                pendingBulkPlan = plan;
+                bulkConfirmationExpiresAt =
+                    Time.unscaledTime +
+                    Mathf.Max(1f, bulkConfirmationWindowSeconds);
+
+                SetBulkStatus(BuildConfirmationText(plan));
+                SetBulkButtonText($"CONFIRM ({plan.DonationCount:N0})");
+                return;
+            }
+
+            ExecuteBulkDonation(plan);
+            return;
+        }
+
+        MuseumBulkDonationPlan confirmedPlan = pendingBulkPlan;
+        ClearBulkConfirmation(false);
+        ExecuteBulkDonation(confirmedPlan);
+    }
+
+    private void ExecuteBulkDonation(MuseumBulkDonationPlan plan)
+    {
+        if (bulkDonateButton != null)
+            bulkDonateButton.interactable = false;
+
+        MuseumBulkDonationResult result =
+            MuseumBulkDonationUtility.Execute(service, plan);
+
+        string message = BuildResultText(result);
+        SetBulkStatus(message);
+
+        if (owner != null)
+            owner.ShowMuseumMessage(message);
+
+        RefreshBulkDonationButton();
+    }
+
+    private string BuildConfirmationText(MuseumBulkDonationPlan plan)
+    {
+        string warningText = plan.entriesWithWarnings > 0
+            ? $" {plan.entriesWithWarnings:N0} selected item(s) have donation " +
+              "warnings; those warnings will be ignored."
+            : "";
+
+        return
+            $"Donate {plan.DonationCount:N0} item(s), worth " +
+            $"{plan.totalMarketValue:N2} Gold, for approximately " +
+            $"{plan.estimatedMuseumPoints:N2} Museum Points?" +
+            warningText +
+            " Favorite and hard-blocked items stay protected. Press again to confirm.";
+    }
+
+    private static string BuildResultText(MuseumBulkDonationResult result)
+    {
+        if (result == null || result.donated <= 0)
+        {
+            return result != null &&
+                   !string.IsNullOrWhiteSpace(result.firstFailure)
+                ? "Bulk donation failed: " + result.firstFailure
+                : "No items were donated.";
+        }
+
+        string text =
+            $"Bulk donated {result.donated:N0} item(s) for " +
+            $"{result.museumPointsAwarded:N2} Museum Points.";
+
+        if (result.failed > 0)
+        {
+            text +=
+                $" {result.failed:N0} item(s) failed or became unavailable.";
+
+            if (!string.IsNullOrWhiteSpace(result.firstFailure))
+                text += " First failure: " + result.firstFailure;
+        }
+
+        return text;
+    }
+
+    private void RefreshBulkDonationButton()
+    {
+        if (bulkDonateButton == null)
+            return;
+
+        if (entry == null || service == null)
+        {
+            bulkDonateButton.interactable = false;
+            SetBulkButtonText("DONATE ALL");
+            return;
+        }
+
+        MuseumBulkDonationPlan plan =
+            MuseumBulkDonationUtility.BuildPlan(service, entry);
+        int count = plan != null ? plan.DonationCount : 0;
+
+        bulkDonateButton.interactable = count > 0;
+        SetBulkButtonText(
+            count > 0
+                ? $"DONATE ALL ({count:N0})"
+                : "NOTHING TO DONATE");
+    }
+
+    private void ClearBulkConfirmation(bool refreshButton)
+    {
+        pendingBulkPlan = null;
+        bulkConfirmationExpiresAt = 0f;
+
+        if (refreshButton)
+            RefreshBulkDonationButton();
+    }
+
+    private void SetBulkButtonText(string value)
+    {
+        if (bulkDonateButtonText != null)
+            bulkDonateButtonText.text = value ?? "";
+    }
+
+    private void SetBulkStatus(string value)
+    {
+        if (bulkDonationStatusText == null)
+            return;
+
+        bulkDonationStatusText.text = value ?? "";
+        bulkDonationStatusText.gameObject.SetActive(
+            !string.IsNullOrWhiteSpace(value));
     }
 
     private void BuildRows()
@@ -209,6 +393,21 @@ public class MuseumExhibitPopupUI : MonoBehaviour
             souvenirHeaderText.text = "Souvenir";
     }
 
+    private void SetupButtons()
+    {
+        if (closeButton != null)
+        {
+            closeButton.onClick.RemoveListener(Close);
+            closeButton.onClick.AddListener(Close);
+        }
+
+        if (bulkDonateButton != null)
+        {
+            bulkDonateButton.onClick.RemoveListener(RequestBulkDonation);
+            bulkDonateButton.onClick.AddListener(RequestBulkDonation);
+        }
+    }
+
     private void ResolveReferences()
     {
         if (root == null)
@@ -245,6 +444,62 @@ public class MuseumExhibitPopupUI : MonoBehaviour
             if (souvenirHeaderText == null && headers.Length > 3)
                 souvenirHeaderText = headers[3];
         }
+
+        if (bulkDonateButton == null)
+        {
+            Button[] buttons = GetComponentsInChildren<Button>(true);
+
+            for (int i = 0; i < buttons.Length; i++)
+            {
+                Button candidate = buttons[i];
+
+                if (candidate == null)
+                    continue;
+
+                string normalizedName = candidate.gameObject.name
+                    .Replace(" ", "")
+                    .Replace("_", "")
+                    .ToLowerInvariant();
+
+                if (normalizedName.Contains("bulkdonate") ||
+                    normalizedName.Contains("bulkdonation"))
+                {
+                    bulkDonateButton = candidate;
+                    break;
+                }
+            }
+        }
+
+        if (bulkDonateButton != null && bulkDonateButtonText == null)
+        {
+            bulkDonateButtonText =
+                bulkDonateButton.GetComponentInChildren<TMP_Text>(true);
+        }
+
+        if (bulkDonationStatusText == null)
+        {
+            TMP_Text[] texts = GetComponentsInChildren<TMP_Text>(true);
+
+            for (int i = 0; i < texts.Length; i++)
+            {
+                TMP_Text candidate = texts[i];
+
+                if (candidate == null)
+                    continue;
+
+                string normalizedName = candidate.gameObject.name
+                    .Replace(" ", "")
+                    .Replace("_", "")
+                    .ToLowerInvariant();
+
+                if (normalizedName.Contains("bulkdonationstatus") ||
+                    normalizedName.Contains("bulkdonateresult"))
+                {
+                    bulkDonationStatusText = candidate;
+                    break;
+                }
+            }
+        }
     }
 
     private static bool HasWear(MuseumSkinEntry skin, int wearIndex)
@@ -273,5 +528,8 @@ public class MuseumExhibitPopupUI : MonoBehaviour
     {
         if (closeButton != null)
             closeButton.onClick.RemoveListener(Close);
+
+        if (bulkDonateButton != null)
+            bulkDonateButton.onClick.RemoveListener(RequestBulkDonation);
     }
 }
