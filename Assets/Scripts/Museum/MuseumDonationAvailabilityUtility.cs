@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Counts inventory instances that match open Museum donation slots. The cache
-/// is built once per rendered frame and performs only the lightweight checks
-/// required by card indicators. Full MuseumDonationPreview creation is reserved
-/// for the actual donation-selection flow.
+/// Counts open Museum donation slots that can be filled by the current
+/// inventory. Multiple matching copies of the same exact skin/wear/variant only
+/// count once because they all compete for the same permanent Museum slot.
+/// The cache is rebuilt once per rendered frame and keeps full donation preview
+/// creation reserved for the actual selection flow.
 /// </summary>
 public static class MuseumDonationAvailabilityUtility
 {
@@ -141,8 +142,8 @@ public static class MuseumDonationAvailabilityUtility
         if (protectedCount > 0)
         {
             return protectedCount == 1
-                ? "1 owned - protected"
-                : $"{protectedCount:N0} owned - protected";
+                ? "1 slot owned - protected"
+                : $"{protectedCount:N0} slots owned - protected";
         }
 
         return "";
@@ -204,8 +205,12 @@ public static class MuseumDonationAvailabilityUtility
                 continue;
             }
 
-            readyCount += count.ready;
-            protectedCount += count.protectedCount;
+            // Count the permanent slot, not every matching inventory instance.
+            // A usable copy takes precedence over additional protected copies.
+            if (count.ready > 0)
+                readyCount++;
+            else if (count.protectedCount > 0)
+                protectedCount++;
         }
     }
 
@@ -252,8 +257,6 @@ public static class MuseumDonationAvailabilityUtility
                 donationKey,
                 out AvailabilityCount count);
 
-            // Card indicators only need to distinguish usable copies from the
-            // two protection rules that block otherwise matching inventory.
             // Slot validity and already-donated state are handled by the open
             // donation-key set supplied by the generated Museum catalog.
             bool protectedItem =
