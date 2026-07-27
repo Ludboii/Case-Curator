@@ -13,8 +13,11 @@ public class MuseumWeaponCardUI : MonoBehaviour
     [SerializeField] private MuseumProgressBarUI progressBar;
     [SerializeField] private GameObject lockedRoot;
     [SerializeField] private TMP_Text lockedText;
+    [SerializeField] private MuseumCompletionClaimOverlayUI completionClaimOverlay;
 
     [Header("Donation Indicator Colors")]
+    [SerializeField] private Color completedTextColor =
+        new Color(0.35f, 1f, 0.55f, 1f);
     [SerializeField] private Color readyTextColor =
         new Color(1f, 0.9f, 0.25f, 1f);
     [SerializeField] private Color protectedTextColor =
@@ -22,6 +25,7 @@ public class MuseumWeaponCardUI : MonoBehaviour
 
     private MuseumWeaponEntry entry;
     private MuseumPanelUI owner;
+    private MuseumCompletionRewardPreview completionPreview;
 
     private void Awake()
     {
@@ -50,6 +54,13 @@ public class MuseumWeaponCardUI : MonoBehaviour
             GetDatabase(),
             out string lockedReason);
 
+        completionPreview =
+            MuseumCompletionRewardService.BuildWeaponPreview(
+                entry,
+                owner != null ? owner.Service : null);
+        bool completed = completionPreview != null &&
+                         completionPreview.completed;
+
         if (titleText != null)
             titleText.text = entry != null ? entry.weaponName : "Weapon";
 
@@ -59,7 +70,7 @@ public class MuseumWeaponCardUI : MonoBehaviour
         int readyCount = 0;
         int protectedCount = 0;
 
-        if (unlocked)
+        if (unlocked && !completed)
         {
             MuseumDonationAvailabilityUtility.Count(
                 entry,
@@ -68,11 +79,13 @@ public class MuseumWeaponCardUI : MonoBehaviour
                 out protectedCount);
         }
 
-        string donationStatus = unlocked
-            ? MuseumDonationAvailabilityUtility.GetStatusText(
-                readyCount,
-                protectedCount)
-            : "";
+        string donationStatus = completed
+            ? "COMPLETED"
+            : unlocked
+                ? MuseumDonationAvailabilityUtility.GetStatusText(
+                    readyCount,
+                    protectedCount)
+                : "";
 
         bool sharedProgressText =
             progressBar != null &&
@@ -96,6 +109,7 @@ public class MuseumWeaponCardUI : MonoBehaviour
         {
             ApplyDonationIndicator(
                 donationStatus,
+                completed,
                 readyCount,
                 protectedCount);
         }
@@ -129,12 +143,20 @@ public class MuseumWeaponCardUI : MonoBehaviour
             button.interactable = unlocked && entry != null;
         }
 
+        if (completionClaimOverlay != null)
+        {
+            completionClaimOverlay.Setup(
+                completionPreview,
+                HandleCompletionRewardClaim);
+        }
+
         MuseumLockVisualUtility.Apply(gameObject, unlocked);
         ApplyUnlockOrder();
     }
 
     private void ApplyDonationIndicator(
         string status,
+        bool completed,
         int readyCount,
         int protectedCount)
     {
@@ -145,7 +167,9 @@ public class MuseumWeaponCardUI : MonoBehaviour
         donationStateText.gameObject.SetActive(
             !string.IsNullOrWhiteSpace(status));
 
-        if (readyCount > 0)
+        if (completed)
+            donationStateText.color = completedTextColor;
+        else if (readyCount > 0)
             donationStateText.color = readyTextColor;
         else if (protectedCount > 0)
             donationStateText.color = protectedTextColor;
@@ -155,6 +179,12 @@ public class MuseumWeaponCardUI : MonoBehaviour
     {
         if (progressBar == null)
             progressBar = GetComponentInChildren<MuseumProgressBarUI>(true);
+
+        if (completionClaimOverlay == null)
+        {
+            completionClaimOverlay =
+                GetComponentInChildren<MuseumCompletionClaimOverlayUI>(true);
+        }
 
         TMP_Text[] texts = GetComponentsInChildren<TMP_Text>(true);
 
@@ -221,6 +251,29 @@ public class MuseumWeaponCardUI : MonoBehaviour
         }
 
         transform.SetSiblingIndex(targetIndex);
+    }
+
+    private void HandleCompletionRewardClaim()
+    {
+        if (!MuseumCompletionRewardService.TryClaim(
+                completionPreview,
+                out MuseumCompletionRewardClaimResult result))
+        {
+            if (owner != null && result != null)
+                owner.ShowMuseumMessage(result.message);
+            return;
+        }
+
+        float duration = MuseumCompletionRewardService.Balance != null
+            ? MuseumCompletionRewardService.Balance.claimNotificationSeconds
+            : 2.75f;
+
+        MuseumCompletionRewardToastBridge.Show(
+            owner,
+            result.message,
+            duration);
+
+        Setup(entry, owner);
     }
 
     private void HandleClicked()
