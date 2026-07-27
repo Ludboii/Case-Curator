@@ -14,8 +14,11 @@ public class MuseumSkinCardUI : MonoBehaviour
     [SerializeField] private TMP_Text foundStateText;
     [SerializeField] private MuseumProgressBarUI progressBar;
     [SerializeField] private GameObject discoveredIndicator;
+    [SerializeField] private MuseumCompletionClaimOverlayUI completionClaimOverlay;
 
     [Header("State Colors")]
+    [SerializeField] private Color completedTextColor =
+        new Color(0.35f, 1f, 0.55f, 1f);
     [SerializeField] private Color discoveredTextColor =
         new Color(0.35f, 1f, 0.35f, 1f);
     [SerializeField] private Color readyTextColor =
@@ -27,25 +30,26 @@ public class MuseumSkinCardUI : MonoBehaviour
 
     private MuseumSkinEntry entry;
     private MuseumPanelUI owner;
+    private MuseumCompletionRewardPreview completionPreview;
 
     private void Awake()
     {
-        ResolveProgressBar();
+        ResolveReferences();
     }
 
     private void Reset()
     {
-        ResolveProgressBar();
+        ResolveReferences();
     }
 
     private void OnValidate()
     {
-        ResolveProgressBar();
+        ResolveReferences();
     }
 
     public void Setup(MuseumSkinEntry museumEntry, MuseumPanelUI panel)
     {
-        ResolveProgressBar();
+        ResolveReferences();
 
         entry = museumEntry;
         owner = panel;
@@ -54,6 +58,13 @@ public class MuseumSkinCardUI : MonoBehaviour
             skin,
             GetDatabase(),
             out string lockedReason);
+
+        completionPreview =
+            MuseumCompletionRewardService.BuildSkinPreview(
+                entry,
+                owner != null ? owner.Service : null);
+        bool completed = completionPreview != null &&
+                         completionPreview.completed;
 
         if (rarityBackground != null)
         {
@@ -86,7 +97,7 @@ public class MuseumSkinCardUI : MonoBehaviour
         int readyCount = 0;
         int protectedCount = 0;
 
-        if (unlocked)
+        if (unlocked && !completed)
         {
             MuseumDonationAvailabilityUtility.Count(
                 entry,
@@ -101,6 +112,11 @@ public class MuseumSkinCardUI : MonoBehaviour
             {
                 foundStateText.text = lockedReason;
                 foundStateText.color = missingTextColor;
+            }
+            else if (completed)
+            {
+                foundStateText.text = "COMPLETED";
+                foundStateText.color = completedTextColor;
             }
             else if (readyCount > 0)
             {
@@ -118,7 +134,7 @@ public class MuseumSkinCardUI : MonoBehaviour
             }
             else
             {
-                foundStateText.text = discovered ? "Discovered" : "Missing";
+                foundStateText.text = discovered ? "DISCOVERED" : "MISSING";
                 foundStateText.color = discovered
                     ? discoveredTextColor
                     : missingTextColor;
@@ -142,6 +158,13 @@ public class MuseumSkinCardUI : MonoBehaviour
             button.interactable = unlocked && entry != null && skin != null;
         }
 
+        if (completionClaimOverlay != null)
+        {
+            completionClaimOverlay.Setup(
+                completionPreview,
+                HandleCompletionRewardClaim);
+        }
+
         MuseumLockVisualUtility.Apply(gameObject, unlocked);
         ApplyRarityThenNameSiblingOrder();
     }
@@ -155,10 +178,16 @@ public class MuseumSkinCardUI : MonoBehaviour
                 : null;
     }
 
-    private void ResolveProgressBar()
+    private void ResolveReferences()
     {
         if (progressBar == null)
             progressBar = GetComponentInChildren<MuseumProgressBarUI>(true);
+
+        if (completionClaimOverlay == null)
+        {
+            completionClaimOverlay =
+                GetComponentInChildren<MuseumCompletionClaimOverlayUI>(true);
+        }
     }
 
     /// <summary>
@@ -210,8 +239,6 @@ public class MuseumSkinCardUI : MonoBehaviour
         if (bSkin == null)
             return -1;
 
-        // Rarity enum values are ordered from lower to higher rarity, so the
-        // comparison is reversed to place the highest rarity first.
         int rarityCompare = ((int)bSkin.rarity).CompareTo((int)aSkin.rarity);
 
         if (rarityCompare != 0)
@@ -232,6 +259,29 @@ public class MuseumSkinCardUI : MonoBehaviour
             return "Vanilla";
 
         return skin.skinName.Trim();
+    }
+
+    private void HandleCompletionRewardClaim()
+    {
+        if (!MuseumCompletionRewardService.TryClaim(
+                completionPreview,
+                out MuseumCompletionRewardClaimResult result))
+        {
+            if (owner != null && result != null)
+                owner.ShowMuseumMessage(result.message);
+            return;
+        }
+
+        float duration = MuseumCompletionRewardService.Balance != null
+            ? MuseumCompletionRewardService.Balance.claimNotificationSeconds
+            : 2.75f;
+
+        MuseumCompletionRewardToastBridge.Show(
+            owner,
+            result.message,
+            duration);
+
+        Setup(entry, owner);
     }
 
     private void HandleClicked()
