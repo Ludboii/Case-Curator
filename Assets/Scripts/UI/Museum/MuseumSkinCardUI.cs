@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -51,6 +50,10 @@ public class MuseumSkinCardUI : MonoBehaviour
         entry = museumEntry;
         owner = panel;
         SkinData skin = entry != null ? entry.skin : null;
+        bool unlocked = MuseumUnlockProgressionUtility.IsSkinUnlocked(
+            skin,
+            GetDatabase(),
+            out string lockedReason);
 
         if (rarityBackground != null)
         {
@@ -80,11 +83,26 @@ public class MuseumSkinCardUI : MonoBehaviour
         }
 
         bool discovered = entry != null && entry.DonatedSlots > 0;
-        GetDonationAvailability(out int readyCount, out int protectedCount);
+        int readyCount = 0;
+        int protectedCount = 0;
+
+        if (unlocked)
+        {
+            MuseumDonationAvailabilityUtility.Count(
+                entry,
+                owner != null ? owner.Service : null,
+                out readyCount,
+                out protectedCount);
+        }
 
         if (foundStateText != null)
         {
-            if (readyCount > 0)
+            if (!unlocked)
+            {
+                foundStateText.text = lockedReason;
+                foundStateText.color = missingTextColor;
+            }
+            else if (readyCount > 0)
             {
                 foundStateText.text = readyCount == 1
                     ? "1 ready to donate"
@@ -108,7 +126,7 @@ public class MuseumSkinCardUI : MonoBehaviour
         }
 
         if (discoveredIndicator != null)
-            discoveredIndicator.SetActive(discovered);
+            discoveredIndicator.SetActive(unlocked && discovered);
 
         if (progressBar != null)
         {
@@ -121,78 +139,20 @@ public class MuseumSkinCardUI : MonoBehaviour
         {
             button.onClick.RemoveListener(HandleClicked);
             button.onClick.AddListener(HandleClicked);
-            button.interactable = entry != null && skin != null;
+            button.interactable = unlocked && entry != null && skin != null;
         }
 
+        MuseumLockVisualUtility.Apply(gameObject, unlocked);
         ApplyRarityThenNameSiblingOrder();
     }
 
-    /// <summary>
-    /// Counts inventory instances that currently match one of this exhibit's
-    /// unfilled exact slots. Eligible items are separated from owned copies that
-    /// are blocked by protection rules such as Favorite or Trophy Room use.
-    /// </summary>
-    private void GetDonationAvailability(
-        out int readyCount,
-        out int protectedCount)
+    private GameDatabase GetDatabase()
     {
-        readyCount = 0;
-        protectedCount = 0;
-
-        MuseumService service = owner != null ? owner.Service : null;
-
-        if (entry == null ||
-            entry.slots == null ||
-            service == null ||
-            InventoryManager.Instance == null)
-        {
-            return;
-        }
-
-        HashSet<string> openDonationKeys =
-            new HashSet<string>(StringComparer.Ordinal);
-
-        for (int i = 0; i < entry.slots.Count; i++)
-        {
-            MuseumSlotEntry slot = entry.slots[i];
-
-            if (slot != null &&
-                !slot.donated &&
-                !string.IsNullOrWhiteSpace(slot.donationKey))
-            {
-                openDonationKeys.Add(slot.donationKey);
-            }
-        }
-
-        if (openDonationKeys.Count == 0)
-            return;
-
-        List<InventoryItem> inventory =
-            InventoryManager.Instance.GetItemsCopy();
-
-        for (int i = 0; i < inventory.Count; i++)
-        {
-            InventoryItem item = inventory[i];
-
-            if (item == null || string.IsNullOrWhiteSpace(item.instanceId))
-                continue;
-
-            string donationKey = MuseumDonationKeyUtility.Build(item);
-
-            if (string.IsNullOrWhiteSpace(donationKey) ||
-                !openDonationKeys.Contains(donationKey))
-            {
-                continue;
-            }
-
-            MuseumDonationPreview preview =
-                service.PreviewDonation(item.instanceId);
-
-            if (preview != null && preview.canDonate)
-                readyCount++;
-            else
-                protectedCount++;
-        }
+        return owner != null && owner.Service != null
+            ? owner.Service.Database
+            : SaveManager.Instance != null
+                ? SaveManager.Instance.database
+                : null;
     }
 
     private void ResolveProgressBar()
@@ -276,8 +236,19 @@ public class MuseumSkinCardUI : MonoBehaviour
 
     private void HandleClicked()
     {
-        if (owner != null && entry != null)
-            owner.OpenSkin(entry);
+        if (owner == null || entry == null)
+            return;
+
+        if (!MuseumUnlockProgressionUtility.IsSkinUnlocked(
+                entry.skin,
+                GetDatabase(),
+                out string lockedReason))
+        {
+            owner.ShowMuseumMessage(lockedReason);
+            return;
+        }
+
+        owner.OpenSkin(entry);
     }
 
     private void OnDestroy()
