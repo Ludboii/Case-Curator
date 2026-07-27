@@ -46,20 +46,32 @@ public class MuseumCategoryCardUI : MonoBehaviour
         owner = panel;
 
         MuseumCategoryConfig config = entry != null ? entry.config : null;
+        bool unlocked = MuseumUnlockProgressionUtility.IsCategoryUnlocked(
+            entry,
+            GetDatabase(),
+            out string lockedReason);
 
         if (titleText != null)
             titleText.text = entry != null ? entry.DisplayName : "Category";
 
         string description = config != null ? config.description : "";
-        MuseumDonationAvailabilityUtility.Count(
-            entry,
-            owner != null ? owner.Service : null,
-            out int readyCount,
-            out int protectedCount);
-        string donationStatus =
-            MuseumDonationAvailabilityUtility.GetStatusText(
+        int readyCount = 0;
+        int protectedCount = 0;
+
+        if (unlocked)
+        {
+            MuseumDonationAvailabilityUtility.Count(
+                entry,
+                owner != null ? owner.Service : null,
+                out readyCount,
+                out protectedCount);
+        }
+
+        string donationStatus = unlocked
+            ? MuseumDonationAvailabilityUtility.GetStatusText(
                 readyCount,
-                protectedCount);
+                protectedCount)
+            : "";
 
         bool sharedProgressText =
             progressBar != null &&
@@ -68,12 +80,17 @@ public class MuseumCategoryCardUI : MonoBehaviour
 
         if (descriptionText != null)
         {
-            descriptionText.text = donationStateText == null &&
-                                   !string.IsNullOrWhiteSpace(donationStatus)
-                ? string.IsNullOrWhiteSpace(description)
-                    ? donationStatus
-                    : description + "\n" + donationStatus
-                : description;
+            if (!unlocked && lockedText == null)
+            {
+                descriptionText.text = AppendLine(description, lockedReason);
+            }
+            else
+            {
+                descriptionText.text = donationStateText == null &&
+                                       !string.IsNullOrWhiteSpace(donationStatus)
+                    ? AppendLine(description, donationStatus)
+                    : description;
+            }
         }
 
         if (!sharedProgressText)
@@ -100,18 +117,14 @@ public class MuseumCategoryCardUI : MonoBehaviour
             progressBar.SetProgress(
                 entry != null ? entry.donatedSlots : 0,
                 entry != null ? entry.totalSlots : 0,
-                sharedProgressText ? donationStatus : null);
+                sharedProgressText && unlocked ? donationStatus : null);
         }
-
-        bool unlocked = config == null ||
-                        config.unlockDefinition == null ||
-                        UnlockEvaluator.IsUnlocked(config.unlockDefinition);
 
         if (lockedRoot != null)
             lockedRoot.SetActive(!unlocked);
 
         if (lockedText != null)
-            lockedText.text = unlocked ? "" : "Locked";
+            lockedText.text = unlocked ? "" : lockedReason;
 
         if (button != null)
         {
@@ -119,6 +132,8 @@ public class MuseumCategoryCardUI : MonoBehaviour
             button.onClick.AddListener(HandleClicked);
             button.interactable = unlocked && entry != null;
         }
+
+        MuseumLockVisualUtility.Apply(gameObject, unlocked);
     }
 
     private void ApplyDonationIndicator(
@@ -198,10 +213,41 @@ public class MuseumCategoryCardUI : MonoBehaviour
         }
     }
 
+    private GameDatabase GetDatabase()
+    {
+        return owner != null && owner.Service != null
+            ? owner.Service.Database
+            : SaveManager.Instance != null
+                ? SaveManager.Instance.database
+                : null;
+    }
+
+    private static string AppendLine(string first, string second)
+    {
+        if (string.IsNullOrWhiteSpace(first))
+            return second ?? "";
+
+        if (string.IsNullOrWhiteSpace(second))
+            return first;
+
+        return first + "\n" + second;
+    }
+
     private void HandleClicked()
     {
-        if (owner != null && entry != null)
-            owner.OpenCategory(entry);
+        if (owner == null || entry == null)
+            return;
+
+        if (!MuseumUnlockProgressionUtility.IsCategoryUnlocked(
+                entry,
+                GetDatabase(),
+                out string lockedReason))
+        {
+            owner.ShowMuseumMessage(lockedReason);
+            return;
+        }
+
+        owner.OpenCategory(entry);
     }
 
     private void OnDestroy()
