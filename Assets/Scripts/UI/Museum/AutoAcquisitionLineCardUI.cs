@@ -219,6 +219,33 @@ public class AutoAcquisitionLineCardUI : MonoBehaviour
             return;
 
         AutoAcquisitionLineSaveData line = service.GetLine(lineIndex);
+
+        // A TMP_Dropdown with one option does not emit a value-changed event.
+        // Assign its visible first option when START is pressed so the first
+        // researched container can be used without requiring a second option.
+        if (line != null &&
+            !line.active &&
+            string.IsNullOrWhiteSpace(line.selectedContainerId) &&
+            dropdownEntries.Count > 0)
+        {
+            int selected = containerDropdown != null
+                ? Mathf.Clamp(containerDropdown.value, 0, dropdownEntries.Count - 1)
+                : 0;
+            AutoAcquisitionActionResult assignment =
+                service.SelectLineTarget(
+                    lineIndex,
+                    dropdownEntries[selected].containerId);
+
+            if (!assignment.success)
+            {
+                if (owner != null)
+                    owner.HandleActionResult(assignment);
+                return;
+            }
+
+            line = service.GetLine(lineIndex);
+        }
+
         AutoAcquisitionActionResult result = service.SetLineActive(
             lineIndex,
             line == null || !line.active);
