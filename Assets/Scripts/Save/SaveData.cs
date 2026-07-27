@@ -14,6 +14,8 @@ public class SaveData
     public MuseumStateSaveData museum = new MuseumStateSaveData();
     public TradeupStateSaveData tradeups = new TradeupStateSaveData();
     public ContainerProgressSaveData containerProgress = new ContainerProgressSaveData();
+    public AutoAcquisitionStateSaveData automatedAcquisitions =
+        new AutoAcquisitionStateSaveData();
 }
 
 [Serializable]
@@ -225,6 +227,59 @@ public class TrophyDisplaySlotSaveData
     // A displayed trophy is outside normal inventory capacity and candidate
     // lists, so its complete item state is persisted here until retrieval.
     public InventoryItemSaveData storedItem;
+}
+
+/// <summary>
+/// Persistent state for the Automated Acquisitions Wing. Category licences and
+/// research are permanent; processing budgets, UTC timers and Intake Vault
+/// rewards survive closing the game.
+/// </summary>
+[Serializable]
+public class AutoAcquisitionStateSaveData
+{
+    public List<string> ownedCategoryIds = new List<string>();
+    public List<string> researchedContainerIds = new List<string>();
+
+    public List<AutoAcquisitionLineSaveData> lines =
+        new List<AutoAcquisitionLineSaveData>();
+
+    public List<AutoAcquisitionPendingItemSaveData> intakeItems =
+        new List<AutoAcquisitionPendingItemSaveData>();
+
+    public long lastProcessingUtcTicks;
+
+    public int lifetimeItemsProcessed;
+    public double lifetimeGoldSpent;
+    public double lifetimeValueReceived;
+    public float bestPullMarketValue;
+    public string bestPullSkinApiId;
+    public int lifetimeRareSpecialPulls;
+    public int lifetimeNewMuseumPlaques;
+}
+
+[Serializable]
+public class AutoAcquisitionLineSaveData
+{
+    public int lineIndex;
+    public string selectedContainerId;
+    public double depositedGold;
+    public bool active;
+    public long nextCompletionUtcTicks;
+    public bool pausedByCuratorAlert;
+    public string pauseReason;
+}
+
+[Serializable]
+public class AutoAcquisitionPendingItemSaveData
+{
+    public string rewardId;
+    public string sourceContainerId;
+    public string sourceContainerName;
+    public int lineIndex;
+    public long createdUtcTicks;
+    public InventoryItemSaveData item;
+    public bool exceptional;
+    public string alertReason;
 }
 
 /// <summary>
