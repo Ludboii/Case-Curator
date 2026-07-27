@@ -14,8 +14,6 @@ public class SaveData
     public MuseumStateSaveData museum = new MuseumStateSaveData();
     public TradeupStateSaveData tradeups = new TradeupStateSaveData();
     public ContainerProgressSaveData containerProgress = new ContainerProgressSaveData();
-    public AutoAcquisitionStateSaveData automatedAcquisitions =
-        new AutoAcquisitionStateSaveData();
 }
 
 [Serializable]
@@ -129,6 +127,8 @@ public class MuseumStateSaveData
 
     public GiftDeskSaveData giftDesk = new GiftDeskSaveData();
     public TrophyRoomSaveData trophyRoom = new TrophyRoomSaveData();
+    public AutoAcquisitionStateSaveData automatedAcquisitions =
+        new AutoAcquisitionStateSaveData();
 }
 
 [Serializable]
