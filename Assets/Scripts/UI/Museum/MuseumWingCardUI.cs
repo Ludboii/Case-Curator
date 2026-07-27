@@ -39,15 +39,23 @@ public class MuseumWingCardUI : MonoBehaviour
         owner = panel;
 
         MuseumWingConfig config = entry != null ? entry.config : null;
+        bool unlocked = MuseumUnlockProgressionUtility.IsWingUnlocked(
+            entry,
+            GetDatabase(),
+            out string lockedReason);
 
         if (titleText != null)
             titleText.text = entry != null ? entry.DisplayName : "Museum Wing";
 
         if (descriptionText != null)
         {
-            descriptionText.text = config != null
+            string description = config != null
                 ? config.description
                 : "";
+
+            descriptionText.text = !unlocked && lockedText == null
+                ? AppendLine(description, lockedReason)
+                : description;
         }
 
         if (iconImage != null)
@@ -71,15 +79,11 @@ public class MuseumWingCardUI : MonoBehaviour
                 entry != null ? entry.totalSlots : 0);
         }
 
-        bool unlocked = config == null ||
-                        config.unlockDefinition == null ||
-                        UnlockEvaluator.IsUnlocked(config.unlockDefinition);
-
         if (lockedRoot != null)
             lockedRoot.SetActive(!unlocked);
 
         if (lockedText != null)
-            lockedText.text = unlocked ? "" : "Locked";
+            lockedText.text = unlocked ? "" : lockedReason;
 
         if (button != null)
         {
@@ -87,6 +91,8 @@ public class MuseumWingCardUI : MonoBehaviour
             button.onClick.AddListener(HandleClicked);
             button.interactable = unlocked && entry != null;
         }
+
+        MuseumLockVisualUtility.Apply(gameObject, unlocked);
     }
 
     private static Sprite GetRepresentativeIcon(MuseumWingEntry wing)
@@ -135,10 +141,41 @@ public class MuseumWingCardUI : MonoBehaviour
             progressBar = GetComponentInChildren<MuseumProgressBarUI>(true);
     }
 
+    private GameDatabase GetDatabase()
+    {
+        return owner != null && owner.Service != null
+            ? owner.Service.Database
+            : SaveManager.Instance != null
+                ? SaveManager.Instance.database
+                : null;
+    }
+
+    private static string AppendLine(string first, string second)
+    {
+        if (string.IsNullOrWhiteSpace(first))
+            return second ?? "";
+
+        if (string.IsNullOrWhiteSpace(second))
+            return first;
+
+        return first + "\n" + second;
+    }
+
     private void HandleClicked()
     {
-        if (owner != null && entry != null)
-            owner.OpenWing(entry);
+        if (owner == null || entry == null)
+            return;
+
+        if (!MuseumUnlockProgressionUtility.IsWingUnlocked(
+                entry,
+                GetDatabase(),
+                out string lockedReason))
+        {
+            owner.ShowMuseumMessage(lockedReason);
+            return;
+        }
+
+        owner.OpenWing(entry);
     }
 
     private void OnDestroy()
