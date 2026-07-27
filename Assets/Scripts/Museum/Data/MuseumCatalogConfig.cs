@@ -7,16 +7,17 @@ public enum MuseumCatalogFilterMode
     AllSkins = 0,
     ListedWeapons = 1,
     RareSpecialOnly = 2,
-    NonRareSpecialOnly = 3
+    NonRareSpecialOnly = 3,
+    ListedCollections = 4
 }
 
 [Serializable]
 public class MuseumCatalogFilter
 {
     [Tooltip(
-        "How the future MuseumCatalogService selects SkinData for this " +
-        "category. Listed Weapons compares against SkinData.weaponName until " +
-        "WeaponDefinition migration is complete.")]
+        "How MuseumCatalogService selects SkinData for this category. Listed " +
+        "Weapons compares SkinData.weaponName. Listed Collections accepts a " +
+        "CollectionData API ID, CollectionData display name or SkinData.collection.")]
     public MuseumCatalogFilterMode filterMode =
         MuseumCatalogFilterMode.ListedWeapons;
 
@@ -24,6 +25,11 @@ public class MuseumCatalogFilter
         "Exact player-facing weapon/model names, for example AK-47, Bayonet or " +
         "Sport Gloves. No individual skin rows belong here.")]
     public List<string> weaponNames = new List<string>();
+
+    [Tooltip(
+        "Collection identifiers accepted by Listed Collections. Prefer the " +
+        "stable CollectionData API ID; display names are supported as a fallback.")]
+    public List<string> collectionIds = new List<string>();
 
     [Header("Variant Visibility")]
     public bool includeNormal = true;
@@ -47,6 +53,12 @@ public class MuseumCategoryConfig
     public int sortOrder;
     public bool includeInCompletion = true;
     public UnlockDefinition unlockDefinition;
+
+    [Tooltip(
+        "Skips the weapon-model browser and opens all skins in this category " +
+        "directly. Used by Souvenir Hall collection categories.")]
+    public bool openDirectlyToSkins;
+
     public MuseumCatalogFilter filter = new MuseumCatalogFilter();
 
     public string DisplayName =>
@@ -82,9 +94,8 @@ public class MuseumWingConfig
 
 /// <summary>
 /// Presentation and grouping configuration for the generated Museum catalog.
-/// It defines wings and weapon/model categories, but never stores one row per
-/// skin. The future MuseumCatalogService will still build exhibits directly
-/// from GameDatabase.allSkins.
+/// It defines wings and categories, but never stores one row per skin. Runtime
+/// exhibits are always generated directly from GameDatabase.allSkins.
 /// </summary>
 [CreateAssetMenu(
     fileName = "MuseumCatalogConfig",
@@ -189,20 +200,24 @@ public class MuseumCatalogConfig : ScriptableObject
                     category.filter = new MuseumCatalogFilter();
 
                 if (category.filter.weaponNames == null)
-                {
-                    category.filter.weaponNames =
-                        new List<string>();
-                }
+                    category.filter.weaponNames = new List<string>();
 
-                for (int weaponIndex = 0;
-                     weaponIndex < category.filter.weaponNames.Count;
-                     weaponIndex++)
-                {
-                    category.filter.weaponNames[weaponIndex] =
-                        Trim(category.filter.weaponNames[weaponIndex]);
-                }
+                if (category.filter.collectionIds == null)
+                    category.filter.collectionIds = new List<string>();
+
+                TrimList(category.filter.weaponNames);
+                TrimList(category.filter.collectionIds);
             }
         }
+    }
+
+    private static void TrimList(List<string> values)
+    {
+        if (values == null)
+            return;
+
+        for (int i = 0; i < values.Count; i++)
+            values[i] = Trim(values[i]);
     }
 
     private static string Trim(string value)
