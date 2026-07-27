@@ -11,6 +11,8 @@ public class MuseumWeaponCardUI : MonoBehaviour
     [SerializeField] private TMP_Text skinCountText;
     [SerializeField] private TMP_Text donationStateText;
     [SerializeField] private MuseumProgressBarUI progressBar;
+    [SerializeField] private GameObject lockedRoot;
+    [SerializeField] private TMP_Text lockedText;
 
     [Header("Donation Indicator Colors")]
     [SerializeField] private Color readyTextColor =
@@ -43,21 +45,34 @@ public class MuseumWeaponCardUI : MonoBehaviour
         entry = museumEntry;
         owner = panel;
 
+        bool unlocked = MuseumUnlockProgressionUtility.IsWeaponUnlocked(
+            entry,
+            GetDatabase(),
+            out string lockedReason);
+
         if (titleText != null)
             titleText.text = entry != null ? entry.weaponName : "Weapon";
 
         int skinCount = entry != null && entry.skins != null
             ? entry.skins.Count
             : 0;
-        MuseumDonationAvailabilityUtility.Count(
-            entry,
-            owner != null ? owner.Service : null,
-            out int readyCount,
-            out int protectedCount);
-        string donationStatus =
-            MuseumDonationAvailabilityUtility.GetStatusText(
+        int readyCount = 0;
+        int protectedCount = 0;
+
+        if (unlocked)
+        {
+            MuseumDonationAvailabilityUtility.Count(
+                entry,
+                owner != null ? owner.Service : null,
+                out readyCount,
+                out protectedCount);
+        }
+
+        string donationStatus = unlocked
+            ? MuseumDonationAvailabilityUtility.GetStatusText(
                 readyCount,
-                protectedCount);
+                protectedCount)
+            : "";
 
         bool sharedProgressText =
             progressBar != null &&
@@ -67,10 +82,14 @@ public class MuseumWeaponCardUI : MonoBehaviour
         if (skinCountText != null)
         {
             string baseText = $"{skinCount} skins";
-            skinCountText.text = donationStateText == null &&
-                                 !string.IsNullOrWhiteSpace(donationStatus)
-                ? baseText + "\n" + donationStatus
-                : baseText;
+
+            if (!unlocked && lockedText == null)
+                skinCountText.text = baseText + "\n" + lockedReason;
+            else if (donationStateText == null &&
+                     !string.IsNullOrWhiteSpace(donationStatus))
+                skinCountText.text = baseText + "\n" + donationStatus;
+            else
+                skinCountText.text = baseText;
         }
 
         if (!sharedProgressText)
@@ -94,15 +113,23 @@ public class MuseumWeaponCardUI : MonoBehaviour
             progressBar.SetProgress(
                 entry != null ? entry.donatedSlots : 0,
                 entry != null ? entry.totalSlots : 0,
-                sharedProgressText ? donationStatus : null);
+                sharedProgressText && unlocked ? donationStatus : null);
         }
+
+        if (lockedRoot != null)
+            lockedRoot.SetActive(!unlocked);
+
+        if (lockedText != null)
+            lockedText.text = unlocked ? "" : lockedReason;
 
         if (button != null)
         {
             button.onClick.RemoveListener(HandleClicked);
             button.onClick.AddListener(HandleClicked);
-            button.interactable = entry != null;
+            button.interactable = unlocked && entry != null;
         }
+
+        MuseumLockVisualUtility.Apply(gameObject, unlocked);
     }
 
     private void ApplyDonationIndicator(
@@ -128,9 +155,6 @@ public class MuseumWeaponCardUI : MonoBehaviour
         if (progressBar == null)
             progressBar = GetComponentInChildren<MuseumProgressBarUI>(true);
 
-        if (donationStateText != null)
-            return;
-
         TMP_Text[] texts = GetComponentsInChildren<TMP_Text>(true);
 
         for (int i = 0; i < texts.Length; i++)
@@ -142,20 +166,50 @@ public class MuseumWeaponCardUI : MonoBehaviour
 
             string objectName = text.gameObject.name.ToLowerInvariant();
 
-            if (objectName.Contains("donation") ||
-                objectName.Contains("ready") ||
-                objectName.Contains("indicator"))
+            if (donationStateText == null &&
+                (objectName.Contains("donation") ||
+                 objectName.Contains("ready") ||
+                 objectName.Contains("indicator")))
             {
                 donationStateText = text;
-                break;
+            }
+
+            if (lockedText == null &&
+                (objectName.Contains("locked") ||
+                 objectName.Contains("unlock")))
+            {
+                lockedText = text;
             }
         }
+
+        if (lockedRoot == null && lockedText != null)
+            lockedRoot = lockedText.gameObject;
+    }
+
+    private GameDatabase GetDatabase()
+    {
+        return owner != null && owner.Service != null
+            ? owner.Service.Database
+            : SaveManager.Instance != null
+                ? SaveManager.Instance.database
+                : null;
     }
 
     private void HandleClicked()
     {
-        if (owner != null && entry != null)
-            owner.OpenWeapon(entry);
+        if (owner == null || entry == null)
+            return;
+
+        if (!MuseumUnlockProgressionUtility.IsWeaponUnlocked(
+                entry,
+                GetDatabase(),
+                out string lockedReason))
+        {
+            owner.ShowMuseumMessage(lockedReason);
+            return;
+        }
+
+        owner.OpenWeapon(entry);
     }
 
     private static Sprite GetRepresentativeIcon(MuseumWeaponEntry weapon)
