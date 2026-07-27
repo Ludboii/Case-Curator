@@ -2,9 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Applies the permanent 10% shop-price discount earned by Gold-completing a
-/// container. Runtime prices are restored when the service is destroyed so the
-/// underlying CaseData assets are never intentionally re-authored.
+/// Applies the permanent 10% shop-price discount after the player manually
+/// claims a Gold container-completion reward. Completing the tier alone does not
+/// activate the discount. Runtime prices are restored when the service is
+/// destroyed so the underlying CaseData assets are never intentionally changed.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class GoldCompletionCaseDiscountService : MonoBehaviour
@@ -45,7 +46,9 @@ public sealed class GoldCompletionCaseDiscountService : MonoBehaviour
     {
         return caseData != null &&
                ContainerProgressManager.Instance != null &&
-               ContainerProgressManager.Instance.IsGoldComplete(caseData);
+               ContainerProgressManager.Instance.IsRewardClaimed(
+                   caseData,
+                   ContainerCompletionTier.Gold);
     }
 
     public static float GetEffectivePrice(CaseData caseData)
@@ -159,8 +162,9 @@ public sealed class GoldCompletionCaseDiscountService : MonoBehaviour
             float currentPrice = Mathf.Max(0f, caseData.priceInGold);
 
             // With Enter Play Mode Options enabled, a previous runtime mutation
-            // can survive long enough for a recreated service to see the already
-            // discounted value. Recover the original base price in that case.
+            // can survive long enough for a recreated service to see an already
+            // discounted value. Recover the original base price when the saved
+            // Gold reward has already been claimed.
             float basePrice = HasGoldDiscount(caseData) && currentPrice > 0f
                 ? currentPrice / PriceMultiplier
                 : currentPrice;
@@ -211,7 +215,7 @@ public sealed class GoldCompletionCaseDiscountService : MonoBehaviour
             return;
 
         const string discountLine =
-            "\nPermanent reward: 10% discount on this container in the Case Shop.";
+            "\nClaim reward: permanent 10% discount on this container in the Case Shop.";
         string text = popup.goldExplanationText.text ?? "";
 
         if (!text.Contains("10% discount"))
