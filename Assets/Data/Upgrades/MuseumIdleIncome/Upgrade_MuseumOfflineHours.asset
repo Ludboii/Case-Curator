@@ -27,96 +27,96 @@ MonoBehaviour:
   - levelName: Offline Duration I
     description: 'Shared Gold and Diamond offline cap: 2 hours total.'
     currency: 0
-    cost: 1000
+    cost: 150
     additionalRequirement: {fileID: 0}
     effectValue: 1
   - levelName: Offline Duration II
     description: 'Shared Gold and Diamond offline cap: 3 hours total.'
     currency: 0
-    cost: 2000
+    cost: 400
     additionalRequirement: {fileID: 0}
     effectValue: 2
   - levelName: Offline Duration III
     description: 'Shared Gold and Diamond offline cap: 4 hours total.'
     currency: 0
-    cost: 3500
+    cost: 600
     additionalRequirement: {fileID: 0}
     effectValue: 3
   - levelName: Offline Duration IV
     description: 'Shared Gold and Diamond offline cap: 5 hours total.'
     currency: 0
-    cost: 6000
+    cost: 900
     additionalRequirement: {fileID: 0}
     effectValue: 4
   - levelName: Offline Duration V
     description: 'Shared Gold and Diamond offline cap: 6 hours total.'
     currency: 0
-    cost: 10000
+    cost: 2000
     additionalRequirement: {fileID: 0}
     effectValue: 5
   - levelName: Offline Duration VI
     description: 'Shared Gold and Diamond offline cap: 7 hours total.'
     currency: 0
-    cost: 16000
+    cost: 3000
     additionalRequirement: {fileID: 0}
     effectValue: 6
   - levelName: Offline Duration VII
     description: 'Shared Gold and Diamond offline cap: 8 hours total.'
     currency: 0
-    cost: 25000
+    cost: 5000
     additionalRequirement: {fileID: 0}
     effectValue: 7
   - levelName: Offline Duration VIII
     description: 'Shared Gold and Diamond offline cap: 9 hours total.'
     currency: 0
-    cost: 40000
+    cost: 7000
     additionalRequirement: {fileID: 0}
     effectValue: 8
   - levelName: Offline Duration IX
     description: 'Shared Gold and Diamond offline cap: 10 hours total.'
     currency: 0
-    cost: 65000
+    cost: 8000
     additionalRequirement: {fileID: 0}
     effectValue: 9
   - levelName: Offline Duration X
     description: 'Shared Gold and Diamond offline cap: 12 hours total.'
     currency: 0
-    cost: 100000
+    cost: 10000
     additionalRequirement: {fileID: 0}
     effectValue: 11
   - levelName: Offline Duration XI
     description: 'Shared Gold and Diamond offline cap: 14 hours total.'
     currency: 0
-    cost: 160000
+    cost: 15000
     additionalRequirement: {fileID: 0}
     effectValue: 13
   - levelName: Offline Duration XII
     description: 'Shared Gold and Diamond offline cap: 16 hours total.'
     currency: 0
-    cost: 250000
+    cost: 20000
     additionalRequirement: {fileID: 0}
     effectValue: 15
   - levelName: Offline Duration XIII
     description: 'Shared Gold and Diamond offline cap: 18 hours total.'
     currency: 0
-    cost: 400000
+    cost: 30000
     additionalRequirement: {fileID: 0}
     effectValue: 17
   - levelName: Offline Duration XIV
     description: 'Shared Gold and Diamond offline cap: 20 hours total.'
     currency: 0
-    cost: 650000
+    cost: 40000
     additionalRequirement: {fileID: 0}
     effectValue: 19
   - levelName: Offline Duration XV
     description: 'Shared Gold and Diamond offline cap: 22 hours total.'
     currency: 0
-    cost: 1000000
+    cost: 50000
     additionalRequirement: {fileID: 0}
     effectValue: 21
   - levelName: Offline Duration XVI
     description: 'Shared Gold and Diamond offline cap: 24 hours total.'
     currency: 0
-    cost: 1600000
+    cost: 70000
     additionalRequirement: {fileID: 0}
     effectValue: 23

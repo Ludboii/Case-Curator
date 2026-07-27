@@ -26,6 +26,6 @@ MonoBehaviour:
   - levelName: Trophy Pedestal IV
     description: Unlocks Trophy Room Pedestal 4. Requires Global Elite IV.
     currency: 0
-    cost: 400000
+    cost: 125000
     additionalRequirement: {fileID: 0}
     effectValue: 4

@@ -26,6 +26,6 @@ MonoBehaviour:
   - levelName: Trophy Pedestal V
     description: Unlocks Trophy Room Pedestal 5. Requires Global Elite V.
     currency: 0
-    cost: 750000
+    cost: 170000
     additionalRequirement: {fileID: 0}
     effectValue: 5

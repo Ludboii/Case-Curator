@@ -1,0 +1,108 @@
+SourceName,CaseDataAssetName,ContainerType,ShopCategory,PriceGold,XPReward,RequiredRank
+Sealed Genesis Terminal,Sealed Genesis Terminal,WeaponCase,Cases,1.25,1,Silver I
+Kilowatt Case,Kilowatt Case,WeaponCase,Cases,1.65,1,Silver I
+Revolution Case,Revolution Case,WeaponCase,Cases,1.9,1,Silver I
+Recoil Case,Recoil Case,WeaponCase,Cases,2.15,2,Silver II
+The Lake Collection,The Lake Collection Package,CollectionPackage,Collections,3,2,Silver I
+Fracture Case,Fracture Case,WeaponCase,Cases,3.1,2,Silver II
+Snakebite Case,Snakebite Case,WeaponCase,Cases,3.2,2,Silver II
+The Train Collection,The Train Collection Package,CollectionPackage,Collections,4.5,3,Silver I
+The Italy Collection,The Italy Collection Package,CollectionPackage,Collections,5,3,Silver II
+Clutch Case,Clutch Case,WeaponCase,Cases,5.3,3,Silver III
+CS20 Case,CS20 Case,WeaponCase,Cases,5.6,3,Silver III
+Fever Case,Fever Case,WeaponCase,Cases,6.15,4,Silver III
+Shadow Case,Shadow Case,WeaponCase,Cases,6.3,4,Silver III
+The Dust 2 Collection,The Dust 2 Collection Package,CollectionPackage,Collections,6.8,5,Silver II
+Gallery Case,Gallery Case,WeaponCase,Cases,7.2,5,Silver III
+The Bank Collection,The Bank Collection Package,CollectionPackage,Collections,8.5,6,Silver II
+Falchion Case,Falchion Case,WeaponCase,Cases,9.2,6,Silver III
+Sealed Dead Hand Terminal,Sealed Dead Hand Terminal,WeaponCase,Cases,10.5,7,Silver Elite
+Prisma 2 Case,Prisma 2 Case,WeaponCase,Cases,11.5,7,Silver Elite
+Dreams & Nightmares Case,Dreams & Nightmares Case,WeaponCase,Cases,12.3,8,Silver Elite
+Huntsman Weapon Case,Huntsman Weapon Case,WeaponCase,Cases,12.95,8,Silver Elite
+Prisma Case,Prisma Case,WeaponCase,Cases,13,8,Silver Elite
+Spectrum Case,Spectrum Case,WeaponCase,Cases,13.4,8,Silver Elite
+Danger Zone Case,Danger Zone Case,WeaponCase,Cases,14.2,9,Silver Elite
+Gamma Case,Gamma Case,WeaponCase,Cases,15.2,9,Silver Elite Master
+Horizon Case,Horizon Case,WeaponCase,Cases,15.3,9,Silver Elite Master
+The Aztec Collection,The Aztec Collection Package,CollectionPackage,Collections,15.5,10,Silver III
+Operation Wildfire Case,Operation Wildfire Case,WeaponCase,Cases,16.3,10,Silver Elite Master
+Operation Phoenix Weapon Case,Operation Phoenix Weapon Case,WeaponCase,Cases,16.7,11,Silver Elite Master
+Revolver Case,Revolver Case,WeaponCase,Cases,18.3,12,Silver Elite Master
+Chroma 3 Case,Chroma 3 Case,WeaponCase,Cases,18.4,12,Silver Elite Master
+Operation Vanguard Weapon Case,Operation Vanguard Weapon Case,WeaponCase,Cases,19.25,13,Silver Elite Master
+Gamma 2 Case,Gamma 2 Case,WeaponCase,Cases,19.3,13,Silver Elite Master
+The Safehouse Collection,The Safehouse Collection Package,CollectionPackage,Collections,19.8,13,Silver III
+Chroma Case,Chroma Case,WeaponCase,Cases,20.65,14,Gold Nova I
+The Cache Collection,The Cache Collection Package,CollectionPackage,Collections,21.9,15,Silver III
+Chroma 2 Case,Chroma 2 Case,WeaponCase,Cases,22.2,16,Gold Nova I
+Operation Broken Fang Case,Operation Broken Fang Case,WeaponCase,Cases,22.3,16,Gold Nova I
+Spectrum 2 Case,Spectrum 2 Case,WeaponCase,Cases,25.2,16,Gold Nova II
+Winter Offensive Weapon Case,Winter Offensive Weapon Case,WeaponCase,Cases,25.2,16,Gold Nova II
+Shattered Web Case,Shattered Web Case,WeaponCase,Cases,25.3,17,Gold Nova II
+The Vertigo Collection,The Vertigo Collection Package,CollectionPackage,Collections,28.5,17,Silver III
+Operation Riptide Case,Operation Riptide Case,WeaponCase,Cases,28.65,18,Gold Nova II
+Operation Breakout Weapon Case,Operation Breakout Weapon Case,WeaponCase,Cases,29.3,20,Gold Nova II
+The Train Collection,Souvenir Train Package,SouvenirPackage,SouvenirCollections,30,20,Silver Elite Master
+CS:GO Weapon Case 3,CS:GO Weapon Case 3,WeaponCase,Cases,30.85,21,Gold Nova III
+The 2018 Inferno Collection,The 2018 Inferno Collection Package,CollectionPackage,Collections,35,21,Silver Elite
+eSports 2014 Summer Case,eSports 2014 Summer Case,WeaponCase,Cases,37.1,22,Gold Nova III
+The Inferno Collection,The Inferno Collection Package,CollectionPackage,Collections,39,22,Silver Elite
+Glove Case,Glove Case,WeaponCase,Cases,47.3,24,Gold Nova Master
+The 2018 Nuke Collection,The 2018 Nuke Collection Package,CollectionPackage,Collections,48,24,Silver Elite
+eSports 2013 Winter Case,eSports 2013 Winter Case,WeaponCase,Cases,51.5,26,Gold Nova Master
+CS:GO Weapon Case 2,CS:GO Weapon Case 2,WeaponCase,Cases,55.2,28,Master Guardian I
+The Harlequin Collection,The Harlequin Collection Package,CollectionPackage,Collections,66.5,30,Silver Elite Master
+The Achroma Collection,The Achroma Collection Package,CollectionPackage,Collections,69.9,31,Silver Elite Master
+The Dust 2 Collection,Souvenir Dust 2 Package,SouvenirPackage,SouvenirCollections,70,32,Gold Nova II
+eSports 2013 Case,eSports 2013 Case,WeaponCase,Cases,79.4,34,Master Guardian I
+Operation Hydra Case,Operation Hydra Case,WeaponCase,Cases,80.2,36,Master Guardian Elite
+The Office Collection,The Office Collection Package,CollectionPackage,Collections,85,36,Gold Nova I
+The Cache Collection,Souvenir Cache Package,SouvenirPackage,SouvenirCollections,95,37,Gold Nova Master
+The Ascent Collection,The Ascent Collection Package,CollectionPackage,Collections,103,39,Gold Nova I
+The Mirage Collection,The Mirage Collection Package,CollectionPackage,Collections,108,40,Gold Nova II
+The Boreal Collection,The Boreal Collection Package,CollectionPackage,Collections,121,41,Gold Nova II
+Operation Bravo Case,Operation Bravo Case,WeaponCase,Cases,125.7,43,Distinguished Master Guardian
+The Inferno Collection,Souvenir Inferno Package,SouvenirPackage,SouvenirCollections,130,44,Master Guardian II
+The Radiant Collection,The Radiant Collection Package,CollectionPackage,Collections,145,46,Gold Nova II
+The Alpha Collection,The Alpha Collection Package,CollectionPackage,Collections,145.5,49,Gold Nova II
+The Overpass Collection,The Overpass Collection Package,CollectionPackage,Collections,189,51,Gold Nova Master
+The Sport & Field Collection,The Sport & Field Collection Package,CollectionPackage,Collections,193,52,Gold Nova Master
+CS:GO Weapon Case,CS:GO Weapon Case,WeaponCase,Cases,195.3,55,Legendary Eagle Master
+The Vertigo Collection,Souvenir Vertigo Package,SouvenirPackage,SouvenirCollections,220,55,Master Guardian II
+The Dust Collection,The Dust Collection Package,CollectionPackage,Collections,225,57,Gold Nova Master
+The Overpass 2024 Collection,The Overpass 2024 Collection Package,CollectionPackage,Collections,245,58,Master Guardian I
+The Train 2025 Collection,The Train 2025 Collection Package,CollectionPackage,Collections,250,58,Master Guardian I
+The Militia Collection,The Militia Collection Package,CollectionPackage,Collections,280,60,Master Guardian I
+The 2018 Nuke Collection,Souvenir 2018 Nuke Package,SouvenirPackage,SouvenirCollections,300,61,Distinguished Master Guardian
+The Graphic Design Collection,The Graphic Design Collection Package,CollectionPackage,Collections,330,64,Master Guardian I
+The 2018 Inferno Collection,Souvenir 2018 Inferno Package,SouvenirPackage,SouvenirCollections,340,64,Distinguished Master Guardian
+The Control Collection,The Control Collection Package,CollectionPackage,Collections,400,67,Master Guardian Elite
+The Baggage Collection,The Baggage Collection Package,CollectionPackage,Collections,430,69,Master Guardian Elite
+The 2021 Train Collection,The 2021 Train Collection Package,CollectionPackage,Collections,460,72,Master Guardian Elite
+The Mirage Collection,Souvenir Mirage Package,SouvenirPackage,SouvenirCollections,495,72,Legendary Eagle Master
+The Ancient Collection,The Ancient Collection Package,CollectionPackage,Collections,500,73,Master Guardian Elite
+The Anubis Collection,The Anubis Collection Package,CollectionPackage,Collections,500,73,Master Guardian Elite
+The 2021 Dust 2 Collection,The 2021 Dust 2 Collection Package,CollectionPackage,Collections,540,75,Distinguished Master Guardian
+The Assault Collection,The Assault Collection Package,CollectionPackage,Collections,595,77,Distinguished Master Guardian
+The Chop Shop Collection,The Chop Shop Collection Package,CollectionPackage,Collections,650,77,Distinguished Master Guardian
+The Overpass Collection,Souvenir Overpass Package,SouvenirPackage,SouvenirCollections,670,79,Supreme Master First Class
+The Havoc Collection,The Havoc Collection Package,CollectionPackage,Collections,745,82,Legendary Eagle
+The Nuke Collection,The Nuke Collection Package,CollectionPackage,Collections,745,84,Legendary Eagle
+The 2021 Mirage Collection,The 2021 Mirage Collection Package,CollectionPackage,Collections,750,86,Legendary Eagle
+The Overpass 2024 Collection,Souvenir Overpass 2024 Package,SouvenirPackage,SouvenirCollections,815,88,Supreme Master First Class
+The Train 2025 Collection,Souvenir Train 2025 Package,SouvenirPackage,SouvenirCollections,830,88,Supreme Master First Class
+The 2021 Vertigo Collection,The 2021 Vertigo Collection Package,CollectionPackage,Collections,850,91,Legendary Eagle
+The Rising Sun Collection,The Rising Sun Collection Package,CollectionPackage,Collections,950,94,Legendary Eagle Master
+The Anubis Collection,Souvenir Anubis Package,SouvenirPackage,SouvenirCollections,980,99,Global Elite
+The Ancient Collection,Souvenir Ancient Package,SouvenirPackage,SouvenirCollections,1040,104,Global Elite
+The Nuke Collection,Souvenir Nuke Package,SouvenirPackage,SouvenirCollections,1090,108,Supreme Master First Class
+The Canals Collection,The Canals Collection Package,CollectionPackage,Collections,1135,110,Supreme Master First Class
+The St. Marc Collection,The St. Marc Collection Package,CollectionPackage,Collections,1190,115,Global Elite II
+The Gods and Monsters Collection,The Gods and Monsters Collection Package,CollectionPackage,Collections,1250,124,Global Elite II
+The Norse Collection,The Norse Collection Package,CollectionPackage,Collections,1390,126,Global Elite III
+The Cobblestone Collection,The Cobblestone Collection Package,CollectionPackage,Collections,1540,130,Global Elite IV
+The 2021 Dust 2 Collection,Souvenir 2021 Dust 2 Package,SouvenirPackage,SouvenirCollections,1865,135,Global Elite V
+The 2021 Mirage Collection,Souvenir 2021 Mirage Package,SouvenirPackage,SouvenirCollections,2205,156,Global Elite VI
+The 2021 Vertigo Collection,Souvenir 2021 Vertigo Package,SouvenirPackage,SouvenirCollections,2295,166,Global Elite VII
+The Cobblestone Collection,Souvenir Cobblestone Package,SouvenirPackage,SouvenirCollections,4375,225,Global Elite IX

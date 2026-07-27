@@ -26,6 +26,6 @@ MonoBehaviour:
   - levelName: Trophy Pedestal VIII
     description: Unlocks Trophy Room Pedestal 8. Requires Global Elite VIII.
     currency: 0
-    cost: 3000000
+    cost: 350000
     additionalRequirement: {fileID: 0}
     effectValue: 8

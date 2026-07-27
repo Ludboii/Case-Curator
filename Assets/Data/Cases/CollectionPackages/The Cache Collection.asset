@@ -23,7 +23,7 @@ MonoBehaviour:
   isPremium: 0
   quality: 1
   requiredRank: 2
-  xpRewardOnOpen: 17
+  xpRewardOnOpen: 15
   shopCategory: 1
   isCustomCase: 0
   shouldHaveRareSpecial: 0

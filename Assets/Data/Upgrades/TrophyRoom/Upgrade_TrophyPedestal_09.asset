@@ -26,6 +26,6 @@ MonoBehaviour:
   - levelName: Trophy Pedestal IX
     description: Unlocks Trophy Room Pedestal 9. Requires Global Elite IX.
     currency: 0
-    cost: 5000000
+    cost: 450000
     additionalRequirement: {fileID: 0}
     effectValue: 9

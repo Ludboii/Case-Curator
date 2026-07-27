@@ -26,6 +26,6 @@ MonoBehaviour:
   - levelName: Trophy Pedestal III
     description: Unlocks Trophy Room Pedestal 3. Requires Global Elite III.
     currency: 0
-    cost: 200000
+    cost: 80000
     additionalRequirement: {fileID: 0}
     effectValue: 3

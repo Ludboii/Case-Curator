@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff1fafda9512383479c4f566a1b73a80, type: 3}
+  m_Name: Upgrade_RareVaultStage_03
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
+  upgradeId: museum-rare-vault-stage-03
+  displayName: 'Rare Vault Stage 3: Mid Knives'
+  description: Unlocks Kukri Knife, Ursus Knife, Flip Knife, Huntsman Knife, Nomad
+    Knife, Bowie Knife and Classic Knife exhibits.
+  icon: {fileID: 0}
+  category: 3
+  sortOrder: 303
+  hiddenUntilUnlocked: 0
+  unlockDefinition: {fileID: 11400000, guid: 1b2b864956413b645b810af51dbba1f4, type: 2}
+  effectType: 0
+  defaultEffectValue: 0
+  levels:
+  - levelName: 'Rare Vault Stage 3: Mid Knives'
+    description: Unlocks Kukri Knife, Ursus Knife, Flip Knife, Huntsman Knife, Nomad
+      Knife, Bowie Knife and Classic Knife exhibits.
+    currency: 0
+    cost: 10000
+    additionalRequirement: {fileID: 0}
+    effectValue: 3

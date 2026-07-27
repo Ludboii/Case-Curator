@@ -194,7 +194,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &5123275511399870178
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -216,15 +216,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_Color: {r: 0.15, g: 0.85, b: 0.15, a: 1}
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 3
+  m_Sprite: {fileID: 0}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -600,8 +600,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -96}
-  m_SizeDelta: {x: 317, y: 77.9795}
+  m_AnchoredPosition: {x: 10.893799, y: -100.23648}
+  m_SizeDelta: {x: 338.7876, y: 86.4525}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6898294230059939934
 CanvasRenderer:
@@ -658,8 +658,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26
-  m_fontSizeBase: 26
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -763,8 +763,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a106a7148292a54a8ff942463e7da52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MuseumProgressBarUI
-  fillImage: {fileID: 0}
-  progressText: {fileID: 0}
+  fillImage: {fileID: 7674515672807414540}
+  progressText: {fileID: 1964120749793055127}
+  fillColor: {r: 0.15, g: 0.85, b: 0.15, a: 1}
+  fillPadding: 0
   showPercentage: 0
 --- !u!1 &6205038590649557950
 GameObject:

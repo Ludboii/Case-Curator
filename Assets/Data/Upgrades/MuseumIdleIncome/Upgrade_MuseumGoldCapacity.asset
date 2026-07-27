@@ -27,48 +27,72 @@ MonoBehaviour:
   - levelName: Gold Storage I
     description: Unclaimed Museum Gold capacity x1.5.
     currency: 0
-    cost: 1500
+    cost: 50
     additionalRequirement: {fileID: 0}
     effectValue: 1.5
   - levelName: Gold Storage II
     description: Unclaimed Museum Gold capacity x2.
     currency: 0
-    cost: 4000
+    cost: 200
     additionalRequirement: {fileID: 0}
     effectValue: 2
   - levelName: Gold Storage III
     description: Unclaimed Museum Gold capacity x2.5.
     currency: 0
-    cost: 10000
+    cost: 400
     additionalRequirement: {fileID: 0}
     effectValue: 2.5
   - levelName: Gold Storage IV
     description: Unclaimed Museum Gold capacity x3.
     currency: 0
-    cost: 25000
+    cost: 950
     additionalRequirement: {fileID: 0}
     effectValue: 3
   - levelName: Gold Storage V
     description: Unclaimed Museum Gold capacity x3.5.
     currency: 0
-    cost: 60000
+    cost: 1250
     additionalRequirement: {fileID: 0}
     effectValue: 3.5
   - levelName: Gold Storage VI
     description: Unclaimed Museum Gold capacity x4.
     currency: 0
-    cost: 150000
+    cost: 1575
     additionalRequirement: {fileID: 0}
     effectValue: 4
   - levelName: Gold Storage VII
-    description: Unclaimed Museum Gold capacity x4.5.
+    description: Unclaimed Museum Gold capacity x5
     currency: 0
-    cost: 400000
-    additionalRequirement: {fileID: 0}
-    effectValue: 4.5
-  - levelName: Gold Storage VIII
-    description: Unclaimed Museum Gold capacity x5.
-    currency: 0
-    cost: 1000000
+    cost: 1999
     additionalRequirement: {fileID: 0}
     effectValue: 5
+  - levelName: Gold Storage VIII
+    description: Unclaimed Museum Gold capacity x6
+    currency: 0
+    cost: 2500
+    additionalRequirement: {fileID: 0}
+    effectValue: 6
+  - levelName: Gold Storage IX
+    description: Unclaimed Museum Gold capacity x8
+    currency: 0
+    cost: 3590
+    additionalRequirement: {fileID: 0}
+    effectValue: 8
+  - levelName: Gold Storage X
+    description: Unclaimed Museum Gold capacity x10
+    currency: 0
+    cost: 4430
+    additionalRequirement: {fileID: 0}
+    effectValue: 10
+  - levelName: Gold Storage XI
+    description: Unclaimed Museum Gold capacity x15
+    currency: 0
+    cost: 7800
+    additionalRequirement: {fileID: 0}
+    effectValue: 15
+  - levelName: Gold Storage XII
+    description: Unclaimed Museum Gold capacity x25
+    currency: 0
+    cost: 11500
+    additionalRequirement: {fileID: 0}
+    effectValue: 25

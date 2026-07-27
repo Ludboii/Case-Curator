@@ -27,138 +27,138 @@ MonoBehaviour:
   - levelName: Gold Visitor Income I
     description: Visitor Gold generation x1.05.
     currency: 0
-    cost: 500
+    cost: 400
     additionalRequirement: {fileID: 0}
     effectValue: 1.05
   - levelName: Gold Visitor Income II
     description: Visitor Gold generation x1.1.
     currency: 0
-    cost: 900
+    cost: 600
     additionalRequirement: {fileID: 0}
     effectValue: 1.1
   - levelName: Gold Visitor Income III
     description: Visitor Gold generation x1.15.
     currency: 0
-    cost: 1500
+    cost: 800
     additionalRequirement: {fileID: 0}
     effectValue: 1.15
   - levelName: Gold Visitor Income IV
     description: Visitor Gold generation x1.2.
     currency: 0
-    cost: 2500
+    cost: 1000
     additionalRequirement: {fileID: 0}
     effectValue: 1.2
   - levelName: Gold Visitor Income V
     description: Visitor Gold generation x1.25.
     currency: 0
-    cost: 4000
+    cost: 1500
     additionalRequirement: {fileID: 0}
     effectValue: 1.25
   - levelName: Gold Visitor Income VI
     description: Visitor Gold generation x1.3.
     currency: 0
-    cost: 6500
+    cost: 1800
     additionalRequirement: {fileID: 0}
     effectValue: 1.3
   - levelName: Gold Visitor Income VII
     description: Visitor Gold generation x1.4.
     currency: 0
-    cost: 10000
+    cost: 2000
     additionalRequirement: {fileID: 0}
     effectValue: 1.4
   - levelName: Gold Visitor Income VIII
     description: Visitor Gold generation x1.5.
     currency: 0
-    cost: 16000
+    cost: 2500
     additionalRequirement: {fileID: 0}
     effectValue: 1.5
   - levelName: Gold Visitor Income IX
     description: Visitor Gold generation x1.6.
     currency: 0
-    cost: 25000
+    cost: 3000
     additionalRequirement: {fileID: 0}
     effectValue: 1.6
   - levelName: Gold Visitor Income X
     description: Visitor Gold generation x1.7.
     currency: 0
-    cost: 40000
+    cost: 4000
     additionalRequirement: {fileID: 0}
     effectValue: 1.7
   - levelName: Gold Visitor Income XI
     description: Visitor Gold generation x1.8.
     currency: 0
-    cost: 65000
+    cost: 6500
     additionalRequirement: {fileID: 0}
     effectValue: 1.8
   - levelName: Gold Visitor Income XII
     description: Visitor Gold generation x1.9.
     currency: 0
-    cost: 100000
+    cost: 9000
     additionalRequirement: {fileID: 0}
     effectValue: 1.9
   - levelName: Gold Visitor Income XIII
     description: Visitor Gold generation x2.
     currency: 0
-    cost: 160000
+    cost: 11000
     additionalRequirement: {fileID: 0}
     effectValue: 2
   - levelName: Gold Visitor Income XIV
     description: Visitor Gold generation x2.15.
     currency: 0
-    cost: 250000
+    cost: 15000
     additionalRequirement: {fileID: 0}
     effectValue: 2.15
   - levelName: Gold Visitor Income XV
     description: Visitor Gold generation x2.3.
     currency: 0
-    cost: 400000
+    cost: 20000
     additionalRequirement: {fileID: 0}
     effectValue: 2.3
   - levelName: Gold Visitor Income XVI
     description: Visitor Gold generation x2.5.
     currency: 0
-    cost: 650000
+    cost: 40000
     additionalRequirement: {fileID: 0}
     effectValue: 2.5
   - levelName: Gold Visitor Income XVII
     description: Visitor Gold generation x2.75.
     currency: 0
-    cost: 1000000
+    cost: 75000
     additionalRequirement: {fileID: 0}
     effectValue: 2.75
   - levelName: Gold Visitor Income XVIII
     description: Visitor Gold generation x3.
     currency: 0
-    cost: 1600000
+    cost: 100000
     additionalRequirement: {fileID: 0}
     effectValue: 3
   - levelName: Gold Visitor Income XIX
     description: Visitor Gold generation x3.25.
     currency: 0
-    cost: 2500000
+    cost: 120000
     additionalRequirement: {fileID: 0}
     effectValue: 3.25
   - levelName: Gold Visitor Income XX
     description: Visitor Gold generation x3.5.
     currency: 0
-    cost: 4000000
+    cost: 155000
     additionalRequirement: {fileID: 0}
     effectValue: 3.5
   - levelName: Gold Visitor Income XXI
     description: Visitor Gold generation x4.
     currency: 0
-    cost: 6500000
+    cost: 170000
     additionalRequirement: {fileID: 0}
     effectValue: 4
   - levelName: Gold Visitor Income XXII
     description: Visitor Gold generation x4.5.
     currency: 0
-    cost: 10000000
+    cost: 225000
     additionalRequirement: {fileID: 0}
     effectValue: 4.5
   - levelName: Gold Visitor Income XXIII
     description: Visitor Gold generation x5.
     currency: 0
-    cost: 16000000
+    cost: 250000
     additionalRequirement: {fileID: 0}
     effectValue: 5

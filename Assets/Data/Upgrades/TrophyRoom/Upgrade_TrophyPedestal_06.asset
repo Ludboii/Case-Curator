@@ -26,6 +26,6 @@ MonoBehaviour:
   - levelName: Trophy Pedestal VI
     description: Unlocks Trophy Room Pedestal 6. Requires Global Elite VI.
     currency: 0
-    cost: 1250000
+    cost: 225000
     additionalRequirement: {fileID: 0}
     effectValue: 6

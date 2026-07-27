@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb5b63b3fa2b389488629553c1dcd51d, type: 3}
+  m_Name: MuseumCompletionRewardBalance
+  m_EditorClassIdentifier: Assembly-CSharp::MuseumCompletionRewardBalanceData
+  normalVariationMultipliers:
+  - 2
+  - 2.5
+  - 3
+  - 3.5
+  - 4
+  - 4.5
+  - 5
+  - 5.5
+  - 6
+  - 6.5
+  rareSpecialVariationMultipliers:
+  - 8
+  - 10
+  - 12
+  - 14
+  - 16
+  - 18
+  - 20
+  - 22
+  - 25
+  - 30
+  rarityRules:
+  - rarity: 0
+    qualityMultiplier: 0.6
+    maximumReward: 1000
+  - rarity: 1
+    qualityMultiplier: 0.75
+    maximumReward: 1250
+  - rarity: 2
+    qualityMultiplier: 0.9
+    maximumReward: 1500
+  - rarity: 3
+    qualityMultiplier: 1
+    maximumReward: 1800
+  - rarity: 4
+    qualityMultiplier: 1.15
+    maximumReward: 2200
+  - rarity: 5
+    qualityMultiplier: 1.3
+    maximumReward: 3000
+  - rarity: 6
+    qualityMultiplier: 1
+    maximumReward: 12000
+  weaponRewardTiers:
+  - minimumSlots: 1
+    maximumSlots: 50
+    rewardMuseumPoints: 5000
+  - minimumSlots: 51
+    maximumSlots: 250
+    rewardMuseumPoints: 25000
+  - minimumSlots: 251
+    maximumSlots: 400
+    rewardMuseumPoints: 40000
+  - minimumSlots: 401
+    maximumSlots: 0
+    rewardMuseumPoints: 60000
+  categoryRewardRules:
+  - wingId: museum-arsenal
+    categoryId: museum-arsenal-pistols
+    rewardMuseumPoints: 150000
+  - wingId: museum-arsenal
+    categoryId: museum-arsenal-smgs
+    rewardMuseumPoints: 102500
+  - wingId: museum-arsenal
+    categoryId: museum-arsenal-machine-guns
+    rewardMuseumPoints: 37500
+  - wingId: museum-arsenal
+    categoryId: museum-arsenal-shotguns
+    rewardMuseumPoints: 77500
+  - wingId: museum-arsenal
+    categoryId: museum-arsenal-rifles
+    rewardMuseumPoints: 102500
+  - wingId: museum-arsenal
+    categoryId: museum-arsenal-snipers
+    rewardMuseumPoints: 77500
+  - wingId: museum-arsenal
+    categoryId: museum-arsenal-equipment
+    rewardMuseumPoints: 4000
+  - wingId: museum-rare-special-vault
+    categoryId: museum-rare-vault-knives
+    rewardMuseumPoints: 157500
+  - wingId: museum-rare-special-vault
+    categoryId: museum-rare-vault-gloves
+    rewardMuseumPoints: 42500
+  claimNotificationSeconds: 2.5

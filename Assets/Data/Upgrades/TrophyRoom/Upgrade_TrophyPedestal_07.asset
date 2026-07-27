@@ -26,6 +26,6 @@ MonoBehaviour:
   - levelName: Trophy Pedestal VII
     description: Unlocks Trophy Room Pedestal 7. Requires Global Elite VII.
     currency: 0
-    cost: 2000000
+    cost: 280000
     additionalRequirement: {fileID: 0}
     effectValue: 7

@@ -26,6 +26,6 @@ MonoBehaviour:
   - levelName: Trophy Pedestal X
     description: Unlocks Trophy Room Pedestal 10. Requires Global Elite X.
     currency: 0
-    cost: 8000000
+    cost: 590000
     additionalRequirement: {fileID: 0}
     effectValue: 10

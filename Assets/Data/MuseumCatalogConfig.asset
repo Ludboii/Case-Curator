@@ -12,127 +12,181 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b60d4d9f392a5174a8c4c43180926ef7, type: 3}
   m_Name: MuseumCatalogConfig
   m_EditorClassIdentifier: Assembly-CSharp::MuseumCatalogConfig
-  defaultWingId: 
+  defaultWingId: museum-arsenal
   wings:
-  - wingId: 
+  - wingId: museum-arsenal
     displayName: Arsenal Wing
-    description: 
+    description: Normal and StatTrak weapon exhibits unlocked through the competitive
+      rank ladder.
     icon: {fileID: 0}
     sortOrder: 0
-    includeInCompletion: 0
+    includeInCompletion: 1
     unlockDefinition: {fileID: 0}
     categories:
-    - categoryId: 
+    - categoryId: museum-arsenal-pistols
       displayName: Pistols
-      description: 
+      description: Sidearm exhibits.
       icon: {fileID: 0}
       sortOrder: 0
-      includeInCompletion: 0
+      includeInCompletion: 1
       unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 0
       filter:
         filterMode: 1
         weaponNames:
-        - CZ75-Auto
-        - Desert Eagle
-        - Dual Berettas
-        - Five-Seven
+        - USP-S
         - Glock-18
         - P2000
         - P250
-        - R8 Revolver
+        - CZ75-Auto
+        - Dual Berettas
+        - Five-SeveN
         - Tec-9
-        - USP-S
+        - Desert Eagle
+        - R8 Revolver
+        collectionIds: []
         includeNormal: 1
         includeStatTrak: 1
-        includeSouvenir: 1
-        includeVanilla: 0
-    - categoryId: 
+        includeSouvenir: 0
+        includeVanilla: 1
+    - categoryId: museum-arsenal-smgs
       displayName: SMGs
-      description: 
+      description: Submachine-gun exhibits.
       icon: {fileID: 0}
-      sortOrder: 0
-      includeInCompletion: 0
+      sortOrder: 10
+      includeInCompletion: 1
       unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 0
       filter:
         filterMode: 1
         weaponNames:
-        - MAC-10
-        - MP5-SD
-        - MP7
         - MP9
-        - P90
-        - PP-Bizon
+        - MAC-10
         - UMP-45
+        - PP-Bizon
+        - MP7
+        - MP5-SD
+        - P90
+        collectionIds: []
         includeNormal: 1
         includeStatTrak: 1
-        includeSouvenir: 1
-        includeVanilla: 0
-    - categoryId: 
-      displayName: Heavy
-      description: 
+        includeSouvenir: 0
+        includeVanilla: 1
+    - categoryId: museum-arsenal-machine-guns
+      displayName: Machine Guns
+      description: Heavy machine-gun exhibits.
       icon: {fileID: 0}
-      sortOrder: 0
-      includeInCompletion: 0
+      sortOrder: 20
+      includeInCompletion: 1
       unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 0
       filter:
         filterMode: 1
         weaponNames:
+        - Negev
+        - M249
+        collectionIds: []
+        includeNormal: 1
+        includeStatTrak: 1
+        includeSouvenir: 0
+        includeVanilla: 1
+    - categoryId: museum-arsenal-shotguns
+      displayName: Shotguns
+      description: Shotgun exhibits.
+      icon: {fileID: 0}
+      sortOrder: 30
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 0
+      filter:
+        filterMode: 1
+        weaponNames:
+        - XM1014
+        - Sawed-Off
         - MAG-7
         - Nova
-        - Sawed-Off
-        - XM1014
-        - M249
-        - Negev
+        collectionIds: []
         includeNormal: 1
         includeStatTrak: 1
-        includeSouvenir: 1
-        includeVanilla: 0
-    - categoryId: 
-      displayName: Assault Rifles
-      description: 
+        includeSouvenir: 0
+        includeVanilla: 1
+    - categoryId: museum-arsenal-rifles
+      displayName: Rifles
+      description: Assault-rifle exhibits.
       icon: {fileID: 0}
-      sortOrder: 0
-      includeInCompletion: 0
+      sortOrder: 40
+      includeInCompletion: 1
       unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 0
       filter:
         filterMode: 1
         weaponNames:
-        - AK-47
-        - AUG
-        - FAMAS
         - Galil AR
-        - M4A1-S
-        - M4A4
+        - FAMAS
         - SG 553
+        - AUG
+        - M4A4
+        - M4A1-S
+        - AK-47
+        collectionIds: []
         includeNormal: 1
         includeStatTrak: 1
-        includeSouvenir: 1
-        includeVanilla: 0
-    - categoryId: 
-      displayName: Sniper Rifles
-      description: 
+        includeSouvenir: 0
+        includeVanilla: 1
+    - categoryId: museum-arsenal-snipers
+      displayName: Snipers
+      description: Sniper-rifle exhibits.
       icon: {fileID: 0}
-      sortOrder: 0
-      includeInCompletion: 0
+      sortOrder: 50
+      includeInCompletion: 1
       unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 0
       filter:
         filterMode: 1
         weaponNames:
-        - AWP
         - G3SG1
         - SCAR-20
         - SSG 08
+        - AWP
+        collectionIds: []
         includeNormal: 1
         includeStatTrak: 1
-        includeSouvenir: 1
-        includeVanilla: 0
-    - categoryId: 
+        includeSouvenir: 0
+        includeVanilla: 1
+    - categoryId: museum-arsenal-equipment
+      displayName: Equipment
+      description: Special equipment exhibits.
+      icon: {fileID: 0}
+      sortOrder: 60
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 0
+      filter:
+        filterMode: 1
+        weaponNames:
+        - Zeus x27
+        collectionIds: []
+        includeNormal: 1
+        includeStatTrak: 1
+        includeSouvenir: 0
+        includeVanilla: 1
+  - wingId: museum-rare-special-vault
+    displayName: Rare Special Vault
+    description: Secure knife and glove exhibits. Each family requires its matching
+      Rare Vault Stage upgrade.
+    icon: {fileID: 0}
+    sortOrder: 10
+    includeInCompletion: 1
+    unlockDefinition: {fileID: 11400000, guid: ecd3c633338b7324d9193fd0db40c57b, type: 2}
+    categories:
+    - categoryId: museum-rare-vault-knives
       displayName: Knives
-      description: 
+      description: Rare Special knife families.
       icon: {fileID: 0}
       sortOrder: 0
-      includeInCompletion: 0
+      includeInCompletion: 1
       unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 0
       filter:
         filterMode: 1
         weaponNames:
@@ -146,6 +200,7 @@ MonoBehaviour:
         - Huntsman Knife
         - Karambit
         - Kukri Knife
+        - M4A4
         - M9 Bayonet
         - Navaja Knife
         - Nomad Knife
@@ -156,29 +211,472 @@ MonoBehaviour:
         - Survival Knife
         - Talon Knife
         - Ursus Knife
+        collectionIds: []
         includeNormal: 1
         includeStatTrak: 1
         includeSouvenir: 0
         includeVanilla: 1
-    - categoryId: 
+    - categoryId: museum-rare-vault-gloves
       displayName: Gloves
-      description: 
+      description: Rare Special glove families.
       icon: {fileID: 0}
-      sortOrder: 0
-      includeInCompletion: 0
+      sortOrder: 10
+      includeInCompletion: 1
       unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 0
       filter:
         filterMode: 1
         weaponNames:
         - Bloodhound Gloves
+        - Broken Fang Gloves
         - Driver Gloves
         - Hand Wraps
         - Hydra Gloves
         - Moto Gloves
         - Specialist Gloves
         - Sport Gloves
-        - Broken Fang Gloves
+        collectionIds: []
         includeNormal: 1
-        includeStatTrak: 0
+        includeStatTrak: 1
         includeSouvenir: 0
+        includeVanilla: 1
+  - wingId: museum-souvenir-hall
+    displayName: Souvenir Hall
+    description: Souvenir-only exhibits organised by Souvenir collection.
+    icon: {fileID: 0}
+    sortOrder: 5
+    includeInCompletion: 1
+    unlockDefinition: {fileID: 11400000, guid: 9844880fe522909428adc827aee47744, type: 2}
+    categories:
+    - categoryId: museum-souvenir-collection-collectionsetinferno2
+      displayName: The 2018 Inferno Collection
+      description: All Souvenir skins from The 2018 Inferno Collection.
+      icon: {fileID: 21300000, guid: 7871d935042106e468c469246f839a37, type: 3}
+      sortOrder: 0
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-inferno-2
+        - The 2018 Inferno Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetnuke2
+      displayName: The 2018 Nuke Collection
+      description: All Souvenir skins from The 2018 Nuke Collection.
+      icon: {fileID: 21300000, guid: 41926d7a19784144a8041f5d58484ad1, type: 3}
+      sortOrder: 10
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-nuke-2
+        - The 2018 Nuke Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetdust22021
+      displayName: The 2021 Dust 2 Collection
+      description: All Souvenir skins from The 2021 Dust 2 Collection.
+      icon: {fileID: 21300000, guid: 551fae86f1b38ab45acabaecce0ecee0, type: 3}
+      sortOrder: 20
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-dust-2-2021
+        - The 2021 Dust 2 Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetmirage2021
+      displayName: The 2021 Mirage Collection
+      description: All Souvenir skins from The 2021 Mirage Collection.
+      icon: {fileID: 21300000, guid: 357b1a7ae8dcccd4483e711f6cecefdf, type: 3}
+      sortOrder: 30
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-mirage-2021
+        - The 2021 Mirage Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsettrain2021
+      displayName: The 2021 Train Collection
+      description: All Souvenir skins from The 2021 Train Collection.
+      icon: {fileID: 21300000, guid: d1ab58e06beca574c9387912788f0cb9, type: 3}
+      sortOrder: 40
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-train-2021
+        - The 2021 Train Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetvertigo2021
+      displayName: The 2021 Vertigo Collection
+      description: All Souvenir skins from The 2021 Vertigo Collection.
+      icon: {fileID: 21300000, guid: 1532cd15c3c702643a84f7887be97ddd, type: 3}
+      sortOrder: 50
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-vertigo-2021
+        - The 2021 Vertigo Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetop10ancient
+      displayName: The Ancient Collection
+      description: All Souvenir skins from The Ancient Collection.
+      icon: {fileID: 21300000, guid: 70b4e58d7073aea4ab13bcb402b21127, type: 3}
+      sortOrder: 60
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-op10-ancient
+        - The Ancient Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetanubis
+      displayName: The Anubis Collection
+      description: All Souvenir skins from The Anubis Collection.
+      icon: {fileID: 21300000, guid: a11f03bc4ea80cc45a8dec212dd87079, type: 3}
+      sortOrder: 70
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-anubis
+        - The Anubis Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetassault
+      displayName: The Assault Collection
+      description: All Souvenir skins from The Assault Collection.
+      icon: {fileID: 21300000, guid: d3ab5bf56bf50274ab5a0d8b70b380a3, type: 3}
+      sortOrder: 80
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-assault
+        - The Assault Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetaztec
+      displayName: The Aztec Collection
+      description: All Souvenir skins from The Aztec Collection.
+      icon: {fileID: 21300000, guid: eb7b5ba4d9289ec49ba3a0a018f754cd, type: 3}
+      sortOrder: 90
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-aztec
+        - The Aztec Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetcache
+      displayName: The Cache Collection
+      description: All Souvenir skins from The Cache Collection.
+      icon: {fileID: 21300000, guid: daf19e9a45f139b448a4fa1214b2b4ea, type: 3}
+      sortOrder: 100
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-cache
+        - The Cache Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetcobblestone
+      displayName: The Cobblestone Collection
+      description: All Souvenir skins from The Cobblestone Collection.
+      icon: {fileID: 21300000, guid: d83b0ab65ad1f54449d474602efeff38, type: 3}
+      sortOrder: 110
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-cobblestone
+        - The Cobblestone Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetdust2
+      displayName: The Dust 2 Collection
+      description: All Souvenir skins from The Dust 2 Collection.
+      icon: {fileID: 21300000, guid: f054f1395e8e52e45bfe0461c2886875, type: 3}
+      sortOrder: 120
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-dust-2
+        - The Dust 2 Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetdust
+      displayName: The Dust Collection
+      description: All Souvenir skins from The Dust Collection.
+      icon: {fileID: 21300000, guid: a84bbf7d7836d6c4ab0f1662c507362e, type: 3}
+      sortOrder: 130
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-dust
+        - The Dust Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetinferno
+      displayName: The Inferno Collection
+      description: All Souvenir skins from The Inferno Collection.
+      icon: {fileID: 21300000, guid: cf02016989fe05f4fba11201cec0dd25, type: 3}
+      sortOrder: 140
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-inferno
+        - The Inferno Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetitaly
+      displayName: The Italy Collection
+      description: All Souvenir skins from The Italy Collection.
+      icon: {fileID: 21300000, guid: 3a1aebc80ed79e943b213df3e15b5d88, type: 3}
+      sortOrder: 150
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-italy
+        - The Italy Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetlake
+      displayName: The Lake Collection
+      description: All Souvenir skins from The Lake Collection.
+      icon: {fileID: 21300000, guid: ca76429b21f24a943b8e59001034c8bb, type: 3}
+      sortOrder: 160
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-lake
+        - The Lake Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetmilitia
+      displayName: The Militia Collection
+      description: All Souvenir skins from The Militia Collection.
+      icon: {fileID: 21300000, guid: 927632de223ad4a448c6f383f2cc0b07, type: 3}
+      sortOrder: 170
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-militia
+        - The Militia Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetmirage
+      displayName: The Mirage Collection
+      description: All Souvenir skins from The Mirage Collection.
+      icon: {fileID: 21300000, guid: 33a4f1b20d508db45af703f0b4bd142a, type: 3}
+      sortOrder: 180
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-mirage
+        - The Mirage Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetnuke
+      displayName: The Nuke Collection
+      description: All Souvenir skins from The Nuke Collection.
+      icon: {fileID: 21300000, guid: d0e64f6e291ddfa41a85f9dfe33a5e00, type: 3}
+      sortOrder: 190
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-nuke
+        - The Nuke Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetoverpass
+      displayName: The Overpass Collection
+      description: All Souvenir skins from The Overpass Collection.
+      icon: {fileID: 21300000, guid: eb6fc7975eea77d49942f9aea6d10fdf, type: 3}
+      sortOrder: 200
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-overpass
+        - The Overpass Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetsafehouse
+      displayName: The Safehouse Collection
+      description: All Souvenir skins from The Safehouse Collection.
+      icon: {fileID: 21300000, guid: 7ba1338ba8056064fb773817ed63d2d3, type: 3}
+      sortOrder: 210
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-safehouse
+        - The Safehouse Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsettrain
+      displayName: The Train Collection
+      description: All Souvenir skins from The Train Collection.
+      icon: {fileID: 21300000, guid: 8e810cc0de9707c478486bcd30647aa5, type: 3}
+      sortOrder: 220
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-train
+        - The Train Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
+        includeVanilla: 0
+    - categoryId: museum-souvenir-collection-collectionsetvertigo
+      displayName: The Vertigo Collection
+      description: All Souvenir skins from The Vertigo Collection.
+      icon: {fileID: 21300000, guid: 3fc8afc692a8f0c4fb2b05d2d9282501, type: 3}
+      sortOrder: 230
+      includeInCompletion: 1
+      unlockDefinition: {fileID: 0}
+      openDirectlyToSkins: 1
+      filter:
+        filterMode: 4
+        weaponNames: []
+        collectionIds:
+        - collection-set-vertigo
+        - The Vertigo Collection
+        includeNormal: 0
+        includeStatTrak: 0
+        includeSouvenir: 1
         includeVanilla: 0

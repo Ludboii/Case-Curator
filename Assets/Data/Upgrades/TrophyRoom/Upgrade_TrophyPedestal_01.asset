@@ -26,6 +26,6 @@ MonoBehaviour:
   - levelName: Trophy Pedestal I
     description: Unlocks Trophy Room Pedestal 1. Requires Global Elite.
     currency: 0
-    cost: 50000
+    cost: 20000
     additionalRequirement: {fileID: 0}
     effectValue: 1

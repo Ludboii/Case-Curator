@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff1fafda9512383479c4f566a1b73a80, type: 3}
+  m_Name: Upgrade_RareVaultStage_05
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
+  upgradeId: museum-rare-vault-stage-05
+  displayName: 'Rare Vault Stage 5: Premium Gloves'
+  description: Unlocks Specialist Gloves, Sport Gloves, Moto Gloves and Driver Gloves
+    exhibits.
+  icon: {fileID: 0}
+  category: 3
+  sortOrder: 305
+  hiddenUntilUnlocked: 0
+  unlockDefinition: {fileID: 11400000, guid: f12c7ca5ff816694aa393bba131c0fa8, type: 2}
+  effectType: 0
+  defaultEffectValue: 0
+  levels:
+  - levelName: 'Rare Vault Stage 5: Premium Gloves'
+    description: Unlocks Specialist Gloves, Sport Gloves, Moto Gloves and Driver
+      Gloves exhibits.
+    currency: 0
+    cost: 40000
+    additionalRequirement: {fileID: 0}
+    effectValue: 5
