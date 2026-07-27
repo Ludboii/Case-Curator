@@ -130,6 +130,7 @@ public class MuseumWeaponCardUI : MonoBehaviour
         }
 
         MuseumLockVisualUtility.Apply(gameObject, unlocked);
+        ApplyUnlockOrder();
     }
 
     private void ApplyDonationIndicator(
@@ -193,6 +194,33 @@ public class MuseumWeaponCardUI : MonoBehaviour
             : SaveManager.Instance != null
                 ? SaveManager.Instance.database
                 : null;
+    }
+
+    private void ApplyUnlockOrder()
+    {
+        if (transform.parent == null || entry == null)
+            return;
+
+        MuseumWeaponCardUI[] cards =
+            transform.parent.GetComponentsInChildren<MuseumWeaponCardUI>(true);
+        int targetIndex = 0;
+
+        for (int i = 0; i < cards.Length; i++)
+        {
+            MuseumWeaponCardUI other = cards[i];
+
+            if (other == null || other == this || other.entry == null)
+                continue;
+
+            if (MuseumUnlockProgressionUtility.CompareWeaponsForDisplay(
+                    other.entry,
+                    entry) < 0)
+            {
+                targetIndex++;
+            }
+        }
+
+        transform.SetSiblingIndex(targetIndex);
     }
 
     private void HandleClicked()
