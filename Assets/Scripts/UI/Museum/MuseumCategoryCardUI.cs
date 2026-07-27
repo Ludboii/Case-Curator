@@ -13,8 +13,11 @@ public class MuseumCategoryCardUI : MonoBehaviour
     [SerializeField] private MuseumProgressBarUI progressBar;
     [SerializeField] private GameObject lockedRoot;
     [SerializeField] private TMP_Text lockedText;
+    [SerializeField] private MuseumCompletionClaimOverlayUI completionClaimOverlay;
 
     [Header("Donation Indicator Colors")]
+    [SerializeField] private Color completedTextColor =
+        new Color(0.35f, 1f, 0.55f, 1f);
     [SerializeField] private Color readyTextColor =
         new Color(1f, 0.9f, 0.25f, 1f);
     [SerializeField] private Color protectedTextColor =
@@ -22,6 +25,7 @@ public class MuseumCategoryCardUI : MonoBehaviour
 
     private MuseumCategoryEntry entry;
     private MuseumPanelUI owner;
+    private MuseumCompletionRewardPreview completionPreview;
 
     private void Awake()
     {
@@ -51,6 +55,13 @@ public class MuseumCategoryCardUI : MonoBehaviour
             GetDatabase(),
             out string lockedReason);
 
+        completionPreview =
+            MuseumCompletionRewardService.BuildCategoryPreview(
+                entry,
+                owner != null ? owner.Service : null);
+        bool completed = completionPreview != null &&
+                         completionPreview.completed;
+
         if (titleText != null)
             titleText.text = entry != null ? entry.DisplayName : "Category";
 
@@ -58,7 +69,7 @@ public class MuseumCategoryCardUI : MonoBehaviour
         int readyCount = 0;
         int protectedCount = 0;
 
-        if (unlocked)
+        if (unlocked && !completed)
         {
             MuseumDonationAvailabilityUtility.Count(
                 entry,
@@ -67,11 +78,13 @@ public class MuseumCategoryCardUI : MonoBehaviour
                 out protectedCount);
         }
 
-        string donationStatus = unlocked
-            ? MuseumDonationAvailabilityUtility.GetStatusText(
-                readyCount,
-                protectedCount)
-            : "";
+        string donationStatus = completed
+            ? "COMPLETED"
+            : unlocked
+                ? MuseumDonationAvailabilityUtility.GetStatusText(
+                    readyCount,
+                    protectedCount)
+                : "";
 
         bool sharedProgressText =
             progressBar != null &&
@@ -97,6 +110,7 @@ public class MuseumCategoryCardUI : MonoBehaviour
         {
             ApplyDonationIndicator(
                 donationStatus,
+                completed,
                 readyCount,
                 protectedCount);
         }
@@ -133,11 +147,19 @@ public class MuseumCategoryCardUI : MonoBehaviour
             button.interactable = unlocked && entry != null;
         }
 
+        if (completionClaimOverlay != null)
+        {
+            completionClaimOverlay.Setup(
+                completionPreview,
+                HandleCompletionRewardClaim);
+        }
+
         MuseumLockVisualUtility.Apply(gameObject, unlocked);
     }
 
     private void ApplyDonationIndicator(
         string status,
+        bool completed,
         int readyCount,
         int protectedCount)
     {
@@ -148,7 +170,9 @@ public class MuseumCategoryCardUI : MonoBehaviour
         donationStateText.gameObject.SetActive(
             !string.IsNullOrWhiteSpace(status));
 
-        if (readyCount > 0)
+        if (completed)
+            donationStateText.color = completedTextColor;
+        else if (readyCount > 0)
             donationStateText.color = readyTextColor;
         else if (protectedCount > 0)
             donationStateText.color = protectedTextColor;
@@ -189,8 +213,11 @@ public class MuseumCategoryCardUI : MonoBehaviour
         if (progressBar == null)
             progressBar = GetComponentInChildren<MuseumProgressBarUI>(true);
 
-        if (donationStateText != null)
-            return;
+        if (completionClaimOverlay == null)
+        {
+            completionClaimOverlay =
+                GetComponentInChildren<MuseumCompletionClaimOverlayUI>(true);
+        }
 
         TMP_Text[] texts = GetComponentsInChildren<TMP_Text>(true);
 
@@ -203,14 +230,24 @@ public class MuseumCategoryCardUI : MonoBehaviour
 
             string objectName = text.gameObject.name.ToLowerInvariant();
 
-            if (objectName.Contains("donation") ||
-                objectName.Contains("ready") ||
-                objectName.Contains("indicator"))
+            if (donationStateText == null &&
+                (objectName.Contains("donation") ||
+                 objectName.Contains("ready") ||
+                 objectName.Contains("indicator")))
             {
                 donationStateText = text;
-                break;
+            }
+
+            if (lockedText == null &&
+                (objectName.Contains("locked") ||
+                 objectName.Contains("unlock")))
+            {
+                lockedText = text;
             }
         }
+
+        if (lockedRoot == null && lockedText != null)
+            lockedRoot = lockedText.gameObject;
     }
 
     private GameDatabase GetDatabase()
@@ -231,6 +268,29 @@ public class MuseumCategoryCardUI : MonoBehaviour
             return first;
 
         return first + "\n" + second;
+    }
+
+    private void HandleCompletionRewardClaim()
+    {
+        if (!MuseumCompletionRewardService.TryClaim(
+                completionPreview,
+                out MuseumCompletionRewardClaimResult result))
+        {
+            if (owner != null && result != null)
+                owner.ShowMuseumMessage(result.message);
+            return;
+        }
+
+        float duration = MuseumCompletionRewardService.Balance != null
+            ? MuseumCompletionRewardService.Balance.claimNotificationSeconds
+            : 2.75f;
+
+        MuseumCompletionRewardToastBridge.Show(
+            owner,
+            result.message,
+            duration);
+
+        Setup(entry, owner);
     }
 
     private void HandleClicked()
