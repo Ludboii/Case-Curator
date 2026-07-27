@@ -27,6 +27,8 @@ public class InventoryTransactionResult
     public float NetMarketValueChange =>
         addedMarketValue - removedMarketValue;
 
+    public string Message => errorMessage;
+
     public static InventoryTransactionResult Failed(string message)
     {
         return new InventoryTransactionResult
