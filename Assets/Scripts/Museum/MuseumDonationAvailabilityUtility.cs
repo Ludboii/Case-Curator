@@ -32,6 +32,18 @@ public static class MuseumDonationAvailabilityUtility
         out int readyCount,
         out int protectedCount)
     {
+        readyCount = 0;
+        protectedCount = 0;
+
+        if (skin == null ||
+            !MuseumUnlockProgressionUtility.IsSkinUnlocked(
+                skin.skin,
+                GetDatabase(service),
+                out _))
+        {
+            return;
+        }
+
         HashSet<string> keys = new HashSet<string>(StringComparer.Ordinal);
         AddOpenKeys(skin, keys);
         CountKeys(keys, service, out readyCount, out protectedCount);
@@ -43,6 +55,17 @@ public static class MuseumDonationAvailabilityUtility
         out int readyCount,
         out int protectedCount)
     {
+        readyCount = 0;
+        protectedCount = 0;
+
+        if (!MuseumUnlockProgressionUtility.IsWeaponUnlocked(
+                weapon,
+                GetDatabase(service),
+                out _))
+        {
+            return;
+        }
+
         HashSet<string> keys = new HashSet<string>(StringComparer.Ordinal);
 
         if (weapon != null && weapon.skins != null)
@@ -60,7 +83,19 @@ public static class MuseumDonationAvailabilityUtility
         out int readyCount,
         out int protectedCount)
     {
+        readyCount = 0;
+        protectedCount = 0;
+
+        if (!MuseumUnlockProgressionUtility.IsCategoryUnlocked(
+                category,
+                GetDatabase(service),
+                out _))
+        {
+            return;
+        }
+
         HashSet<string> keys = new HashSet<string>(StringComparer.Ordinal);
+        GameDatabase database = GetDatabase(service);
 
         if (category != null && category.weapons != null)
         {
@@ -70,8 +105,15 @@ public static class MuseumDonationAvailabilityUtility
             {
                 MuseumWeaponEntry weapon = category.weapons[weaponIndex];
 
-                if (weapon == null || weapon.skins == null)
+                if (weapon == null ||
+                    weapon.skins == null ||
+                    !MuseumUnlockProgressionUtility.IsWeaponUnlocked(
+                        weapon,
+                        database,
+                        out _))
+                {
                     continue;
+                }
 
                 for (int skinIndex = 0;
                      skinIndex < weapon.skins.Count;
@@ -182,6 +224,7 @@ public static class MuseumDonationAvailabilityUtility
         if (InventoryManager.Instance == null || service == null)
             return;
 
+        GameDatabase database = GetDatabase(service);
         List<InventoryItem> inventory =
             InventoryManager.Instance.GetItemsCopy();
 
@@ -191,7 +234,11 @@ public static class MuseumDonationAvailabilityUtility
 
             if (item == null ||
                 item.skin == null ||
-                string.IsNullOrWhiteSpace(item.instanceId))
+                string.IsNullOrWhiteSpace(item.instanceId) ||
+                !MuseumUnlockProgressionUtility.IsSkinUnlocked(
+                    item.skin,
+                    database,
+                    out _))
             {
                 continue;
             }
@@ -219,6 +266,16 @@ public static class MuseumDonationAvailabilityUtility
 
             availabilityByDonationKey[donationKey] = count;
         }
+    }
+
+    private static GameDatabase GetDatabase(MuseumService service)
+    {
+        if (service != null && service.Database != null)
+            return service.Database;
+
+        return SaveManager.Instance != null
+            ? SaveManager.Instance.database
+            : null;
     }
 
     private static void RebuildTrophyRoomIndex()
