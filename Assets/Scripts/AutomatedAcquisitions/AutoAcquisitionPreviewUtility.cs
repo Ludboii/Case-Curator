@@ -17,8 +17,7 @@ public sealed class AutoAcquisitionSkinPreview
 /// Shared calculations for the processing-target menu. The chance model mirrors
 /// the current rarity-calibration rule: the lowest configured rarity retains its
 /// manual weight while higher rarities are multiplied by Machine Calibration.
-/// Float expectations use the same power-curve exponent consumed by the runtime
-/// float calibration post-processor.
+/// Float expectations use the same power-curve exponent consumed by runtime.
 /// </summary>
 public static class AutoAcquisitionPreviewUtility
 {
@@ -36,23 +35,21 @@ public static class AutoAcquisitionPreviewUtility
 
         Dictionary<Rarity, float> manualRarityWeights =
             BuildManualRarityWeights(container);
+        Dictionary<Rarity, float> automatedRarityWeights =
+            new Dictionary<Rarity, float>();
         Rarity lowest = FindLowestRarity(container);
         float calibration =
             AutoAcquisitionUpgradeUtility.GetCalibrationMultiplier();
-
-        Dictionary<Rarity, float> automatedRarityWeights =
-            new Dictionary<Rarity, float>();
         float manualTotal = 0f;
         float automatedTotal = 0f;
 
         foreach (KeyValuePair<Rarity, float> pair in manualRarityWeights)
         {
             float manual = Mathf.Max(0f, pair.Value);
-            float automated = pair.Key.Equals(lowest)
+            float automated = pair.Key == lowest
                 ? manual
                 : manual * calibration;
 
-            manualRarityWeights[pair.Key] = manual;
             automatedRarityWeights[pair.Key] = automated;
             manualTotal += manual;
             automatedTotal += automated;
@@ -60,6 +57,8 @@ public static class AutoAcquisitionPreviewUtility
 
         Dictionary<Rarity, float> dropWeightByRarity =
             new Dictionary<Rarity, float>();
+        Dictionary<Rarity, int> dropCountByRarity =
+            new Dictionary<Rarity, int>();
 
         for (int i = 0; i < container.dropPool.Count; i++)
         {
@@ -69,12 +68,15 @@ public static class AutoAcquisitionPreviewUtility
                 continue;
 
             Rarity rarity = drop.skin.rarity;
-            float weight = Mathf.Max(0f, drop.weight);
 
             if (!dropWeightByRarity.ContainsKey(rarity))
+            {
                 dropWeightByRarity.Add(rarity, 0f);
+                dropCountByRarity.Add(rarity, 0);
+            }
 
-            dropWeightByRarity[rarity] += weight;
+            dropWeightByRarity[rarity] += Mathf.Max(0f, drop.weight);
+            dropCountByRarity[rarity]++;
         }
 
         bool souvenir =
@@ -89,17 +91,20 @@ public static class AutoAcquisitionPreviewUtility
                 continue;
 
             SkinData skin = drop.skin;
-            float rarityDropWeight = dropWeightByRarity.TryGetValue(
+            float totalDropWeight = dropWeightByRarity.TryGetValue(
                 skin.rarity,
-                out float totalDropWeight)
-                ? totalDropWeight
+                out float weight)
+                ? weight
                 : 0f;
+            int rarityCount = dropCountByRarity.TryGetValue(
+                skin.rarity,
+                out int count)
+                ? count
+                : 0;
 
-            float withinRarityShare = rarityDropWeight > 0f
-                ? Mathf.Max(0f, drop.weight) / rarityDropWeight
-                : CountEligibleDropsOfRarity(container, skin.rarity) > 0
-                    ? 1f / CountEligibleDropsOfRarity(container, skin.rarity)
-                    : 0f;
+            float withinRarityShare = totalDropWeight > 0f
+                ? Mathf.Max(0f, drop.weight) / totalDropWeight
+                : rarityCount > 0 ? 1f / rarityCount : 0f;
 
             float manualRarityShare = manualTotal > 0f &&
                                       manualRarityWeights.TryGetValue(
@@ -115,11 +120,6 @@ public static class AutoAcquisitionPreviewUtility
                 ? automatedWeight / automatedTotal
                 : 0f;
 
-            double manualAverage = GetExpectedFloat(skin, 1f);
-            double automatedAverage = GetExpectedFloat(
-                skin,
-                AutoAcquisitionUpgradeUtility.GetFloatCalibrationExponent());
-
             result.Add(new AutoAcquisitionSkinPreview
             {
                 skin = skin,
@@ -127,11 +127,14 @@ public static class AutoAcquisitionPreviewUtility
                     manualRarityShare * withinRarityShare * 100f,
                 automatedChancePercent =
                     automatedRarityShare * withinRarityShare * 100f,
-                expectedManualFloat = manualAverage,
-                expectedAutomatedFloat = automatedAverage,
+                expectedManualFloat = GetExpectedFloat(skin, 1f),
+                expectedAutomatedFloat = GetExpectedFloat(
+                    skin,
+                    AutoAcquisitionUpgradeUtility.GetFloatCalibrationExponent()),
                 canBeStatTrak = !souvenir &&
                     (container.containerType == CaseContainerType.WeaponCase ||
                      container.containerType == CaseContainerType.CustomCase) &&
+                    container.allowStatTrak &&
                     skin.canBeStatTrak,
                 souvenir = souvenir && skin.canBeSouvenir
             });
@@ -164,8 +167,11 @@ public static class AutoAcquisitionPreviewUtility
         if (max - min <= 0.0000001d)
             return min;
 
-        double normalised = Math.Max(0d, Math.Min(1d, (value - min) / (max - min)));
-        double exponent = AutoAcquisitionUpgradeUtility.GetFloatCalibrationExponent();
+        double normalised = Math.Max(
+            0d,
+            Math.Min(1d, (value - min) / (max - min)));
+        double exponent =
+            AutoAcquisitionUpgradeUtility.GetFloatCalibrationExponent();
         double biased = Math.Pow(normalised, exponent);
         return min + ((max - min) * biased);
     }
