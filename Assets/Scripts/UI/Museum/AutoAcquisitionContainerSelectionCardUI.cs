@@ -29,7 +29,7 @@ public class AutoAcquisitionContainerSelectionCardUI : MonoBehaviour
 
         if (iconImage != null)
         {
-            iconImage.sprite = container != null ? container.caseImage : null;
+            iconImage.sprite = container != null ? container.icon : null;
             iconImage.enabled = iconImage.sprite != null;
             iconImage.preserveAspect = true;
         }
