@@ -4,10 +4,6 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
-/// <summary>
-/// Fast development switch for the hard runtime milestone guard and generated
-/// UnlockDefinition. Use Step 5 while testing and restore Step 40 for production.
-/// </summary>
 public static class AutoAcquisitionUnlockStepSwitcher
 {
     private const string ServicePath =
@@ -67,7 +63,7 @@ public static class AutoAcquisitionUnlockStepSwitcher
             $"Automated Acquisitions now requires Museum Staircase Step {step}. " +
             $"Runtime source changed: {serviceChanged}; setup source changed: " +
             $"{setupChanged}. Re-run Apply Automated Acquisitions Wing after " +
-            "Unity finishes compiling so the UnlockDefinition matches.");
+            "Unity finishes compiling.");
     }
 
     private static bool ReplaceServiceStep(int step)
@@ -78,17 +74,10 @@ public static class AutoAcquisitionUnlockStepSwitcher
         string source = File.ReadAllText(ServicePath);
         string updated = Regex.Replace(
             source,
-            @"MuseumMilestoneData\s+step\d+\s*=\s*FindStaircaseStep\(\d+\);",
+            @"MuseumMilestoneData\s+(?:step\d+|requiredStep)\s*=\s*FindStaircaseStep\(\d+\);",
             $"MuseumMilestoneData requiredStep = FindStaircaseStep({step});");
-
-        updated = Regex.Replace(
-            updated,
-            @"step\d+\.milestoneId",
-            "requiredStep.milestoneId");
-        updated = Regex.Replace(
-            updated,
-            @"step\d+\s*==\s*null",
-            "requiredStep == null");
+        updated = Regex.Replace(updated, @"step\d+\.milestoneId", "requiredStep.milestoneId");
+        updated = Regex.Replace(updated, @"step\d+\s*==\s*null", "requiredStep == null");
         updated = Regex.Replace(
             updated,
             @"Museum Staircase step \d+",
@@ -113,17 +102,10 @@ public static class AutoAcquisitionUnlockStepSwitcher
         string source = File.ReadAllText(SetupPath);
         string updated = Regex.Replace(
             source,
-            @"MuseumMilestoneData\s+step\d+\s*=\s*FindStep\(database,\s*\d+\);",
+            @"MuseumMilestoneData\s+(?:step\d+|requiredStep)\s*=\s*FindStep\(database,\s*\d+\);",
             $"MuseumMilestoneData requiredStep = FindStep(database, {step});");
-
-        updated = Regex.Replace(
-            updated,
-            @"step\d+\.milestoneId",
-            "requiredStep.milestoneId");
-        updated = Regex.Replace(
-            updated,
-            @"step\d+\s*==\s*null",
-            "requiredStep == null");
+        updated = Regex.Replace(updated, @"step\d+\.milestoneId", "requiredStep.milestoneId");
+        updated = Regex.Replace(updated, @"step\d+\s*==\s*null", "requiredStep == null");
         updated = Regex.Replace(
             updated,
             @"Museum Step \d+ Missing",
