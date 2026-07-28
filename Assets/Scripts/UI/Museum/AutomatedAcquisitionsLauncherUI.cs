@@ -67,8 +67,9 @@ public class AutomatedAcquisitionsLauncherUI : MonoBehaviour
     public void RefreshState()
     {
         ResolveService();
-        bool unlocked = service != null &&
-                        service.IsWingUnlocked(out string reason);
+
+        string reason = "Automated Acquisitions services are unavailable.";
+        bool unlocked = service != null && service.IsWingUnlocked(out reason);
 
         if (titleText != null)
             titleText.text = "AUTOMATED ACQUISITIONS";
@@ -96,8 +97,9 @@ public class AutomatedAcquisitionsLauncherUI : MonoBehaviour
     {
         ResolveService();
 
-        if (service == null ||
-            !service.IsWingUnlocked(out string reason))
+        string reason = "Automated Acquisitions services are unavailable.";
+
+        if (service == null || !service.IsWingUnlocked(out reason))
         {
             Debug.Log(reason, this);
             return;
