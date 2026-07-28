@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using TMPro;
 using UnityEngine;
@@ -8,10 +7,19 @@ using UnityEngine.UI;
 public class AutoAcquisitionLineCardUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text titleText;
+    [SerializeField] private TMP_Text selectedContainerText;
+    [SerializeField] private Button selectContainerButton;
+    [SerializeField] private TMP_Text selectContainerButtonText;
+    [SerializeField]
+    private AutoAcquisitionContainerSelectionPopupUI selectionPopup;
+
+    [Header("Legacy Dropdown — leave empty after migration")]
+    [SerializeField] private TMP_Dropdown containerDropdown;
+
+    [Header("Budget and Processing")]
     [SerializeField] private TMP_Text budgetText;
     [SerializeField] private TMP_Text timerText;
     [SerializeField] private TMP_Text statusText;
-    [SerializeField] private TMP_Dropdown containerDropdown;
     [SerializeField] private TMP_InputField depositInput;
     [SerializeField] private Button depositButton;
     [SerializeField] private Button withdrawButton;
@@ -19,13 +27,9 @@ public class AutoAcquisitionLineCardUI : MonoBehaviour
     [SerializeField] private TMP_Text startStopButtonText;
     [SerializeField] private Button acknowledgeAlertButton;
 
-    private readonly List<AutoAcquisitionContainerData> dropdownEntries =
-        new List<AutoAcquisitionContainerData>();
-
     private int lineIndex;
     private AutomatedAcquisitionsPanelUI owner;
     private AutoAcquisitionService service;
-    private bool suppressDropdown;
 
     public void Setup(
         int index,
@@ -36,16 +40,14 @@ public class AutoAcquisitionLineCardUI : MonoBehaviour
         owner = panel;
         service = acquisitionService;
 
+        SetupButton(selectContainerButton, HandleOpenSelection);
         SetupButton(depositButton, HandleDeposit);
         SetupButton(withdrawButton, HandleWithdraw);
         SetupButton(startStopButton, HandleStartStop);
         SetupButton(acknowledgeAlertButton, HandleAcknowledge);
 
         if (containerDropdown != null)
-        {
-            containerDropdown.onValueChanged.RemoveAllListeners();
-            containerDropdown.onValueChanged.AddListener(HandleContainerChanged);
-        }
+            containerDropdown.gameObject.SetActive(false);
 
         RefreshState();
     }
@@ -61,6 +63,28 @@ public class AutoAcquisitionLineCardUI : MonoBehaviour
 
         if (titleText != null)
             titleText.text = $"PROCESSING LINE {lineIndex + 1}";
+
+        AutoAcquisitionContainerData selected =
+            service != null && service.Catalog != null
+                ? service.Catalog.GetContainer(line.selectedContainerId)
+                : null;
+
+        if (selectedContainerText != null)
+        {
+            selectedContainerText.text = selected != null
+                ? selected.ContainerName
+                : "No container selected";
+        }
+
+        if (selectContainerButtonText != null)
+        {
+            selectContainerButtonText.text = selected != null
+                ? "CHANGE CONTAINER"
+                : "SELECT CONTAINER";
+        }
+
+        if (selectContainerButton != null)
+            selectContainerButton.interactable = service != null && !line.active;
 
         float maximumBudget =
             AutoAcquisitionUpgradeUtility.GetMaximumBudgetPerLine();
@@ -96,81 +120,22 @@ public class AutoAcquisitionLineCardUI : MonoBehaviour
 
         if (depositInput != null && string.IsNullOrWhiteSpace(depositInput.text))
             depositInput.text = "1000";
-
-        RebuildDropdown(line.selectedContainerId);
     }
 
-    private void RebuildDropdown(string selectedContainerId)
+    private void HandleOpenSelection()
     {
-        if (containerDropdown == null || service == null || service.Catalog == null)
-            return;
-
-        dropdownEntries.Clear();
-        List<TMP_Dropdown.OptionData> options =
-            new List<TMP_Dropdown.OptionData>();
-
-        if (service.Catalog.containers != null)
+        if (selectionPopup == null)
         {
-            for (int i = 0; i < service.Catalog.containers.Count; i++)
+            if (owner != null)
             {
-                AutoAcquisitionContainerData entry =
-                    service.Catalog.containers[i];
-
-                if (entry == null ||
-                    entry.container == null ||
-                    !service.IsContainerResearched(entry.containerId))
-                {
-                    continue;
-                }
-
-                dropdownEntries.Add(entry);
-                options.Add(new TMP_Dropdown.OptionData(entry.ContainerName));
+                owner.ShowStatus(
+                    "Assign the Container Selection Popup on this line prefab.",
+                    true);
             }
-        }
-
-        suppressDropdown = true;
-        containerDropdown.ClearOptions();
-        containerDropdown.AddOptions(options);
-
-        int selectedIndex = 0;
-
-        for (int i = 0; i < dropdownEntries.Count; i++)
-        {
-            if (string.Equals(
-                    dropdownEntries[i].containerId,
-                    selectedContainerId,
-                    StringComparison.OrdinalIgnoreCase))
-            {
-                selectedIndex = i;
-                break;
-            }
-        }
-
-        containerDropdown.value = Mathf.Clamp(
-            selectedIndex,
-            0,
-            Mathf.Max(0, dropdownEntries.Count - 1));
-        containerDropdown.RefreshShownValue();
-        containerDropdown.interactable = dropdownEntries.Count > 0;
-        suppressDropdown = false;
-    }
-
-    private void HandleContainerChanged(int index)
-    {
-        if (suppressDropdown ||
-            service == null ||
-            index < 0 ||
-            index >= dropdownEntries.Count)
-        {
             return;
         }
 
-        AutoAcquisitionActionResult result = service.SelectLineTarget(
-            lineIndex,
-            dropdownEntries[index].containerId);
-
-        if (owner != null)
-            owner.HandleActionResult(result);
+        selectionPopup.Open(lineIndex, owner, service);
     }
 
     private void HandleDeposit()
@@ -219,33 +184,6 @@ public class AutoAcquisitionLineCardUI : MonoBehaviour
             return;
 
         AutoAcquisitionLineSaveData line = service.GetLine(lineIndex);
-
-        // A TMP_Dropdown with one option does not emit a value-changed event.
-        // Assign its visible first option when START is pressed so the first
-        // researched container can be used without requiring a second option.
-        if (line != null &&
-            !line.active &&
-            string.IsNullOrWhiteSpace(line.selectedContainerId) &&
-            dropdownEntries.Count > 0)
-        {
-            int selected = containerDropdown != null
-                ? Mathf.Clamp(containerDropdown.value, 0, dropdownEntries.Count - 1)
-                : 0;
-            AutoAcquisitionActionResult assignment =
-                service.SelectLineTarget(
-                    lineIndex,
-                    dropdownEntries[selected].containerId);
-
-            if (!assignment.success)
-            {
-                if (owner != null)
-                    owner.HandleActionResult(assignment);
-                return;
-            }
-
-            line = service.GetLine(lineIndex);
-        }
-
         AutoAcquisitionActionResult result = service.SetLineActive(
             lineIndex,
             line == null || !line.active);
