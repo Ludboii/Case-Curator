@@ -15,6 +15,8 @@ MonoBehaviour:
   wingDisplayName: Automated Acquisitions Wing
   wingDescription: Research Bronze-completed containers, fund timed processing lines
     and claim generated items from the Uncatalogued Intake Vault.
+  requiredMuseumStaircaseStep: 5
+  ignoreMuseumStepRequirementForTesting: 0
   categories:
   - categoryId: auto-acq-category-weapon-cases
     displayName: Weapon Case Archive
@@ -573,6 +575,7 @@ MonoBehaviour:
   maximumOfflineOpeningsPerLine: 10000
   maximumCalibrationAttempts: 32
   runtimeTickSeconds: 1
+  maximumPreviewSkinRows: 250
   exceptionalValueThreshold: 1000
   pristineFloatThreshold: 0.001
   extremeHighFloatThreshold: 0.999
