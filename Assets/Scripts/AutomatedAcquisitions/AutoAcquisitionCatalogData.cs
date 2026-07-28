@@ -83,6 +83,16 @@ public class AutoAcquisitionCatalogData : ScriptableObject
         "Fund Museum acquisition lines, research Bronze-completed containers " +
         "and claim generated items from the Intake Vault.";
 
+    [Header("Wing Unlock")]
+    [Tooltip(
+        "Museum Staircase step that must be claimed. Set this to 5 for quick " +
+        "testing, then restore it to 40 for production.")]
+    [Range(1, 80)] public int requiredMuseumStaircaseStep = 40;
+
+    [Tooltip(
+        "Optional Inspector-only test bypass. Keep disabled in production.")]
+    public bool ignoreMuseumStepRequirementForTesting;
+
     [Header("Generated Catalogue")]
     public List<AutoAcquisitionCategoryData> categories =
         new List<AutoAcquisitionCategoryData>();
@@ -94,6 +104,12 @@ public class AutoAcquisitionCatalogData : ScriptableObject
     [Min(1)] public int maximumOfflineOpeningsPerLine = 10000;
     [Min(1)] public int maximumCalibrationAttempts = 32;
     [Min(0.1f)] public float runtimeTickSeconds = 1f;
+
+    [Header("Selection Preview")]
+    [Tooltip(
+        "Maximum skin rows shown at once in the processing target menu. " +
+        "The popup may use paging or scrolling for larger pools.")]
+    [Min(1)] public int maximumPreviewSkinRows = 250;
 
     [Header("Curator Alert Thresholds")]
     [Min(0f)] public float exceptionalValueThreshold = 1000f;
@@ -186,10 +202,13 @@ public class AutoAcquisitionCatalogData : ScriptableObject
 
     private void OnValidate()
     {
+        requiredMuseumStaircaseStep =
+            Mathf.Clamp(requiredMuseumStaircaseStep, 1, 80);
         maximumOfflineOpeningsPerLine =
             Mathf.Max(1, maximumOfflineOpeningsPerLine);
         maximumCalibrationAttempts = Mathf.Max(1, maximumCalibrationAttempts);
         runtimeTickSeconds = Mathf.Max(0.1f, runtimeTickSeconds);
+        maximumPreviewSkinRows = Mathf.Max(1, maximumPreviewSkinRows);
         exceptionalValueThreshold = Mathf.Max(0f, exceptionalValueThreshold);
         pristineFloatThreshold = Mathf.Clamp01(pristineFloatThreshold);
         extremeHighFloatThreshold = Mathf.Clamp01(extremeHighFloatThreshold);
