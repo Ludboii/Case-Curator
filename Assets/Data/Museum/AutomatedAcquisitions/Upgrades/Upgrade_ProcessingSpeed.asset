@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff1fafda9512383479c4f566a1b73a80, type: 3}
+  m_Name: Upgrade_ProcessingSpeed
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
+  upgradeId: auto-acq-processing-speed
+  displayName: Processing Speed
+  description: Reduces processing time for every Automated Acquisition item.
+  icon: {fileID: 0}
+  category: 7
+  sortOrder: 400
+  hiddenUntilUnlocked: 0
+  unlockDefinition: {fileID: 11400000, guid: 69135ae4e54c31f4f8cd2ad9b4304914, type: 2}
+  effectType: 0
+  defaultEffectValue: 600
+  levels:
+  - levelName: Processing Speed I
+    description: 500 seconds per item.
+    currency: 0
+    cost: 25000
+    additionalRequirement: {fileID: 0}
+    effectValue: 500
+  - levelName: Processing Speed II
+    description: 400 seconds per item.
+    currency: 0
+    cost: 60000
+    additionalRequirement: {fileID: 0}
+    effectValue: 400
+  - levelName: Processing Speed III
+    description: 300 seconds per item.
+    currency: 0
+    cost: 150000
+    additionalRequirement: {fileID: 0}
+    effectValue: 300
+  - levelName: Processing Speed IV
+    description: 180 seconds per item.
+    currency: 0
+    cost: 300000
+    additionalRequirement: {fileID: 0}
+    effectValue: 180
+  - levelName: Processing Speed V
+    description: 90 seconds per item.
+    currency: 0
+    cost: 500000
+    additionalRequirement: {fileID: 0}
+    effectValue: 90
+  - levelName: Processing Speed VI
+    description: 60 seconds per item.
+    currency: 0
+    cost: 1000000
+    additionalRequirement: {fileID: 0}
+    effectValue: 60

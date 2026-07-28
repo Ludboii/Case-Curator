@@ -2213,6 +2213,7 @@ MonoBehaviour:
   museumCatalog: {fileID: 11400000, guid: 862a34b45de64ce41923c05a97798a27, type: 2}
   museumPresentConfig: {fileID: 11400000, guid: ea101391a7817804ebdec1c8633e2702, type: 2}
   trophyRoomBalance: {fileID: 11400000, guid: ac61f2a00ee901344a8af9ccef9dc07f, type: 2}
+  autoAcquisitionCatalog: {fileID: 11400000, guid: 0019b0793364371428bcdcc148bb3f91, type: 2}
   museumMilestones:
   - {fileID: 11400000, guid: 7e8606b4123fbb645adef8048d942744, type: 2}
   - {fileID: 11400000, guid: c1a8572642237924d85c4f90ab576ac1, type: 2}

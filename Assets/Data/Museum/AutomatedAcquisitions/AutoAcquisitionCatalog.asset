@@ -1,0 +1,578 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 873d1ce66152c8147ac2310a607bdaca, type: 3}
+  m_Name: AutoAcquisitionCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::AutoAcquisitionCatalogData
+  wingDisplayName: Automated Acquisitions Wing
+  wingDescription: Research Bronze-completed containers, fund timed processing lines
+    and claim generated items from the Uncatalogued Intake Vault.
+  categories:
+  - categoryId: auto-acq-category-weapon-cases
+    displayName: Weapon Case Archive
+    description: Sequential automated research for Weapon Cases after Bronze Completion.
+    icon: {fileID: 0}
+    sortOrder: 0
+    licenseCost: 10000
+    minimumResearchCost: 500
+    researchCostMultiplier: 20
+    supportedContainerTypes: 00000000
+  - categoryId: auto-acq-category-collection-packages
+    displayName: Collection Package Archive
+    description: Sequential automated research for standard Collection Packages after
+      Bronze Completion.
+    icon: {fileID: 0}
+    sortOrder: 10
+    licenseCost: 100000
+    minimumResearchCost: 2500
+    researchCostMultiplier: 28
+    supportedContainerTypes: 01000000
+  containers:
+  - containerId: cc_collection_package_lake
+    container: {fileID: 11400000, guid: b6647da5f3aa1e94781dc03033232378, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 0
+    permanentResearchCost: 2500
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_train
+    container: {fileID: 11400000, guid: 032922c0086ff824db46f45562c44199, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 1
+    permanentResearchCost: 2500
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_italy
+    container: {fileID: 11400000, guid: 9b8d01eb6f5d4154aa19d5cc1e5de42a, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 2
+    permanentResearchCost: 2500
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_dust_2
+    container: {fileID: 11400000, guid: e96e86a181728664ab717af1103985fb, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 3
+    permanentResearchCost: 2500
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_bank
+    container: {fileID: 11400000, guid: 2dd723d9c0a26de48824a4022850b36a, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 4
+    permanentResearchCost: 2500
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_aztec
+    container: {fileID: 11400000, guid: 778395a6120730444ba87604fca86d6b, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 5
+    permanentResearchCost: 2500
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_safehouse
+    container: {fileID: 11400000, guid: d9f2c929be10fc245a404ccf193ad016, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 6
+    permanentResearchCost: 2500
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_cache
+    container: {fileID: 11400000, guid: 0ff5ff3662a0c13438cfd7c4ae9c66d4, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 7
+    permanentResearchCost: 2500
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_vertigo
+    container: {fileID: 11400000, guid: 81ed277eea3213749a6083731fdc0145, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 8
+    permanentResearchCost: 2500
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_2018_inferno
+    container: {fileID: 11400000, guid: 53d1015284a522c44866e1b027e483ee, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 9
+    permanentResearchCost: 2500
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_inferno
+    container: {fileID: 11400000, guid: f2a176bc3905fb44b8e2821f070fee51, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 10
+    permanentResearchCost: 2500
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_2018_nuke
+    container: {fileID: 11400000, guid: 4f95671ca32f70c43aa97a17022a5069, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 11
+    permanentResearchCost: 2500
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_harlequin
+    container: {fileID: 11400000, guid: 65b70cf90df47514a86e3ed2052edcb0, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 12
+    permanentResearchCost: 2500
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_achroma
+    container: {fileID: 11400000, guid: 95076c7502760f248ae0530f068e1917, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 13
+    permanentResearchCost: 2500
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_office
+    container: {fileID: 11400000, guid: 2700923c71b97cb40b161a0b9ff10e87, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 14
+    permanentResearchCost: 2500
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_ascent
+    container: {fileID: 11400000, guid: bf7be52fd113f3443af9cf99c790b8fe, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 15
+    permanentResearchCost: 2900
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_mirage
+    container: {fileID: 11400000, guid: 8dbd1406b58e4c840900331c072952fc, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 16
+    permanentResearchCost: 3100
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_boreal
+    container: {fileID: 11400000, guid: 48e50e3d573e311449b25cb07d4d924c, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 17
+    permanentResearchCost: 3400
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_radiant
+    container: {fileID: 11400000, guid: 1e74df33fbdfe6c479d20f5c4136e0b9, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 18
+    permanentResearchCost: 4100
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_alpha
+    container: {fileID: 11400000, guid: 6111738e15a653641ab306de690412ce, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 19
+    permanentResearchCost: 4100
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_overpass
+    container: {fileID: 11400000, guid: 294bec860e83ffd4db17a57ec0f424cb, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 20
+    permanentResearchCost: 5300
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_sport_and_field
+    container: {fileID: 11400000, guid: 8df2a3c475d8efc4db01e54c5206d963, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 21
+    permanentResearchCost: 5500
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_dust
+    container: {fileID: 11400000, guid: 80d7f59c5981edc448be68d5a54d368c, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 22
+    permanentResearchCost: 6300
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_overpass_2024
+    container: {fileID: 11400000, guid: 1f67d2627d920d34a9f47379b8cf6f8a, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 23
+    permanentResearchCost: 6900
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_train_2025
+    container: {fileID: 11400000, guid: 1fa46353d55a09747934e274b11f36f2, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 24
+    permanentResearchCost: 7000
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_militia
+    container: {fileID: 11400000, guid: dbfce3fa8fc324749ba06a0dc012e6f8, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 25
+    permanentResearchCost: 7900
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_graphic_design
+    container: {fileID: 11400000, guid: 4a143b060bc41e64c9a6ecedea436a41, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 26
+    permanentResearchCost: 9300
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_control
+    container: {fileID: 11400000, guid: 765cfa9ecbcf1bf488ed9af0a56400df, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 27
+    permanentResearchCost: 11200
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_baggage
+    container: {fileID: 11400000, guid: dd6637e8a549a864a9e7a2678db52d97, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 28
+    permanentResearchCost: 12100
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_2021_train
+    container: {fileID: 11400000, guid: 0d1226fcc0afe3b4c96a517bd8ac5381, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 29
+    permanentResearchCost: 12900
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_ancient
+    container: {fileID: 11400000, guid: c7c4b5ce20fbf924a8fb0a4f01662d1f, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 30
+    permanentResearchCost: 14000
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_anubis
+    container: {fileID: 11400000, guid: 882ed5394fbfd54479750dc60096c270, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 31
+    permanentResearchCost: 14000
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_2021_dust_2
+    container: {fileID: 11400000, guid: cb0071ae0881019408f021a4fdec011d, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 32
+    permanentResearchCost: 15200
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_assault
+    container: {fileID: 11400000, guid: 990b8b73bb9e876498660fa7a42ec5ad, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 33
+    permanentResearchCost: 16700
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_chop_shop
+    container: {fileID: 11400000, guid: 358e80868a3dd564c939709243085692, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 34
+    permanentResearchCost: 18200
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_havoc
+    container: {fileID: 11400000, guid: 333f8b81fe63b044ca2c649f23ea8f45, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 35
+    permanentResearchCost: 20900
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_nuke
+    container: {fileID: 11400000, guid: b53ee1a4a6d26094fa706c2ec6ea39cd, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 36
+    permanentResearchCost: 20900
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_2021_mirage
+    container: {fileID: 11400000, guid: e12d40b934c41cf4ea080cf8959fce2c, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 37
+    permanentResearchCost: 21000
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_2021_vertigo
+    container: {fileID: 11400000, guid: 38de79ab7beda99418bebc13093dc207, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 38
+    permanentResearchCost: 23800
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_rising_sun
+    container: {fileID: 11400000, guid: 859d9070a16f19d40b848a0fae65f81f, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 39
+    permanentResearchCost: 26600
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_canals
+    container: {fileID: 11400000, guid: c212af9005db1ed4eb834d74f0d1e172, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 40
+    permanentResearchCost: 31800
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_st_marc
+    container: {fileID: 11400000, guid: 2f0bfb6bb0c202242a1d88e7922f9bda, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 41
+    permanentResearchCost: 33400
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_gods_and_monsters
+    container: {fileID: 11400000, guid: f00700480746c26488ead1ae1b9fd32b, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 42
+    permanentResearchCost: 35000
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_norse
+    container: {fileID: 11400000, guid: e2cdc58d1ce2b7c44b1f0ef705215fdc, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 43
+    permanentResearchCost: 39000
+    processingDurationMultiplier: 1
+  - containerId: cc_collection_package_cobblestone
+    container: {fileID: 11400000, guid: 46d5d26e4a524774da1f7a85e0793f3b, type: 2}
+    categoryId: auto-acq-category-collection-packages
+    automatedUnlockOrder: 44
+    permanentResearchCost: 43200
+    processingDurationMultiplier: 1
+  - containerId: crate-5176
+    container: {fileID: 11400000, guid: b02c9b52b48cf174fbafac0450e128af, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 0
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4904
+    container: {fileID: 11400000, guid: c3b7577e114541f48a07c5de582510f7, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 1
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4880
+    container: {fileID: 11400000, guid: 3f21129bdfe1fd84e9246a031a7af365, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 2
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4846
+    container: {fileID: 11400000, guid: 4ba4a5097a6b0564b823b93be858e4a9, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 3
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4698
+    container: {fileID: 11400000, guid: 667651ec4e8f12246b4bb2a49d7d6022, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 4
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4747
+    container: {fileID: 11400000, guid: f71accd5b5417e248928198a9b939017, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 5
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4471
+    container: {fileID: 11400000, guid: b5b06921738a08b4a9af4d8eefa5f363, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 6
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4669
+    container: {fileID: 11400000, guid: 9daf496c3d1a40d43a58c67e17f83136, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 7
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-7007
+    container: {fileID: 11400000, guid: b300665549cc85d44a6ccf15a60ed71e, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 8
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4138
+    container: {fileID: 11400000, guid: 84b47ed828164ce42b3b882c6540af59, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 9
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-7003
+    container: {fileID: 11400000, guid: b166049bab5bede4bad449c0bff9c95e, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 10
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4091
+    container: {fileID: 11400000, guid: 73c7a7f892a2eab41a31547230fadf06, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 11
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-5181
+    container: {fileID: 11400000, guid: 37dec7974df381c49bb8a509527b7ddf, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 12
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4695
+    container: {fileID: 11400000, guid: 5f7c0f1caaf55364699e32dabdab14b2, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 13
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4818
+    container: {fileID: 11400000, guid: 63e09d52035baca418540835a0feae5e, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 14
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4017
+    container: {fileID: 11400000, guid: b512beb85d054f8429bbda52946c0bab, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 15
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4598
+    container: {fileID: 11400000, guid: b643897f58cf90f449794364dcfdd120, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 16
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4351
+    container: {fileID: 11400000, guid: 90aaa64a1e3a8c34d900fc8a41c5afee, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 17
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4548
+    container: {fileID: 11400000, guid: 6bd3a82513a2ba0459bc530e32bedbd3, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 18
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4236
+    container: {fileID: 11400000, guid: b37f963c011c35142bc8d0f824ef2c9f, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 19
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4482
+    container: {fileID: 11400000, guid: f3fb9097adc9b324385d4ea641b3aae7, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 20
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4187
+    container: {fileID: 11400000, guid: 4e2ae758eaf80864d8165a10fc6daddb, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 21
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4011
+    container: {fileID: 11400000, guid: 95bedc11e77e6ae409ac082d2ed6476f, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 22
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4186
+    container: {fileID: 11400000, guid: 9db51d898dc5c224e826ff9c27872661, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 23
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4233
+    container: {fileID: 11400000, guid: 8a62d345532cfe24ca29f8ced7da42b6, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 24
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4029
+    container: {fileID: 11400000, guid: 4bf92a093298bc7469ac53cb41cdba0b, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 25
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4281
+    container: {fileID: 11400000, guid: a16d523082c636943a8dfc7c7fdd676d, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 26
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4061
+    container: {fileID: 11400000, guid: 7019b81dfe1cfa54689599ee93b4600e, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 27
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4089
+    container: {fileID: 11400000, guid: c63374fd0b8b2e044a8fb7ba4028636d, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 28
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4717
+    container: {fileID: 11400000, guid: 2a4113f692ae209458bc951f7e8070f3, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 29
+    permanentResearchCost: 500
+    processingDurationMultiplier: 1
+  - containerId: crate-4403
+    container: {fileID: 11400000, guid: 448e882ec657ec14f877f4aa599960dc, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 30
+    permanentResearchCost: 600
+    processingDurationMultiplier: 1
+  - containerId: crate-4009
+    container: {fileID: 11400000, guid: c07e74b4be92fde4bb5e997789ede38e, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 31
+    permanentResearchCost: 600
+    processingDurationMultiplier: 1
+  - containerId: crate-4620
+    container: {fileID: 11400000, guid: f13ff620cc1b48f41ae0bbcb9ede3c54, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 32
+    permanentResearchCost: 600
+    processingDurationMultiplier: 1
+  - containerId: crate-4790
+    container: {fileID: 11400000, guid: 694e7e43dd2769946a728d6836c9566b, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 33
+    permanentResearchCost: 600
+    processingDurationMultiplier: 1
+  - containerId: crate-4018
+    container: {fileID: 11400000, guid: d64952af863a7d042be0f6826c695396, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 34
+    permanentResearchCost: 600
+    processingDurationMultiplier: 1
+  - containerId: crate-4010
+    container: {fileID: 11400000, guid: d2106ee130be3ac4482a568bc0ca2534, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 35
+    permanentResearchCost: 700
+    processingDurationMultiplier: 1
+  - containerId: crate-4019
+    container: {fileID: 11400000, guid: 6535c46c2357951468c5d0c70d8bdfd9, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 36
+    permanentResearchCost: 800
+    processingDurationMultiplier: 1
+  - containerId: crate-4288
+    container: {fileID: 11400000, guid: ce1f603e817504b4eb5980dc3134c734, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 37
+    permanentResearchCost: 1000
+    processingDurationMultiplier: 1
+  - containerId: crate-4005
+    container: {fileID: 11400000, guid: d088d70e13b6ee6459a2ef26da615bdb, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 38
+    permanentResearchCost: 1100
+    processingDurationMultiplier: 1
+  - containerId: crate-4004
+    container: {fileID: 11400000, guid: b1252d2a65fb256409a46fe36dda8120, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 39
+    permanentResearchCost: 1200
+    processingDurationMultiplier: 1
+  - containerId: crate-4002
+    container: {fileID: 11400000, guid: a45e281b13b0daf40b3e63c53a8febff, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 40
+    permanentResearchCost: 1600
+    processingDurationMultiplier: 1
+  - containerId: crate-4352
+    container: {fileID: 11400000, guid: 93b1d2f8f42f73b4896763078e66b6b5, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 41
+    permanentResearchCost: 1700
+    processingDurationMultiplier: 1
+  - containerId: crate-4003
+    container: {fileID: 11400000, guid: e8bf04228c819284ca63d01d7dba1be8, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 42
+    permanentResearchCost: 2600
+    processingDurationMultiplier: 1
+  - containerId: crate-4001
+    container: {fileID: 11400000, guid: 700126f5d620b644fb59da49727b4f5a, type: 2}
+    categoryId: auto-acq-category-weapon-cases
+    automatedUnlockOrder: 43
+    permanentResearchCost: 4000
+    processingDurationMultiplier: 1
+  maximumOfflineOpeningsPerLine: 10000
+  maximumCalibrationAttempts: 32
+  runtimeTickSeconds: 1
+  exceptionalValueThreshold: 1000
+  pristineFloatThreshold: 0.001
+  extremeHighFloatThreshold: 0.999

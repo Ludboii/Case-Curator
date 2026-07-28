@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff1fafda9512383479c4f566a1b73a80, type: 3}
+  m_Name: Upgrade_CuratorAlerts
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
+  upgradeId: auto-acq-curator-alert
+  displayName: Curator Alerts
+  description: Flags or pauses processing for exceptional outputs.
+  icon: {fileID: 0}
+  category: 7
+  sortOrder: 460
+  hiddenUntilUnlocked: 0
+  unlockDefinition: {fileID: 11400000, guid: 69135ae4e54c31f4f8cd2ad9b4304914, type: 2}
+  effectType: 0
+  defaultEffectValue: 0
+  levels:
+  - levelName: Curator Alerts I
+    description: 1 alert level.
+    currency: 0
+    cost: 100000
+    additionalRequirement: {fileID: 0}
+    effectValue: 1
+  - levelName: Curator Alerts II
+    description: 2 alert level.
+    currency: 0
+    cost: 250000
+    additionalRequirement: {fileID: 0}
+    effectValue: 2
+  - levelName: Curator Alerts III
+    description: 3 alert level.
+    currency: 0
+    cost: 600000
+    additionalRequirement: {fileID: 0}
+    effectValue: 3
+  - levelName: Curator Alerts IV
+    description: 4 alert level.
+    currency: 0
+    cost: 1500000
+    additionalRequirement: {fileID: 0}
+    effectValue: 4
