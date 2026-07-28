@@ -10,6 +10,8 @@ public static class AutoAcquisitionUpgradeUtility
         "auto-acq-processing-speed";
     public const string CalibrationId =
         "auto-acq-machine-calibration";
+    public const string FloatCalibrationId =
+        "auto-acq-float-calibration";
     public const string IntakeCapacityId =
         "auto-acq-intake-vault";
     public const string ProcessingLinesId =
@@ -29,6 +31,21 @@ public static class AutoAcquisitionUpgradeUtility
     public static float GetCalibrationMultiplier()
     {
         return Mathf.Clamp(GetEffect(CalibrationId, 0.80f), 0.80f, 1f);
+    }
+
+    /// <summary>
+    /// Exponent applied to a uniform 0-1 float roll. Values below 1 bias the
+    /// result towards the high/worse end. A value of 1 matches manual opening.
+    /// </summary>
+    public static float GetFloatCalibrationExponent()
+    {
+        return Mathf.Clamp(GetEffect(FloatCalibrationId, 0.55f), 0.1f, 1f);
+    }
+
+    public static float GetExpectedNormalisedFloat()
+    {
+        float exponent = GetFloatCalibrationExponent();
+        return 1f / (exponent + 1f);
     }
 
     public static int GetIntakeCapacity()
