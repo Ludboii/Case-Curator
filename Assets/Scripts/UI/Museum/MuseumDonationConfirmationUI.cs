@@ -161,16 +161,10 @@ public class MuseumDonationConfirmationUI : MonoBehaviour
         if (owner != null)
         {
             owner.HandleDonationCompleted(result, donatedKey);
-
-            // Restore the entire browser path, not only the skin popup. This is
-            // important for knives and other non-default categories: after the
-            // popup closes the player must still be in Knives/Kukri rather than
-            // the first generated category such as Assault Rifles.
             RestoreBrowserPathByDonationKey(
                 owner,
                 service.GetCatalogSnapshot(false),
                 donatedKey);
-
             owner.ShowMuseumMessage(
                 $"+{result.museumPointsAwarded:0.##} Museum Points");
         }
@@ -200,12 +194,17 @@ public class MuseumDonationConfirmationUI : MonoBehaviour
         string variant = preview != null
             ? preview.variant.ToString()
             : MuseumDonationKeyUtility.GetVariant(item).ToString();
+        float baseValue = PriceCalculator.GetBasePriceWithoutStickers(item);
+        float stickerValue = StickerValueUtility.GetAppliedStickerContribution(item);
+        float totalValue = baseValue + stickerValue;
 
         return
             $"Slot: {wear} | {variant}\n" +
             $"Float: {item.floatValue:0.000000}\n" +
             $"Pattern: {item.patternId} ({item.patternTier})\n" +
-            $"Market value: {item.marketValue:0.##} Gold";
+            $"Base skin value: {baseValue:0.##} Gold\n" +
+            $"Applied sticker value: {stickerValue:0.##} Gold\n" +
+            $"Total market value: {totalValue:0.##} Gold";
     }
 
     private static string BuildPointBreakdown(MuseumDonationPreview preview)
@@ -227,36 +226,79 @@ public class MuseumDonationConfirmationUI : MonoBehaviour
                 $"({points.marketValueBonusRate * 100d:0.##}%)");
         }
 
-        builder.Append($"Total reward: {points.totalPoints:0.##} MP");
+        builder.Append("Total reward: ");
+        builder.Append(points.totalPoints.ToString("0.##"));
+        builder.Append(" MP\nApplied sticker value grants 0 Museum Points.");
         return builder.ToString();
     }
 
     private static string BuildWarnings(MuseumDonationCandidate value)
     {
-        if (value == null ||
-            value.warnings == null ||
-            value.warnings.Count == 0)
-        {
+        if (value == null)
             return "";
-        }
 
         StringBuilder builder = new StringBuilder();
 
-        for (int i = 0; i < value.warnings.Count; i++)
+        if (value.warnings != null)
         {
-            MuseumDonationWarning warning = value.warnings[i];
+            for (int i = 0; i < value.warnings.Count; i++)
+            {
+                MuseumDonationWarning warning = value.warnings[i];
 
-            if (warning == null)
-                continue;
+                if (warning == null)
+                    continue;
 
-            if (builder.Length > 0)
-                builder.AppendLine();
+                AppendWarning(builder, warning.message);
+            }
+        }
 
-            builder.Append("! ");
-            builder.Append(warning.message);
+        InventoryItem item = value.item;
+        StickerApplicationService stickerService =
+            StickerApplicationService.GetOrCreate();
+
+        if (item != null && stickerService != null)
+        {
+            System.Collections.Generic.IReadOnlyList<AppliedStickerSaveData> applied =
+                stickerService.GetAppliedStickers(item);
+
+            if (applied.Count > 0)
+            {
+                float stickerValue = stickerService.GetAppliedStickerValue(item);
+                StringBuilder names = new StringBuilder();
+
+                for (int i = 0; i < applied.Count; i++)
+                {
+                    StickerData sticker = stickerService.ResolveSticker(applied[i]);
+
+                    if (sticker == null)
+                        continue;
+
+                    if (names.Length > 0)
+                        names.Append(", ");
+
+                    names.Append(sticker.DisplayName);
+                }
+
+                AppendWarning(
+                    builder,
+                    $"{applied.Count} applied sticker(s) will be destroyed " +
+                    $"({stickerValue:0.##} Gold added value): {names}.");
+            }
         }
 
         return builder.ToString();
+    }
+
+    private static void AppendWarning(StringBuilder builder, string message)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+            return;
+
+        if (builder.Length > 0)
+            builder.AppendLine();
+
+        builder.Append("! ");
+        builder.Append(message);
     }
 
     private static bool RestoreBrowserPathByDonationKey(
