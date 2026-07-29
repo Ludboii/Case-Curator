@@ -182,9 +182,13 @@ public class CaseInventoryUI : MonoBehaviour
         if (entry == null)
             return 0;
 
-        return maxAmountSelected
+        int requested = maxAmountSelected
             ? GetMaxOpenAmount(entry)
             : Mathf.Min(selectedOpenAmount, entry.amount);
+
+        return StickerCapsuleOpeningRules.ClampOpenAmount(
+            entry.caseData,
+            requested);
     }
 
     public int GetMaxOpenAmount(CaseInventoryEntry entry)
@@ -195,8 +199,11 @@ public class CaseInventoryUI : MonoBehaviour
         int availableSkinSpace =
             InventoryManager.Instance.TotalCapacity -
             InventoryManager.Instance.Count;
+        int maximum = Mathf.Clamp(entry.amount, 0, availableSkinSpace);
 
-        return Mathf.Clamp(entry.amount, 0, availableSkinSpace);
+        return StickerCapsuleOpeningRules.ClampOpenAmount(
+            entry.caseData,
+            maximum);
     }
 
     public bool CanOpenCases(
@@ -325,8 +332,6 @@ public class CaseInventoryUI : MonoBehaviour
             $"Opened {addedCount}x {caseData.caseName}. " +
             $"Gained {totalXPGained} XP.");
 
-        // Both inventory managers already raised their change events. Only the
-        // lightweight card state needs a final refresh here.
         RefreshCards();
     }
 
