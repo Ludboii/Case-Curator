@@ -1,12 +1,12 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 
 /// <summary>
-/// The ByMykel importer registers StickerData in allStickers. Early versions also
-/// placed them in allSkins for SaveManager lookup; GameDatabase now resolves them
-/// directly, so this guard removes that cross-catalogue registration after import.
+/// Keeps imported sticker assets separated from weapon-skin catalogues and
+/// ensures every Sticker Capsule has an editable dedicated sticker-rarity table.
 /// </summary>
 public sealed class StickerDatabaseGuard : AssetPostprocessor
 {
@@ -24,7 +24,8 @@ public sealed class StickerDatabaseGuard : AssetPostprocessor
         {
             string path = importedAssets[i];
 
-            if (path.Contains("/Stickers/") || path.EndsWith("GameDatabase.asset"))
+            if (path.Contains("/Stickers/") ||
+                path.EndsWith("GameDatabase.asset"))
             {
                 relevant = true;
                 break;
@@ -45,8 +46,8 @@ public sealed class StickerDatabaseGuard : AssetPostprocessor
         AssetDatabase.SaveAssets();
         Debug.Log(
             changed > 0
-                ? $"Removed StickerData from allSkins in {changed} GameDatabase asset(s)."
-                : "Sticker database lists are valid.");
+                ? $"Normalized sticker data in {changed} GameDatabase asset(s)."
+                : "Sticker database lists and capsule rarity tables are valid.");
     }
 
     private static void RunDelayed()
@@ -75,6 +76,8 @@ public sealed class StickerDatabaseGuard : AssetPostprocessor
                 database.allSkins = new List<SkinData>();
             if (database.allStickers == null)
                 database.allStickers = new List<StickerData>();
+            if (database.allCases == null)
+                database.allCases = new List<CaseData>();
 
             bool changed = false;
 
@@ -101,6 +104,27 @@ public sealed class StickerDatabaseGuard : AssetPostprocessor
                 }
             }
 
+            for (int index = 0; index < database.allCases.Count; index++)
+            {
+                CaseData capsule = database.allCases[index];
+
+                if (capsule == null ||
+                    capsule.containerType != CaseContainerType.StickerCapsule)
+                {
+                    continue;
+                }
+
+                string before = GetRarityTableSignature(capsule);
+                StickerCapsuleRollUtility.EnsureDefaultRarityTable(capsule);
+                string after = GetRarityTableSignature(capsule);
+
+                if (before != after)
+                {
+                    EditorUtility.SetDirty(capsule);
+                    changed = true;
+                }
+            }
+
             if (!changed)
                 continue;
 
@@ -109,6 +133,32 @@ public sealed class StickerDatabaseGuard : AssetPostprocessor
         }
 
         return changedDatabases;
+    }
+
+    private static string GetRarityTableSignature(CaseData capsule)
+    {
+        if (capsule == null || capsule.stickerRarityChances == null)
+            return "null";
+
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < capsule.stickerRarityChances.Count; i++)
+        {
+            StickerRarityChance chance = capsule.stickerRarityChances[i];
+
+            if (chance == null)
+            {
+                builder.Append("null;");
+                continue;
+            }
+
+            builder.Append((int)chance.rarity);
+            builder.Append(':');
+            builder.Append(chance.chance.ToString("R"));
+            builder.Append(';');
+        }
+
+        return builder.ToString();
     }
 }
 #endif
