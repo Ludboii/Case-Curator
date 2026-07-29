@@ -45,8 +45,10 @@ public class CaseInspectDropCardUI : MonoBehaviour
         }
 
         gameObject.SetActive(true);
-
-        Color rarityColor = RarityColorUtility.GetColor(skin.rarity);
+        StickerData sticker = skin as StickerData;
+        Color rarityColor = sticker != null
+            ? StickerRarityUtility.GetColor(sticker.stickerRarity)
+            : RarityColorUtility.GetColor(skin.rarity);
         Color bgColor = Color.Lerp(Color.black, rarityColor, 0.35f);
         bgColor.a = 0.9f;
 
@@ -72,19 +74,25 @@ public class CaseInspectDropCardUI : MonoBehaviour
 
         if (weaponNameText != null)
         {
-            weaponNameText.text = skin.weaponName;
+            weaponNameText.text = sticker != null
+                ? "STICKER"
+                : skin.weaponName;
             weaponNameText.raycastTarget = false;
         }
 
         if (skinNameText != null)
         {
-            skinNameText.text = skin.isVanilla ? "Vanilla" : skin.skinName;
+            skinNameText.text = sticker != null
+                ? sticker.DisplayName
+                : skin.isVanilla ? "Vanilla" : skin.skinName;
             skinNameText.raycastTarget = false;
         }
 
         if (rarityText != null)
         {
-            rarityText.text = GetRarityDisplayName(skin.rarity);
+            rarityText.text = sticker != null
+                ? StickerRarityUtility.GetDisplayName(sticker.stickerRarity)
+                : GetRarityDisplayName(skin.rarity);
             rarityText.color = rarityColor;
             rarityText.raycastTarget = false;
         }
@@ -186,6 +194,14 @@ public class CaseInspectDropCardUI : MonoBehaviour
             return;
         }
 
+        if (skin is StickerData sticker && StickerInspectUI.Instance != null)
+        {
+            StickerInspectUI.Instance.OpenCatalogueSticker(
+                sticker,
+                owner.CurrentCase);
+            return;
+        }
+
         if (skin != null)
             owner.OpenSkinInfo(skin);
     }
@@ -207,7 +223,6 @@ public class CaseInspectDropCardUI : MonoBehaviour
 
         ContainerProgressManager progress =
             ContainerProgressManager.Instance;
-
         CaseData sourceCase = owner != null ? owner.CurrentCase : null;
 
         if (progress == null || sourceCase == null)
@@ -218,11 +233,19 @@ public class CaseInspectDropCardUI : MonoBehaviour
 
         bool found = progress.HasFoundSkin(sourceCase, skin);
         StringBuilder builder = new StringBuilder();
-
         builder.Append(
             Colorize(
                 found ? "Found" : "Not Found",
                 found ? foundColor : notFoundColor));
+
+        // Sticker Capsules have one permanent Normal Completion tier. Their
+        // cards never display wear, float or StatTrak progression lines.
+        if (skin is StickerData ||
+            StickerCapsuleCompletionUtility.IsStickerCapsule(sourceCase))
+        {
+            foundStateText.text = builder.ToString();
+            return;
+        }
 
         // Rare Special items only participate in Bronze Completion.
         if (skin.rarity == Rarity.RareSpecial)
@@ -235,22 +258,17 @@ public class CaseInspectDropCardUI : MonoBehaviour
             progress.IsGoldComplete(sourceCase) &&
             progress.CanCompleteDiamond(sourceCase);
 
-        // Bronze unlocks the wear-quality line. During Diamond progression the
-        // normal line is replaced, rather than adding a fourth line.
         if (progress.IsBronzeComplete(sourceCase))
         {
             int bestWearIndex = diamondStage
                 ? progress.GetBestFoundStatTrakWearIndex(sourceCase, skin)
                 : progress.GetBestFoundWearIndex(sourceCase, skin);
-
             bool highestWearComplete = diamondStage
                 ? progress.HasFoundBestWearStatTrak(sourceCase, skin)
                 : progress.HasFoundBestWear(sourceCase, skin);
-
             string prefix = diamondStage
                 ? "StatTrak Highest: "
                 : "Highest: ";
-
             string wearName = bestWearIndex >= 0
                 ? ContainerProgressManager.GetWearDisplayName(bestWearIndex)
                 : "Unknown";
@@ -264,13 +282,10 @@ public class CaseInspectDropCardUI : MonoBehaviour
                         : requirementIncompleteColor));
         }
 
-        // Silver unlocks the float line. Gold uses any eligible variant;
-        // Diamond resets the line to StatTrak-only progress.
         if (progress.IsSilverComplete(sourceCase))
         {
             float threshold =
                 ContainerProgressManager.GetTopQuarterFloatThreshold(skin);
-
             bool floatComplete = diamondStage
                 ? progress.HasFoundTopQuarterFloatStatTrak(sourceCase, skin)
                 : progress.HasFoundTopQuarterFloat(sourceCase, skin);
