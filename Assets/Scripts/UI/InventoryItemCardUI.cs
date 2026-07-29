@@ -38,12 +38,14 @@ public class InventoryItemCardUI : MonoBehaviour
     [Header("Click")]
     public Button button;
     public SkinInspectUI inspectUI;
+    public StickerInspectUI stickerInspectUI;
 
     [Header("Selection Mode")]
     public GameObject selectedOverlay;
     public Image selectedBorder;
 
     private static SkinInspectUI cachedInspectUI;
+    private static StickerInspectUI cachedStickerInspectUI;
 
     private InventoryItem currentItem;
     private bool isSelected;
@@ -73,6 +75,11 @@ public class InventoryItemCardUI : MonoBehaviour
         else if (SkinInspectUI.Instance != null)
             cachedInspectUI = SkinInspectUI.Instance;
 
+        if (stickerInspectUI != null)
+            cachedStickerInspectUI = stickerInspectUI;
+        else if (StickerInspectUI.Instance != null)
+            cachedStickerInspectUI = StickerInspectUI.Instance;
+
         if (favoriteIcon != null)
             favoriteGraphics = favoriteIcon.GetComponentsInChildren<Graphic>(true);
 
@@ -98,6 +105,14 @@ public class InventoryItemCardUI : MonoBehaviour
             cachedInspectUI = value;
     }
 
+    public void SetStickerInspectUI(StickerInspectUI value)
+    {
+        stickerInspectUI = value;
+
+        if (value != null)
+            cachedStickerInspectUI = value;
+    }
+
     public void SetExternalClickHandler(
         Action<InventoryItemCardUI> clickHandler)
     {
@@ -118,6 +133,7 @@ public class InventoryItemCardUI : MonoBehaviour
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
 
+        StickerData sticker = item.skin as StickerData;
         SkinData skin = item.skin;
 
         if (skinImage != null)
@@ -128,10 +144,60 @@ public class InventoryItemCardUI : MonoBehaviour
         }
 
         if (rarityBar != null)
-            rarityBar.color = RarityColorUtility.GetColor(skin.rarity);
+        {
+            rarityBar.color = sticker != null
+                ? StickerRarityUtility.GetColor(sticker.stickerRarity)
+                : RarityColorUtility.GetColor(skin.rarity);
+        }
 
+        if (sticker != null)
+            SetupStickerPresentation(sticker);
+        else
+            SetupSkinPresentation(item, skin);
+
+        if (priceText != null)
+        {
+            float value = PriceCalculator.GetPrice(item);
+            item.marketValue = value;
+            priceText.text = value.ToString("F2");
+        }
+
+        UpdateFavoriteVisual();
+    }
+
+    private void SetupStickerPresentation(StickerData sticker)
+    {
         if (floatText != null)
+        {
+            floatText.text = "";
+            floatText.gameObject.SetActive(false);
+        }
+
+        if (badgeText != null)
+        {
+            badgeText.text = string.IsNullOrWhiteSpace(sticker.effect)
+                ? "STICKER"
+                : sticker.effect.ToUpperInvariant();
+            badgeText.color = StickerRarityUtility.GetColor(
+                sticker.stickerRarity);
+            badgeText.gameObject.SetActive(true);
+        }
+
+        HidePatternBadge();
+
+        if (weaponNameText != null)
+            weaponNameText.text = "STICKER";
+        if (skinNameText != null)
+            skinNameText.text = sticker.DisplayName;
+    }
+
+    private void SetupSkinPresentation(InventoryItem item, SkinData skin)
+    {
+        if (floatText != null)
+        {
+            floatText.gameObject.SetActive(true);
             floatText.text = SkinDisplayUtility.GetCardFloatDisplay(item);
+        }
 
         if (badgeText != null)
         {
@@ -154,21 +220,16 @@ public class InventoryItemCardUI : MonoBehaviour
 
         if (skinNameText != null)
             skinNameText.text = skin.isVanilla ? "Vanilla" : skin.skinName;
+    }
 
-        if (priceText != null)
-        {
-            float value = item.marketValue;
-
-            if (value <= 0f)
-            {
-                value = PriceCalculator.GetPrice(item);
-                item.marketValue = value;
-            }
-
-            priceText.text = value.ToString("F2");
-        }
-
-        UpdateFavoriteVisual();
+    private void HidePatternBadge()
+    {
+        if (patternBadgeRoot != null)
+            patternBadgeRoot.SetActive(false);
+        if (patternBadgeText != null)
+            patternBadgeText.gameObject.SetActive(false);
+        if (patternBadgeIcon != null)
+            patternBadgeIcon.gameObject.SetActive(false);
     }
 
     private void UpdatePatternBadge(InventoryItem item)
@@ -336,6 +397,28 @@ public class InventoryItemCardUI : MonoBehaviour
     {
         if (currentItem == null)
             return;
+
+        if (StickerItemUtility.IsSticker(currentItem))
+        {
+            StickerInspectUI targetStickerInspect = stickerInspectUI;
+
+            if (targetStickerInspect == null)
+                targetStickerInspect = StickerInspectUI.Instance;
+            if (targetStickerInspect == null)
+                targetStickerInspect = cachedStickerInspectUI;
+
+            if (targetStickerInspect == null)
+            {
+                Debug.LogWarning(
+                    "InventoryItemCardUI: No StickerInspectUI is available.");
+                return;
+            }
+
+            stickerInspectUI = targetStickerInspect;
+            cachedStickerInspectUI = targetStickerInspect;
+            targetStickerInspect.OpenOwnedItem(currentItem);
+            return;
+        }
 
         SkinInspectUI targetInspect = inspectUI;
 
