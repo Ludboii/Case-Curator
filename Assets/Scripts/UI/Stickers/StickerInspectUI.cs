@@ -31,6 +31,7 @@ public sealed class StickerInspectUI : MonoBehaviour
     private InventoryItem standaloneItem;
     private StickerData sticker;
     private bool appliedMode;
+    private bool cataloguePreviewMode;
 
     private void Awake()
     {
@@ -61,7 +62,38 @@ public sealed class StickerInspectUI : MonoBehaviour
         standaloneItem = item;
         sticker = data;
         appliedMode = false;
+        cataloguePreviewMode = false;
         OpenAndRefresh();
+    }
+
+    /// <summary>
+    /// Opens a read-only sticker preview from a Sticker Capsule's possible-drop
+    /// list. It does not imply ownership and exposes no sell/favourite actions.
+    /// </summary>
+    public void OpenCatalogueSticker(
+        StickerData data,
+        CaseData sourceCapsule = null)
+    {
+        if (data == null)
+            return;
+
+        standaloneItem = null;
+        sticker = data;
+        appliedMode = false;
+        cataloguePreviewMode = true;
+        OpenAndRefresh();
+
+        if (appliedStatusText != null)
+        {
+            string source = sourceCapsule != null &&
+                            !string.IsNullOrWhiteSpace(sourceCapsule.caseName)
+                ? sourceCapsule.caseName
+                : data.PrimaryCapsuleName;
+            appliedStatusText.text = string.IsNullOrWhiteSpace(source)
+                ? "POSSIBLE STICKER DROP"
+                : $"POSSIBLE DROP FROM {source.ToUpperInvariant()}";
+            appliedStatusText.gameObject.SetActive(true);
+        }
     }
 
     public void OpenApplied(
@@ -75,6 +107,7 @@ public sealed class StickerInspectUI : MonoBehaviour
         standaloneItem = null;
         sticker = data;
         appliedMode = true;
+        cataloguePreviewMode = false;
         OpenAndRefresh();
 
         if (appliedStatusText != null)
@@ -94,6 +127,7 @@ public sealed class StickerInspectUI : MonoBehaviour
         standaloneItem = null;
         sticker = null;
         appliedMode = false;
+        cataloguePreviewMode = false;
 
         if (root != null)
             root.SetActive(false);
@@ -163,20 +197,28 @@ public sealed class StickerInspectUI : MonoBehaviour
             "Year",
             sticker.year > 0 ? sticker.year.ToString() : "");
 
-        if (appliedStatusText != null && !appliedMode)
+        if (appliedStatusText != null &&
+            !appliedMode &&
+            !cataloguePreviewMode)
+        {
             appliedStatusText.gameObject.SetActive(false);
+        }
 
         bool ownsStandalone =
             !appliedMode &&
+            !cataloguePreviewMode &&
             standaloneItem != null &&
             InventoryManager.Instance != null &&
             InventoryManager.Instance.GetItemByInstanceId(
                 standaloneItem.instanceId) == standaloneItem;
+        bool showOwnershipActions = !appliedMode && !cataloguePreviewMode;
 
         if (favoriteButton != null)
-            favoriteButton.gameObject.SetActive(!appliedMode);
-        if (favoriteButton != null)
+        {
+            favoriteButton.gameObject.SetActive(showOwnershipActions);
             favoriteButton.interactable = ownsStandalone;
+        }
+
         if (favoriteButtonText != null)
         {
             favoriteButtonText.text = standaloneItem != null &&
@@ -186,13 +228,13 @@ public sealed class StickerInspectUI : MonoBehaviour
         }
 
         if (sellButton != null)
-            sellButton.gameObject.SetActive(!appliedMode);
-        if (sellButton != null)
         {
+            sellButton.gameObject.SetActive(showOwnershipActions);
             sellButton.interactable = ownsStandalone &&
                                       standaloneItem != null &&
                                       !standaloneItem.favorite;
         }
+
         if (sellButtonText != null)
         {
             sellButtonText.text = standaloneItem != null &&
@@ -204,7 +246,7 @@ public sealed class StickerInspectUI : MonoBehaviour
 
     private void ToggleFavorite()
     {
-        if (standaloneItem == null || appliedMode ||
+        if (standaloneItem == null || appliedMode || cataloguePreviewMode ||
             InventoryManager.Instance == null)
         {
             return;
@@ -216,8 +258,11 @@ public sealed class StickerInspectUI : MonoBehaviour
 
     private void RequestSell()
     {
-        if (standaloneItem == null || sticker == null || appliedMode)
+        if (standaloneItem == null || sticker == null ||
+            appliedMode || cataloguePreviewMode)
+        {
             return;
+        }
 
         if (standaloneItem.favorite)
         {
