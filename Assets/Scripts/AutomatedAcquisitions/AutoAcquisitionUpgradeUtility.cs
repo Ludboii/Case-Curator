@@ -35,11 +35,12 @@ public static class AutoAcquisitionUpgradeUtility
 
     /// <summary>
     /// Exponent applied to a uniform 0-1 float roll. Values below 1 bias the
-    /// result towards the high/worse end. A value of 1 matches manual opening.
+    /// result towards the high/worse end. Values above 1 bias towards better
+    /// floats. An exponent of 1 matches manual opening.
     /// </summary>
     public static float GetFloatCalibrationExponent()
     {
-        return Mathf.Clamp(GetEffect(FloatCalibrationId, 0.55f), 0.1f, 1f);
+        return Mathf.Clamp(GetEffect(FloatCalibrationId, 0.60f), 0.1f, 1.15f);
     }
 
     public static float GetExpectedNormalisedFloat()
