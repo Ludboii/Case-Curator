@@ -3,7 +3,6 @@ public enum CaseShopCategory
     Cases,
     Collections,
     SouvenirCollections,
-    CustomCases
+    CustomCases,
+    StickerCapsules
 }
-
-// Later add Sticker Capsules, Premium Cases, Daily Offers, and other categories as needed.
