@@ -3,7 +3,8 @@ using System;
 /// <summary>
 /// Pure Museum point calculation. M3 uses the rarity/wear matrix, variant
 /// multiplier, optional Rare Special/vanilla modifiers, and the capped
-/// logarithmic market-value bonus. Low-float bonuses are intentionally omitted.
+/// logarithmic market-value bonus. Applied sticker value is deliberately
+/// excluded because stickers are destroyed during the donation.
 /// </summary>
 public sealed class MuseumPointCalculator
 {
@@ -50,7 +51,9 @@ public sealed class MuseumPointCalculator
             breakdown.rareSpecialMultiplier *
             breakdown.vanillaMultiplier);
 
-        double marketValue = Math.Max(0d, item.marketValue);
+        double marketValue = Math.Max(
+            0d,
+            PriceCalculator.GetBasePriceWithoutStickers(item));
         breakdown.marketValueBonus =
             balance.CalculateMarketValueBonus(marketValue);
         breakdown.marketValueBonusRate =
