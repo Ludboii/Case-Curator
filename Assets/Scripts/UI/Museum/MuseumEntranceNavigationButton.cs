@@ -15,6 +15,7 @@ public sealed class MuseumEntranceNavigationButton : MonoBehaviour
     [SerializeField] private TrophyRoomPanelUI trophyRoomPanel;
     [SerializeField] private TrophySelectionPopupUI trophySelectionPopup;
     [SerializeField] private MuseumIdleIncomePopupUI idleIncomePopup;
+    [SerializeField] private AutomatedAcquisitionsPanelUI automatedAcquisitionsPanel;
 
     private Coroutine openRoutine;
 
@@ -37,8 +38,6 @@ public sealed class MuseumEntranceNavigationButton : MonoBehaviour
 
     private void HandleClicked()
     {
-        // Hide overlays before the generic sidebar listener changes panels. This
-        // prevents the previous Trophy selection screen flashing for one frame.
         ResolveReferences();
         CloseMuseumOverlays();
 
@@ -58,8 +57,6 @@ public sealed class MuseumEntranceNavigationButton : MonoBehaviour
         if (museumPanel != null)
             museumPanel.ShowEntrance();
 
-        // A few overlay components refresh during OnEnable. Reassert the entrance
-        // after the frame has fully settled without leaving the old UI visible.
         yield return new WaitForEndOfFrame();
 
         ResolveReferences();
@@ -81,6 +78,9 @@ public sealed class MuseumEntranceNavigationButton : MonoBehaviour
 
         if (idleIncomePopup != null)
             idleIncomePopup.Close();
+
+        if (automatedAcquisitionsPanel != null)
+            automatedAcquisitionsPanel.Close();
     }
 
     private void ResolveReferences()
@@ -110,6 +110,13 @@ public sealed class MuseumEntranceNavigationButton : MonoBehaviour
         {
             idleIncomePopup = FindFirstObjectByType<MuseumIdleIncomePopupUI>(
                 FindObjectsInactive.Include);
+        }
+
+        if (automatedAcquisitionsPanel == null)
+        {
+            automatedAcquisitionsPanel =
+                FindFirstObjectByType<AutomatedAcquisitionsPanelUI>(
+                    FindObjectsInactive.Include);
         }
     }
 }
