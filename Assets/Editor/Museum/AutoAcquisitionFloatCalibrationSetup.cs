@@ -39,19 +39,22 @@ public static class AutoAcquisitionFloatCalibrationSetup
         upgrade.upgradeId = AutoAcquisitionUpgradeUtility.FloatCalibrationId;
         upgrade.displayName = "Float Calibration";
         upgrade.description =
-            "Improves Automated Acquisition float quality until it matches " +
-            "manual container opening.";
+            "Improves Automated Acquisition float quality from worse-than-manual " +
+            "to a small better-than-manual endgame advantage.";
         upgrade.category = UpgradeCategory.AutomatedAcquisitions;
         upgrade.sortOrder = 415;
         upgrade.hiddenUntilUnlocked = false;
         upgrade.effectType = UpgradeEffectType.GenericValue;
-        upgrade.defaultEffectValue = 0.55f;
+        upgrade.defaultEffectValue = 0.60f;
         upgrade.levels = new List<UpgradeLevelData>
         {
-            Level("Float Calibration I", 100000f, 0.65f),
-            Level("Float Calibration II", 250000f, 0.75f),
-            Level("Float Calibration III", 600000f, 0.88f),
-            Level("Float Calibration IV", 1500000f, 1.00f)
+            Level("Float Calibration I", 4950f, 0.65f),
+            Level("Float Calibration II", 6200f, 0.75f),
+            Level("Float Calibration III", 8250f, 0.85f),
+            Level("Float Calibration IV", 14750f, 1.00f),
+            Level("Float Calibration V", 19000f, 1.05f),
+            Level("Float Calibration VI", 27500f, 1.10f),
+            Level("Float Calibration VII", 39500f, 1.15f)
         };
 
         Register(database.upgradeCatalog, upgrade);
