@@ -2,9 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Owns the Automated Acquisitions landing/navigation screen. It deliberately
-/// reapplies the selected view in LateUpdate because AutomatedAcquisitionsPanelUI
-/// refreshes its internal page state after service events.
+/// Owns the Automated Acquisitions landing/navigation screen and separates the
+/// two back actions:
+/// - department header back returns to the department navigation landing;
+/// - landing-page back exits to the Museum entrance.
 /// </summary>
 public class AutomatedAcquisitionsNavigationUI : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class AutomatedAcquisitionsNavigationUI : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private AutomatedAcquisitionsPanelUI panel;
+    [SerializeField] private MuseumPanelUI museumPanel;
     [SerializeField] private GameObject navigationRoot;
     [SerializeField] private GameObject receivingDockView;
     [SerializeField] private GameObject processingFloorView;
@@ -30,23 +32,45 @@ public class AutomatedAcquisitionsNavigationUI : MonoBehaviour
     [SerializeField] private Button processingFloorButton;
     [SerializeField] private Button intakeVaultButton;
     [SerializeField] private Button curatorReportsButton;
+
+    [Header("Back Buttons")]
+    [Tooltip("Button shown inside department pages. Returns to NavigationRoot.")]
+    [SerializeField] private Button headerBackButton;
+
+    [Tooltip("Button shown on NavigationRoot. Returns to the Museum entrance.")]
+    [SerializeField] private Button navigationBackButton;
+
+    [Header("Legacy")]
+    [Tooltip("Old shared back reference. Leave empty after assigning both new buttons.")]
     [SerializeField] private Button backToNavigationButton;
 
     private NavigationPage currentPage = NavigationPage.Landing;
 
+    public NavigationPage CurrentPage => currentPage;
+
     private void Awake()
     {
+        ResolveReferences();
+
         SetupButton(receivingDockButton, ShowReceivingDock);
         SetupButton(processingFloorButton, ShowProcessingFloor);
         SetupButton(intakeVaultButton, ShowIntakeVault);
         SetupButton(curatorReportsButton, ShowCuratorReports);
-        SetupButton(backToNavigationButton, ShowLanding);
+        SetupButton(headerBackButton, ShowLanding);
+        SetupButton(navigationBackButton, ExitToMuseumEntrance);
+
+        // Backwards compatibility for the original single-button setup.
+        // It behaves as the department header back button only.
+        if (headerBackButton == null)
+            SetupButton(backToNavigationButton, ShowLanding);
     }
 
     public void OpenLanding(AutomatedAcquisitionsPanelUI targetPanel = null)
     {
         if (targetPanel != null)
             panel = targetPanel;
+
+        ResolveReferences();
 
         if (panel != null)
             panel.Open();
@@ -85,6 +109,21 @@ public class AutomatedAcquisitionsNavigationUI : MonoBehaviour
         ApplyPage();
     }
 
+    public void ExitToMuseumEntrance()
+    {
+        ResolveReferences();
+
+        if (panel != null)
+            panel.Close();
+        else
+            gameObject.SetActive(false);
+
+        currentPage = NavigationPage.Landing;
+
+        if (museumPanel != null)
+            museumPanel.ShowEntrance();
+    }
+
     private void LateUpdate()
     {
         // Panel refreshes can reset the old internal page to Receiving Dock.
@@ -105,6 +144,38 @@ public class AutomatedAcquisitionsNavigationUI : MonoBehaviour
         SetActive(
             curatorReportsView,
             currentPage == NavigationPage.CuratorReports);
+
+        if (headerBackButton != null)
+        {
+            headerBackButton.gameObject.SetActive(
+                currentPage != NavigationPage.Landing);
+        }
+
+        if (navigationBackButton != null)
+        {
+            navigationBackButton.gameObject.SetActive(
+                currentPage == NavigationPage.Landing);
+        }
+    }
+
+    private void ResolveReferences()
+    {
+        if (panel == null)
+        {
+            panel = GetComponent<AutomatedAcquisitionsPanelUI>();
+
+            if (panel == null)
+            {
+                panel = FindFirstObjectByType<AutomatedAcquisitionsPanelUI>(
+                    FindObjectsInactive.Include);
+            }
+        }
+
+        if (museumPanel == null)
+        {
+            museumPanel = FindFirstObjectByType<MuseumPanelUI>(
+                FindObjectsInactive.Include);
+        }
     }
 
     private static void SetActive(GameObject target, bool active)
