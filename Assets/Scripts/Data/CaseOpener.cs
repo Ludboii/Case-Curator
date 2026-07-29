@@ -20,7 +20,10 @@ public static class CaseOpener
             return null;
         }
 
-        SkinData selectedSkin = GetRandomSkin(caseData);
+        SkinData selectedSkin =
+            caseData.containerType == CaseContainerType.StickerCapsule
+                ? StickerCapsuleRollUtility.Roll(caseData)
+                : GetRandomSkin(caseData);
 
         if (selectedSkin == null)
         {
@@ -98,7 +101,6 @@ public static class CaseOpener
         Debug.LogWarning(
             $"CaseOpener: No valid skins of rarity {rolledRarity} in " +
             $"{caseData.caseName}. Using weighted fallback from all valid drops.");
-
         return RollWeightedDrop(caseData, false, rolledRarity);
     }
 
