@@ -302,17 +302,36 @@ public class CaseInventoryUI : MonoBehaviour
 
         int addedCount = InventoryManager.Instance.AddItems(openedItems);
         bool progressChanged = false;
+        bool stickerCapsule =
+            StickerCapsuleCompletionUtility.IsStickerCapsule(caseData);
 
         for (int i = 0; i < addedCount; i++)
         {
             if (ContainerProgressManager.Instance == null)
                 continue;
 
-            ContainerProgressManager.Instance.RecordContainerOpened(
-                caseData,
-                openedItems[i],
-                caseData.priceInGold,
-                false);
+            InventoryItem openedItem = openedItems[i];
+
+            if (stickerCapsule)
+            {
+                // The SkinData overload records only permanent discovery, value,
+                // spend and opened count. It deliberately skips wear, float,
+                // variant and StatTrak fields so a Sticker Capsule can never
+                // progress into Silver/Gold/Diamond completion.
+                ContainerProgressManager.Instance.RecordContainerOpened(
+                    caseData,
+                    openedItem.skin,
+                    caseData.priceInGold,
+                    openedItem.marketValue);
+            }
+            else
+            {
+                ContainerProgressManager.Instance.RecordContainerOpened(
+                    caseData,
+                    openedItem,
+                    caseData.priceInGold,
+                    false);
+            }
 
             progressChanged = true;
         }
