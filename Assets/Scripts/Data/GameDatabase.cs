@@ -31,13 +31,25 @@ public class GameDatabase : ScriptableObject
         if (string.IsNullOrWhiteSpace(apiId))
             return null;
 
-        foreach (SkinData skin in allSkins)
+        if (allSkins != null)
         {
-            if (skin != null && skin.apiId == apiId)
-                return skin;
+            for (int i = 0; i < allSkins.Count; i++)
+            {
+                SkinData skin = allSkins[i];
+
+                if (skin != null &&
+                    string.Equals(skin.apiId, apiId, StringComparison.Ordinal))
+                {
+                    return skin;
+                }
+            }
         }
 
-        return null;
+        // SaveManager historically resolves every inventory item through this
+        // method. StickerData remains a SkinData subclass for inventory/save
+        // compatibility, but is intentionally kept out of allSkins so Museum,
+        // Tradeup and weapon-skin catalogues cannot ingest stickers.
+        return GetStickerByApiIdInternal(apiId);
     }
 
     public StickerData GetStickerByApiId(string apiId)
@@ -45,21 +57,26 @@ public class GameDatabase : ScriptableObject
         if (string.IsNullOrWhiteSpace(apiId))
             return null;
 
-        if (allStickers != null)
-        {
-            for (int i = 0; i < allStickers.Count; i++)
-            {
-                StickerData sticker = allStickers[i];
+        return GetStickerByApiIdInternal(apiId);
+    }
 
-                if (sticker != null &&
-                    string.Equals(sticker.apiId, apiId, StringComparison.Ordinal))
-                {
-                    return sticker;
-                }
+    private StickerData GetStickerByApiIdInternal(string apiId)
+    {
+        if (allStickers == null)
+            return null;
+
+        for (int i = 0; i < allStickers.Count; i++)
+        {
+            StickerData sticker = allStickers[i];
+
+            if (sticker != null &&
+                string.Equals(sticker.apiId, apiId, StringComparison.Ordinal))
+            {
+                return sticker;
             }
         }
 
-        return GetSkinByApiId(apiId) as StickerData;
+        return null;
     }
 
     public CaseData GetCaseByApiId(string apiId)
@@ -153,26 +170,26 @@ public class GameDatabase : ScriptableObject
         if (allSkins == null || allStickers == null)
             return;
 
+        // Migrate stickers created by the earliest implementation into their
+        // dedicated list, then remove them from allSkins. Inventory save/load still
+        // resolves them through GetSkinByApiId's sticker fallback.
         for (int i = allSkins.Count - 1; i >= 0; i--)
         {
             StickerData sticker = allSkins[i] as StickerData;
 
-            if (sticker != null && !allStickers.Contains(sticker))
+            if (sticker == null)
+                continue;
+
+            if (!allStickers.Contains(sticker))
                 allStickers.Add(sticker);
+
+            allSkins.RemoveAt(i);
         }
 
         for (int i = allStickers.Count - 1; i >= 0; i--)
         {
-            StickerData sticker = allStickers[i];
-
-            if (sticker == null)
-            {
+            if (allStickers[i] == null)
                 allStickers.RemoveAt(i);
-                continue;
-            }
-
-            if (!allSkins.Contains(sticker))
-                allSkins.Add(sticker);
         }
     }
 
@@ -192,7 +209,6 @@ public class GameDatabase : ScriptableObject
             SkinData skin = allSkins[i];
 
             if (skin == null ||
-                skin is StickerData ||
                 skin.rarity != Rarity.RareSpecial ||
                 !string.Equals(
                     skin.weaponName,
