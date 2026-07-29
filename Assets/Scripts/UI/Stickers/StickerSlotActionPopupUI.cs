@@ -24,8 +24,9 @@ public sealed class StickerSlotActionPopupUI : MonoBehaviour
     [SerializeField] private Button[] targetSlotButtons = new Button[4];
     [SerializeField] private TMP_Text[] targetSlotTexts = new TMP_Text[4];
 
-    [Header("Sticker Inspect")]
+    [Header("Sticker Panels")]
     [SerializeField] private StickerInspectUI stickerInspectUI;
+    [SerializeField] private StickerPickerPopupUI pickerPopup;
 
     private InventoryItem skinItem;
     private AppliedStickerSaveData applied;
@@ -40,7 +41,7 @@ public sealed class StickerSlotActionPopupUI : MonoBehaviour
             root = gameObject;
 
         SetupButton(inspectButton, InspectSticker);
-        SetupButton(replaceButton, ExplainReplace);
+        SetupButton(replaceButton, RequestReplace);
         SetupButton(removeButton, RequestRemove);
         SetupButton(moveButton, ShowMoveTargets);
         SetupButton(cancelButton, Close);
@@ -151,14 +152,60 @@ public sealed class StickerSlotActionPopupUI : MonoBehaviour
             owner.ShowStatus("Sticker Inspect UI is not assigned.", true);
     }
 
-    private void ExplainReplace()
+    private void RequestReplace()
     {
-        if (owner != null)
+        if (sticker == null || service == null)
+            return;
+
+        float cost = StickerApplicationService.GetRemovalCost(sticker.marketValue);
+        string message =
+            $"Replace {sticker.DisplayName} in slot {slotIndex + 1}?\n\n" +
+            $"The current sticker must first be removed for {cost:N0} Gold. " +
+            "It will return to inventory, then the sticker picker will open. " +
+            "One free inventory slot is required.";
+
+        if (SellConfirmationPopupUI.Instance != null)
         {
-            owner.ShowStatus(
-                "Remove the current sticker first, then apply its replacement.",
-                false);
+            SellConfirmationPopupUI.Instance.Show(
+                "Replace Sticker",
+                message,
+                "Remove and Continue",
+                "Cancel",
+                ConfirmReplace);
+            return;
         }
+
+        ConfirmReplace();
+    }
+
+    private void ConfirmReplace()
+    {
+        InventoryItem targetSkin = skinItem;
+        int targetSlot = slotIndex;
+        SkinInspectStickerSlotsUI targetOwner = owner;
+        StickerActionResult result = service != null
+            ? service.RemoveSticker(targetSkin, targetSlot)
+            : StickerActionResult.Failed(
+                StickerActionStatus.ServiceUnavailable,
+                "Sticker service is unavailable.");
+
+        if (targetOwner != null)
+        {
+            targetOwner.ShowStatus(result.message, !result.success);
+
+            if (result.success)
+                targetOwner.RefreshNow();
+        }
+
+        if (!result.success)
+            return;
+
+        Close();
+
+        if (pickerPopup != null)
+            pickerPopup.Open(targetSkin, targetSlot, targetOwner);
+        else if (targetOwner != null)
+            targetOwner.ShowStatus("Sticker Picker Popup is not assigned.", true);
     }
 
     private void RequestRemove()
