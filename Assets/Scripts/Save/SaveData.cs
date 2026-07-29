@@ -129,6 +129,11 @@ public class MuseumStateSaveData
     public TrophyRoomSaveData trophyRoom = new TrophyRoomSaveData();
     public AutoAcquisitionStateSaveData automatedAcquisitions =
         new AutoAcquisitionStateSaveData();
+
+    // Applied sticker crafts are keyed by the owning skin's stable inventory
+    // instance ID. Keeping this additive sidecar inside the Museum-era save
+    // state preserves existing SaveData 2.0 compatibility.
+    public StickerSystemSaveData stickerSystem = new StickerSystemSaveData();
 }
 
 [Serializable]
