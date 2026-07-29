@@ -14,6 +14,8 @@ public class AutomatedAcquisitionsLauncherUI : MonoBehaviour
     [SerializeField] private TMP_Text lockText;
     [SerializeField] private GameObject lockedRoot;
     [SerializeField] private AutomatedAcquisitionsPanelUI panel;
+    [SerializeField]
+    private AutomatedAcquisitionsNavigationUI navigation;
 
     private AutoAcquisitionService service;
 
@@ -105,7 +107,9 @@ public class AutomatedAcquisitionsLauncherUI : MonoBehaviour
             return;
         }
 
-        if (panel != null)
+        if (navigation != null)
+            navigation.OpenLanding(panel);
+        else if (panel != null)
             panel.Open();
     }
 
