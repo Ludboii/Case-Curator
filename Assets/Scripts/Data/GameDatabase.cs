@@ -9,6 +9,7 @@ public class GameDatabase : ScriptableObject
 {
     [Header("Core Content")]
     public List<SkinData> allSkins = new List<SkinData>();
+    public List<StickerData> allStickers = new List<StickerData>();
     public List<CaseData> allCases = new List<CaseData>();
     public List<CollectionData> allCollections = new List<CollectionData>();
 
@@ -27,6 +28,9 @@ public class GameDatabase : ScriptableObject
 
     public SkinData GetSkinByApiId(string apiId)
     {
+        if (string.IsNullOrWhiteSpace(apiId))
+            return null;
+
         foreach (SkinData skin in allSkins)
         {
             if (skin != null && skin.apiId == apiId)
@@ -34,6 +38,28 @@ public class GameDatabase : ScriptableObject
         }
 
         return null;
+    }
+
+    public StickerData GetStickerByApiId(string apiId)
+    {
+        if (string.IsNullOrWhiteSpace(apiId))
+            return null;
+
+        if (allStickers != null)
+        {
+            for (int i = 0; i < allStickers.Count; i++)
+            {
+                StickerData sticker = allStickers[i];
+
+                if (sticker != null &&
+                    string.Equals(sticker.apiId, apiId, StringComparison.Ordinal))
+                {
+                    return sticker;
+                }
+            }
+        }
+
+        return GetSkinByApiId(apiId) as StickerData;
     }
 
     public CaseData GetCaseByApiId(string apiId)
@@ -93,12 +119,14 @@ public class GameDatabase : ScriptableObject
     private void OnEnable()
     {
         EnsureCollections();
+        NormalizeStickerRegistration();
         NormalizeCompatibilityRarities();
     }
 
     private void OnValidate()
     {
         EnsureCollections();
+        NormalizeStickerRegistration();
         NormalizeCompatibilityRarities();
     }
 
@@ -106,6 +134,9 @@ public class GameDatabase : ScriptableObject
     {
         if (allSkins == null)
             allSkins = new List<SkinData>();
+
+        if (allStickers == null)
+            allStickers = new List<StickerData>();
 
         if (allCases == null)
             allCases = new List<CaseData>();
@@ -115,6 +146,34 @@ public class GameDatabase : ScriptableObject
 
         if (museumMilestones == null)
             museumMilestones = new List<MuseumMilestoneData>();
+    }
+
+    private void NormalizeStickerRegistration()
+    {
+        if (allSkins == null || allStickers == null)
+            return;
+
+        for (int i = allSkins.Count - 1; i >= 0; i--)
+        {
+            StickerData sticker = allSkins[i] as StickerData;
+
+            if (sticker != null && !allStickers.Contains(sticker))
+                allStickers.Add(sticker);
+        }
+
+        for (int i = allStickers.Count - 1; i >= 0; i--)
+        {
+            StickerData sticker = allStickers[i];
+
+            if (sticker == null)
+            {
+                allStickers.RemoveAt(i);
+                continue;
+            }
+
+            if (!allSkins.Contains(sticker))
+                allSkins.Add(sticker);
+        }
     }
 
     /// <summary>
@@ -133,6 +192,7 @@ public class GameDatabase : ScriptableObject
             SkinData skin = allSkins[i];
 
             if (skin == null ||
+                skin is StickerData ||
                 skin.rarity != Rarity.RareSpecial ||
                 !string.Equals(
                     skin.weaponName,
