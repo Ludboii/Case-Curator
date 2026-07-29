@@ -123,9 +123,6 @@ public sealed class InventoryItemTypeFilterUI : MonoBehaviour
                                (currentFilter == InventoryItemTypeFilter.StickersOnly &&
                                 isSticker));
 
-            // InventoryUI still owns active/inactive pooling. This companion only
-            // changes CanvasGroup/LayoutElement on cards that are active in that
-            // pool, avoiding accidental reactivation of stale pooled cards.
             if (!card.gameObject.activeSelf)
             {
                 RestoreState(state);
@@ -140,13 +137,18 @@ public sealed class InventoryItemTypeFilterUI : MonoBehaviour
 
         if (filterStatusText != null)
         {
-            filterStatusText.text = currentFilter switch
+            switch (currentFilter)
             {
-                InventoryItemTypeFilter.SkinsOnly => $"SKINS ONLY • {visible:N0}",
-                InventoryItemTypeFilter.StickersOnly =>
-                    $"STICKERS ONLY • {visible:N0}",
-                _ => $"ALL ITEMS • {visible:N0}"
-            };
+                case InventoryItemTypeFilter.SkinsOnly:
+                    filterStatusText.text = $"SKINS ONLY • {visible:N0}";
+                    break;
+                case InventoryItemTypeFilter.StickersOnly:
+                    filterStatusText.text = $"STICKERS ONLY • {visible:N0}";
+                    break;
+                default:
+                    filterStatusText.text = $"ALL ITEMS • {visible:N0}";
+                    break;
+            }
         }
     }
 
