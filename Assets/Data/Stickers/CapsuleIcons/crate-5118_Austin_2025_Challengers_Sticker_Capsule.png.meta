@@ -1,0 +1,390 @@
+fileFormatVersion: 2
+guid: 7ebe06e3b9ae2c94baac35b3a3e8ea3e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -469432811490657427
+    second: crate-5118_Austin_2025_Challengers_Sticker_Capsule_0
+  - first:
+      213: -4276907022319418224
+    second: crate-5118_Austin_2025_Challengers_Sticker_Capsule_1
+  - first:
+      213: 2800326104054559814
+    second: crate-5118_Austin_2025_Challengers_Sticker_Capsule_2
+  - first:
+      213: 6386977200973165419
+    second: crate-5118_Austin_2025_Challengers_Sticker_Capsule_3
+  - first:
+      213: -3983388892209200504
+    second: crate-5118_Austin_2025_Challengers_Sticker_Capsule_4
+  - first:
+      213: 481419225447832059
+    second: crate-5118_Austin_2025_Challengers_Sticker_Capsule_5
+  - first:
+      213: -9044965853551544182
+    second: crate-5118_Austin_2025_Challengers_Sticker_Capsule_6
+  - first:
+      213: -5076685202632378359
+    second: crate-5118_Austin_2025_Challengers_Sticker_Capsule_7
+  - first:
+      213: -4520156123587200124
+    second: crate-5118_Austin_2025_Challengers_Sticker_Capsule_8
+  - first:
+      213: 1699420125490978690
+    second: crate-5118_Austin_2025_Challengers_Sticker_Capsule_9
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: crate-5118_Austin_2025_Challengers_Sticker_Capsule_0
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 572
+        width: 140
+        height: 180
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6bbf29585d3c79f0800000000000000
+      internalID: -469432811490657427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-5118_Austin_2025_Challengers_Sticker_Capsule_1
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 0
+        width: 598
+        height: 730
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 094074529bf55a4c0800000000000000
+      internalID: -4276907022319418224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-5118_Austin_2025_Challengers_Sticker_Capsule_2
+      rect:
+        serializedVersion: 2
+        x: 796
+        y: 597
+        width: 199
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 644fc6f31c1ccd620800000000000000
+      internalID: 2800326104054559814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-5118_Austin_2025_Challengers_Sticker_Capsule_3
+      rect:
+        serializedVersion: 2
+        x: 805
+        y: 690
+        width: 194
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b633684bce913a850800000000000000
+      internalID: 6386977200973165419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-5118_Austin_2025_Challengers_Sticker_Capsule_4
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 381
+        width: 182
+        height: 176
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88242ad48e828b8c0800000000000000
+      internalID: -3983388892209200504
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-5118_Austin_2025_Challengers_Sticker_Capsule_5
+      rect:
+        serializedVersion: 2
+        x: 806
+        y: 454
+        width: 199
+        height: 88
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf99cd02c385ea600800000000000000
+      internalID: 481419225447832059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-5118_Austin_2025_Challengers_Sticker_Capsule_6
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 216
+        width: 194
+        height: 135
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a88b58d7a73d97280800000000000000
+      internalID: -9044965853551544182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-5118_Austin_2025_Challengers_Sticker_Capsule_7
+      rect:
+        serializedVersion: 2
+        x: 833
+        y: 212
+        width: 146
+        height: 170
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9087d94a4bdfb89b0800000000000000
+      internalID: -5076685202632378359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-5118_Austin_2025_Challengers_Sticker_Capsule_8
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 12
+        width: 177
+        height: 175
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 48b374454fd2541c0800000000000000
+      internalID: -4520156123587200124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-5118_Austin_2025_Challengers_Sticker_Capsule_9
+      rect:
+        serializedVersion: 2
+        x: 826
+        y: 21
+        width: 158
+        height: 155
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28f1a08a99d859710800000000000000
+      internalID: 1699420125490978690
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      crate-5118_Austin_2025_Challengers_Sticker_Capsule_0: -469432811490657427
+      crate-5118_Austin_2025_Challengers_Sticker_Capsule_1: -4276907022319418224
+      crate-5118_Austin_2025_Challengers_Sticker_Capsule_2: 2800326104054559814
+      crate-5118_Austin_2025_Challengers_Sticker_Capsule_3: 6386977200973165419
+      crate-5118_Austin_2025_Challengers_Sticker_Capsule_4: -3983388892209200504
+      crate-5118_Austin_2025_Challengers_Sticker_Capsule_5: 481419225447832059
+      crate-5118_Austin_2025_Challengers_Sticker_Capsule_6: -9044965853551544182
+      crate-5118_Austin_2025_Challengers_Sticker_Capsule_7: -5076685202632378359
+      crate-5118_Austin_2025_Challengers_Sticker_Capsule_8: -4520156123587200124
+      crate-5118_Austin_2025_Challengers_Sticker_Capsule_9: 1699420125490978690
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab39685a76af67043a92c75a4b99c2a7, type: 3}
+  m_Name: sticker-8942_FL1T_Gold_Austin_2025
+  m_EditorClassIdentifier: Assembly-CSharp::StickerData
+  skinName: FL1T (Gold) | Austin 2025
+  weaponName: Sticker
+  collection: 
+  apiId: sticker-8942
+  paintIndex: 
+  collectionData: {fileID: 0}
+  rarity: 5
+  minFloat: 0
+  maxFloat: 0
+  icon: {fileID: 21300000, guid: b2b8f9f576cba4d499189fd6a966b2c5, type: 3}
+  canBeStatTrak: 0
+  canBeSouvenir: 0
+  patternType: 0
+  fadeBonusCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 80
+      value: 1.1
+      inSlope: 0
+      outSlope: 0.025
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 100
+      value: 1.6
+      inSlope: 0.025
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  patternTierGroups: []
+  uniquePatterns: []
+  fadeRangeStart: 0
+  fadeRangeEnd: 100
+  reverseFadePattern: 0
+  fadeOverrides: []
+  exteriorPrices:
+    factoryNew: 0
+    minimalWear: 0
+    fieldTested: 0
+    wellWorn: 0
+    battleScarred: 0
+  statTrakExteriorPrices:
+    factoryNew: 0
+    minimalWear: 0
+    fieldTested: 0
+    wellWorn: 0
+    battleScarred: 0
+  souvenirExteriorPrices:
+    factoryNew: 0
+    minimalWear: 0
+    fieldTested: 0
+    wellWorn: 0
+    battleScarred: 0
+  isVanilla: 1
+  vanillaPrice: 0
+  vanillaStatTrakPrice: 0
+  displayName: FL1T (Gold) | Austin 2025
+  stickerRarity: 3
+  marketValue: 0
+  capsules: []
+  tournamentEvent: BLAST.tv Austin 2025
+  teamName: Virtus.Pro
+  playerName: FL1T
+  year: 2025
+  effect: Gold
+  marketHashName: Sticker | FL1T (Gold) | Austin 2025
+  sourceImageUrl: https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJai0ki7VeTHjMu0JinHtwM6547z1V_rEAnOmZns-WwDv6v_aac0c_aWXGPFmOx1trRsSnGxlxtw5GTUyt-oJH2WOgQlW8B0W6dU5crJ8pjP

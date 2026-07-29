@@ -1,0 +1,624 @@
+fileFormatVersion: 2
+guid: a0a21530a8314854f83952e5c4a1288f
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8231383438869177009
+    second: sticker-9421_Leagues_of_Votann_1_0
+  - first:
+      213: 2470026038833865301
+    second: sticker-9421_Leagues_of_Votann_1_1
+  - first:
+      213: -4567875387478786761
+    second: sticker-9421_Leagues_of_Votann_1_2
+  - first:
+      213: 6305978066378188842
+    second: sticker-9421_Leagues_of_Votann_1_3
+  - first:
+      213: -8100808228346745007
+    second: sticker-9421_Leagues_of_Votann_1_4
+  - first:
+      213: 5444815202095389673
+    second: sticker-9421_Leagues_of_Votann_1_5
+  - first:
+      213: -1171546619476455893
+    second: sticker-9421_Leagues_of_Votann_1_6
+  - first:
+      213: 8394531894128620217
+    second: sticker-9421_Leagues_of_Votann_1_7
+  - first:
+      213: 8079481874758052994
+    second: sticker-9421_Leagues_of_Votann_1_8
+  - first:
+      213: 5563895403995158479
+    second: sticker-9421_Leagues_of_Votann_1_9
+  - first:
+      213: -5362289008770212413
+    second: sticker-9421_Leagues_of_Votann_1_10
+  - first:
+      213: 8552082001129080384
+    second: sticker-9421_Leagues_of_Votann_1_11
+  - first:
+      213: -328423389065780887
+    second: sticker-9421_Leagues_of_Votann_1_12
+  - first:
+      213: 3764084702356845211
+    second: sticker-9421_Leagues_of_Votann_1_13
+  - first:
+      213: 6795155399291214557
+    second: sticker-9421_Leagues_of_Votann_1_14
+  - first:
+      213: -8339581476425670115
+    second: sticker-9421_Leagues_of_Votann_1_15
+  - first:
+      213: -4385935458536271640
+    second: sticker-9421_Leagues_of_Votann_1_16
+  - first:
+      213: 6401732002291031503
+    second: sticker-9421_Leagues_of_Votann_1_17
+  - first:
+      213: 5449188315741810869
+    second: sticker-9421_Leagues_of_Votann_1_18
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_0
+      rect:
+        serializedVersion: 2
+        x: 156
+        y: 287
+        width: 29
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b2a4db30afbb3270800000000000000
+      internalID: 8231383438869177009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_1
+      rect:
+        serializedVersion: 2
+        x: 156
+        y: 244
+        width: 79
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55268a6789b474220800000000000000
+      internalID: 2470026038833865301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_2
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 273
+        width: 64
+        height: 104
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73db3176985ab90c0800000000000000
+      internalID: -4567875387478786761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_3
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 273
+        width: 63
+        height: 104
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2860ef04a5538750800000000000000
+      internalID: 6305978066378188842
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_4
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 244
+        width: 79
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15fa4d316d5249f80800000000000000
+      internalID: -8100808228346745007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_5
+      rect:
+        serializedVersion: 2
+        x: 327
+        y: 287
+        width: 30
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ebda84149edf8b40800000000000000
+      internalID: 5444815202095389673
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_6
+      rect:
+        serializedVersion: 2
+        x: 174
+        y: 217
+        width: 59
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2ecb448e84ddbfe0800000000000000
+      internalID: -1171546619476455893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_7
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 249
+        width: 35
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b23935184e5f7470800000000000000
+      internalID: 8394531894128620217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_8
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 217
+        width: 59
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28c292a45f5102070800000000000000
+      internalID: 8079481874758052994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_9
+      rect:
+        serializedVersion: 2
+        x: 156
+        y: 172
+        width: 79
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc75f82246de63d40800000000000000
+      internalID: 5563895403995158479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_10
+      rect:
+        serializedVersion: 2
+        x: 156
+        y: 72
+        width: 29
+        height: 118
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3cd1541ae825595b0800000000000000
+      internalID: -5362289008770212413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_11
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 40
+        width: 64
+        height: 148
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0468f47e4491fa670800000000000000
+      internalID: 8552082001129080384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_12
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 180
+        width: 35
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 961edceeaa4317bf0800000000000000
+      internalID: -328423389065780887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_13
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 40
+        width: 63
+        height: 149
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9236740817bc3430800000000000000
+      internalID: 3764084702356845211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_14
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 171
+        width: 79
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dda945855dd3d4e50800000000000000
+      internalID: 6795155399291214557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_15
+      rect:
+        serializedVersion: 2
+        x: 327
+        y: 72
+        width: 30
+        height: 118
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d12683a05dad34c80800000000000000
+      internalID: -8339581476425670115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_16
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 106
+        width: 64
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e0d72a20f60223c0800000000000000
+      internalID: -4385935458536271640
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_17
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 8
+        width: 30
+        height: 104
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fcd9ec7965587d850800000000000000
+      internalID: 6401732002291031503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-9421_Leagues_of_Votann_1_18
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 8
+        width: 30
+        height: 104
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b0fff1f6e76f9b40800000000000000
+      internalID: 5449188315741810869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      sticker-9421_Leagues_of_Votann_1_0: 8231383438869177009
+      sticker-9421_Leagues_of_Votann_1_1: 2470026038833865301
+      sticker-9421_Leagues_of_Votann_1_10: -5362289008770212413
+      sticker-9421_Leagues_of_Votann_1_11: 8552082001129080384
+      sticker-9421_Leagues_of_Votann_1_12: -328423389065780887
+      sticker-9421_Leagues_of_Votann_1_13: 3764084702356845211
+      sticker-9421_Leagues_of_Votann_1_14: 6795155399291214557
+      sticker-9421_Leagues_of_Votann_1_15: -8339581476425670115
+      sticker-9421_Leagues_of_Votann_1_16: -4385935458536271640
+      sticker-9421_Leagues_of_Votann_1_17: 6401732002291031503
+      sticker-9421_Leagues_of_Votann_1_18: 5449188315741810869
+      sticker-9421_Leagues_of_Votann_1_2: -4567875387478786761
+      sticker-9421_Leagues_of_Votann_1_3: 6305978066378188842
+      sticker-9421_Leagues_of_Votann_1_4: -8100808228346745007
+      sticker-9421_Leagues_of_Votann_1_5: 5444815202095389673
+      sticker-9421_Leagues_of_Votann_1_6: -1171546619476455893
+      sticker-9421_Leagues_of_Votann_1_7: 8394531894128620217
+      sticker-9421_Leagues_of_Votann_1_8: 8079481874758052994
+      sticker-9421_Leagues_of_Votann_1_9: 5563895403995158479
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

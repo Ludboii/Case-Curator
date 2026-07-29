@@ -1,0 +1,364 @@
+fileFormatVersion: 2
+guid: f810254e0113fbd4c9a59621d9673cf9
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8874503069289138212
+    second: crate-4654_Berlin_2019_Legends_Holo_Foil_0
+  - first:
+      213: -6875916587437233343
+    second: crate-4654_Berlin_2019_Legends_Holo_Foil_1
+  - first:
+      213: -7435697554104719486
+    second: crate-4654_Berlin_2019_Legends_Holo_Foil_2
+  - first:
+      213: -8907771883742693566
+    second: crate-4654_Berlin_2019_Legends_Holo_Foil_3
+  - first:
+      213: 1916583250614313836
+    second: crate-4654_Berlin_2019_Legends_Holo_Foil_4
+  - first:
+      213: 8292894777413587144
+    second: crate-4654_Berlin_2019_Legends_Holo_Foil_5
+  - first:
+      213: -1129536840646265500
+    second: crate-4654_Berlin_2019_Legends_Holo_Foil_6
+  - first:
+      213: 5002291229789375530
+    second: crate-4654_Berlin_2019_Legends_Holo_Foil_7
+  - first:
+      213: -3177662203231339797
+    second: crate-4654_Berlin_2019_Legends_Holo_Foil_8
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: crate-4654_Berlin_2019_Legends_Holo_Foil_0
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 556
+        width: 165
+        height: 196
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd738e44a7e67d480800000000000000
+      internalID: -8874503069289138212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4654_Berlin_2019_Legends_Holo_Foil_1
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 21
+        width: 598
+        height: 722
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14b669c3b46d390a0800000000000000
+      internalID: -6875916587437233343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4654_Berlin_2019_Legends_Holo_Foil_2
+      rect:
+        serializedVersion: 2
+        x: 803
+        y: 645
+        width: 219
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 287e85678781fc890800000000000000
+      internalID: -7435697554104719486
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4654_Berlin_2019_Legends_Holo_Foil_3
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 358
+        width: 197
+        height: 197
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 247fd49caac316480800000000000000
+      internalID: -8907771883742693566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4654_Berlin_2019_Legends_Holo_Foil_4
+      rect:
+        serializedVersion: 2
+        x: 804
+        y: 442
+        width: 218
+        height: 193
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c63645bdf42199a10800000000000000
+      internalID: 1916583250614313836
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4654_Berlin_2019_Legends_Holo_Foil_5
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 208
+        width: 222
+        height: 150
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c0dd67ccd7461370800000000000000
+      internalID: 8292894777413587144
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4654_Berlin_2019_Legends_Holo_Foil_6
+      rect:
+        serializedVersion: 2
+        x: 819
+        y: 234
+        width: 187
+        height: 197
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 465ff8c5a341350f0800000000000000
+      internalID: -1129536840646265500
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4654_Berlin_2019_Legends_Holo_Foil_7
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 18
+        width: 169
+        height: 185
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2cc5a6ce55bb6540800000000000000
+      internalID: 5002291229789375530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4654_Berlin_2019_Legends_Holo_Foil_8
+      rect:
+        serializedVersion: 2
+        x: 816
+        y: 26
+        width: 193
+        height: 197
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: beaf538ef0da6e3d0800000000000000
+      internalID: -3177662203231339797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      crate-4654_Berlin_2019_Legends_Holo_Foil_0: -8874503069289138212
+      crate-4654_Berlin_2019_Legends_Holo_Foil_1: -6875916587437233343
+      crate-4654_Berlin_2019_Legends_Holo_Foil_2: -7435697554104719486
+      crate-4654_Berlin_2019_Legends_Holo_Foil_3: -8907771883742693566
+      crate-4654_Berlin_2019_Legends_Holo_Foil_4: 1916583250614313836
+      crate-4654_Berlin_2019_Legends_Holo_Foil_5: 8292894777413587144
+      crate-4654_Berlin_2019_Legends_Holo_Foil_6: -1129536840646265500
+      crate-4654_Berlin_2019_Legends_Holo_Foil_7: 5002291229789375530
+      crate-4654_Berlin_2019_Legends_Holo_Foil_8: -3177662203231339797
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

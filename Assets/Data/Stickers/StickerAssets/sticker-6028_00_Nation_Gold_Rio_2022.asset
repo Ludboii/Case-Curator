@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab39685a76af67043a92c75a4b99c2a7, type: 3}
+  m_Name: sticker-6028_00_Nation_Gold_Rio_2022
+  m_EditorClassIdentifier: Assembly-CSharp::StickerData
+  skinName: 00 Nation (Gold) | Rio 2022
+  weaponName: Sticker
+  collection: 
+  apiId: sticker-6028
+  paintIndex: 
+  collectionData: {fileID: 0}
+  rarity: 5
+  minFloat: 0
+  maxFloat: 0
+  icon: {fileID: 21300000, guid: 50098470169fa284e8bf3a570088d873, type: 3}
+  canBeStatTrak: 0
+  canBeSouvenir: 0
+  patternType: 0
+  fadeBonusCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 80
+      value: 1.1
+      inSlope: 0
+      outSlope: 0.025
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 100
+      value: 1.6
+      inSlope: 0.025
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  patternTierGroups: []
+  uniquePatterns: []
+  fadeRangeStart: 0
+  fadeRangeEnd: 100
+  reverseFadePattern: 0
+  fadeOverrides: []
+  exteriorPrices:
+    factoryNew: 0
+    minimalWear: 0
+    fieldTested: 0
+    wellWorn: 0
+    battleScarred: 0
+  statTrakExteriorPrices:
+    factoryNew: 0
+    minimalWear: 0
+    fieldTested: 0
+    wellWorn: 0
+    battleScarred: 0
+  souvenirExteriorPrices:
+    factoryNew: 0
+    minimalWear: 0
+    fieldTested: 0
+    wellWorn: 0
+    battleScarred: 0
+  isVanilla: 1
+  vanillaPrice: 0
+  vanillaStatTrakPrice: 0
+  displayName: 00 Nation (Gold) | Rio 2022
+  stickerRarity: 3
+  marketValue: 0
+  capsules:
+  - {fileID: 11400000, guid: fcfdc6173ca39ff4498c79c5cf23d9e9, type: 2}
+  tournamentEvent: IEM Rio 2022
+  teamName: 00 Nation
+  playerName: 
+  year: 2022
+  effect: Gold
+  marketHashName: Sticker | 00 Nation (Gold) | Rio 2022
+  sourceImageUrl: https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJai0ki7VeTHjNioOinHtwQ67p361V7oTRm_ypfjpCAO66X6bfw0cvPHXz6Sx74i4rk5SnvjlEgi52uBzon4eXvDbxhgVMVe5lVtEw

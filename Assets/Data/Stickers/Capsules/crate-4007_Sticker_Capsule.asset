@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-4007_Sticker_Capsule
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-4007
+  caseName: Sticker Capsule
+  icon: {fileID: 21300000, guid: 3d19890f72d72804a970fb9453388a94, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 2
+    chance: 80
+  - rarity: 3
+    chance: 16
+  - rarity: 4
+    chance: 4
+  stickerRarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 4
+  dropPool:
+  - skin: {fileID: 11400000, guid: 886f774f696568b49b0c37406c6b39f5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6c825b2850c43894b8388332945ce9a2, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7a1bc59691f4e2a4bab2f0f8c7aa3ba1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: be23a286c34dbcd45b0d9e72685a7564, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 13ff2b10e7c3e4744a280db8fdfb7318, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b2524e667c957904d8cdb8507648af12, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c64dd0fece6ebd946aa0bac9f51f4ed5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 212fe021ac093a844b7ecb7ef0158040, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: afbc29088367b3a46bd681eca12e1868, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b563ddba308e9f44c94be4e599eb6251, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bd0554816933868438ba5e9ee6c169ac, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 61f4266e86ab38545bfd5afb723f4e7d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 45131df7bafd703468a1f31313016a0e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fe2fa15ffbe575841b4e875e196da724, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c2a77a54a31055144aaa55c9261b86e1, type: 2}
+    weight: 1

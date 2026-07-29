@@ -1,0 +1,120 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-5117_Austin_2025_Legends_Sticker_Capsule
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-5117
+  caseName: Austin 2025 Legends Sticker Capsule
+  icon: {fileID: 21300000, guid: d05f6c2374071af43a6266f697fb7930, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 2
+    chance: 80
+  - rarity: 3
+    chance: 16
+  - rarity: 4
+    chance: 3.2
+  - rarity: 5
+    chance: 0.8
+  stickerRarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.8
+  dropPool:
+  - skin: {fileID: 11400000, guid: b6b118af9b17e5f45b96f729fdecdbe8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 94ed2f298cff5644fa6c836bbee40fbc, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7ae7177466474ab42b6c330112a953b6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 249513fbd1afec648a650f0b0f74d0ce, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 105de4c2d34658240b006601f7a2709a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4dbbe73a091ef7a46950cf197de1e14b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 23a2e027ef29ce840a8f5a6f52178b0a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 345cc6162ef35904999776c9906eede9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f276706f6859d9d48912b638f42c4c51, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: dc84e726ae826cd498bb97000961f0c7, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7a05f66191ae84449810411b92777efe, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4db1af46bc90cad4181bac46ac25e50b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 53bd42bfdc0a32b4ab88e800313c7ef2, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4c710d6594bf3ec4b8d5ef75bffe2041, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 625e77a6989a8b945b9ae0bb02847844, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 614c218589215484fba2b1182ac1a862, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ed7f09985bd67574082029c13a65b96e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2400d5bf75c405f4f974878d186966f3, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d3fc6cb8c6a125045b67adf3bcf0274f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7c94dec43fd5acb4bb1040055dc162be, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ab49d4a676df9a34da2a20e0f0d8b32c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 720ca88209aa3a240b3746d4b99d3090, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f428cc6c1995e0f41b36495ef7ca1a36, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: aca1e3eb8c3296a4880bd20885d5d4f4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 35679bcfb9670f04d8ecbdc5c04da453, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 83592c808065e0b4eacdb558b3f9b407, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d39416802d8661d48a60d951ddc106a8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8071947a8b6f6ca4fba9956c6d1a43de, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a461f5d2fd66c0d4e92850e9fc16dd82, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 26dcd9086540beb4dbfdbc3342d3de40, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 487b1fa2d3b1ecf4bab0f28a13bc03ce, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: befa132a3c1e0b9489a7dd6d8130a13f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 034d3d9e91b8a464b953b01b70f289e8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 23a466d434bd3044f81e93ad8851b44c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ff980e4f8a23f3a49b3a91a4a2f82586, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7457c58e7898c524889fda1b59f72f17, type: 2}
+    weight: 1

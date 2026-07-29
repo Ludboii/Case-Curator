@@ -1,0 +1,416 @@
+fileFormatVersion: 2
+guid: 8673a65d9f80c6946b762ba72f2fd075
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7211663809900352931
+    second: crate-4391_Krakow_2017_Legends_Holo_Foil_0
+  - first:
+      213: 7184973270702679236
+    second: crate-4391_Krakow_2017_Legends_Holo_Foil_1
+  - first:
+      213: 7858741579655338479
+    second: crate-4391_Krakow_2017_Legends_Holo_Foil_2
+  - first:
+      213: 1019786678954174291
+    second: crate-4391_Krakow_2017_Legends_Holo_Foil_3
+  - first:
+      213: -3858593343739226519
+    second: crate-4391_Krakow_2017_Legends_Holo_Foil_4
+  - first:
+      213: -6015952767804478372
+    second: crate-4391_Krakow_2017_Legends_Holo_Foil_5
+  - first:
+      213: 5294174644038484641
+    second: crate-4391_Krakow_2017_Legends_Holo_Foil_6
+  - first:
+      213: 4465653979553726151
+    second: crate-4391_Krakow_2017_Legends_Holo_Foil_7
+  - first:
+      213: 8876166403350351943
+    second: crate-4391_Krakow_2017_Legends_Holo_Foil_8
+  - first:
+      213: -8243915886427374212
+    second: crate-4391_Krakow_2017_Legends_Holo_Foil_9
+  - first:
+      213: 5043020543667046955
+    second: crate-4391_Krakow_2017_Legends_Holo_Foil_10
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: crate-4391_Krakow_2017_Legends_Holo_Foil_0
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 146
+        width: 36
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5a695359f50beb90800000000000000
+      internalID: -7211663809900352931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4391_Krakow_2017_Legends_Holo_Foil_1
+      rect:
+        serializedVersion: 2
+        x: 57
+        y: 0
+        width: 140
+        height: 186
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c4e8e04f1726b360800000000000000
+      internalID: 7184973270702679236
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4391_Krakow_2017_Legends_Holo_Foil_2
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 148
+        width: 43
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe9d2fc44dbdf0d60800000000000000
+      internalID: 7858741579655338479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4391_Krakow_2017_Legends_Holo_Foil_3
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 97
+        width: 41
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3572db9d492072e00800000000000000
+      internalID: 1019786678954174291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4391_Krakow_2017_Legends_Holo_Foil_4
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 102
+        width: 40
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9669cbd2cc5837ac0800000000000000
+      internalID: -3858593343739226519
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4391_Krakow_2017_Legends_Holo_Foil_5
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 53
+        width: 45
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5c6c71e4da038ca0800000000000000
+      internalID: -6015952767804478372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4391_Krakow_2017_Legends_Holo_Foil_6
+      rect:
+        serializedVersion: 2
+        x: 206
+        y: 53
+        width: 38
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a24bccf9cfa87940800000000000000
+      internalID: 5294174644038484641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4391_Krakow_2017_Legends_Holo_Foil_7
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 21
+        width: 35
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7cefb1562a039fd30800000000000000
+      internalID: 4465653979553726151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4391_Krakow_2017_Legends_Holo_Foil_8
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 5
+        width: 35
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74054fed05a7e2b70800000000000000
+      internalID: 8876166403350351943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4391_Krakow_2017_Legends_Holo_Foil_9
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 13
+        width: 21
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7dfb4fed2ab79d80800000000000000
+      internalID: -8243915886427374212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4391_Krakow_2017_Legends_Holo_Foil_10
+      rect:
+        serializedVersion: 2
+        x: 202
+        y: 12
+        width: 45
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2a854427786cf540800000000000000
+      internalID: 5043020543667046955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      crate-4391_Krakow_2017_Legends_Holo_Foil_0: -7211663809900352931
+      crate-4391_Krakow_2017_Legends_Holo_Foil_1: 7184973270702679236
+      crate-4391_Krakow_2017_Legends_Holo_Foil_10: 5043020543667046955
+      crate-4391_Krakow_2017_Legends_Holo_Foil_2: 7858741579655338479
+      crate-4391_Krakow_2017_Legends_Holo_Foil_3: 1019786678954174291
+      crate-4391_Krakow_2017_Legends_Holo_Foil_4: -3858593343739226519
+      crate-4391_Krakow_2017_Legends_Holo_Foil_5: -6015952767804478372
+      crate-4391_Krakow_2017_Legends_Holo_Foil_6: 5294174644038484641
+      crate-4391_Krakow_2017_Legends_Holo_Foil_7: 4465653979553726151
+      crate-4391_Krakow_2017_Legends_Holo_Foil_8: 8876166403350351943
+      crate-4391_Krakow_2017_Legends_Holo_Foil_9: -8243915886427374212
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

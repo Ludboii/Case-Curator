@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-7011_Warhammer_40_000_Traitor_Astartes_Sticker_Capsule
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-7011
+  caseName: Warhammer 40,000 Traitor Astartes Sticker Capsule
+  icon: {fileID: 21300000, guid: cd863c286194fd540a1b0d86a0bf6ae5, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 2
+    chance: 100
+  stickerRarityChances:
+  - rarity: 0
+    chance: 100
+  dropPool:
+  - skin: {fileID: 11400000, guid: 29d3fccfc16d20a46b52c5a1efa6a65b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f6a3a166e08af9e429fa160f92ac15cf, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 729a9732f7d637d4c9ab1653fd257634, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6eaec30c711fa1147b33b67bc6a63f3a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fc92e75259e9cd74484980a351f49d70, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 54c7ea8e221d9c54f9ec1d1964fe1549, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b30a22c5eabc38b479c70141d6aa678f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 2f1f14fe520f55646a471754915b3d16, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f46262ba0d9a46848a64566096783618, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a7c1757d5d27f1c47b25770a763fba96, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e3af176f66708304d865277a6061936e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 354f744f84fab7e4886e7ec1e0dc708d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: be37c4d9dd8032d42945d4f199b1e7b9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9db598051d814ef478b990a1b2074ce6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7660200bfc79cc34a8c11af29cfb6bbd, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f5bd38de488db8e4ca8008083ea93aff, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f345cb7ad79675948a7bfbf718bba9f3, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 0346888eff129e542904307a41fc7ab4, type: 2}
+    weight: 1

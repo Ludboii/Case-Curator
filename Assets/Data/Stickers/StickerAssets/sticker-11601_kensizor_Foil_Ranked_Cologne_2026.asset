@@ -1,0 +1,90 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab39685a76af67043a92c75a4b99c2a7, type: 3}
+  m_Name: sticker-11601_kensizor_Foil_Ranked_Cologne_2026
+  m_EditorClassIdentifier: Assembly-CSharp::StickerData
+  skinName: kensizor (Foil, Ranked) | Cologne 2026
+  weaponName: Sticker
+  collection: 
+  apiId: sticker-11601
+  paintIndex: 
+  collectionData: {fileID: 0}
+  rarity: 3
+  minFloat: 0
+  maxFloat: 0
+  icon: {fileID: 21300000, guid: 9346450af2a07c242ac8b28ad8b0ebab, type: 3}
+  canBeStatTrak: 0
+  canBeSouvenir: 0
+  patternType: 0
+  fadeBonusCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 80
+      value: 1.1
+      inSlope: 0
+      outSlope: 0.025
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 100
+      value: 1.6
+      inSlope: 0.025
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  patternTierGroups: []
+  uniquePatterns: []
+  fadeRangeStart: 0
+  fadeRangeEnd: 100
+  reverseFadePattern: 0
+  fadeOverrides: []
+  exteriorPrices:
+    factoryNew: 0
+    minimalWear: 0
+    fieldTested: 0
+    wellWorn: 0
+    battleScarred: 0
+  statTrakExteriorPrices:
+    factoryNew: 0
+    minimalWear: 0
+    fieldTested: 0
+    wellWorn: 0
+    battleScarred: 0
+  souvenirExteriorPrices:
+    factoryNew: 0
+    minimalWear: 0
+    fieldTested: 0
+    wellWorn: 0
+    battleScarred: 0
+  isVanilla: 1
+  vanillaPrice: 0
+  vanillaStatTrakPrice: 0
+  displayName: kensizor (Foil, Ranked) | Cologne 2026
+  stickerRarity: 1
+  marketValue: 0
+  capsules:
+  - {fileID: 11400000, guid: 1f29029e4dfc16f4a84cfe852d83b147, type: 2}
+  tournamentEvent: IEM Cologne 2026
+  teamName: B8
+  playerName: kensizor
+  year: 2026
+  effect: Other
+  marketHashName: Sticker | kensizor (Foil, Ranked) | Cologne 2026
+  sourceImageUrl: https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/stickers/cologne2026/sig_kensizor_ranking_foil_png.png

@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-4157_DreamHack_Cluj-Napoca_2015_Challengers_Foil
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-4157
+  caseName: DreamHack Cluj-Napoca 2015 Challengers (Foil)
+  icon: {fileID: 21300000, guid: 64dac90678c3c9b419e75937b47ded75, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 4
+    chance: 100
+  stickerRarityChances:
+  - rarity: 2
+    chance: 100
+  dropPool:
+  - skin: {fileID: 11400000, guid: 8cd4aee9046323b42aede522c2152547, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e5705f491068adf419fa2a876e707822, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 621bfd0da14d3a84d9294f97764ce1e5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d9e747db289448d478a1f8fd54cda354, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5c8bfb39eaf09974d8687d94bf4f24f5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ef6d91a41d6afe54ea32c34bc32dfd16, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f4feebdc615630a4ea8e8a361612de7c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6f10157064a4269449f011daa0e1543c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1446f540114105e4c971d488ad84d368, type: 2}
+    weight: 1

@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-4585_Katowice_2019_Returning_Challengers_Holo_Foil
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-4585
+  caseName: Katowice 2019 Returning Challengers (Holo/Foil)
+  icon: {fileID: 21300000, guid: cf0c0cb6ab1b91849887d963f932ff3a, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 3
+    chance: 80
+  - rarity: 4
+    chance: 20
+  stickerRarityChances:
+  - rarity: 1
+    chance: 80
+  - rarity: 2
+    chance: 20
+  dropPool:
+  - skin: {fileID: 11400000, guid: f40a9efa8b380f74283e3195c3deb537, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5a8f8239c4e022040918e53e15bf1f5d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 991947d0fee585845925ebf389ca0e23, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ef4f963b0264c6c4bb09fd2189a9b034, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3cdf19af628368542abba19beaff39a7, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 97605ef4a92d6524da98852a3056ff88, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9d41661c278b5584d83a7eb5eaab122e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b49b9ff35f495224cbf11ef2576480af, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 64e69f5d082149446b4f3f09f8fe859f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: db9a8856dc94f0646b79eec1873fa790, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 056ec3175f8b1e445bddce15dd4ca0b4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b688a2ae7544a4e459ba15e42c2c68fa, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4eaca788e5c771448890131996539d86, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3c757f98429209d4dbee690007324d24, type: 2}
+    weight: 1

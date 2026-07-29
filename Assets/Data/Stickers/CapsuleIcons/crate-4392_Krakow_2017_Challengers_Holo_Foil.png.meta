@@ -1,0 +1,390 @@
+fileFormatVersion: 2
+guid: c4f04dfe40447ec43a80a0f8bfa38d4f
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5072037598316994117
+    second: crate-4392_Krakow_2017_Challengers_Holo_Foil_0
+  - first:
+      213: -8144448158233058046
+    second: crate-4392_Krakow_2017_Challengers_Holo_Foil_1
+  - first:
+      213: -3952048310537631634
+    second: crate-4392_Krakow_2017_Challengers_Holo_Foil_2
+  - first:
+      213: 2370764223516599723
+    second: crate-4392_Krakow_2017_Challengers_Holo_Foil_3
+  - first:
+      213: 1287239902770781868
+    second: crate-4392_Krakow_2017_Challengers_Holo_Foil_4
+  - first:
+      213: 7958742019997499700
+    second: crate-4392_Krakow_2017_Challengers_Holo_Foil_5
+  - first:
+      213: 2214524531717350884
+    second: crate-4392_Krakow_2017_Challengers_Holo_Foil_6
+  - first:
+      213: 2030445702058897728
+    second: crate-4392_Krakow_2017_Challengers_Holo_Foil_7
+  - first:
+      213: -962723451097388187
+    second: crate-4392_Krakow_2017_Challengers_Holo_Foil_8
+  - first:
+      213: -3021605938694235081
+    second: crate-4392_Krakow_2017_Challengers_Holo_Foil_9
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: crate-4392_Krakow_2017_Challengers_Holo_Foil_0
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 160
+        width: 46
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb1e3e85da08c99b0800000000000000
+      internalID: -5072037598316994117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4392_Krakow_2017_Challengers_Holo_Foil_1
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 153
+        width: 46
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2052fec1d8b19fe80800000000000000
+      internalID: -8144448158233058046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4392_Krakow_2017_Challengers_Holo_Foil_2
+      rect:
+        serializedVersion: 2
+        x: 57
+        y: 0
+        width: 140
+        height: 186
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e68c83b10018729c0800000000000000
+      internalID: -3952048310537631634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4392_Krakow_2017_Challengers_Holo_Foil_3
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 146
+        width: 31
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba569ec1085a6e020800000000000000
+      internalID: 2370764223516599723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4392_Krakow_2017_Challengers_Holo_Foil_4
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 100
+        width: 40
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cae5c591fd13dd110800000000000000
+      internalID: 1287239902770781868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4392_Krakow_2017_Challengers_Holo_Foil_5
+      rect:
+        serializedVersion: 2
+        x: 205
+        y: 103
+        width: 38
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4310de033b1237e60800000000000000
+      internalID: 7958742019997499700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4392_Krakow_2017_Challengers_Holo_Foil_6
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 51
+        width: 34
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e5a66b14529bbe10800000000000000
+      internalID: 2214524531717350884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4392_Krakow_2017_Challengers_Holo_Foil_7
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 54
+        width: 41
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04170f6bb979d2c10800000000000000
+      internalID: 2030445702058897728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4392_Krakow_2017_Challengers_Holo_Foil_8
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 12
+        width: 44
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56be6683f18b3a2f0800000000000000
+      internalID: -962723451097388187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4392_Krakow_2017_Challengers_Holo_Foil_9
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 11
+        width: 34
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73c5bec68691116d0800000000000000
+      internalID: -3021605938694235081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      crate-4392_Krakow_2017_Challengers_Holo_Foil_0: -5072037598316994117
+      crate-4392_Krakow_2017_Challengers_Holo_Foil_1: -8144448158233058046
+      crate-4392_Krakow_2017_Challengers_Holo_Foil_2: -3952048310537631634
+      crate-4392_Krakow_2017_Challengers_Holo_Foil_3: 2370764223516599723
+      crate-4392_Krakow_2017_Challengers_Holo_Foil_4: 1287239902770781868
+      crate-4392_Krakow_2017_Challengers_Holo_Foil_5: 7958742019997499700
+      crate-4392_Krakow_2017_Challengers_Holo_Foil_6: 2214524531717350884
+      crate-4392_Krakow_2017_Challengers_Holo_Foil_7: 2030445702058897728
+      crate-4392_Krakow_2017_Challengers_Holo_Foil_8: -962723451097388187
+      crate-4392_Krakow_2017_Challengers_Holo_Foil_9: -3021605938694235081
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

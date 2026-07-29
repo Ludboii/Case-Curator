@@ -1,0 +1,468 @@
+fileFormatVersion: 2
+guid: a099a13629e814041b505070d6f15be6
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4556979277849689641
+    second: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_0
+  - first:
+      213: 7516560345610218311
+    second: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_1
+  - first:
+      213: 2913233192729539463
+    second: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_2
+  - first:
+      213: -168169395455253818
+    second: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_3
+  - first:
+      213: -5743648224071405192
+    second: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_4
+  - first:
+      213: -2273574255192626639
+    second: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_5
+  - first:
+      213: -996088893893331038
+    second: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_6
+  - first:
+      213: 1859337058465710366
+    second: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_7
+  - first:
+      213: 5911956732868912560
+    second: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_8
+  - first:
+      213: -6204770678851087544
+    second: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_9
+  - first:
+      213: -5960733580880302664
+    second: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_10
+  - first:
+      213: 2779416938121247308
+    second: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_11
+  - first:
+      213: 7520916138837539512
+    second: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_12
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_0
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 606
+        width: 156
+        height: 157
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92efb016284ad3f30800000000000000
+      internalID: 4556979277849689641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_1
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 671
+        width: 41
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74b62e45fcf205860800000000000000
+      internalID: 7516560345610218311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_2
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 17
+        width: 577
+        height: 724
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78375806722ed6820800000000000000
+      internalID: 2913233192729539463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_3
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 595
+        width: 148
+        height: 156
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c22cc963da8aadf0800000000000000
+      internalID: -168169395455253818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_4
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 446
+        width: 152
+        height: 150
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 871bb611f567a40b0800000000000000
+      internalID: -5743648224071405192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_5
+      rect:
+        serializedVersion: 2
+        x: 841
+        y: 439
+        width: 130
+        height: 155
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13a25c4c244a270e0800000000000000
+      internalID: -2273574255192626639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_6
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 298
+        width: 144
+        height: 139
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a7b6c2bd6e2d22f0800000000000000
+      internalID: -996088893893331038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_7
+      rect:
+        serializedVersion: 2
+        x: 831
+        y: 285
+        width: 151
+        height: 155
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1181971431bdc910800000000000000
+      internalID: 1859337058465710366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_8
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 139
+        width: 135
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b5612e535d7b0250800000000000000
+      internalID: 5911956732868912560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_9
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 170
+        width: 17
+        height: 121
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 843525e11f934e9a0800000000000000
+      internalID: -6204770678851087544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_10
+      rect:
+        serializedVersion: 2
+        x: 844
+        y: 126
+        width: 127
+        height: 157
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8bd23e6b368374da0800000000000000
+      internalID: -5960733580880302664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_11
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 14
+        width: 172
+        height: 117
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4abb6faaf8729620800000000000000
+      internalID: 2779416938121247308
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_12
+      rect:
+        serializedVersion: 2
+        x: 820
+        y: 14
+        width: 173
+        height: 118
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8baf9e87169af5860800000000000000
+      internalID: 7520916138837539512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_0: 4556979277849689641
+      crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_1: 7516560345610218311
+      crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_10: -5960733580880302664
+      crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_11: 2779416938121247308
+      crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_12: 7520916138837539512
+      crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_2: 2913233192729539463
+      crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_3: -168169395455253818
+      crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_4: -5743648224071405192
+      crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_5: -2273574255192626639
+      crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_6: -996088893893331038
+      crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_7: 1859337058465710366
+      crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_8: 5911956732868912560
+      crate-4586_Katowice_2019_Minor_Challengers_Holo_Foil_9: -6204770678851087544
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-4090_Enfu_Sticker_Capsule
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-4090
+  caseName: Enfu Sticker Capsule
+  icon: {fileID: 21300000, guid: e544692c20eb6e84e8ffef9532b61af6, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 2
+    chance: 80
+  - rarity: 3
+    chance: 16
+  - rarity: 4
+    chance: 4
+  stickerRarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 4
+  dropPool:
+  - skin: {fileID: 11400000, guid: 93e241ce615ec2c449ba3b914ecd215f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d802b356bc7173f4f9da18f0f29d9183, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8af555d9cf58cd44a8890e97f3c1c91c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d0bcc47aef095f64a99e9f5325c01325, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5fd4157e1b86e284c9dc3ace1e6051bd, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 149608faf37be4f4ebb95e2355bdf42b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3ddfea2c2db9fb94999fc5768581d569, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7abb5159204168b498eb1966b0a5efd9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 766e83be178b47349b05f20f1d6b9c7d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bb9cfba023207bb4ba22a804238a7340, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6646d6407798c8f4594e3b6c0dcaafa5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: cdd3cbba06fd1e94cb6686b821b029ef, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5d4bf7a873ce98641b08bb10e9d440e0, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 57a0bbe7bdae0094aae8368b7026c926, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 156878a998ad20a41a6ad22198fe3f83, type: 2}
+    weight: 1

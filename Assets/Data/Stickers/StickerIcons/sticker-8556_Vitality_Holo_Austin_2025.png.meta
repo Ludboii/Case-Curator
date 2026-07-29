@@ -1,0 +1,364 @@
+fileFormatVersion: 2
+guid: dc8592a50f59e1b4ab5abdfc11c22bc6
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6179772723743318796
+    second: sticker-8556_Vitality_Holo_Austin_2025_0
+  - first:
+      213: -6287308212017874617
+    second: sticker-8556_Vitality_Holo_Austin_2025_1
+  - first:
+      213: -4631537169295539166
+    second: sticker-8556_Vitality_Holo_Austin_2025_2
+  - first:
+      213: 1142638264705618810
+    second: sticker-8556_Vitality_Holo_Austin_2025_3
+  - first:
+      213: 8461481231946638857
+    second: sticker-8556_Vitality_Holo_Austin_2025_4
+  - first:
+      213: -8657958128636329724
+    second: sticker-8556_Vitality_Holo_Austin_2025_5
+  - first:
+      213: -4473705729944586234
+    second: sticker-8556_Vitality_Holo_Austin_2025_6
+  - first:
+      213: -1225631492943903628
+    second: sticker-8556_Vitality_Holo_Austin_2025_7
+  - first:
+      213: -9172851135573094860
+    second: sticker-8556_Vitality_Holo_Austin_2025_8
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: sticker-8556_Vitality_Holo_Austin_2025_0
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 162
+        width: 165
+        height: 217
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c036e57ec86f2c550800000000000000
+      internalID: 6179772723743318796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-8556_Vitality_Holo_Austin_2025_1
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 15
+        width: 121
+        height: 179
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74937452e7efeb8a0800000000000000
+      internalID: -6287308212017874617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-8556_Vitality_Holo_Austin_2025_2
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 158
+        width: 45
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2240f14cb7979bfb0800000000000000
+      internalID: -4631537169295539166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-8556_Vitality_Holo_Austin_2025_3
+      rect:
+        serializedVersion: 2
+        x: 174
+        y: 99
+        width: 164
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a731c82a2777bdf00800000000000000
+      internalID: 1142638264705618810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-8556_Vitality_Holo_Austin_2025_4
+      rect:
+        serializedVersion: 2
+        x: 228
+        y: 175
+        width: 56
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90660df79583d6570800000000000000
+      internalID: 8461481231946638857
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-8556_Vitality_Holo_Austin_2025_5
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 162
+        width: 165
+        height: 217
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4010d6e24f0c8d780800000000000000
+      internalID: -8657958128636329724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-8556_Vitality_Holo_Austin_2025_6
+      rect:
+        serializedVersion: 2
+        x: 310
+        y: 15
+        width: 121
+        height: 179
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 608f50167543ae1c0800000000000000
+      internalID: -4473705729944586234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-8556_Vitality_Holo_Austin_2025_7
+      rect:
+        serializedVersion: 2
+        x: 322
+        y: 158
+        width: 45
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4740c8d96aeadfee0800000000000000
+      internalID: -1225631492943903628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-8556_Vitality_Holo_Austin_2025_8
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 32
+        width: 179
+        height: 106
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43e80a6fd7c73b080800000000000000
+      internalID: -9172851135573094860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      sticker-8556_Vitality_Holo_Austin_2025_0: 6179772723743318796
+      sticker-8556_Vitality_Holo_Austin_2025_1: -6287308212017874617
+      sticker-8556_Vitality_Holo_Austin_2025_2: -4631537169295539166
+      sticker-8556_Vitality_Holo_Austin_2025_3: 1142638264705618810
+      sticker-8556_Vitality_Holo_Austin_2025_4: 8461481231946638857
+      sticker-8556_Vitality_Holo_Austin_2025_5: -8657958128636329724
+      sticker-8556_Vitality_Holo_Austin_2025_6: -4473705729944586234
+      sticker-8556_Vitality_Holo_Austin_2025_7: -1225631492943903628
+      sticker-8556_Vitality_Holo_Austin_2025_8: -9172851135573094860
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,338 @@
+fileFormatVersion: 2
+guid: 6dfe907fa23d988478b664401c4a1e38
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 9072091090717968564
+    second: crate-4892_Paris_2023_Contenders_Sticker_Capsule_0
+  - first:
+      213: 3415353620548253415
+    second: crate-4892_Paris_2023_Contenders_Sticker_Capsule_1
+  - first:
+      213: 3849039153113070896
+    second: crate-4892_Paris_2023_Contenders_Sticker_Capsule_2
+  - first:
+      213: -2218682287099706365
+    second: crate-4892_Paris_2023_Contenders_Sticker_Capsule_3
+  - first:
+      213: 482955138696651955
+    second: crate-4892_Paris_2023_Contenders_Sticker_Capsule_4
+  - first:
+      213: -4934495234347967581
+    second: crate-4892_Paris_2023_Contenders_Sticker_Capsule_5
+  - first:
+      213: 3561213735447850146
+    second: crate-4892_Paris_2023_Contenders_Sticker_Capsule_6
+  - first:
+      213: 4039925550126963101
+    second: crate-4892_Paris_2023_Contenders_Sticker_Capsule_7
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: crate-4892_Paris_2023_Contenders_Sticker_Capsule_0
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 576
+        width: 200
+        height: 191
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b80b30f7ca86ed70800000000000000
+      internalID: 9072091090717968564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4892_Paris_2023_Contenders_Sticker_Capsule_1
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 396
+        width: 172
+        height: 194
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e67f17c506c56f20800000000000000
+      internalID: 3415353620548253415
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4892_Paris_2023_Contenders_Sticker_Capsule_2
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 6
+        width: 598
+        height: 724
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03dffd777b88a6530800000000000000
+      internalID: 3849039153113070896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4892_Paris_2023_Contenders_Sticker_Capsule_3
+      rect:
+        serializedVersion: 2
+        x: 791
+        y: 583
+        width: 219
+        height: 150
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30488f70738a531e0800000000000000
+      internalID: -2218682287099706365
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4892_Paris_2023_Contenders_Sticker_Capsule_4
+      rect:
+        serializedVersion: 2
+        x: 830
+        y: 392
+        width: 168
+        height: 203
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b4a67cc32dc3b600800000000000000
+      internalID: 482955138696651955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4892_Paris_2023_Contenders_Sticker_Capsule_5
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 1
+        width: 200
+        height: 409
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3abd4da7ab6258bb0800000000000000
+      internalID: -4934495234347967581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4892_Paris_2023_Contenders_Sticker_Capsule_6
+      rect:
+        serializedVersion: 2
+        x: 821
+        y: 206
+        width: 183
+        height: 177
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ac6c963609fb6130800000000000000
+      internalID: 3561213735447850146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4892_Paris_2023_Contenders_Sticker_Capsule_7
+      rect:
+        serializedVersion: 2
+        x: 828
+        y: 4
+        width: 171
+        height: 181
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d99975622e2b01830800000000000000
+      internalID: 4039925550126963101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      crate-4892_Paris_2023_Contenders_Sticker_Capsule_0: 9072091090717968564
+      crate-4892_Paris_2023_Contenders_Sticker_Capsule_1: 3415353620548253415
+      crate-4892_Paris_2023_Contenders_Sticker_Capsule_2: 3849039153113070896
+      crate-4892_Paris_2023_Contenders_Sticker_Capsule_3: -2218682287099706365
+      crate-4892_Paris_2023_Contenders_Sticker_Capsule_4: 482955138696651955
+      crate-4892_Paris_2023_Contenders_Sticker_Capsule_5: -4934495234347967581
+      crate-4892_Paris_2023_Contenders_Sticker_Capsule_6: 3561213735447850146
+      crate-4892_Paris_2023_Contenders_Sticker_Capsule_7: 4039925550126963101
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

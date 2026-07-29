@@ -1,0 +1,390 @@
+fileFormatVersion: 2
+guid: 4e9f3589952e6a941bf3c2ffb06d1743
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7143592393744010902
+    second: crate-4891_Paris_2023_Challengers_Sticker_Capsule_0
+  - first:
+      213: -7187096605720186264
+    second: crate-4891_Paris_2023_Challengers_Sticker_Capsule_1
+  - first:
+      213: -8731915480687969188
+    second: crate-4891_Paris_2023_Challengers_Sticker_Capsule_2
+  - first:
+      213: -2986406995143527375
+    second: crate-4891_Paris_2023_Challengers_Sticker_Capsule_3
+  - first:
+      213: 830149599401763676
+    second: crate-4891_Paris_2023_Challengers_Sticker_Capsule_4
+  - first:
+      213: -5288952429873462355
+    second: crate-4891_Paris_2023_Challengers_Sticker_Capsule_5
+  - first:
+      213: -8905523666579137063
+    second: crate-4891_Paris_2023_Challengers_Sticker_Capsule_6
+  - first:
+      213: 1748933898979101271
+    second: crate-4891_Paris_2023_Challengers_Sticker_Capsule_7
+  - first:
+      213: 735284875262482564
+    second: crate-4891_Paris_2023_Challengers_Sticker_Capsule_8
+  - first:
+      213: 5382294930859896586
+    second: crate-4891_Paris_2023_Challengers_Sticker_Capsule_9
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: crate-4891_Paris_2023_Challengers_Sticker_Capsule_0
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 607
+        width: 234
+        height: 145
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69e4b490f63232360800000000000000
+      internalID: 7143592393744010902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4891_Paris_2023_Challengers_Sticker_Capsule_1
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 6
+        width: 598
+        height: 724
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 862f1a947bd424c90800000000000000
+      internalID: -7187096605720186264
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4891_Paris_2023_Challengers_Sticker_Capsule_2
+      rect:
+        serializedVersion: 2
+        x: 791
+        y: 617
+        width: 219
+        height: 110
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5cfbdc422102d680800000000000000
+      internalID: -8731915480687969188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4891_Paris_2023_Challengers_Sticker_Capsule_3
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 387
+        width: 182
+        height: 209
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1347abb19a62e86d0800000000000000
+      internalID: -2986406995143527375
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4891_Paris_2023_Challengers_Sticker_Capsule_4
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 178
+        width: 151
+        height: 209
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5366ce89a8458b00800000000000000
+      internalID: 830149599401763676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4891_Paris_2023_Challengers_Sticker_Capsule_5
+      rect:
+        serializedVersion: 2
+        x: 817
+        y: 387
+        width: 194
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da3047f79cdd996b0800000000000000
+      internalID: -5288952429873462355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4891_Paris_2023_Challengers_Sticker_Capsule_6
+      rect:
+        serializedVersion: 2
+        x: 821
+        y: 7
+        width: 183
+        height: 183
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9dd57b2a869396480800000000000000
+      internalID: -8905523666579137063
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4891_Paris_2023_Challengers_Sticker_Capsule_7
+      rect:
+        serializedVersion: 2
+        x: 844
+        y: 183
+        width: 139
+        height: 199
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75ac9486d16754810800000000000000
+      internalID: 1748933898979101271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4891_Paris_2023_Challengers_Sticker_Capsule_8
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 122
+        width: 205
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 488dcb6c2b1443a00800000000000000
+      internalID: 735284875262482564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4891_Paris_2023_Challengers_Sticker_Capsule_9
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 16
+        width: 208
+        height: 104
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0f2a4619b0c1ba40800000000000000
+      internalID: 5382294930859896586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      crate-4891_Paris_2023_Challengers_Sticker_Capsule_0: 7143592393744010902
+      crate-4891_Paris_2023_Challengers_Sticker_Capsule_1: -7187096605720186264
+      crate-4891_Paris_2023_Challengers_Sticker_Capsule_2: -8731915480687969188
+      crate-4891_Paris_2023_Challengers_Sticker_Capsule_3: -2986406995143527375
+      crate-4891_Paris_2023_Challengers_Sticker_Capsule_4: 830149599401763676
+      crate-4891_Paris_2023_Challengers_Sticker_Capsule_5: -5288952429873462355
+      crate-4891_Paris_2023_Challengers_Sticker_Capsule_6: -8905523666579137063
+      crate-4891_Paris_2023_Challengers_Sticker_Capsule_7: 1748933898979101271
+      crate-4891_Paris_2023_Challengers_Sticker_Capsule_8: 735284875262482564
+      crate-4891_Paris_2023_Challengers_Sticker_Capsule_9: 5382294930859896586
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,338 @@
+fileFormatVersion: 2
+guid: d7813cb3d1a74f244bf0e80c7cf720b5
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6612324775961788029
+    second: sticker-8684_BLAST.tv_Holo_Austin_2025_0
+  - first:
+      213: -7590577337448726149
+    second: sticker-8684_BLAST.tv_Holo_Austin_2025_1
+  - first:
+      213: -3433481636082806591
+    second: sticker-8684_BLAST.tv_Holo_Austin_2025_2
+  - first:
+      213: -2065567529088513054
+    second: sticker-8684_BLAST.tv_Holo_Austin_2025_3
+  - first:
+      213: 470738555820349683
+    second: sticker-8684_BLAST.tv_Holo_Austin_2025_4
+  - first:
+      213: -847727080650417312
+    second: sticker-8684_BLAST.tv_Holo_Austin_2025_5
+  - first:
+      213: 7031843697580686765
+    second: sticker-8684_BLAST.tv_Holo_Austin_2025_6
+  - first:
+      213: 2622575410297269708
+    second: sticker-8684_BLAST.tv_Holo_Austin_2025_7
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: sticker-8684_BLAST.tv_Holo_Austin_2025_0
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 194
+        width: 165
+        height: 185
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 381884d56ad4c34a0800000000000000
+      internalID: -6612324775961788029
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-8684_BLAST.tv_Holo_Austin_2025_1
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 106
+        width: 196
+        height: 89
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b710d31d02ad8a690800000000000000
+      internalID: -7590577337448726149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-8684_BLAST.tv_Holo_Austin_2025_2
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 195
+        width: 123
+        height: 88
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c01572b4a2d950d0800000000000000
+      internalID: -3433481636082806591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-8684_BLAST.tv_Holo_Austin_2025_3
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 194
+        width: 195
+        height: 185
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2eb0911b641a553e0800000000000000
+      internalID: -2065567529088513054
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-8684_BLAST.tv_Holo_Austin_2025_4
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 15
+        width: 121
+        height: 179
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f890c1f836688600800000000000000
+      internalID: 470738555820349683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-8684_BLAST.tv_Holo_Austin_2025_5
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 46
+        width: 106
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06b5a5b26b44c34f0800000000000000
+      internalID: -847727080650417312
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-8684_BLAST.tv_Holo_Austin_2025_6
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 46
+        width: 49
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dadbd5e2690269160800000000000000
+      internalID: 7031843697580686765
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-8684_BLAST.tv_Holo_Austin_2025_7
+      rect:
+        serializedVersion: 2
+        x: 310
+        y: 15
+        width: 121
+        height: 179
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ccd617fc072456420800000000000000
+      internalID: 2622575410297269708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      sticker-8684_BLAST.tv_Holo_Austin_2025_0: -6612324775961788029
+      sticker-8684_BLAST.tv_Holo_Austin_2025_1: -7590577337448726149
+      sticker-8684_BLAST.tv_Holo_Austin_2025_2: -3433481636082806591
+      sticker-8684_BLAST.tv_Holo_Austin_2025_3: -2065567529088513054
+      sticker-8684_BLAST.tv_Holo_Austin_2025_4: 470738555820349683
+      sticker-8684_BLAST.tv_Holo_Austin_2025_5: -847727080650417312
+      sticker-8684_BLAST.tv_Holo_Austin_2025_6: 7031843697580686765
+      sticker-8684_BLAST.tv_Holo_Austin_2025_7: 2622575410297269708
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,364 @@
+fileFormatVersion: 2
+guid: 6265822cc99f4e84da77800d28f0564d
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2886503870417769772
+    second: crate-4324_Atlanta_2017_Challengers_Holo_Foil_0
+  - first:
+      213: -3371792980020461547
+    second: crate-4324_Atlanta_2017_Challengers_Holo_Foil_1
+  - first:
+      213: 1039130793440926347
+    second: crate-4324_Atlanta_2017_Challengers_Holo_Foil_2
+  - first:
+      213: 4602787226065837470
+    second: crate-4324_Atlanta_2017_Challengers_Holo_Foil_3
+  - first:
+      213: -575785803186559630
+    second: crate-4324_Atlanta_2017_Challengers_Holo_Foil_4
+  - first:
+      213: 7938775473018128497
+    second: crate-4324_Atlanta_2017_Challengers_Holo_Foil_5
+  - first:
+      213: -3302215843204754513
+    second: crate-4324_Atlanta_2017_Challengers_Holo_Foil_6
+  - first:
+      213: -2323753248039844880
+    second: crate-4324_Atlanta_2017_Challengers_Holo_Foil_7
+  - first:
+      213: -925792951788961026
+    second: crate-4324_Atlanta_2017_Challengers_Holo_Foil_8
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: crate-4324_Atlanta_2017_Challengers_Holo_Foil_0
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 143
+        width: 39
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c259a0f0afbee0820800000000000000
+      internalID: 2886503870417769772
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4324_Atlanta_2017_Challengers_Holo_Foil_1
+      rect:
+        serializedVersion: 2
+        x: 57
+        y: 0
+        width: 140
+        height: 186
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 51089b1362cf431d0800000000000000
+      internalID: -3371792980020461547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4324_Atlanta_2017_Challengers_Holo_Foil_2
+      rect:
+        serializedVersion: 2
+        x: 202
+        y: 147
+        width: 41
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8a573a73fbbb6e00800000000000000
+      internalID: 1039130793440926347
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4324_Atlanta_2017_Challengers_Holo_Foil_3
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 97
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9d1c52789260ef30800000000000000
+      internalID: 4602787226065837470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4324_Atlanta_2017_Challengers_Holo_Foil_4
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 98
+        width: 39
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2752a56dcd56208f0800000000000000
+      internalID: -575785803186559630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4324_Atlanta_2017_Challengers_Holo_Foil_5
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 59
+        width: 39
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17844d43b323c2e60800000000000000
+      internalID: 7938775473018128497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4324_Atlanta_2017_Challengers_Holo_Foil_6
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 50
+        width: 37
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa31d1ebf2c2c22d0800000000000000
+      internalID: -3302215843204754513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4324_Atlanta_2017_Challengers_Holo_Foil_7
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 8
+        width: 41
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f3cce09bbe50cfd0800000000000000
+      internalID: -2323753248039844880
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4324_Atlanta_2017_Challengers_Holo_Foil_8
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 8
+        width: 39
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef20f05273ce623f0800000000000000
+      internalID: -925792951788961026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      crate-4324_Atlanta_2017_Challengers_Holo_Foil_0: 2886503870417769772
+      crate-4324_Atlanta_2017_Challengers_Holo_Foil_1: -3371792980020461547
+      crate-4324_Atlanta_2017_Challengers_Holo_Foil_2: 1039130793440926347
+      crate-4324_Atlanta_2017_Challengers_Holo_Foil_3: 4602787226065837470
+      crate-4324_Atlanta_2017_Challengers_Holo_Foil_4: -575785803186559630
+      crate-4324_Atlanta_2017_Challengers_Holo_Foil_5: 7938775473018128497
+      crate-4324_Atlanta_2017_Challengers_Holo_Foil_6: -3302215843204754513
+      crate-4324_Atlanta_2017_Challengers_Holo_Foil_7: -2323753248039844880
+      crate-4324_Atlanta_2017_Challengers_Holo_Foil_8: -925792951788961026
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

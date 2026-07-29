@@ -1,0 +1,390 @@
+fileFormatVersion: 2
+guid: d58b6456da3b30d458c8226583b9e2b7
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1069231641638634590
+    second: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_0
+  - first:
+      213: 4392051190013344786
+    second: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_1
+  - first:
+      213: -723650986774035359
+    second: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_2
+  - first:
+      213: 5126331786842577668
+    second: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_3
+  - first:
+      213: -8517147130480469972
+    second: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_4
+  - first:
+      213: -5146372768489841323
+    second: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_5
+  - first:
+      213: 7062423606870092945
+    second: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_6
+  - first:
+      213: 8181414214082176805
+    second: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_7
+  - first:
+      213: 7064158535405802250
+    second: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_8
+  - first:
+      213: 437872201264410514
+    second: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_9
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_0
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 569
+        width: 204
+        height: 199
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ab7589ac735921f0800000000000000
+      internalID: -1069231641638634590
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_1
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 11
+        width: 598
+        height: 719
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21cb3188943b3fc30800000000000000
+      internalID: 4392051190013344786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_2
+      rect:
+        serializedVersion: 2
+        x: 809
+        y: 560
+        width: 205
+        height: 196
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16409f7f24315f5f0800000000000000
+      internalID: -723650986774035359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_3
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 388
+        width: 160
+        height: 185
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40b9b838993642740800000000000000
+      internalID: 5126331786842577668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_4
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 374
+        width: 166
+        height: 189
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2859f38fc30dc980800000000000000
+      internalID: -8517147130480469972
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_5
+      rect:
+        serializedVersion: 2
+        x: 823
+        y: 190
+        width: 178
+        height: 185
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55d5b64db396498b0800000000000000
+      internalID: -5146372768489841323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_6
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 177
+        width: 131
+        height: 185
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19c23d42ad4c20260800000000000000
+      internalID: 7062423606870092945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_7
+      rect:
+        serializedVersion: 2
+        x: 824
+        y: 7
+        width: 175
+        height: 180
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52723b671e83a8170800000000000000
+      internalID: 8181414214082176805
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_8
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 53
+        width: 165
+        height: 94
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0318eba2cee80260800000000000000
+      internalID: 7064158535405802250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_9
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 26
+        width: 195
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29f22657272a31600800000000000000
+      internalID: 437872201264410514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_0: -1069231641638634590
+      crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_1: 4392051190013344786
+      crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_2: -723650986774035359
+      crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_3: 5126331786842577668
+      crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_4: -8517147130480469972
+      crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_5: -5146372768489841323
+      crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_6: 7062423606870092945
+      crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_7: 8181414214082176805
+      crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_8: 7064158535405802250
+      crate-4834_Antwerp_2022_Contenders_Sticker_Capsule_9: 437872201264410514
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

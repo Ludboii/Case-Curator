@@ -1,0 +1,112 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-4744_2020_RMR_Challengers
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-4744
+  caseName: 2020 RMR Challengers
+  icon: {fileID: 21300000, guid: c5c73fcb229aa7f45bbe9dec4728a934, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 2
+    chance: 80
+  - rarity: 3
+    chance: 16
+  - rarity: 4
+    chance: 3.2
+  - rarity: 5
+    chance: 0.8
+  stickerRarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.8
+  dropPool:
+  - skin: {fileID: 11400000, guid: 36a5f30040a4c2a48ac67d8d80d1e37b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 39e36f7f19a45544d9a1841657de0228, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7fa9b64ba3f44fb49b849b8166841c8b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 59b296e3b1f3dd44293706763bc05abe, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bba6171669a7f6b4fa07b7c3061d5315, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f71dd2fb38f50c548bf7d68bec15e9bf, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 21d535077054a194398e23c44c1a1172, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1e92a1bd2573aca47a5efe0ba6d8a418, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1af0fbb63a0121b448a8b45a35340c86, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 19c06669c8bc98047be76d70bb70e8aa, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e1ab34bef5e1a4e47a6634ac7e23e4e4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a9f68425d86c97345af3064378d52366, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 0cdb295d9e33d4643806185464d27b58, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5cc68e6468e38b54c9aab733a2c84377, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 865432fbacf5e0241bc6393e17024f6b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e1d53b200ccfd1d4e9eb3b08abe71bde, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ea92b85331877e0438d2ad22ac41f80f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fd4f176aee333894f9bd3fa67fb45f88, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ea567788a3788984d978bbd4ef7c08c7, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6870f02b7f0ec0e4b88c6a37cc631227, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5d2fa2a0eae51cc47865fcbc02dd6866, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ce473e44dff7239499f2cc2db5c69709, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bf3fd8e39e11fb5418b7dcdec4998730, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 26d617fb49147d743abe781de538d067, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fd98e02885c4ef34caeceffd8b309ce7, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8879dc246521e6b41bc718f417be177c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1d4032283455e4646961df8abacca0ed, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5bb72280ac0b72d44ad9ba8e2d84af7a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1ab8baa7c0a11cd4bbd7eb3ce585e23d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 877a3498b7a945e458f856267fb50002, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9363f9fcc1062da47a064207f266bd84, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: dfc3bad7529f2b7448a213854ded2cbe, type: 2}
+    weight: 1

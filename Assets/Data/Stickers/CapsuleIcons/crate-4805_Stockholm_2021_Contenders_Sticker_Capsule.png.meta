@@ -1,0 +1,416 @@
+fileFormatVersion: 2
+guid: f818cd1e8319d5340bede2c3eaea456e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1100775867317095914
+    second: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_0
+  - first:
+      213: 1042556048444596499
+    second: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_1
+  - first:
+      213: 4184687461326516706
+    second: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_2
+  - first:
+      213: -1393811560196390579
+    second: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_3
+  - first:
+      213: 4257400037358835455
+    second: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_4
+  - first:
+      213: -286684898381028162
+    second: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_5
+  - first:
+      213: 6863522877559963068
+    second: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_6
+  - first:
+      213: 4708361812897724456
+    second: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_7
+  - first:
+      213: 2319309711856377358
+    second: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_8
+  - first:
+      213: 2019137024673598629
+    second: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_9
+  - first:
+      213: 2973593669138546062
+    second: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_10
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_0
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 558
+        width: 196
+        height: 192
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aed02c4b1ddb64f00800000000000000
+      internalID: 1100775867317095914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_1
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 24
+        width: 598
+        height: 719
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 311a9fdc337e77e00800000000000000
+      internalID: 1042556048444596499
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_2
+      rect:
+        serializedVersion: 2
+        x: 849
+        y: 571
+        width: 81
+        height: 186
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e1f56c131ff21a30800000000000000
+      internalID: 4184687461326516706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_3
+      rect:
+        serializedVersion: 2
+        x: 878
+        y: 558
+        width: 95
+        height: 139
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4149ae45cf28ace0800000000000000
+      internalID: -1393811560196390579
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_4
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 358
+        width: 199
+        height: 209
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff6128df6c2551b30800000000000000
+      internalID: 4257400037358835455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_5
+      rect:
+        serializedVersion: 2
+        x: 844
+        y: 486
+        width: 135
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb4a7859a9d750cf0800000000000000
+      internalID: -286684898381028162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_6
+      rect:
+        serializedVersion: 2
+        x: 844
+        y: 379
+        width: 135
+        height: 137
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbd7ab051b1204f50800000000000000
+      internalID: 6863522877559963068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_7
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 201
+        width: 218
+        height: 149
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82878c37f16775140800000000000000
+      internalID: 4708361812897724456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_8
+      rect:
+        serializedVersion: 2
+        x: 822
+        y: 188
+        width: 179
+        height: 185
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0e105b05e7df2020800000000000000
+      internalID: 2319309711856377358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_9
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 17
+        width: 197
+        height: 178
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ac42841d6a650c10800000000000000
+      internalID: 2019137024673598629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_10
+      rect:
+        serializedVersion: 2
+        x: 812
+        y: 7
+        width: 198
+        height: 181
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8d7a53ffa3544920800000000000000
+      internalID: 2973593669138546062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_0: 1100775867317095914
+      crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_1: 1042556048444596499
+      crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_10: 2973593669138546062
+      crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_2: 4184687461326516706
+      crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_3: -1393811560196390579
+      crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_4: 4257400037358835455
+      crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_5: -286684898381028162
+      crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_6: 6863522877559963068
+      crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_7: 4708361812897724456
+      crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_8: 2319309711856377358
+      crate-4805_Stockholm_2021_Contenders_Sticker_Capsule_9: 2019137024673598629
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

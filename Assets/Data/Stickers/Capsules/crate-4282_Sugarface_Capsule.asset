@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-4282_Sugarface_Capsule
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-4282
+  caseName: Sugarface Capsule
+  icon: {fileID: 21300000, guid: 99e47a455d51f5945b9767a7dc77be27, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 2
+    chance: 80
+  - rarity: 3
+    chance: 20
+  stickerRarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 20
+  dropPool:
+  - skin: {fileID: 11400000, guid: 643ce3bf251b6ac459631bbf4afe0efa, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: daf6376582fdaa145b17f902952dd96d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5e1fcbf38f071104da79b9b2a2f9d768, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6fb9a1f42d8750f4fb9629880bd4b73e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fd1ff8534ee947e4ba01572d5bfda9c3, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 80ff1e1335d24d14daf0c2331cb09ba7, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6b7ffd2f7b1799a4181be17c391d89d2, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6e128daa3c170cd49a1998c486d4e95e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b83d6cabe12d5004393d9191105f07ae, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1244036e70ca4484a8a40a0853726e66, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 260faa3318bc99540bc8c5acad2bd607, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c6d32ec9111797c48b6fc6832c80a21a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 82d11c9cac4874d4f87f3f06336bdd93, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6627e7223c943e54ebfdbdf532a49e28, type: 2}
+    weight: 1

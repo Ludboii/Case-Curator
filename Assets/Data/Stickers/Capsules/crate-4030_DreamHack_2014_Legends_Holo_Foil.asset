@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-4030_DreamHack_2014_Legends_Holo_Foil
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-4030
+  caseName: DreamHack 2014 Legends (Holo/Foil)
+  icon: {fileID: 21300000, guid: e9186ea2b0cf220479bbc35cf118fb94, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 3
+    chance: 80
+  - rarity: 4
+    chance: 20
+  stickerRarityChances:
+  - rarity: 1
+    chance: 80
+  - rarity: 2
+    chance: 20
+  dropPool:
+  - skin: {fileID: 11400000, guid: 485ed9021a4e5cd4c83ff0986a9feb96, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e3cd9bf5bcf75c64eb585bff8bf2a0f2, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fd9a4486e82d8c5468068c422f19a445, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f42adb6523464d94dbefebc9f2e25d64, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fba98450f1d4221439e4b0abf9f39bdd, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bf6ec155e30df6b4684d7a5ad9902dbe, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: cc8766075619a5f4184abace45821ee6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 28b326e8b20226b4f86bba0f2c3d3c71, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f8577806b4b75de4f80a1dbfef055207, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ee4c264b2f6a19344b3acbe3c819deda, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a4ebaec0248a12e468f0c1ffeef5563d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 67f7b570c89fb7a43ae9f9f36cdc9541, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a5c753f743ab70340b08a3201157dda0, type: 2}
+    weight: 1

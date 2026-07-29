@@ -1,0 +1,338 @@
+fileFormatVersion: 2
+guid: e69dae1ecafbf5941b3b1f0421477bd3
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3474099709035948444
+    second: sticker-7275_Vitality_Glitter_Copenhagen_2024_0
+  - first:
+      213: 1494259732162945146
+    second: sticker-7275_Vitality_Glitter_Copenhagen_2024_1
+  - first:
+      213: -5973104624339468055
+    second: sticker-7275_Vitality_Glitter_Copenhagen_2024_2
+  - first:
+      213: 4488240937696894729
+    second: sticker-7275_Vitality_Glitter_Copenhagen_2024_3
+  - first:
+      213: -3127380954237038705
+    second: sticker-7275_Vitality_Glitter_Copenhagen_2024_4
+  - first:
+      213: -2064240858849016008
+    second: sticker-7275_Vitality_Glitter_Copenhagen_2024_5
+  - first:
+      213: -6178514641426324661
+    second: sticker-7275_Vitality_Glitter_Copenhagen_2024_6
+  - first:
+      213: 309090626350947626
+    second: sticker-7275_Vitality_Glitter_Copenhagen_2024_7
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: sticker-7275_Vitality_Glitter_Copenhagen_2024_0
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 181
+        width: 95
+        height: 196
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 466df90a8b489cfc0800000000000000
+      internalID: -3474099709035948444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-7275_Vitality_Glitter_Copenhagen_2024_1
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 175
+        width: 46
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a702eb93f4dacb410800000000000000
+      internalID: 1494259732162945146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-7275_Vitality_Glitter_Copenhagen_2024_2
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 113
+        width: 174
+        height: 116
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e0c004bdf44b1da0800000000000000
+      internalID: -5973104624339468055
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-7275_Vitality_Glitter_Copenhagen_2024_3
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 193
+        width: 59
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90f1ac56a5f694e30800000000000000
+      internalID: 4488240937696894729
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-7275_Vitality_Glitter_Copenhagen_2024_4
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 181
+        width: 94
+        height: 196
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8f0169779f4994d0800000000000000
+      internalID: -3127380954237038705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-7275_Vitality_Glitter_Copenhagen_2024_5
+      rect:
+        serializedVersion: 2
+        x: 328
+        y: 175
+        width: 46
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 837057d20e75a53e0800000000000000
+      internalID: -2064240858849016008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-7275_Vitality_Glitter_Copenhagen_2024_6
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 74
+        width: 90
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b43eb363ba1814aa0800000000000000
+      internalID: -6178514641426324661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sticker-7275_Vitality_Glitter_Copenhagen_2024_7
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 1
+        width: 267
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2d1d0b794c1a4400800000000000000
+      internalID: 309090626350947626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      sticker-7275_Vitality_Glitter_Copenhagen_2024_0: -3474099709035948444
+      sticker-7275_Vitality_Glitter_Copenhagen_2024_1: 1494259732162945146
+      sticker-7275_Vitality_Glitter_Copenhagen_2024_2: -5973104624339468055
+      sticker-7275_Vitality_Glitter_Copenhagen_2024_3: 4488240937696894729
+      sticker-7275_Vitality_Glitter_Copenhagen_2024_4: -3127380954237038705
+      sticker-7275_Vitality_Glitter_Copenhagen_2024_5: -2064240858849016008
+      sticker-7275_Vitality_Glitter_Copenhagen_2024_6: -6178514641426324661
+      sticker-7275_Vitality_Glitter_Copenhagen_2024_7: 309090626350947626
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-4205_MLG_Columbus_2016_Legends_Holo_Foil
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-4205
+  caseName: MLG Columbus 2016 Legends (Holo/Foil)
+  icon: {fileID: 21300000, guid: c8c4287f53148fd4f9bcf03846da5e32, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 3
+    chance: 80
+  - rarity: 4
+    chance: 20
+  stickerRarityChances:
+  - rarity: 1
+    chance: 80
+  - rarity: 2
+    chance: 20
+  dropPool:
+  - skin: {fileID: 11400000, guid: 7edf5e434a6a8d345922e473702cd3ae, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 564ef498d95743444b44c75f3df223e6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 04ad041d3dde6ce4b9020728cb5892c3, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f9b7aa1f134077947a60a48b3eabace6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 32fa93470ab6a1c46a99855b36339bb5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e4e0afe150db4324d8e1312a957d9b1f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4f2e23d9d205f0e4ca72736706d550ff, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 92fe1f5f3c4c070409e44677a54181e3, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 0e353d9ecf2518044b87111b2c98ae2a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 57268c7f55ac2c444a4685d362a620bd, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bfbfd69a76d6daa42afdec67824ec6d9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 510cb4cfbf8159a4f95a216bd7cf4cd6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7a893e44e99c56f40934137a1cb17c12, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 31f16a37fc892df4594d7c499fb97f48, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: afd243a23d4061f4396f48f8927b1091, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f53c181a7f0e03c49869cd08eae59be0, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d8feb8f1fd4f61c4483c12ded759dbe2, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b35bb25b6bd02a948ae513120bae29e8, type: 2}
+    weight: 1

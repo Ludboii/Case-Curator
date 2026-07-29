@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-7013_Warhammer_40_000_Adeptus_Astartes_Sticker_Capsule
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-7013
+  caseName: Warhammer 40,000 Adeptus Astartes Sticker Capsule
+  icon: {fileID: 21300000, guid: fb0a97cfeed75964bb62d841521f26d0, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 2
+    chance: 100
+  stickerRarityChances:
+  - rarity: 0
+    chance: 100
+  dropPool:
+  - skin: {fileID: 11400000, guid: 5c9bea896d1537c4489fb74fd2c03a05, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bb85119f5f86bfb4eaf0638f7e0a6187, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3ff14b6f02b3deb468f67434bbccb1ec, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3cc25df171b1ba84abb16f31e8541723, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 621c770638eb7984fbe479412f6a1928, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b218bcdb0beb81d409f2e1c9ad505980, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 50dbfd0a9678426468818e7f20f3e29d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e9a1d1ef4db031440ae742460187bcb5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ca9a21b690863734ab1c463057f301f9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 40596cc733224db449fefdd9434decd1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5c7dd72677cb836448f6a483d58b12cc, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 07238c420e7b53044a7bc68252445816, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 0d33884f9f99c1b4099d44a6b3b62e4b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 336f5c34571531e4eae90f94da420da5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9cb166e7f9b40fc429200b6772ee2816, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 13c93f82c18df2442a7036f786cd5a84, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 577c0ba19602bea4898341f0d132d681, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 35c2773314b70f54ead26708ede2b9fd, type: 2}
+    weight: 1

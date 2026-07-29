@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-4109_ESL_One_Cologne_2015_Legends_Foil
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-4109
+  caseName: ESL One Cologne 2015 Legends (Foil)
+  icon: {fileID: 21300000, guid: 353979dfffb8b034994ccb3e8a21b61a, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 4
+    chance: 100
+  stickerRarityChances:
+  - rarity: 2
+    chance: 100
+  dropPool:
+  - skin: {fileID: 11400000, guid: f00833b2624701d4a9d280d1a4386830, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 0252516c19cd836489040ec53709055d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: aa151dc79a2f1154b9eb04bde66ed209, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bb3f7f7fb3a70804cad5d1642e773b26, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8d38f63996098cc40a2138477ba02457, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 60482027d23cd404986b7c1bafbe37bf, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c5662fd62f6dd13448ca673d54ad7dde, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 36ae7d62ff1d24a46bf0188588740fd3, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bbe225ba730c8714dbffba30802384fc, type: 2}
+    weight: 1

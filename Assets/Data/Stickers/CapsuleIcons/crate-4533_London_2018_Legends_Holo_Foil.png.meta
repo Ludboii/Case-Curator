@@ -1,0 +1,442 @@
+fileFormatVersion: 2
+guid: b97dba895376bd0499803b78255538e7
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1671583823073919874
+    second: crate-4533_London_2018_Legends_Holo_Foil_0
+  - first:
+      213: 9082760903616430913
+    second: crate-4533_London_2018_Legends_Holo_Foil_1
+  - first:
+      213: 978704135279311010
+    second: crate-4533_London_2018_Legends_Holo_Foil_2
+  - first:
+      213: 2395833986241407670
+    second: crate-4533_London_2018_Legends_Holo_Foil_3
+  - first:
+      213: 8296018437736644911
+    second: crate-4533_London_2018_Legends_Holo_Foil_4
+  - first:
+      213: 2184465925517682376
+    second: crate-4533_London_2018_Legends_Holo_Foil_5
+  - first:
+      213: 3144389821573975104
+    second: crate-4533_London_2018_Legends_Holo_Foil_6
+  - first:
+      213: -7753935194948052887
+    second: crate-4533_London_2018_Legends_Holo_Foil_7
+  - first:
+      213: 960031027847307155
+    second: crate-4533_London_2018_Legends_Holo_Foil_8
+  - first:
+      213: 7383190189870545582
+    second: crate-4533_London_2018_Legends_Holo_Foil_9
+  - first:
+      213: -8836803475068615615
+    second: crate-4533_London_2018_Legends_Holo_Foil_10
+  - first:
+      213: 1268353664677871112
+    second: crate-4533_London_2018_Legends_Holo_Foil_11
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: crate-4533_London_2018_Legends_Holo_Foil_0
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 156
+        width: 44
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2834c9271a8a23710800000000000000
+      internalID: 1671583823073919874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4533_London_2018_Legends_Holo_Foil_1
+      rect:
+        serializedVersion: 2
+        x: 57
+        y: 0
+        width: 140
+        height: 186
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1430dd75be27c0e70800000000000000
+      internalID: 9082760903616430913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4533_London_2018_Legends_Holo_Foil_2
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 160
+        width: 46
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a87783c93e059d00800000000000000
+      internalID: 978704135279311010
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4533_London_2018_Legends_Holo_Foil_3
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 153
+        width: 46
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ba2aba1156bf3120800000000000000
+      internalID: 2395833986241407670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4533_London_2018_Legends_Holo_Foil_4
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 106
+        width: 45
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f21426f90d0612370800000000000000
+      internalID: 8296018437736644911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4533_London_2018_Legends_Holo_Foil_5
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 108
+        width: 49
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c62d6a7f28c05e10800000000000000
+      internalID: 2184465925517682376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4533_London_2018_Legends_Holo_Foil_6
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 50
+        width: 43
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04c454e02ed13ab20800000000000000
+      internalID: 3144389821573975104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4533_London_2018_Legends_Holo_Foil_7
+      rect:
+        serializedVersion: 2
+        x: 205
+        y: 50
+        width: 40
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 968d8b5b50d746490800000000000000
+      internalID: -7753935194948052887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4533_London_2018_Legends_Holo_Foil_8
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 17
+        width: 23
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39f11342227b25d00800000000000000
+      internalID: 960031027847307155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4533_London_2018_Legends_Holo_Foil_9
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 30
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eaaf1602c5c567660800000000000000
+      internalID: 7383190189870545582
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4533_London_2018_Legends_Holo_Foil_10
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 17
+        width: 27
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 144099e0f0e5d5580800000000000000
+      internalID: -8836803475068615615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4533_London_2018_Legends_Holo_Foil_11
+      rect:
+        serializedVersion: 2
+        x: 206
+        y: 9
+        width: 40
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80e70b020f81a9110800000000000000
+      internalID: 1268353664677871112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      crate-4533_London_2018_Legends_Holo_Foil_0: 1671583823073919874
+      crate-4533_London_2018_Legends_Holo_Foil_1: 9082760903616430913
+      crate-4533_London_2018_Legends_Holo_Foil_10: -8836803475068615615
+      crate-4533_London_2018_Legends_Holo_Foil_11: 1268353664677871112
+      crate-4533_London_2018_Legends_Holo_Foil_2: 978704135279311010
+      crate-4533_London_2018_Legends_Holo_Foil_3: 2395833986241407670
+      crate-4533_London_2018_Legends_Holo_Foil_4: 8296018437736644911
+      crate-4533_London_2018_Legends_Holo_Foil_5: 2184465925517682376
+      crate-4533_London_2018_Legends_Holo_Foil_6: 3144389821573975104
+      crate-4533_London_2018_Legends_Holo_Foil_7: -7753935194948052887
+      crate-4533_London_2018_Legends_Holo_Foil_8: 960031027847307155
+      crate-4533_London_2018_Legends_Holo_Foil_9: 7383190189870545582
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

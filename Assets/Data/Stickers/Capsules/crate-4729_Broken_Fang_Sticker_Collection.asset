@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-4729_Broken_Fang_Sticker_Collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-4729
+  caseName: Broken Fang Sticker Collection
+  icon: {fileID: 21300000, guid: 201ef1193df4e8a45b1778ec54a1efb7, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 2
+    chance: 80
+  - rarity: 3
+    chance: 16
+  - rarity: 4
+    chance: 4
+  stickerRarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 4
+  dropPool:
+  - skin: {fileID: 11400000, guid: b3ad08c013a493a488dd64e75522f5ee, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b36d551d1ebd54748903b6649ef3ecc5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c64ce27bb6a55b04aaa0cee2b93b121a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6c4bd6493bd9efa4d9f73807eb6b6193, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c81d0967b6ea5f643a59343f2d4872ef, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fd89098eaaf9dc04582f1555f11ff0fe, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 244ac0d30de0b8544accf38584471e18, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a6c81f1bcac338849bbada49e994987e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 598ebad15ea188a41bc2d9aa0b5fa526, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c53bea84e0171c64e8747d1c0fb966d9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 73db77e9a71b2d4459e0a67467a1726f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8fc335afd0b752341b78d508c6f542d1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bba3f3c5173e77448acfacc6cfa3b79d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 320ffb7f91b557d44a3050b64edf118f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 985b83bb85c08b448803be390abe7c3d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b4acc89612aa3fd4f8b44749624fc3cb, type: 2}
+    weight: 1

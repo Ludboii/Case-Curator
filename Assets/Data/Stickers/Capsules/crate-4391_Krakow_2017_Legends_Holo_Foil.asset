@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-4391_Krakow_2017_Legends_Holo_Foil
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-4391
+  caseName: Krakow 2017 Legends (Holo/Foil)
+  icon: {fileID: 21300000, guid: 8673a65d9f80c6946b762ba72f2fd075, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 3
+    chance: 80
+  - rarity: 4
+    chance: 20
+  stickerRarityChances:
+  - rarity: 1
+    chance: 80
+  - rarity: 2
+    chance: 20
+  dropPool:
+  - skin: {fileID: 11400000, guid: 20dc1f11b474c274d959c87562aea2f8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 0bc5cbb0778b72c4ba84663ebed51398, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c600c799d777a904b9d298f9ccf470e4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bf0e86ab99b217f4c821e9d552293779, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 057672d9f03aeb642bd0afd33bd1ecd0, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 28588353e11fc3b4b878b85fcfe82daf, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fb033cc8f5cac9640938d11660b3d512, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 974c157211d5c814580e341a51b1b284, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 744f00f6831ba97498e5e883da77e729, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d2abb66d6d02883449ffe48c02c08e62, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 443cb63048bf0774aa1d053f00faf185, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 384c29f18f6ed4540bd54ff26ee863ba, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3aac516ecd55e1348bd748b4c5f0ae08, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 19c44d2029bf71f4d90a89a81993478f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 09a919fbdcff209408cede15b8f004d9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c8486080f357d0048b8b69fa93232ffb, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 737578c79f7f064439d9aa5b8f45e17d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e568e1e3c32ebca46bbc31fc3fa0cffb, type: 2}
+    weight: 1

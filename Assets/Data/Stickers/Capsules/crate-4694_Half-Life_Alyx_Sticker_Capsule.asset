@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-4694_Half-Life_Alyx_Sticker_Capsule
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-4694
+  caseName: 'Half-Life: Alyx Sticker Capsule'
+  icon: {fileID: 21300000, guid: cf061228668f0bf40be586e06e0fc2d1, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 2
+    chance: 80
+  - rarity: 3
+    chance: 16
+  - rarity: 4
+    chance: 4
+  stickerRarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 4
+  dropPool:
+  - skin: {fileID: 11400000, guid: f3abf59d4f599ad44aa601b35122589f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 41e6b3110ac447b478e295db463e5c45, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 716bde34a64d4484ba2313ec1c99c3d6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d44d4f4e80fc95e489bfe3837e7fb21b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bf87fa3f7ac0ea94aacff6e0e85a45ad, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 352c32cb23802404fb6f3bea3174048e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e320fd4aef0151149aeacbb1bc102f8b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8b1a458cfc129c44d963fe7633b740ef, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 94e8d95283d2dfd459b5dae0537723a1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a2aff2ba3f27db8479ef594cb9b6fc0e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 13163ff3149ee5343a502ebcdc5cc871, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ab228b8805b38544f8039293d5478caf, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ca54d6ea857af1744844f0cd98894ea6, type: 2}
+    weight: 1

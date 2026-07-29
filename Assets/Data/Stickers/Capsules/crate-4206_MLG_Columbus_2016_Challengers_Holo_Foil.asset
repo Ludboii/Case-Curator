@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-4206_MLG_Columbus_2016_Challengers_Holo_Foil
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-4206
+  caseName: MLG Columbus 2016 Challengers (Holo/Foil)
+  icon: {fileID: 21300000, guid: e887d4f995990234f9d30827479f99ff, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 3
+    chance: 80
+  - rarity: 4
+    chance: 20
+  stickerRarityChances:
+  - rarity: 1
+    chance: 80
+  - rarity: 2
+    chance: 20
+  dropPool:
+  - skin: {fileID: 11400000, guid: 32298bb6b5ab74b4ba65f9cf287bf4d8, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b0c9f6e7bf5f8314bbfd466be94b646d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b132b32da4df4404497cb458995c3a30, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a17ab6b38bab605419e6980d1eaf632b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 72f9224253b76b740b88c010446be5a2, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 258f3b83cfa91504eabaf664794d1518, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 02bc5f2319a0043439302e20d685264a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1c2fb700f1dd19a42aa5020a5cf0e44e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 0e353d9ecf2518044b87111b2c98ae2a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 77c8723e539f73a4f9b2514c0afe3d02, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 55300fa51ef522e45ba1a8600f2b4f8d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bc799416a798ebe46aee755b0518229e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 57bb8915cbb042a43a041a17bc954c26, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 66d15417bbd31714ca0ee341ffb9fe45, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 0a441cabfe2e2124baad6e24064fff96, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b85ef3e780df8c34ea99eea5cfd38646, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 09d78af92b73a0c4fbfaf438b4926530, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: b35bb25b6bd02a948ae513120bae29e8, type: 2}
+    weight: 1

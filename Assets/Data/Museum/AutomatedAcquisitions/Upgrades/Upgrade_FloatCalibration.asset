@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff1fafda9512383479c4f566a1b73a80, type: 3}
+  m_Name: Upgrade_FloatCalibration
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
+  upgradeId: auto-acq-float-calibration
+  displayName: Float Calibration
+  description: Improves Automated Acquisition float quality from worse-than-manual
+    to a small better-than-manual endgame advantage.
+  icon: {fileID: 0}
+  category: 7
+  sortOrder: 415
+  hiddenUntilUnlocked: 0
+  unlockDefinition: {fileID: 0}
+  effectType: 0
+  defaultEffectValue: 0.6
+  levels:
+  - levelName: Float Calibration I
+    description: Float curve exponent 0.65. Higher values produce better average
+      floats.
+    currency: 0
+    cost: 4950
+    additionalRequirement: {fileID: 0}
+    effectValue: 0.65
+  - levelName: Float Calibration II
+    description: Float curve exponent 0.75. Higher values produce better average
+      floats.
+    currency: 0
+    cost: 6200
+    additionalRequirement: {fileID: 0}
+    effectValue: 0.75
+  - levelName: Float Calibration III
+    description: Float curve exponent 0.85. Higher values produce better average
+      floats.
+    currency: 0
+    cost: 8250
+    additionalRequirement: {fileID: 0}
+    effectValue: 0.85
+  - levelName: Float Calibration IV
+    description: Float curve exponent 1.00. Higher values produce better average
+      floats.
+    currency: 0
+    cost: 14750
+    additionalRequirement: {fileID: 0}
+    effectValue: 1
+  - levelName: Float Calibration V
+    description: Float curve exponent 1.05. Higher values produce better average
+      floats.
+    currency: 0
+    cost: 19000
+    additionalRequirement: {fileID: 0}
+    effectValue: 1.05
+  - levelName: Float Calibration VI
+    description: Float curve exponent 1.10. Higher values produce better average
+      floats.
+    currency: 0
+    cost: 27500
+    additionalRequirement: {fileID: 0}
+    effectValue: 1.1
+  - levelName: Float Calibration VII
+    description: Float curve exponent 1.15. Higher values produce better average
+      floats.
+    currency: 0
+    cost: 39500
+    additionalRequirement: {fileID: 0}
+    effectValue: 1.15

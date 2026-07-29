@@ -1,0 +1,120 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-4859_Rio_2022_Contenders_Sticker_Capsule
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-4859
+  caseName: Rio 2022 Contenders Sticker Capsule
+  icon: {fileID: 21300000, guid: 4aa92138fe8a65c4c9450a6d89734394, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 2
+    chance: 80
+  - rarity: 3
+    chance: 16
+  - rarity: 4
+    chance: 3.2
+  - rarity: 5
+    chance: 0.8
+  stickerRarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 16
+  - rarity: 2
+    chance: 3.2
+  - rarity: 3
+    chance: 0.8
+  dropPool:
+  - skin: {fileID: 11400000, guid: c911a49ddc5613740aa13e6236351cbf, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7823fd363d99e854a8943d71ef76d34c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: bfd85e8273e54264c97acd6a8824fcae, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 116b1ed6aab192743802cbf66617c16b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 133c317d1dda79a448e7ee8d853ec348, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 730102741d07d6f4e8db6f8557839b93, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5f1971986f4f0d64983964569f58c1b4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e972133aa9aba134cba334924d0b9ffa, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 721cc8cd5f49a3447aa4cd2fef9824c1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d7f5cd5462f020349bb5263da6a7765e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6cb8d0bddf90c344a8e74de6d632568e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 980ba749ccf12eb4fbdb743cbf896aab, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4a20eb8ab144f7b46a30a97f1b128f99, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9f43fa01729477e498e6a4778eb8d602, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 7a0260ccc74328645a11a7e96ca54c1e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e95309e16fadef14eafd37a0c597c5e7, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 118e0ded22484a447b246cbe7d54f7c6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 08dbad816136c7349af7c567077ca4b2, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9ab461c9563144149a7c8ef9a17a8064, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a343de2026deacd48a4ca3ac0a6bf440, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a4009f3c46ae59542b3d112182b6aa79, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c780ec6064e47f84fbb2922a9bf406fd, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a0d689ec7d3537244a70f6e966e62f2a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5d7d9800556125e46a6b99deffc230ec, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 044a32ac9c2bf904295161da8f88357c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: dfdfb7649c7a70347afcd82f5ef47ca9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9898fe6b2e51fd64fb226501421dcb67, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e3dfdad5b0c2c7142aac33a2d245d719, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d34ffcb1a839080489b3360e5574c431, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5d048845d35d73a4eacf2050f3ad05a7, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 836b7924b5d2cbb4fa1366e73da27cf5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d3b527dcb7eeb024c9fb05d85f03b035, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8956c539d87f92749a655b1e604d0f12, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f0d8c4ebfe8e8b44bbf2534046a7dee4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 61f0b06b88120374b9ee43e2226d7d2a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 629e689ce4f9047499b8fd0c6078bec6, type: 2}
+    weight: 1

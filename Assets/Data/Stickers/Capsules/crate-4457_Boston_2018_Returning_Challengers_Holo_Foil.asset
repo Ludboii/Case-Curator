@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-4457_Boston_2018_Returning_Challengers_Holo_Foil
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-4457
+  caseName: Boston 2018 Returning Challengers (Holo/Foil)
+  icon: {fileID: 21300000, guid: 72b91967ac6ba614f8f6abb91f2815b4, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 3
+    chance: 80
+  - rarity: 4
+    chance: 20
+  stickerRarityChances:
+  - rarity: 1
+    chance: 80
+  - rarity: 2
+    chance: 20
+  dropPool:
+  - skin: {fileID: 11400000, guid: 479bc8d7db091fd49a3c96a9bf8c3b93, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6358e3e24fa0c4848bbb8556de708dba, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f12c9d9a13ddc4749a931f5c7c352032, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 924f8a71b6a6d56498fca1fd2a32edf3, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 1f2044e6370b7fd4a9132ce60f066225, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: ac543b6b73d9b7340b161af68a12295b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5914a7ede78d8764798e5661c53939be, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3ee488187f802f04081a20cb4bacc0b2, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: a47a1fd7b6884f8448608428507762f5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5c9a5ebc3b7c41a4685a7f83ed63b0db, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: dc3a35cc372c0b84887b9c9d54d44b02, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f24d5d6725b5a6047a248a704eef29f0, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 58fbb473aa32a3a44892a8285a0d4806, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e84f32e3dad4cd04e941f0800636dd5f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 80781910f8dcb994ca1006037139bd19, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 514a2b5016551f74ea63713010414c61, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c596da7a330caa14eb474c30387ab026, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3c82aa4c325be7f41b0270c3c03c1f44, type: 2}
+    weight: 1

@@ -21,7 +21,7 @@ MonoBehaviour:
   hiddenUntilUnlocked: 0
   unlockDefinition: {fileID: 11400000, guid: 69135ae4e54c31f4f8cd2ad9b4304914, type: 2}
   effectType: 0
-  defaultEffectValue: 600
+  defaultEffectValue: 2
   levels:
   - levelName: Processing Speed I
     description: 500 seconds per item.

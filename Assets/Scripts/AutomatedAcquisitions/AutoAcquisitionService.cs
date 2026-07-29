@@ -202,20 +202,20 @@ public sealed class AutoAcquisitionService : MonoBehaviour
             return false;
         }
 
-        MuseumMilestoneData step40 = FindStaircaseStep(40);
+        MuseumMilestoneData requiredStep = FindStaircaseStep(5);
 
-        if (step40 == null || string.IsNullOrWhiteSpace(step40.milestoneId))
+        if (requiredStep == null || string.IsNullOrWhiteSpace(requiredStep.milestoneId))
         {
-            lockedReason = "Museum Staircase step 40 is not configured.";
+            lockedReason = "Museum Staircase step 5 is not configured.";
             return false;
         }
 
         MuseumMilestoneService milestones =
             MuseumMilestoneService.GetOrCreate();
 
-        if (milestones == null || !milestones.HasClaimed(step40.milestoneId))
+        if (milestones == null || !milestones.HasClaimed(requiredStep.milestoneId))
         {
-            lockedReason = "Claim Museum Staircase step 40.";
+            lockedReason = "Claim Museum Staircase step 5.";
             return false;
         }
 

@@ -1,0 +1,312 @@
+fileFormatVersion: 2
+guid: 0d73f311a59ac46479cb390f4bbc8e7b
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 595324283611344317
+    second: crate-4803_Stockholm_2021_Legends_Sticker_Capsule_0
+  - first:
+      213: 8117992928557391663
+    second: crate-4803_Stockholm_2021_Legends_Sticker_Capsule_1
+  - first:
+      213: -7334499789345300505
+    second: crate-4803_Stockholm_2021_Legends_Sticker_Capsule_2
+  - first:
+      213: -613283683132846972
+    second: crate-4803_Stockholm_2021_Legends_Sticker_Capsule_3
+  - first:
+      213: -7360821917917943672
+    second: crate-4803_Stockholm_2021_Legends_Sticker_Capsule_4
+  - first:
+      213: 8611134629129728224
+    second: crate-4803_Stockholm_2021_Legends_Sticker_Capsule_5
+  - first:
+      213: 5016913948365298504
+    second: crate-4803_Stockholm_2021_Legends_Sticker_Capsule_6
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: crate-4803_Stockholm_2021_Legends_Sticker_Capsule_0
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 361
+        width: 191
+        height: 393
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dbd61d22844034800800000000000000
+      internalID: 595324283611344317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4803_Stockholm_2021_Legends_Sticker_Capsule_1
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 184
+        width: 170
+        height: 207
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2fdbcbbe87e8a070800000000000000
+      internalID: 8117992928557391663
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4803_Stockholm_2021_Legends_Sticker_Capsule_2
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 24
+        width: 598
+        height: 719
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ef55ea2d4f963a90800000000000000
+      internalID: -7334499789345300505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4803_Stockholm_2021_Legends_Sticker_Capsule_3
+      rect:
+        serializedVersion: 2
+        x: 803
+        y: 379
+        width: 219
+        height: 373
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 48cc2505dbd2d77f0800000000000000
+      internalID: -613283683132846972
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4803_Stockholm_2021_Legends_Sticker_Capsule_4
+      rect:
+        serializedVersion: 2
+        x: 822
+        y: 199
+        width: 178
+        height: 204
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8886797077b19d990800000000000000
+      internalID: -7360821917917943672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4803_Stockholm_2021_Legends_Sticker_Capsule_5
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 1
+        width: 162
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e0b75a4255e08770800000000000000
+      internalID: 8611134629129728224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crate-4803_Stockholm_2021_Legends_Sticker_Capsule_6
+      rect:
+        serializedVersion: 2
+        x: 824
+        y: 1
+        width: 175
+        height: 199
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 84b1401c7a8af9540800000000000000
+      internalID: 5016913948365298504
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      crate-4803_Stockholm_2021_Legends_Sticker_Capsule_0: 595324283611344317
+      crate-4803_Stockholm_2021_Legends_Sticker_Capsule_1: 8117992928557391663
+      crate-4803_Stockholm_2021_Legends_Sticker_Capsule_2: -7334499789345300505
+      crate-4803_Stockholm_2021_Legends_Sticker_Capsule_3: -613283683132846972
+      crate-4803_Stockholm_2021_Legends_Sticker_Capsule_4: -7360821917917943672
+      crate-4803_Stockholm_2021_Legends_Sticker_Capsule_5: 8611134629129728224
+      crate-4803_Stockholm_2021_Legends_Sticker_Capsule_6: 5016913948365298504
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

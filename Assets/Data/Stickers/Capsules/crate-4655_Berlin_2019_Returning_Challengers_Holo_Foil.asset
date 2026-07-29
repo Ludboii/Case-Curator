@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-4655_Berlin_2019_Returning_Challengers_Holo_Foil
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-4655
+  caseName: Berlin 2019 Returning Challengers (Holo/Foil)
+  icon: {fileID: 21300000, guid: 9daea56047dbadf4d8c5cee40ec24cb9, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 3
+    chance: 80
+  - rarity: 4
+    chance: 20
+  stickerRarityChances:
+  - rarity: 1
+    chance: 80
+  - rarity: 2
+    chance: 20
+  dropPool:
+  - skin: {fileID: 11400000, guid: dea24e7033c220a41b6fc93c1321d2d6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e33e2a019d5b15647a9ac14e21223b72, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 576f47f5fc9c5014f8a1a1e3c5b4ead6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: be34744fc77f096468e3528bb8665c60, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4df4977e43e51694da38466f5c66dbba, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 36dc06caef301804780194a9ac75d073, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9dee1327d2834684a9f69d4bc41d4a44, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 032a25dae8fead54fbffd3634a8a34f1, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 80aea7705190fe948a43b88dc0c9657b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fdbe473d680454c42bcea5fa57b35323, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fa34d1765b7fcf645a6ded5671ffdff7, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9ef2684433da14143b2c90018d5e21a4, type: 2}
+    weight: 1

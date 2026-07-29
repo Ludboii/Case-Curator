@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab39685a76af67043a92c75a4b99c2a7, type: 3}
+  m_Name: sticker-3022_Ninjas_in_Pyjamas_Gold_London_2018
+  m_EditorClassIdentifier: Assembly-CSharp::StickerData
+  skinName: Ninjas in Pyjamas (Gold) | London 2018
+  weaponName: Sticker
+  collection: 
+  apiId: sticker-3022
+  paintIndex: 
+  collectionData: {fileID: 0}
+  rarity: 4
+  minFloat: 0
+  maxFloat: 0
+  icon: {fileID: 21300000, guid: d0e3b5cd0b9ece3469b0a015b2529eb8, type: 3}
+  canBeStatTrak: 0
+  canBeSouvenir: 0
+  patternType: 0
+  fadeBonusCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 80
+      value: 1.1
+      inSlope: 0
+      outSlope: 0.025
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 100
+      value: 1.6
+      inSlope: 0.025
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  patternTierGroups: []
+  uniquePatterns: []
+  fadeRangeStart: 0
+  fadeRangeEnd: 100
+  reverseFadePattern: 0
+  fadeOverrides: []
+  exteriorPrices:
+    factoryNew: 0
+    minimalWear: 0
+    fieldTested: 0
+    wellWorn: 0
+    battleScarred: 0
+  statTrakExteriorPrices:
+    factoryNew: 0
+    minimalWear: 0
+    fieldTested: 0
+    wellWorn: 0
+    battleScarred: 0
+  souvenirExteriorPrices:
+    factoryNew: 0
+    minimalWear: 0
+    fieldTested: 0
+    wellWorn: 0
+    battleScarred: 0
+  isVanilla: 1
+  vanillaPrice: 0
+  vanillaStatTrakPrice: 0
+  displayName: Ninjas in Pyjamas (Gold) | London 2018
+  stickerRarity: 2
+  marketValue: 0
+  capsules: []
+  tournamentEvent: 2018 FACEIT London
+  teamName: Ninjas in Pyjamas
+  playerName: 
+  year: 2018
+  effect: Gold
+  marketHashName: 
+  sourceImageUrl: https://cdn.steamstatic.com/apps/730/icons/econ/stickers/london2018/nip_gold.c53c3861d38fa89f8369d85172b7b0d9e02f8be8.png

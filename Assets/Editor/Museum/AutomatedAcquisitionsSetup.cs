@@ -47,12 +47,12 @@ public static class AutomatedAcquisitionsSetup
             return;
         }
 
-        MuseumMilestoneData step40 = FindStep(database, 40);
+        MuseumMilestoneData requiredStep = FindStep(database, 5);
 
-        if (step40 == null || string.IsNullOrWhiteSpace(step40.milestoneId))
+        if (requiredStep == null || string.IsNullOrWhiteSpace(requiredStep.milestoneId))
         {
             EditorUtility.DisplayDialog(
-                "Museum Step 40 Missing",
+                "Museum Step 5 Missing",
                 "Generate the 80-step Museum Staircase before applying this wing.",
                 "OK");
             return;
@@ -82,7 +82,7 @@ public static class AutomatedAcquisitionsSetup
 
         UnlockDefinition wingUnlock = GetOrCreateWingUnlock(
             requiredRank,
-            step40.milestoneId);
+            requiredStep.milestoneId);
 
         AutoAcquisitionCatalogData catalog = GetOrCreateCatalog();
         RebuildCatalog(catalog, database);
@@ -367,7 +367,7 @@ public static class AutomatedAcquisitionsSetup
             {
                 requirementType = UnlockRequirementType.MuseumMilestoneClaimed,
                 requiredMilestoneId = milestoneId,
-                lockedReasonOverride = "Claim Museum Staircase step 40."
+                lockedReasonOverride = "Claim Museum Staircase step 5."
             }
         };
 

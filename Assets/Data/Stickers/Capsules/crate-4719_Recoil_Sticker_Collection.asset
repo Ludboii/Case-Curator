@@ -1,0 +1,104 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56635a8e01b25064f864bbad376f913d, type: 3}
+  m_Name: crate-4719_Recoil_Sticker_Collection
+  m_EditorClassIdentifier: Assembly-CSharp::CaseData
+  apiId: crate-4719
+  caseName: Recoil Sticker Collection
+  icon: {fileID: 21300000, guid: 2f98543267ab59a46a342f37e0f636b6, type: 3}
+  containerType: 4
+  allowRareSpecialItem: 0
+  allowStatTrak: 0
+  forceSouvenirDrops: 0
+  priceInGold: 0
+  isPremium: 0
+  quality: 0
+  requiredRank: 0
+  xpRewardOnOpen: 1
+  shopCategory: 4
+  isCustomCase: 0
+  shouldHaveRareSpecial: 0
+  rarityChances:
+  - rarity: 2
+    chance: 80
+  - rarity: 3
+    chance: 20
+  stickerRarityChances:
+  - rarity: 0
+    chance: 80
+  - rarity: 1
+    chance: 20
+  dropPool:
+  - skin: {fileID: 11400000, guid: be4f4dd53f8ad344eaffcc32c6fd2b4c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 0ccdbfd58b6ecc448a3a3d31003739ae, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 43205d38dea588340b5a1b0114cc57ef, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 426157bcf09f5c24ca3a12e188097406, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 398c58415ad24034ea7cd2933f5b2ec6, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: e648ebcdbd006f14b894c3d025d08681, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 0d8dd95a3b00d2d4fb6b8d21541651c5, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 81b44bd2adb5f4f49a834e5bfd907df9, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 30d9e3836826c9845b2122b67b434b2b, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8649317523b2d5c44ae93e483af1b58c, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 47e3fe4771e5b2e47a49da5130ac83bb, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9bd6b07be7d11dc4da955c0f323e83d4, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 4e59c51c81b21d046abc7982c126c13e, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 8b12451acf6755147bb3709637d5d320, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 3361d406d7e391942b1c8987708eed3a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9838495296693ce439a34ab36e877b09, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: c534d17a10ea4b04187ae00f9d7b7afe, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5cdc3bbc933880b429c3bc350ac15f64, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 78a76cccb4c5eb448ad54d26b551f685, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 68ab6b47d36571e4b80fe83d71c49906, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 89092b25d373e244ead371daa0f64c6d, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 36071ac65aa30674c83a6754dac1fe0f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f2ab74723bd56b7469dfa88cecbb1370, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 19ea94a4358d4514cad15b0d10767b2f, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 6bfc76f2ab8ccdf4cb890c9836ac38aa, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: f02e8ab7097029944a942ec82aa9b288, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 5bd7aa346f340ca448fbe37791b3db48, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: fbe1f9d0f463b74468f0ad388382f62a, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: d299f59daf39d99419ada9c3782e8427, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: dd8fd0392c7207a45a8117f1e34e8211, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: cb8df0415c9d9a54db9cee3784c018d3, type: 2}
+    weight: 1
+  - skin: {fileID: 11400000, guid: 9da7e745db1761d48b6c49834d52ebc3, type: 2}
+    weight: 1
