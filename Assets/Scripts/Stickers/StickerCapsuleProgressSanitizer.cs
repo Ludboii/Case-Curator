@@ -84,13 +84,33 @@ public sealed class StickerCapsuleProgressSanitizer : MonoBehaviour
                 changed |= Clear(progress.bestWearSkinKeys);
                 changed |= Clear(progress.variantSkinKeys);
                 changed |= Clear(progress.bestWearVariantSkinKeys);
-                changed |= Clear(progress.bestWearStatTrakSkinKeys);
+                changed |= Clear(progress.topQuarterFloatSkinKeys);
+                changed |= Clear(progress.topQuarterFloatStatTrakSkinKeys);
                 changed |= Clear(progress.topQuarterHighestWearSkinKeys);
                 changed |= Clear(progress.topQuarterHighestWearStatTrakSkinKeys);
-                changed |= Clear(progress.priceDiscoveries);
-                changed |= Clear(progress.observedFloatRanges);
-                progress.foundRareSpecial = false;
+                changed |= Clear(progress.discoveredPriceKeys);
+                changed |= Clear(progress.bestFoundWearBySkin);
+                changed |= Clear(progress.bestFoundStatTrakWearBySkin);
+                changed |= Clear(progress.observedFloatRangesBySkin);
+
+                if (progress.foundRareSpecial)
+                {
+                    progress.foundRareSpecial = false;
+                    changed = true;
+                }
+
                 changed |= Clear(progress.foundRareSpecialSkinKeys);
+
+                // Sticker Capsules have no higher-tier claim states.
+                if (progress.silverRewardClaimed ||
+                    progress.goldRewardClaimed ||
+                    progress.diamondRewardClaimed)
+                {
+                    progress.silverRewardClaimed = false;
+                    progress.goldRewardClaimed = false;
+                    progress.diamondRewardClaimed = false;
+                    changed = true;
+                }
             }
 
             if (changed)
