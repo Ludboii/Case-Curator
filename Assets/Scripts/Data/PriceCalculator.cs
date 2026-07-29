@@ -5,6 +5,28 @@ public static class PriceCalculator
         if (item == null || item.skin == null)
             return 0f;
 
+        StickerData standaloneSticker = item.skin as StickerData;
+
+        if (standaloneSticker != null)
+            return UnityEngine.Mathf.Max(0f, standaloneSticker.marketValue);
+
+        float baseSkinPrice = GetBasePriceWithoutStickers(item);
+        float stickerContribution =
+            StickerValueUtility.GetAppliedStickerContribution(item);
+
+        return UnityEngine.Mathf.Max(0f, baseSkinPrice + stickerContribution);
+    }
+
+    public static float GetBasePriceWithoutStickers(InventoryItem item)
+    {
+        if (item == null || item.skin == null)
+            return 0f;
+
+        StickerData standaloneSticker = item.skin as StickerData;
+
+        if (standaloneSticker != null)
+            return UnityEngine.Mathf.Max(0f, standaloneSticker.marketValue);
+
         float price = GetBasePrice(item);
 
         if (!item.isVanilla)
@@ -15,7 +37,7 @@ public static class PriceCalculator
             price *= GetFloatMultiplier((float)item.floatValue);
         }
 
-        return price;
+        return UnityEngine.Mathf.Max(0f, price);
     }
 
     private static float GetBasePrice(InventoryItem item)
