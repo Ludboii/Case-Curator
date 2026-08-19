@@ -59,14 +59,14 @@ MonoBehaviour:
     factoryNew: 0
     minimalWear: 0
     fieldTested: 0
-    wellWorn: 0
-    battleScarred: 0
+    wellWorn: 140
+    battleScarred: 125
   statTrakExteriorPrices:
     factoryNew: 0
     minimalWear: 0
     fieldTested: 0
-    wellWorn: 0
-    battleScarred: 0
+    wellWorn: 170
+    battleScarred: 155
   souvenirExteriorPrices:
     factoryNew: 0
     minimalWear: 0

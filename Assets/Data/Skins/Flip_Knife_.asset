@@ -74,5 +74,5 @@ MonoBehaviour:
     wellWorn: 0
     battleScarred: 0
   isVanilla: 1
-  vanillaPrice: 403
-  vanillaStatTrakPrice: 406
+  vanillaPrice: 820
+  vanillaStatTrakPrice: 1050

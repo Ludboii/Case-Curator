@@ -24,7 +24,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 23747dea30e63ea45945dab72365bc39, type: 3}
   canBeStatTrak: 1
   canBeSouvenir: 0
-  patternType: 0
+  patternType: 3
   fadeBonusCurve:
     serializedVersion: 2
     m_Curve:

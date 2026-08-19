@@ -57,10 +57,10 @@ MonoBehaviour:
   fadeOverrides: []
   exteriorPrices:
     factoryNew: 71240
-    minimalWear: 16239
-    fieldTested: 9530
-    wellWorn: 8949
-    battleScarred: 6005
+    minimalWear: 18500
+    fieldTested: 12000
+    wellWorn: 10500
+    battleScarred: 7000
   statTrakExteriorPrices:
     factoryNew: 0
     minimalWear: 0
