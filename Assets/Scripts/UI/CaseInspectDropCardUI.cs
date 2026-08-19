@@ -194,11 +194,13 @@ public class CaseInspectDropCardUI : MonoBehaviour
             return;
         }
 
-        if (skin is StickerData sticker && StickerInspectUI.Instance != null)
+        // StickerData inherits SkinData only for shared inventory/save support.
+        // Always route Sticker Capsule entries through the case popup's explicit
+        // sticker mode so a missing/misconfigured StickerInspectUI can never show
+        // stale weapon-skin data such as the previously inspected Aphrodite.
+        if (skin is StickerData)
         {
-            StickerInspectUI.Instance.OpenCatalogueSticker(
-                sticker,
-                owner.CurrentCase);
+            owner.OpenSkinInfo(skin);
             return;
         }
 
@@ -238,8 +240,6 @@ public class CaseInspectDropCardUI : MonoBehaviour
                 found ? "Found" : "Not Found",
                 found ? foundColor : notFoundColor));
 
-        // Sticker Capsules have one permanent Normal Completion tier. Their
-        // cards never display wear, float or StatTrak progression lines.
         if (skin is StickerData ||
             StickerCapsuleCompletionUtility.IsStickerCapsule(sourceCase))
         {
@@ -247,7 +247,6 @@ public class CaseInspectDropCardUI : MonoBehaviour
             return;
         }
 
-        // Rare Special items only participate in Bronze Completion.
         if (skin.rarity == Rarity.RareSpecial)
         {
             foundStateText.text = builder.ToString();
