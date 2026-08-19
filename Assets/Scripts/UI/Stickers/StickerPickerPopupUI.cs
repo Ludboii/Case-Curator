@@ -76,8 +76,7 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
         if (root == null)
             root = gameObject;
 
-        SetupButton(closeButton, Close);
-        SetupButton(applyButton, ApplySelected);
+        EnsureButtonWiring();
 
         if (searchInput != null)
         {
@@ -101,6 +100,11 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
         SetOpenState(false);
     }
 
+    private void OnEnable()
+    {
+        EnsureButtonWiring();
+    }
+
     public void Open(
         InventoryItem targetSkin,
         int targetSlotIndex,
@@ -116,6 +120,8 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
         selectedStickerItem = null;
         selectedCard = null;
         isOpen = true;
+
+        EnsureButtonWiring();
 
         if (root != null && !root.activeSelf)
             root.SetActive(true);
@@ -171,10 +177,34 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
 
     private void ApplySelected()
     {
+        EnsureButtonWiring();
+        ResolveLiveSelection();
+
         StickerData sticker = StickerItemUtility.GetSticker(selectedStickerItem);
 
-        if (service == null || skinItem == null || sticker == null)
+        if (service == null)
+        {
+            ShowResult(StickerActionResult.Failed(
+                StickerActionStatus.ServiceUnavailable,
+                "Sticker application service is unavailable."));
             return;
+        }
+
+        if (skinItem == null)
+        {
+            ShowResult(StickerActionResult.Failed(
+                StickerActionStatus.Invalid,
+                "The inspected weapon skin could not be resolved."));
+            return;
+        }
+
+        if (selectedStickerItem == null || sticker == null)
+        {
+            ShowResult(StickerActionResult.Failed(
+                StickerActionStatus.Invalid,
+                "Select an owned sticker before applying it."));
+            return;
+        }
 
         if (selectedStickerItem.favorite)
         {
@@ -194,16 +224,25 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
                 $"Estimated value added: {addedValue:N2} Gold\n\n" +
                 "This individual sticker will leave your inventory.";
 
-            if (SellConfirmationPopupUI.Instance != null)
+            SellConfirmationPopupUI confirmation =
+                SellConfirmationPopupUI.Instance;
+
+            if (confirmation == null)
             {
-                SellConfirmationPopupUI.Instance.Show(
-                    "Apply Expensive Sticker",
-                    message,
-                    "Apply",
-                    "Cancel",
-                    ConfirmApply);
+                ShowResult(StickerActionResult.Failed(
+                    StickerActionStatus.ServiceUnavailable,
+                    "Expensive stickers require the confirmation popup, but it is unavailable."));
                 return;
             }
+
+            confirmation.Show(
+                "Apply Expensive Sticker",
+                message,
+                "Apply",
+                "Cancel",
+                ConfirmApply,
+                HandleApplyCancelled);
+            return;
         }
 
         ConfirmApply();
@@ -211,8 +250,18 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
 
     private void ConfirmApply()
     {
+        ResolveLiveSelection();
+
+        if (service == null)
+            service = StickerApplicationService.GetOrCreate();
+
         if (service == null || skinItem == null || selectedStickerItem == null)
+        {
+            ShowResult(StickerActionResult.Failed(
+                StickerActionStatus.ServiceUnavailable,
+                "Sticker application could not resolve the selected skin or sticker."));
             return;
+        }
 
         StickerActionResult result = service.ApplySticker(
             skinItem,
@@ -229,6 +278,45 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
         Close();
     }
 
+    private void HandleApplyCancelled()
+    {
+        if (root != null && isOpen && !root.activeSelf)
+            root.SetActive(true);
+
+        RefreshSelectedPreview();
+    }
+
+    private void ResolveLiveSelection()
+    {
+        if (service == null)
+            service = StickerApplicationService.GetOrCreate();
+
+        if (InventoryManager.Instance == null)
+            return;
+
+        if (skinItem == null && owner != null)
+            skinItem = owner.CurrentSkinItem;
+
+        if (skinItem != null && !string.IsNullOrWhiteSpace(skinItem.instanceId))
+        {
+            InventoryItem liveSkin = InventoryManager.Instance.GetItemByInstanceId(
+                skinItem.instanceId);
+
+            if (liveSkin != null)
+                skinItem = liveSkin;
+        }
+
+        if (selectedStickerItem != null &&
+            !string.IsNullOrWhiteSpace(selectedStickerItem.instanceId))
+        {
+            InventoryItem liveSticker = InventoryManager.Instance.GetItemByInstanceId(
+                selectedStickerItem.instanceId);
+
+            if (liveSticker != null)
+                selectedStickerItem = liveSticker;
+        }
+    }
+
     private void Rebuild()
     {
         if (!isOpen)
@@ -238,9 +326,6 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
         filtered.Clear();
         quantityByStickerId.Clear();
 
-        // A UI event can fire one frame after the inspected item changes. Recover
-        // from the SkinInspect controller instead of treating that as an inventory
-        // failure and leaving the popup stuck in an unavailable state.
         if (skinItem == null && owner != null)
             skinItem = owner.CurrentSkinItem;
 
@@ -318,10 +403,6 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
 
     private bool PassesFilters(InventoryItem item, StickerData sticker)
     {
-        // The old implementation interpreted this toggle as FAVORITES ONLY,
-        // which hid every usable sticker whenever the toggle was checked. The
-        // intended behaviour is SHOW FAVORITES: normal stickers always remain
-        // visible; favorited copies are optionally shown at the end and disabled.
         if (showFavoritesToggle != null &&
             !showFavoritesToggle.isOn &&
             item.favorite)
@@ -407,8 +488,6 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
 
     private int CompareItems(InventoryItem a, InventoryItem b)
     {
-        // Favorited stickers remain visible for inspection but always sit at the
-        // end and cannot be selected.
         int favoriteCompare = a.favorite.CompareTo(b.favorite);
 
         if (favoriteCompare != 0)
@@ -717,6 +796,12 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
         dropdown.onValueChanged.AddListener(_ => Rebuild());
     }
 
+    private void EnsureButtonWiring()
+    {
+        SetupButton(closeButton, Close);
+        SetupButton(applyButton, ApplySelected);
+    }
+
     private static void SetupButton(
         Button button,
         UnityEngine.Events.UnityAction action)
@@ -724,7 +809,7 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
         if (button == null)
             return;
 
-        button.onClick.RemoveAllListeners();
+        button.onClick.RemoveListener(action);
         button.onClick.AddListener(action);
     }
 
@@ -742,8 +827,13 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
         if (result == null)
             return;
 
+        if (selectedRuleText != null && !result.success)
+            selectedRuleText.text = result.message;
+
         if (owner != null)
             owner.ShowStatus(result.message, !result.success);
+        else if (!result.success)
+            Debug.LogWarning(result.message, this);
     }
 
     private void ClearCards()
