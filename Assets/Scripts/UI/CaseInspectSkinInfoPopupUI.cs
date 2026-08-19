@@ -63,6 +63,12 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
 
     public void Open(SkinData skin, CaseData sourceCase)
     {
+        if (skin is StickerData sticker)
+        {
+            OpenSticker(sticker, sourceCase);
+            return;
+        }
+
         currentSourceCase = sourceCase;
 
         if (skin == null)
@@ -112,6 +118,62 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
         }
     }
 
+    public void OpenSticker(StickerData sticker, CaseData sourceCapsule)
+    {
+        currentSourceCase = sourceCapsule;
+
+        if (sticker == null)
+        {
+            Close();
+            return;
+        }
+
+        if (root != null)
+            root.SetActive(true);
+
+        ApplyStickerRarityColors(sticker.stickerRarity);
+
+        if (skinImage != null)
+        {
+            skinImage.sprite = sticker.icon;
+            skinImage.enabled = sticker.icon != null;
+            skinImage.preserveAspect = true;
+        }
+
+        if (titleText != null)
+            titleText.text = sticker.DisplayName;
+
+        if (priceText != null)
+        {
+            priceText.richText = true;
+            priceText.alignment = TextAlignmentOptions.TopLeft;
+            priceText.text =
+                $"<b>{StickerRarityUtility.GetDisplayName(sticker.stickerRarity)}</b>\n" +
+                $"Market value: {sticker.marketValue:0.##} G\n" +
+                $"Applied contribution: " +
+                $"{sticker.marketValue * StickerApplicationService.AppliedValuePercent:0.##} G (20%)";
+        }
+
+        if (wearRangeText != null)
+        {
+            wearRangeText.richText = true;
+            wearRangeText.alignment = TextAlignmentOptions.TopLeft;
+            wearRangeText.textWrappingMode = TextWrappingModes.Normal;
+            wearRangeText.text = BuildStickerDetails(sticker);
+        }
+
+        if (sourceText != null)
+        {
+            string source = sourceCapsule != null &&
+                            !string.IsNullOrWhiteSpace(sourceCapsule.caseName)
+                ? sourceCapsule.caseName
+                : sticker.PrimaryCapsuleName;
+            sourceText.text = string.IsNullOrWhiteSpace(source)
+                ? "Sticker"
+                : source;
+        }
+    }
+
     public void Close()
     {
         currentSourceCase = null;
@@ -122,8 +184,16 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
 
     private void ApplyRarityColors(Rarity rarity)
     {
-        Color rarityColor = RarityColorUtility.GetColor(rarity);
+        ApplyColors(RarityColorUtility.GetColor(rarity));
+    }
 
+    private void ApplyStickerRarityColors(StickerRarity rarity)
+    {
+        ApplyColors(StickerRarityUtility.GetColor(rarity));
+    }
+
+    private void ApplyColors(Color rarityColor)
+    {
         Color backgroundColor = Color.Lerp(Color.black, rarityColor, 0.55f);
         backgroundColor.a = 0.96f;
 
@@ -135,6 +205,43 @@ public class CaseInspectSkinInfoPopupUI : MonoBehaviour
 
         if (topBarImage != null)
             topBarImage.color = topBarColor;
+    }
+
+    private static string BuildStickerDetails(StickerData sticker)
+    {
+        if (sticker == null)
+            return "";
+
+        StringBuilder builder = new StringBuilder();
+
+        if (!string.IsNullOrWhiteSpace(sticker.tournamentEvent))
+            builder.AppendLine($"Tournament / Event: {sticker.tournamentEvent}");
+
+        string teamPlayer = "";
+
+        if (!string.IsNullOrWhiteSpace(sticker.teamName))
+            teamPlayer = sticker.teamName.Trim();
+
+        if (!string.IsNullOrWhiteSpace(sticker.playerName))
+        {
+            teamPlayer += string.IsNullOrWhiteSpace(teamPlayer)
+                ? sticker.playerName.Trim()
+                : " • " + sticker.playerName.Trim();
+        }
+
+        if (!string.IsNullOrWhiteSpace(teamPlayer))
+            builder.AppendLine($"Team / Player: {teamPlayer}");
+
+        if (sticker.year > 0)
+            builder.AppendLine($"Year: {sticker.year}");
+
+        if (!string.IsNullOrWhiteSpace(sticker.PrimaryCapsuleName))
+            builder.AppendLine($"Capsule: {sticker.PrimaryCapsuleName}");
+
+        if (builder.Length == 0)
+            builder.Append("Sticker");
+
+        return builder.ToString().TrimEnd();
     }
 
     private string BuildWearAndDiscoveryText(
