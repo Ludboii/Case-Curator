@@ -13,6 +13,12 @@ public class GameDatabase : ScriptableObject
     public List<CaseData> allCases = new List<CaseData>();
     public List<CollectionData> allCollections = new List<CollectionData>();
 
+    [Header("Legacy Variant Parents")]
+    [Tooltip(
+        "Generic Doppler / Gamma Doppler assets remain referenced by CaseData " +
+        "as weighted family entries. Concrete phase/gem assets live in allSkins.")]
+    public List<SkinData> legacyDopplerParents = new List<SkinData>();
+
     [Header("Progression")]
     public UpgradeCatalog upgradeCatalog;
 
@@ -41,6 +47,23 @@ public class GameDatabase : ScriptableObject
                     string.Equals(skin.apiId, apiId, StringComparison.Ordinal))
                 {
                     return skin;
+                }
+            }
+        }
+
+        // Old saves may still point at the generic Doppler family asset. Those
+        // parents are kept outside allSkins so Museum/catalog systems only see
+        // the actual phases and gems, but save loading can still resolve them.
+        if (legacyDopplerParents != null)
+        {
+            for (int i = 0; i < legacyDopplerParents.Count; i++)
+            {
+                SkinData parent = legacyDopplerParents[i];
+
+                if (parent != null &&
+                    string.Equals(parent.apiId, apiId, StringComparison.Ordinal))
+                {
+                    return parent;
                 }
             }
         }
@@ -137,6 +160,7 @@ public class GameDatabase : ScriptableObject
     {
         EnsureCollections();
         NormalizeStickerRegistration();
+        NormalizeDopplerRegistration();
         NormalizeCompatibilityRarities();
     }
 
@@ -144,6 +168,7 @@ public class GameDatabase : ScriptableObject
     {
         EnsureCollections();
         NormalizeStickerRegistration();
+        NormalizeDopplerRegistration();
         NormalizeCompatibilityRarities();
     }
 
@@ -160,6 +185,9 @@ public class GameDatabase : ScriptableObject
 
         if (allCollections == null)
             allCollections = new List<CollectionData>();
+
+        if (legacyDopplerParents == null)
+            legacyDopplerParents = new List<SkinData>();
 
         if (museumMilestones == null)
             museumMilestones = new List<MuseumMilestoneData>();
@@ -191,6 +219,54 @@ public class GameDatabase : ScriptableObject
             if (allStickers[i] == null)
                 allStickers.RemoveAt(i);
         }
+    }
+
+    private void NormalizeDopplerRegistration()
+    {
+        if (allSkins == null || legacyDopplerParents == null)
+            return;
+
+        for (int i = allSkins.Count - 1; i >= 0; i--)
+        {
+            SkinData skin = allSkins[i];
+
+            if (!IsGenericDopplerParent(skin))
+                continue;
+
+            if (!legacyDopplerParents.Contains(skin))
+                legacyDopplerParents.Add(skin);
+
+            allSkins.RemoveAt(i);
+        }
+
+        for (int i = legacyDopplerParents.Count - 1; i >= 0; i--)
+        {
+            SkinData parent = legacyDopplerParents[i];
+
+            if (parent == null)
+            {
+                legacyDopplerParents.RemoveAt(i);
+                continue;
+            }
+
+            if (!IsGenericDopplerParent(parent))
+            {
+                legacyDopplerParents.RemoveAt(i);
+
+                if (!allSkins.Contains(parent))
+                    allSkins.Add(parent);
+            }
+        }
+    }
+
+    private static bool IsGenericDopplerParent(SkinData skin)
+    {
+        if (skin == null || skin.isVanilla)
+            return false;
+
+        string name = (skin.skinName ?? "").Trim();
+        return string.Equals(name, "Doppler", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(name, "Gamma Doppler", StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>
