@@ -20,7 +20,15 @@ public class SellConfirmationPopupUI : MonoBehaviour
     public Button confirmButton;
     public Button cancelButton;
 
+    [Header("Modal Layer")]
+    [Tooltip(
+        "Keeps confirmations above other full-screen UI such as the sticker " +
+        "picker. This is applied with a nested Canvas at runtime.")]
+    public int modalSortingOrder = 32000;
+
     private Action onConfirmAction;
+    private Action onCancelAction;
+    private Canvas modalCanvas;
 
     private void Awake()
     {
@@ -29,19 +37,14 @@ public class SellConfirmationPopupUI : MonoBehaviour
         if (popupRoot == null)
             popupRoot = gameObject;
 
-        if (confirmButton != null)
-        {
-            confirmButton.onClick.RemoveAllListeners();
-            confirmButton.onClick.AddListener(Confirm);
-        }
-
-        if (cancelButton != null)
-        {
-            cancelButton.onClick.RemoveAllListeners();
-            cancelButton.onClick.AddListener(Cancel);
-        }
-
+        EnsureButtonWiring();
+        EnsureModalLayer();
         Hide();
+    }
+
+    private void OnEnable()
+    {
+        EnsureButtonWiring();
     }
 
     private void OnDestroy()
@@ -57,7 +60,28 @@ public class SellConfirmationPopupUI : MonoBehaviour
         string cancelText,
         Action onConfirm)
     {
+        Show(
+            title,
+            message,
+            confirmText,
+            cancelText,
+            onConfirm,
+            null);
+    }
+
+    public void Show(
+        string title,
+        string message,
+        string confirmText,
+        string cancelText,
+        Action onConfirm,
+        Action onCancel)
+    {
         onConfirmAction = onConfirm;
+        onCancelAction = onCancel;
+
+        EnsureButtonWiring();
+        EnsureModalLayer();
 
         if (titleText != null)
             titleText.text = title;
@@ -75,12 +99,14 @@ public class SellConfirmationPopupUI : MonoBehaviour
         {
             popupRoot.SetActive(true);
             popupRoot.transform.SetAsLastSibling();
+            EnsureModalLayer();
         }
     }
 
     public void Hide()
     {
         onConfirmAction = null;
+        onCancelAction = null;
 
         if (popupRoot != null)
             popupRoot.SetActive(false);
@@ -89,14 +115,56 @@ public class SellConfirmationPopupUI : MonoBehaviour
     private void Confirm()
     {
         Action action = onConfirmAction;
+        onConfirmAction = null;
+        onCancelAction = null;
 
-        Hide();
+        if (popupRoot != null)
+            popupRoot.SetActive(false);
 
         action?.Invoke();
     }
 
     private void Cancel()
     {
-        Hide();
+        Action action = onCancelAction;
+        onConfirmAction = null;
+        onCancelAction = null;
+
+        if (popupRoot != null)
+            popupRoot.SetActive(false);
+
+        action?.Invoke();
+    }
+
+    private void EnsureButtonWiring()
+    {
+        if (confirmButton != null)
+        {
+            confirmButton.onClick.RemoveListener(Confirm);
+            confirmButton.onClick.AddListener(Confirm);
+        }
+
+        if (cancelButton != null)
+        {
+            cancelButton.onClick.RemoveListener(Cancel);
+            cancelButton.onClick.AddListener(Cancel);
+        }
+    }
+
+    private void EnsureModalLayer()
+    {
+        if (popupRoot == null)
+            return;
+
+        modalCanvas = popupRoot.GetComponent<Canvas>();
+
+        if (modalCanvas == null)
+            modalCanvas = popupRoot.AddComponent<Canvas>();
+
+        modalCanvas.overrideSorting = true;
+        modalCanvas.sortingOrder = Mathf.Clamp(modalSortingOrder, 1000, 32760);
+
+        if (popupRoot.GetComponent<GraphicRaycaster>() == null)
+            popupRoot.AddComponent<GraphicRaycaster>();
     }
 }
