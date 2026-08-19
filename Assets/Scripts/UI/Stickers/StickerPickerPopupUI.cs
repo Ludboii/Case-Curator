@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public enum StickerPickerSortMode
@@ -29,7 +30,13 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
     [SerializeField] private TMP_Dropdown rarityDropdown;
     [SerializeField] private TMP_Dropdown capsuleDropdown;
     [SerializeField] private TMP_Dropdown yearDropdown;
-    [SerializeField] private Toggle favoriteOnlyToggle;
+
+    [FormerlySerializedAs("favoriteOnlyToggle")]
+    [Tooltip(
+        "When enabled, favorited stickers remain visible at the end of the " +
+        "picker but cannot be selected. Disable it to hide favorites entirely.")]
+    [SerializeField] private Toggle showFavoritesToggle;
+
     [SerializeField] private TMP_Dropdown sortDropdown;
 
     [Header("Items")]
@@ -62,6 +69,7 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
     private SkinInspectStickerSlotsUI owner;
     private StickerApplicationService service;
     private int slotIndex;
+    private bool isOpen;
 
     private void Awake()
     {
@@ -82,14 +90,15 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
         SetupDropdown(yearDropdown);
         SetupDropdown(sortDropdown);
 
-        if (favoriteOnlyToggle != null)
+        if (showFavoritesToggle != null)
         {
-            favoriteOnlyToggle.onValueChanged.RemoveAllListeners();
-            favoriteOnlyToggle.onValueChanged.AddListener(_ => Rebuild());
+            showFavoritesToggle.onValueChanged.RemoveAllListeners();
+            showFavoritesToggle.onValueChanged.AddListener(_ => Rebuild());
+            UpdateShowFavoritesLabel();
         }
 
         PopulateStaticDropdowns();
-        Close();
+        SetOpenState(false);
     }
 
     public void Open(
@@ -106,8 +115,9 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
         service = StickerApplicationService.GetOrCreate();
         selectedStickerItem = null;
         selectedCard = null;
+        isOpen = true;
 
-        if (root != null)
+        if (root != null && !root.activeSelf)
             root.SetActive(true);
 
         if (titleText != null)
@@ -120,13 +130,24 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
 
     public void Close()
     {
-        ClearCards();
-        skinItem = null;
-        selectedStickerItem = null;
-        selectedCard = null;
+        SetOpenState(false);
+    }
 
-        if (root != null)
-            root.SetActive(false);
+    private void SetOpenState(bool open)
+    {
+        isOpen = open;
+
+        if (!open)
+        {
+            ClearCards();
+            skinItem = null;
+            selectedStickerItem = null;
+            selectedCard = null;
+            owner = null;
+        }
+
+        if (root != null && root.activeSelf != open)
+            root.SetActive(open);
     }
 
     public void Select(
@@ -210,16 +231,34 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
 
     private void Rebuild()
     {
+        if (!isOpen)
+            return;
+
         ClearCards();
         filtered.Clear();
         quantityByStickerId.Clear();
 
-        if (InventoryManager.Instance == null ||
-            content == null ||
-            cardPrefab == null ||
-            skinItem == null)
+        // A UI event can fire one frame after the inspected item changes. Recover
+        // from the SkinInspect controller instead of treating that as an inventory
+        // failure and leaving the popup stuck in an unavailable state.
+        if (skinItem == null && owner != null)
+            skinItem = owner.CurrentSkinItem;
+
+        if (InventoryManager.Instance == null)
         {
             SetEmpty("Sticker inventory is unavailable.");
+            return;
+        }
+
+        if (content == null || cardPrefab == null)
+        {
+            SetEmpty("Sticker picker UI is not fully assigned.");
+            return;
+        }
+
+        if (skinItem == null)
+        {
+            SetEmpty("No weapon skin is currently selected.");
             return;
         }
 
@@ -233,10 +272,12 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
             if (sticker == null)
                 continue;
 
-            if (!quantityByStickerId.ContainsKey(sticker.apiId))
-                quantityByStickerId.Add(sticker.apiId, 0);
+            string key = GetStickerQuantityKey(sticker);
 
-            quantityByStickerId[sticker.apiId]++;
+            if (!quantityByStickerId.ContainsKey(key))
+                quantityByStickerId.Add(key, 0);
+
+            quantityByStickerId[key]++;
         }
 
         for (int i = 0; i < items.Count; i++)
@@ -257,10 +298,11 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
             StickerPickerItemCardUI card = Instantiate(cardPrefab, content);
             int quantity = sticker != null &&
                            quantityByStickerId.TryGetValue(
-                               sticker.apiId,
+                               GetStickerQuantityKey(sticker),
                                out int owned)
                 ? owned
                 : 1;
+
             card.Setup(
                 item,
                 this,
@@ -276,9 +318,13 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
 
     private bool PassesFilters(InventoryItem item, StickerData sticker)
     {
-        if (favoriteOnlyToggle != null &&
-            favoriteOnlyToggle.isOn &&
-            !item.favorite)
+        // The old implementation interpreted this toggle as FAVORITES ONLY,
+        // which hid every usable sticker whenever the toggle was checked. The
+        // intended behaviour is SHOW FAVORITES: normal stickers always remain
+        // visible; favorited copies are optionally shown at the end and disabled.
+        if (showFavoritesToggle != null &&
+            !showFavoritesToggle.isOn &&
+            item.favorite)
         {
             return false;
         }
@@ -316,7 +362,12 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
 
         if (capsuleDropdown != null && capsuleDropdown.value > 0)
         {
-            string capsule = capsuleOptions[capsuleDropdown.value - 1];
+            int optionIndex = capsuleDropdown.value - 1;
+
+            if (optionIndex < 0 || optionIndex >= capsuleOptions.Count)
+                return false;
+
+            string capsule = capsuleOptions[optionIndex];
             bool match = false;
 
             if (sticker.capsules != null)
@@ -342,9 +393,12 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
 
         if (yearDropdown != null && yearDropdown.value > 0)
         {
-            int year = yearOptions[yearDropdown.value - 1];
+            int optionIndex = yearDropdown.value - 1;
 
-            if (sticker.year != year)
+            if (optionIndex < 0 || optionIndex >= yearOptions.Count)
+                return false;
+
+            if (sticker.year != yearOptions[optionIndex])
                 return false;
         }
 
@@ -408,9 +462,21 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
     private int GetQuantity(StickerData sticker)
     {
         return sticker != null &&
-               quantityByStickerId.TryGetValue(sticker.apiId, out int quantity)
+               quantityByStickerId.TryGetValue(
+                   GetStickerQuantityKey(sticker),
+                   out int quantity)
             ? quantity
             : 0;
+    }
+
+    private static string GetStickerQuantityKey(StickerData sticker)
+    {
+        if (sticker == null)
+            return "";
+
+        return !string.IsNullOrWhiteSpace(sticker.apiId)
+            ? sticker.apiId
+            : sticker.DisplayName;
     }
 
     private static int CompareThenName(
@@ -598,7 +664,8 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
             List<string> options = new List<string> { "All capsules" };
             options.AddRange(capsuleOptions);
             capsuleDropdown.AddOptions(options);
-            capsuleDropdown.value = 0;
+            capsuleDropdown.SetValueWithoutNotify(0);
+            capsuleDropdown.RefreshShownValue();
         }
 
         if (yearDropdown != null)
@@ -610,23 +677,44 @@ public sealed class StickerPickerPopupUI : MonoBehaviour
                 options.Add(yearOptions[i].ToString());
 
             yearDropdown.AddOptions(options);
-            yearDropdown.value = 0;
+            yearDropdown.SetValueWithoutNotify(0);
+            yearDropdown.RefreshShownValue();
         }
     }
 
-    private static void SetupDropdown(TMP_Dropdown dropdown)
+    private void UpdateShowFavoritesLabel()
+    {
+        if (showFavoritesToggle == null)
+            return;
+
+        TMP_Text[] labels = showFavoritesToggle.GetComponentsInChildren<TMP_Text>(true);
+
+        for (int i = 0; i < labels.Length; i++)
+        {
+            TMP_Text label = labels[i];
+
+            if (label == null)
+                continue;
+
+            string current = (label.text ?? "").Trim();
+
+            if (string.IsNullOrWhiteSpace(current) ||
+                string.Equals(current, "Toggle", StringComparison.OrdinalIgnoreCase) ||
+                current.IndexOf("favorite", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                label.text = "Show favorites";
+                break;
+            }
+        }
+    }
+
+    private void SetupDropdown(TMP_Dropdown dropdown)
     {
         if (dropdown == null)
             return;
 
         dropdown.onValueChanged.RemoveAllListeners();
-        dropdown.onValueChanged.AddListener(_ =>
-        {
-            StickerPickerPopupUI popup = dropdown.GetComponentInParent<StickerPickerPopupUI>(true);
-
-            if (popup != null)
-                popup.Rebuild();
-        });
+        dropdown.onValueChanged.AddListener(_ => Rebuild());
     }
 
     private static void SetupButton(
