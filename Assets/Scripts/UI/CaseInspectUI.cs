@@ -132,6 +132,7 @@ public class CaseInspectUI : MonoBehaviour
 
         HashSet<string> normalIds = new HashSet<string>();
         HashSet<string> rareIds = new HashSet<string>();
+        GameDatabase database = DopplerVariantUtility.GetDatabase();
 
         foreach (WeightedDrop drop in currentCase.dropPool)
         {
@@ -139,15 +140,33 @@ public class CaseInspectUI : MonoBehaviour
                 continue;
 
             SkinData skin = drop.skin;
-            string id = GetSkinId(skin);
 
             if (skin.rarity == Rarity.RareSpecial)
             {
-                if (rareIds.Add(id))
-                    rareSpecialSkins.Add(skin);
+                // CaseData deliberately keeps one generic Doppler family entry
+                // for its weighted roll. Inspection expands that family into the
+                // concrete Phase 1-4 / gem assets so every possible result is a
+                // separate clickable card.
+                if (DopplerVariantUtility.IsGenericParent(skin))
+                {
+                    List<SkinData> variants =
+                        DopplerVariantUtility.GetVariants(skin, database);
+
+                    if (variants.Count > 0)
+                    {
+                        for (int i = 0; i < variants.Count; i++)
+                            AddRareSpecialSkin(variants[i], rareIds);
+
+                        continue;
+                    }
+                }
+
+                AddRareSpecialSkin(skin, rareIds);
             }
             else
             {
+                string id = GetSkinId(skin);
+
                 if (normalIds.Add(id))
                     normalSkins.Add(skin);
             }
@@ -155,6 +174,19 @@ public class CaseInspectUI : MonoBehaviour
 
         normalSkins.Sort(CompareSkinsForInspect);
         rareSpecialSkins.Sort(CompareSkinsForInspect);
+    }
+
+    private void AddRareSpecialSkin(
+        SkinData skin,
+        HashSet<string> rareIds)
+    {
+        if (skin == null || rareIds == null)
+            return;
+
+        string id = GetSkinId(skin);
+
+        if (rareIds.Add(id))
+            rareSpecialSkins.Add(skin);
     }
 
     private int CompareSkinsForInspect(SkinData a, SkinData b)
@@ -173,6 +205,25 @@ public class CaseInspectUI : MonoBehaviour
         int weaponCompare = string.Compare(a.weaponName, b.weaponName);
         if (weaponCompare != 0)
             return weaponCompare;
+
+        bool aDoppler = DopplerVariantUtility.IsConcreteVariant(a);
+        bool bDoppler = DopplerVariantUtility.IsConcreteVariant(b);
+
+        if (aDoppler && bDoppler)
+        {
+            bool aGamma = DopplerVariantUtility.IsGammaDopplerFamily(a);
+            bool bGamma = DopplerVariantUtility.IsGammaDopplerFamily(b);
+
+            if (aGamma != bGamma)
+                return aGamma ? 1 : -1;
+
+            int variantCompare =
+                DopplerVariantUtility.GetVariantOrder(a)
+                    .CompareTo(DopplerVariantUtility.GetVariantOrder(b));
+
+            if (variantCompare != 0)
+                return variantCompare;
+        }
 
         return string.Compare(a.skinName, b.skinName);
     }
