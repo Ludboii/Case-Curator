@@ -33,6 +33,11 @@ public static class CaseOpener
             return null;
         }
 
+        // Existing CaseData assets intentionally keep one generic Doppler or
+        // Gamma Doppler family entry so their case weight is unchanged. Resolve
+        // that family into the actual phase/gem before the InventoryItem exists.
+        selectedSkin = DopplerVariantUtility.RollVariantIfNeeded(selectedSkin);
+
         InventoryItem item = new InventoryItem
         {
             instanceId = System.Guid.NewGuid().ToString(),
