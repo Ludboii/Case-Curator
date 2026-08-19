@@ -596,6 +596,7 @@ GameObject:
   - component: {fileID: 7982989010685562477}
   - component: {fileID: 1505571005853977353}
   - component: {fileID: 8705975210141519554}
+  - component: {fileID: 5870924513575106044}
   m_Layer: 5
   m_Name: InventoryItemCard
   m_TagString: Untagged
@@ -706,6 +707,28 @@ MonoBehaviour:
   stickerInspectUI: {fileID: 0}
   selectedOverlay: {fileID: 6497935741640500740}
   selectedBorder: {fileID: 0}
+--- !u!114 &5870924513575106044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3387647797285753730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adb4a82543ae61440bb9f0b25c634d9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryCardStickerIconsUI
+  card: {fileID: 0}
+  root: {fileID: 0}
+  stickerImages:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  iconSize: {x: 12, y: 12}
+  spacing: 1
+  anchoredOffset: {x: -4, y: 5}
 --- !u!1 &3517894873521113615
 GameObject:
   m_ObjectHideFlags: 0
@@ -1089,6 +1112,9 @@ MonoBehaviour:
   - {fileID: 5611300949931416558}
   - {fileID: 2814599160024837112}
   - {fileID: 1429094110603178560}
+  iconSize: {x: 12, y: 12}
+  spacing: 1
+  anchoredOffset: {x: -4, y: 5}
 --- !u!1 &5287057197251981274
 GameObject:
   m_ObjectHideFlags: 0

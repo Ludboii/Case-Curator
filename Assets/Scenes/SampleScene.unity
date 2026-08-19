@@ -689,7 +689,7 @@ MonoBehaviour:
   rarityDropdown: {fileID: 1654290133}
   capsuleDropdown: {fileID: 281698661}
   yearDropdown: {fileID: 81539896}
-  favoriteOnlyToggle: {fileID: 653214774}
+  showFavoritesToggle: {fileID: 653214774}
   sortDropdown: {fileID: 1002926976}
   content: {fileID: 859341437}
   cardPrefab: {fileID: 6323160063915660782, guid: cd72d6ad258080a4d82b52f741d2cee7, type: 3}
@@ -7948,7 +7948,7 @@ MonoBehaviour:
   rarityDropdown: {fileID: 1654290133}
   capsuleDropdown: {fileID: 281698661}
   yearDropdown: {fileID: 81539896}
-  favoriteOnlyToggle: {fileID: 653214774}
+  showFavoritesToggle: {fileID: 653214774}
   sortDropdown: {fileID: 1002926976}
   content: {fileID: 859341437}
   cardPrefab: {fileID: 6323160063915660782, guid: cd72d6ad258080a4d82b52f741d2cee7, type: 3}
@@ -14632,7 +14632,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &327093737
 RectTransform:
   m_ObjectHideFlags: 0
@@ -20634,7 +20634,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &482133106
 RectTransform:
   m_ObjectHideFlags: 0
@@ -30103,7 +30103,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &702245306
 RectTransform:
   m_ObjectHideFlags: 0
@@ -34716,8 +34716,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 376, y: 0}
-  m_SizeDelta: {x: 425.6107, y: 111}
+  m_AnchoredPosition: {x: 365.4771, y: 1.0005}
+  m_SizeDelta: {x: 456.8449, y: 136.61}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &801630235
 MonoBehaviour:
@@ -36623,8 +36623,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -2.055481, y: -409.15482}
-  m_SizeDelta: {x: -395.89, y: -941.6904}
+  m_AnchoredPosition: {x: -2.055481, y: -426.60913}
+  m_SizeDelta: {x: -395.89, y: -906.7817}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &847394490
 MonoBehaviour:
@@ -37169,15 +37169,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GridLayoutGroup
   m_Padding:
-    m_Left: 0
+    m_Left: 15
     m_Right: 0
-    m_Top: 0
+    m_Top: 10
     m_Bottom: 0
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 280, y: 320}
-  m_Spacing: {x: 0, y: 0}
+  m_Spacing: {x: 15, y: 10}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!1 &859494861
@@ -40081,8 +40081,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -21.9418, y: 25}
-  m_SizeDelta: {x: 398.1163, y: 50}
+  m_AnchoredPosition: {x: -62, y: 34.653}
+  m_SizeDelta: {x: 398.1163, y: 69.306}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &919578534
 MonoBehaviour:
@@ -40131,8 +40131,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -55412,6 +55412,7 @@ MonoBehaviour:
   cancelButtonText: {fileID: 1965227664}
   confirmButton: {fileID: 1631983988}
   cancelButton: {fileID: 603624381}
+  modalSortingOrder: 32000
 --- !u!1 &1300857783
 GameObject:
   m_ObjectHideFlags: 0
@@ -61698,8 +61699,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 27.977112, y: -34}
-  m_SizeDelta: {x: 497.9543, y: 50}
+  m_AnchoredPosition: {x: -89.2476, y: -33.652}
+  m_SizeDelta: {x: 343.6211, y: 67.305}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1436692190
 MonoBehaviour:
@@ -61748,8 +61749,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -72617,8 +72618,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -432.7815, y: 25}
-  m_SizeDelta: {x: 354.437, y: 50}
+  m_AnchoredPosition: {x: -451.9187, y: 30.153}
+  m_SizeDelta: {x: 352.5997, y: 78.305}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1711643027
 MonoBehaviour:
@@ -72667,8 +72668,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 34
+  m_fontSizeBase: 34
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -84726,8 +84727,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -686, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: -699.02997, y: 1}
+  m_SizeDelta: {x: 126.05, y: 136.61}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1980904042
 MonoBehaviour:
@@ -85670,7 +85671,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ScrollRect
   m_Content: {fileID: 859341437}
-  m_Horizontal: 1
+  m_Horizontal: 0
   m_Vertical: 1
   m_MovementType: 1
   m_Elasticity: 0.1

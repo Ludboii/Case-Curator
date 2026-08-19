@@ -24,7 +24,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: a725eaddfd0852a44858fad0e82f5541, type: 3}
   canBeStatTrak: 1
   canBeSouvenir: 0
-  patternType: 0
+  patternType: 1
   fadeBonusCurve:
     serializedVersion: 2
     m_Curve:
@@ -49,8 +49,41 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  patternTierGroups: []
-  uniquePatterns: []
+  patternTierGroups:
+  - tier: 3
+    multiplier: 24
+    patternIds: 97000000a8000000b300000041010000830100002b02000050020000690200009e020000f8020000290300003c030000bb030000
+  - tier: 2
+    multiplier: 12
+    patternIds: 040000000d0000001c00000020000000410000004a00000051000000520000005c000000670000007a0000008b00000093000000ac000000bd000000cd000000e4000000000100004301000055010000aa010000ae010000ba010000cf010000df010000000200000d0200000e020000140200001d0200003b020000420200005d02000073020000b7020000ba020000c4020000c9020000ee020000f0020000170300004c0300006403000077030000780300007c03000087030000890300009a030000b6030000c9030000d2030000e4030000
+  - tier: 1
+    multiplier: 6
+    patternIds: 22000000700000001601000036010000380100006b0100007d0100009d010000ac010000ad010000c2010000070200002d0200004a0200006202000087020000ad020000b1020000b2020000dd020000f2020000020300003303000037030000580300005e030000680300006e030000a7030000e8030000
+  uniquePatterns:
+  - patternId: 661
+    tier: 3
+    multiplier: 32
+  - patternId: 670
+    tier: 3
+    multiplier: 31
+  - patternId: 321
+    tier: 3
+    multiplier: 30
+  - patternId: 955
+    tier: 3
+    multiplier: 30
+  - patternId: 179
+    tier: 3
+    multiplier: 30
+  - patternId: 151
+    tier: 3
+    multiplier: 30
+  - patternId: 760
+    tier: 3
+    multiplier: 30
+  - patternId: 760
+    tier: 3
+    multiplier: 30
   fadeRangeStart: 0
   fadeRangeEnd: 100
   reverseFadePattern: 0

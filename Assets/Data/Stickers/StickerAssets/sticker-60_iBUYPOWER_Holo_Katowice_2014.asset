@@ -74,11 +74,11 @@ MonoBehaviour:
     wellWorn: 0
     battleScarred: 0
   isVanilla: 1
-  vanillaPrice: 0
+  vanillaPrice: 240000
   vanillaStatTrakPrice: 0
   displayName: iBUYPOWER (Holo) | Katowice 2014
   stickerRarity: 1
-  marketValue: 0
+  marketValue: 240000
   capsules:
   - {fileID: 11400000, guid: e3b357b3e2e9d3946a60a2855615700f, type: 2}
   tournamentEvent: 2014 EMS One Katowice
