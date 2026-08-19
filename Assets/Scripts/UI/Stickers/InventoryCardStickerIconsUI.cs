@@ -16,10 +16,10 @@ public sealed class InventoryCardStickerIconsUI : MonoBehaviour
 
     [Header("Auto Layout")]
     [Tooltip("Size of each small sticker icon on the inventory card.")]
-    [SerializeField] private Vector2 iconSize = new Vector2(16f, 16f);
+    [SerializeField] private Vector2 iconSize = new Vector2(12f, 12f);
 
     [Tooltip("Spacing between the four sticker icons.")]
-    [SerializeField] private float spacing = 2f;
+    [SerializeField] private float spacing = 1f;
 
     [Tooltip(
         "Offset from the lower-right corner of the weapon image. Negative X " +
@@ -73,9 +73,6 @@ public sealed class InventoryCardStickerIconsUI : MonoBehaviour
             Refresh();
     }
 
-    /// <summary>
-    /// Called by InventoryItemCardUI after Setup assigns a new inventory item.
-    /// </summary>
     public void Refresh()
     {
         ResolveReferences();
