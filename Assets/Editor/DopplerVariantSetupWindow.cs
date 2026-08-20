@@ -575,6 +575,22 @@ public sealed class DopplerVariantSetupWindow : EditorWindow
             case 570: return "Phase 2";
             case 571: return "Phase 3";
             case 572: return "Phase 4";
+
+            // Model-specific Doppler paint kits used by ByMykel/Valve data.
+            case 617: return "Black Pearl";
+            case 618: return "Phase 2";
+            case 619: return "Sapphire";
+            case 852: return "Phase 1";
+            case 853: return "Phase 2";
+            case 854: return "Phase 3";
+            case 855: return "Phase 4";
+
+            // Alternate Gamma Doppler paint kits.
+            case 1119: return "Emerald";
+            case 1120: return "Phase 1";
+            case 1121: return "Phase 2";
+            case 1122: return "Phase 3";
+            case 1123: return "Phase 4";
             default: return null;
         }
     }
@@ -584,11 +600,18 @@ public sealed class DopplerVariantSetupWindow : EditorWindow
         if (!int.TryParse((paintIndex ?? "").Trim(), out int index))
             return null;
 
-        if (index >= 415 && index <= 421)
+        if ((index >= 415 && index <= 421) ||
+            (index >= 617 && index <= 619) ||
+            (index >= 852 && index <= 855))
+        {
             return "Doppler";
+        }
 
-        if (index >= 568 && index <= 572)
+        if ((index >= 568 && index <= 572) ||
+            (index >= 1119 && index <= 1123))
+        {
             return "Gamma Doppler";
+        }
 
         return null;
     }
