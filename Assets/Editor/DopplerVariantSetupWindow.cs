@@ -8,10 +8,9 @@ using UnityEditor;
 using UnityEngine;
 
 /// <summary>
-/// Converts the project's legacy generic Doppler/Gamma Doppler family assets
-/// into concrete phase/gem content while leaving CaseData pointed at the generic
-/// family entry. This preserves existing case odds and gives inventory/results
-/// actual variant SkinData assets with their own names, icons and prices.
+/// Converts legacy generic Doppler/Gamma Doppler case-family assets into
+/// concrete source-backed phase/gem SkinData assets. CaseData keeps the generic
+/// family entry so its weighted odds stay unchanged.
 /// </summary>
 public sealed class DopplerVariantSetupWindow : EditorWindow
 {
@@ -20,26 +19,6 @@ public sealed class DopplerVariantSetupWindow : EditorWindow
 
     private const string VariantRoot = "Assets/Data/Skins/DopplerVariants";
     private const string IconRoot = VariantRoot + "/Icons";
-
-    private static readonly string[] DopplerVariants =
-    {
-        "Doppler (Phase 1)",
-        "Doppler (Phase 2)",
-        "Doppler (Phase 3)",
-        "Doppler (Phase 4)",
-        "Doppler (Ruby)",
-        "Doppler (Sapphire)",
-        "Doppler (Black Pearl)"
-    };
-
-    private static readonly string[] GammaVariants =
-    {
-        "Gamma Doppler (Phase 1)",
-        "Gamma Doppler (Phase 2)",
-        "Gamma Doppler (Phase 3)",
-        "Gamma Doppler (Phase 4)",
-        "Gamma Doppler (Emerald)"
-    };
 
     [SerializeField] private GameDatabase database;
     [SerializeField] private bool downloadMissingIcons = true;
@@ -65,10 +44,11 @@ public sealed class DopplerVariantSetupWindow : EditorWindow
         EditorGUILayout.LabelField("Doppler / Gamma Doppler Setup", EditorStyles.boldLabel);
 
         EditorGUILayout.HelpBox(
-            "Creates concrete Phase 1-4 and gem SkinData assets from ByMykel's " +
-            "current CS2 dataset. CaseData keeps its generic Doppler family " +
-            "entry, so case odds do not change. The generic family's preview " +
-            "icon is changed to Phase 1.",
+            "Creates only Doppler variants that actually exist in ByMykel's current " +
+            "CS2 dataset. Matching uses the structured weapon/pattern/phase fields " +
+            "and paint-index fallbacks instead of assuming the phase is part of name. " +
+            "CaseData keeps its generic family entry, so case odds do not change. " +
+            "The generic family preview icon is changed to the source-backed Phase 1 icon.",
             MessageType.Info);
 
         database = (GameDatabase)EditorGUILayout.ObjectField(
@@ -87,9 +67,9 @@ public sealed class DopplerVariantSetupWindow : EditorWindow
 
         EditorGUILayout.Space(8f);
         EditorGUILayout.HelpBox(
-            "After setup, run Case Curator > Skins > Import Knife and Glove Prices " +
-            "again with the latest CSV. The importer will match each concrete " +
-            "Doppler phase/gem by weapon + finish name.",
+            "Existing Doppler price fields are preserved. Re-run Case Curator > Skins > " +
+            "Import Knife and Glove Prices only when you intentionally want to import " +
+            "your authored Doppler prices.",
             MessageType.None);
 
         using (new EditorGUI.DisabledScope(database == null))
@@ -122,14 +102,13 @@ public sealed class DopplerVariantSetupWindow : EditorWindow
             if (parsed == null || parsed.items == null)
                 throw new InvalidOperationException("Could not parse ByMykel skins.json.");
 
-            Dictionary<string, SkinApiItem> byDisplayName =
-                BuildApiLookup(parsed.items);
             List<SkinData> parents = CollectGenericParents();
 
             int created = 0;
             int updated = 0;
-            int missing = 0;
+            int parentFamiliesMissing = 0;
             int iconsDownloaded = 0;
+            int sourceVariantsMatched = 0;
 
             for (int parentIndex = 0; parentIndex < parents.Count; parentIndex++)
             {
@@ -138,20 +117,33 @@ public sealed class DopplerVariantSetupWindow : EditorWindow
                 if (parent == null)
                     continue;
 
-                string[] expected = DopplerVariantUtility.IsGammaDopplerFamily(parent)
-                    ? GammaVariants
-                    : DopplerVariants;
+                bool gamma = DopplerVariantUtility.IsGammaDopplerFamily(parent);
+                List<ApiVariantMatch> matches =
+                    FindAvailableApiVariants(parsed.items, parent, gamma);
+
+                if (matches.Count == 0)
+                {
+                    parentFamiliesMissing++;
+                    Debug.LogWarning(
+                        "Doppler setup: no source-backed " +
+                        (gamma ? "Gamma Doppler" : "Doppler") +
+                        " variants were found for " + parent.weaponName +
+                        ". Matching checked ByMykel weapon.name, pattern.name/id, " +
+                        "phase, paint_index, name and market_hash_name.",
+                        parent);
+                    continue;
+                }
 
                 List<SkinData> concreteForParent = new List<SkinData>();
 
-                for (int variantIndex = 0; variantIndex < expected.Length; variantIndex++)
+                for (int variantIndex = 0; variantIndex < matches.Count; variantIndex++)
                 {
-                    string finishName = expected[variantIndex];
-                    string lookupName = NormalizeDisplayName(
-                        parent.weaponName + " | " + finishName);
+                    ApiVariantMatch match = matches[variantIndex];
+                    SkinApiItem api = match.api;
+                    string finishName = match.finishName;
 
                     float progress = parents.Count > 0
-                        ? (parentIndex + variantIndex / (float)expected.Length) /
+                        ? (parentIndex + variantIndex / (float)Mathf.Max(1, matches.Count)) /
                           parents.Count
                         : 0f;
 
@@ -163,15 +155,7 @@ public sealed class DopplerVariantSetupWindow : EditorWindow
                         throw new OperationCanceledException();
                     }
 
-                    if (!byDisplayName.TryGetValue(lookupName, out SkinApiItem api))
-                    {
-                        missing++;
-                        Debug.LogWarning(
-                            $"Doppler setup: ByMykel entry not found for " +
-                            $"{parent.weaponName} | {finishName}.",
-                            parent);
-                        continue;
-                    }
+                    sourceVariantsMatched++;
 
                     SkinData variant = FindOrCreateVariant(
                         parent,
@@ -191,7 +175,10 @@ public sealed class DopplerVariantSetupWindow : EditorWindow
                         !string.IsNullOrWhiteSpace(api.image))
                     {
                         bool downloaded;
-                        Sprite sprite = GetOrDownloadSprite(api, finishName, out downloaded);
+                        Sprite sprite = GetOrDownloadSprite(
+                            api,
+                            finishName,
+                            out downloaded);
 
                         if (sprite != null)
                             variant.icon = sprite;
@@ -200,25 +187,25 @@ public sealed class DopplerVariantSetupWindow : EditorWindow
                             iconsDownloaded++;
                     }
 
-                    variant.patternType =
-                        DopplerVariantUtility.IsGammaDopplerFamily(parent)
-                            ? PatternType.GammaDoppler
-                            : PatternType.Doppler;
+                    variant.patternType = gamma
+                        ? PatternType.GammaDoppler
+                        : PatternType.Doppler;
 
                     EditorUtility.SetDirty(variant);
                     concreteForParent.Add(variant);
                     RegisterConcreteVariant(variant);
                 }
 
+                // A generic family is only a weighted case-pool placeholder.
+                // Its inspect/preview image should consistently represent Phase 1.
                 SkinData phaseOne = FindPhaseOne(concreteForParent);
 
                 if (phaseOne != null && phaseOne.icon != null)
                     parent.icon = phaseOne.icon;
 
-                parent.patternType =
-                    DopplerVariantUtility.IsGammaDopplerFamily(parent)
-                        ? PatternType.GammaDoppler
-                        : PatternType.Doppler;
+                parent.patternType = gamma
+                    ? PatternType.GammaDoppler
+                    : PatternType.Doppler;
 
                 RegisterLegacyParent(parent);
                 EditorUtility.SetDirty(parent);
@@ -231,12 +218,13 @@ public sealed class DopplerVariantSetupWindow : EditorWindow
 
             string summary =
                 $"Generic families found: {parents.Count}\n" +
+                $"Source-backed variants matched: {sourceVariantsMatched}\n" +
                 $"Concrete variants created: {created}\n" +
                 $"Concrete variants updated: {updated}\n" +
                 $"Icons downloaded: {iconsDownloaded}\n" +
-                $"Missing API variants: {missing}\n\n" +
-                "Next: re-run Case Curator > Skins > Import Knife and Glove Prices " +
-                "with the latest KnifeGlovePrices CSV.";
+                $"Families with no ByMykel variants: {parentFamiliesMissing}\n\n" +
+                "Variants absent from ByMykel are intentionally not created. " +
+                "Existing authored price fields were preserved.";
 
             Debug.Log("Doppler variant setup complete.\n" + summary);
             EditorUtility.DisplayDialog("Doppler Setup Complete", summary, "OK");
@@ -256,6 +244,387 @@ public sealed class DopplerVariantSetupWindow : EditorWindow
             Debug.LogError("Doppler variant setup failed: " + exception);
             EditorUtility.DisplayDialog("Doppler Setup Failed", exception.Message, "OK");
         }
+    }
+
+    private List<ApiVariantMatch> FindAvailableApiVariants(
+        SkinApiItem[] items,
+        SkinData parent,
+        bool gamma)
+    {
+        Dictionary<string, ApiVariantMatch> bestByPhase =
+            new Dictionary<string, ApiVariantMatch>(StringComparer.OrdinalIgnoreCase);
+
+        if (items == null || parent == null)
+            return new List<ApiVariantMatch>();
+
+        for (int i = 0; i < items.Length; i++)
+        {
+            SkinApiItem api = items[i];
+
+            if (api == null || !WeaponMatches(api, parent.weaponName))
+                continue;
+
+            string apiFamily = GetApiFamily(api);
+
+            if (gamma)
+            {
+                if (!string.Equals(
+                        apiFamily,
+                        "Gamma Doppler",
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+            }
+            else if (!string.Equals(
+                         apiFamily,
+                         "Doppler",
+                         StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            string phase = CanonicalizePhase(GetApiPhase(api));
+
+            if (!IsAllowedPhase(phase, gamma))
+                continue;
+
+            string finishName = (gamma ? "Gamma Doppler" : "Doppler") +
+                                " (" + phase + ")";
+            int score = ScoreApiMatch(api, parent.weaponName, apiFamily, phase);
+
+            if (!bestByPhase.TryGetValue(phase, out ApiVariantMatch existing) ||
+                score > existing.score)
+            {
+                bestByPhase[phase] = new ApiVariantMatch
+                {
+                    api = api,
+                    phase = phase,
+                    finishName = finishName,
+                    score = score
+                };
+            }
+        }
+
+        List<ApiVariantMatch> result =
+            new List<ApiVariantMatch>(bestByPhase.Values);
+
+        result.Sort((a, b) =>
+            GetPhaseOrder(a != null ? a.phase : null)
+                .CompareTo(GetPhaseOrder(b != null ? b.phase : null)));
+
+        return result;
+    }
+
+    private static int ScoreApiMatch(
+        SkinApiItem api,
+        string parentWeaponName,
+        string family,
+        string phase)
+    {
+        if (api == null)
+            return int.MinValue;
+
+        int score = 0;
+        string expectedWeapon = NormalizeToken(parentWeaponName);
+
+        if (api.weapon != null &&
+            string.Equals(
+                NormalizeToken(api.weapon.name),
+                expectedWeapon,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            score += 1000;
+        }
+
+        if (api.pattern != null &&
+            string.Equals(
+                NormalizeFamily(api.pattern.name),
+                family,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            score += 500;
+        }
+
+        if (!string.IsNullOrWhiteSpace(api.phase) &&
+            string.Equals(
+                CanonicalizePhase(api.phase),
+                phase,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            score += 300;
+        }
+
+        string paintPhase = CanonicalizePhase(GetPhaseFromPaintIndex(api.paint_index));
+
+        if (!string.IsNullOrWhiteSpace(paintPhase) &&
+            string.Equals(paintPhase, phase, StringComparison.OrdinalIgnoreCase))
+        {
+            score += 250;
+        }
+
+        string displayWeapon = ExtractWeaponFromDisplayName(api.name);
+
+        if (string.Equals(
+                NormalizeToken(displayWeapon),
+                expectedWeapon,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            score += 100;
+        }
+
+        if (!string.IsNullOrWhiteSpace(api.image))
+            score += 10;
+
+        return score;
+    }
+
+    private static bool WeaponMatches(SkinApiItem api, string parentWeaponName)
+    {
+        if (api == null)
+            return false;
+
+        string expected = NormalizeToken(parentWeaponName);
+
+        if (string.IsNullOrWhiteSpace(expected))
+            return false;
+
+        if (api.weapon != null &&
+            string.Equals(
+                NormalizeToken(api.weapon.name),
+                expected,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        string[] displays =
+        {
+            api.name,
+            api.market_hash_name
+        };
+
+        for (int i = 0; i < displays.Length; i++)
+        {
+            string weapon = ExtractWeaponFromDisplayName(displays[i]);
+
+            if (string.Equals(
+                    NormalizeToken(weapon),
+                    expected,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static string GetApiFamily(SkinApiItem api)
+    {
+        if (api == null)
+            return null;
+
+        string paintFamily = GetFamilyFromPaintIndex(api.paint_index);
+
+        if (!string.IsNullOrWhiteSpace(paintFamily))
+            return paintFamily;
+
+        if (api.pattern != null)
+        {
+            string patternFamily = NormalizeFamily(api.pattern.name);
+
+            if (!string.IsNullOrWhiteSpace(patternFamily))
+                return patternFamily;
+
+            patternFamily = NormalizeFamily(api.pattern.id);
+
+            if (!string.IsNullOrWhiteSpace(patternFamily))
+                return patternFamily;
+        }
+
+        string nameFamily = NormalizeFamily(api.name);
+
+        if (!string.IsNullOrWhiteSpace(nameFamily))
+            return nameFamily;
+
+        return NormalizeFamily(api.market_hash_name);
+    }
+
+    private static string NormalizeFamily(string value)
+    {
+        string token = NormalizeToken(value);
+
+        if (string.IsNullOrWhiteSpace(token))
+            return null;
+
+        if (token.IndexOf("gamma doppler", StringComparison.OrdinalIgnoreCase) >= 0 ||
+            (token.IndexOf("gamma", StringComparison.OrdinalIgnoreCase) >= 0 &&
+             token.IndexOf("doppler", StringComparison.OrdinalIgnoreCase) >= 0))
+        {
+            return "Gamma Doppler";
+        }
+
+        if (token.IndexOf("doppler", StringComparison.OrdinalIgnoreCase) >= 0)
+            return "Doppler";
+
+        return null;
+    }
+
+    private static string GetApiPhase(SkinApiItem api)
+    {
+        if (api == null)
+            return null;
+
+        if (!string.IsNullOrWhiteSpace(api.phase))
+            return api.phase;
+
+        string fromPaint = GetPhaseFromPaintIndex(api.paint_index);
+
+        if (!string.IsNullOrWhiteSpace(fromPaint))
+            return fromPaint;
+
+        string fromPattern = ExtractPhase(api.pattern != null ? api.pattern.name : null);
+
+        if (!string.IsNullOrWhiteSpace(fromPattern))
+            return fromPattern;
+
+        fromPattern = ExtractPhase(api.pattern != null ? api.pattern.id : null);
+
+        if (!string.IsNullOrWhiteSpace(fromPattern))
+            return fromPattern;
+
+        string fromName = ExtractPhase(api.name);
+
+        if (!string.IsNullOrWhiteSpace(fromName))
+            return fromName;
+
+        return ExtractPhase(api.market_hash_name);
+    }
+
+    private static string ExtractPhase(string value)
+    {
+        string token = NormalizeToken(value);
+
+        if (string.IsNullOrWhiteSpace(token))
+            return null;
+
+        if (Regex.IsMatch(token, @"\bphase\s*1\b", RegexOptions.IgnoreCase))
+            return "Phase 1";
+        if (Regex.IsMatch(token, @"\bphase\s*2\b", RegexOptions.IgnoreCase))
+            return "Phase 2";
+        if (Regex.IsMatch(token, @"\bphase\s*3\b", RegexOptions.IgnoreCase))
+            return "Phase 3";
+        if (Regex.IsMatch(token, @"\bphase\s*4\b", RegexOptions.IgnoreCase))
+            return "Phase 4";
+        if (token.IndexOf("black pearl", StringComparison.OrdinalIgnoreCase) >= 0)
+            return "Black Pearl";
+        if (token.IndexOf("sapphire", StringComparison.OrdinalIgnoreCase) >= 0)
+            return "Sapphire";
+        if (token.IndexOf("ruby", StringComparison.OrdinalIgnoreCase) >= 0)
+            return "Ruby";
+        if (token.IndexOf("emerald", StringComparison.OrdinalIgnoreCase) >= 0)
+            return "Emerald";
+
+        return null;
+    }
+
+    private static string CanonicalizePhase(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return null;
+
+        string extracted = ExtractPhase(value);
+
+        if (!string.IsNullOrWhiteSpace(extracted))
+            return extracted;
+
+        string token = NormalizeToken(value);
+
+        if (string.Equals(token, "p1", StringComparison.OrdinalIgnoreCase))
+            return "Phase 1";
+        if (string.Equals(token, "p2", StringComparison.OrdinalIgnoreCase))
+            return "Phase 2";
+        if (string.Equals(token, "p3", StringComparison.OrdinalIgnoreCase))
+            return "Phase 3";
+        if (string.Equals(token, "p4", StringComparison.OrdinalIgnoreCase))
+            return "Phase 4";
+
+        return null;
+    }
+
+    private static string GetPhaseFromPaintIndex(string paintIndex)
+    {
+        if (!int.TryParse((paintIndex ?? "").Trim(), out int index))
+            return null;
+
+        switch (index)
+        {
+            // Standard Doppler paint kits.
+            case 415: return "Ruby";
+            case 416: return "Sapphire";
+            case 417: return "Black Pearl";
+            case 418: return "Phase 1";
+            case 419: return "Phase 2";
+            case 420: return "Phase 3";
+            case 421: return "Phase 4";
+
+            // Gamma Doppler paint kits.
+            case 568: return "Emerald";
+            case 569: return "Phase 1";
+            case 570: return "Phase 2";
+            case 571: return "Phase 3";
+            case 572: return "Phase 4";
+            default: return null;
+        }
+    }
+
+    private static string GetFamilyFromPaintIndex(string paintIndex)
+    {
+        if (!int.TryParse((paintIndex ?? "").Trim(), out int index))
+            return null;
+
+        if (index >= 415 && index <= 421)
+            return "Doppler";
+
+        if (index >= 568 && index <= 572)
+            return "Gamma Doppler";
+
+        return null;
+    }
+
+    private static bool IsAllowedPhase(string phase, bool gamma)
+    {
+        if (string.IsNullOrWhiteSpace(phase))
+            return false;
+
+        if (phase == "Phase 1" ||
+            phase == "Phase 2" ||
+            phase == "Phase 3" ||
+            phase == "Phase 4")
+        {
+            return true;
+        }
+
+        if (gamma)
+            return phase == "Emerald";
+
+        return phase == "Ruby" ||
+               phase == "Sapphire" ||
+               phase == "Black Pearl";
+    }
+
+    private static int GetPhaseOrder(string phase)
+    {
+        if (phase == "Phase 1") return 0;
+        if (phase == "Phase 2") return 1;
+        if (phase == "Phase 3") return 2;
+        if (phase == "Phase 4") return 3;
+        if (phase == "Ruby") return 4;
+        if (phase == "Sapphire") return 5;
+        if (phase == "Black Pearl") return 6;
+        if (phase == "Emerald") return 4;
+        return 100;
     }
 
     private List<SkinData> CollectGenericParents()
@@ -329,9 +698,14 @@ public sealed class DopplerVariantSetupWindow : EditorWindow
         out bool created)
     {
         created = false;
-        SkinData variant = FindRegisteredVariant(api.id, parent.weaponName, finishName);
+        SkinData variant = FindRegisteredVariant(
+            api.id,
+            parent.weaponName,
+            finishName);
+
         string assetPath = VariantRoot + "/" +
-                           SafeFileName(api.id + "_" + parent.weaponName + "_" + finishName) +
+                           SafeFileName(
+                               api.id + "_" + parent.weaponName + "_" + finishName) +
                            ".asset";
 
         if (variant == null)
@@ -394,8 +768,8 @@ public sealed class DopplerVariantSetupWindow : EditorWindow
         }
         else if (created)
         {
-            // Safe fallback until the dedicated CSV is imported. This preserves
-            // any old generic-family price rather than inventing a new value.
+            // Do not invent a new balance. New source-backed assets inherit the
+            // legacy family values until the authored knife-price CSV is imported.
             variant.exteriorPrices = parent.exteriorPrices;
             variant.statTrakExteriorPrices = parent.statTrakExteriorPrices;
             variant.souvenirExteriorPrices = parent.souvenirExteriorPrices;
@@ -425,8 +799,14 @@ public sealed class DopplerVariantSetupWindow : EditorWindow
                 return skin;
             }
 
-            if (string.Equals(skin.weaponName, weaponName, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(skin.skinName, finishName, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(
+                    skin.weaponName,
+                    weaponName,
+                    StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(
+                    skin.skinName,
+                    finishName,
+                    StringComparison.OrdinalIgnoreCase))
             {
                 return skin;
             }
@@ -522,42 +902,53 @@ public sealed class DopplerVariantSetupWindow : EditorWindow
             }
         }
 
-        return variants.Count > 0 ? variants[0] : null;
+        return null;
     }
 
-    private static Dictionary<string, SkinApiItem> BuildApiLookup(SkinApiItem[] items)
+    private static string ExtractWeaponFromDisplayName(string value)
     {
-        Dictionary<string, SkinApiItem> lookup =
-            new Dictionary<string, SkinApiItem>(StringComparer.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(value))
+            return null;
 
-        if (items == null)
-            return lookup;
+        string text = value.Replace("★", " ").Trim();
 
-        for (int i = 0; i < items.Length; i++)
-        {
-            SkinApiItem api = items[i];
+        text = Regex.Replace(
+            text,
+            @"^\s*(StatTrak(?:™)?|Souvenir)\s+",
+            "",
+            RegexOptions.IgnoreCase);
 
-            if (api == null || string.IsNullOrWhiteSpace(api.name))
-                continue;
+        int separator = text.IndexOf('|');
 
-            string key = NormalizeDisplayName(api.name);
+        if (separator >= 0)
+            text = text.Substring(0, separator);
 
-            if (!lookup.ContainsKey(key))
-                lookup.Add(key, api);
-        }
-
-        return lookup;
+        return text.Trim();
     }
 
-    private static string NormalizeDisplayName(string value)
+    private static string NormalizeToken(string value)
     {
-        string text = (value ?? "").Replace("★", " ").Trim();
-        return Regex.Replace(text, "\\s+", " ");
+        string text = (value ?? "")
+            .Replace("★", " ")
+            .Replace("™", " ")
+            .Trim();
+
+        text = Regex.Replace(
+            text,
+            @"^\s*(StatTrak|Souvenir)\s+",
+            "",
+            RegexOptions.IgnoreCase);
+
+        text = Regex.Replace(text, @"[^A-Za-z0-9]+", " ");
+        return Regex.Replace(text, @"\s+", " ").Trim();
     }
 
     private static string SafeFileName(string value)
     {
-        string text = Regex.Replace(value ?? "item", "[^A-Za-z0-9._-]+", "_");
+        string text = Regex.Replace(
+            value ?? "item",
+            "[^A-Za-z0-9._-]+",
+            "_");
         text = Regex.Replace(text, "_+", "_").Trim('_');
         return string.IsNullOrWhiteSpace(text) ? "item" : text;
     }
@@ -615,12 +1006,39 @@ public sealed class DopplerVariantSetupWindow : EditorWindow
     {
         public string id;
         public string name;
+        public string market_hash_name;
         public string image;
         public string paint_index;
         public float min_float;
         public float max_float;
         public bool stattrak;
         public bool souvenir;
+        public string phase;
+        public SkinApiWeapon weapon;
+        public SkinApiPattern pattern;
+    }
+
+    [Serializable]
+    private sealed class SkinApiWeapon
+    {
+        public string id;
+        public int weapon_id;
+        public string name;
+    }
+
+    [Serializable]
+    private sealed class SkinApiPattern
+    {
+        public string id;
+        public string name;
+    }
+
+    private sealed class ApiVariantMatch
+    {
+        public SkinApiItem api;
+        public string phase;
+        public string finishName;
+        public int score;
     }
 }
 #endif
