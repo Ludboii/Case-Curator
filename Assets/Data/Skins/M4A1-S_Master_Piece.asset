@@ -56,11 +56,11 @@ MonoBehaviour:
   reverseFadePattern: 0
   fadeOverrides: []
   exteriorPrices:
-    factoryNew: 0
-    minimalWear: 0
-    fieldTested: 0
-    wellWorn: 0
-    battleScarred: 0
+    factoryNew: 3200
+    minimalWear: 1400
+    fieldTested: 900
+    wellWorn: 750
+    battleScarred: 650
   statTrakExteriorPrices:
     factoryNew: 0
     minimalWear: 0
@@ -68,11 +68,11 @@ MonoBehaviour:
     wellWorn: 0
     battleScarred: 0
   souvenirExteriorPrices:
-    factoryNew: 0
-    minimalWear: 0
-    fieldTested: 0
-    wellWorn: 0
-    battleScarred: 0
+    factoryNew: 5000
+    minimalWear: 2200
+    fieldTested: 1500
+    wellWorn: 1200
+    battleScarred: 1000
   isVanilla: 0
   vanillaPrice: 0
   vanillaStatTrakPrice: 0

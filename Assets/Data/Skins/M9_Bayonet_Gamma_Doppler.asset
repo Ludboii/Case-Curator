@@ -21,7 +21,7 @@ MonoBehaviour:
   rarity: 6
   minFloat: 0
   maxFloat: 0.08
-  icon: {fileID: 21300000, guid: 413e4b5d4aef2e349b74d4f15fc11016, type: 3}
+  icon: {fileID: 8465480548141097049, guid: f7a31d682bb9190439d11212c73d11b9, type: 3}
   canBeStatTrak: 1
   canBeSouvenir: 0
   patternType: 3
